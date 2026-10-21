@@ -1,0 +1,79 @@
+# High-temperature selective catalytic reduction (SCR) of NOx with ammonia.
+# Beachhead reaction: simple-cycle gas turbines at AI data centers, 800-1,150 F, no tempering air.
+#
+# The rate parameters below are ILLUSTRATIVE defaults shaped like a conventional
+# catalyst (best near 700-850 F, losing selectivity above ~950 F as ammonia burns).
+# They seed simulations and fits; they are not measurements of any product.
+
+id: scr_hot
+name: High-temperature SCR of NOx with NH3
+version: 1
+status: draft-illustrative-parameters
+description: >
+  Standard SCR competes with ammonia oxidation. At an NH3/NOx feed ratio of 1.0,
+  reaching 92% NOx conversion leaves room to burn at most 2 of every 25 ppm of NH3,
+  so the high-temperature problem is the ratio of SCR to NH3-oxidation rates.
+
+reference_temperature_F: 1050   # Gate 1 compares rate constants here
+water: H2O
+oxygen: O2
+
+species:
+  NO:  {formula: NO}
+  NO2: {formula: NO2}
+  NH3: {formula: NH3}
+  O2:  {formula: O2}
+  N2:  {formula: N2}
+  H2O: {formula: H2O}
+  N2O: {formula: N2O}
+
+pathways:
+  scr:
+    equation: 4 NH3 + 4 NO + O2 -> 4 N2 + 6 H2O
+    role: desired
+    note: First order in NO; saturating in adsorbed NH3 (Eley-Rideal form).
+    rate:
+      key: NO
+      orders: {NO: 1}
+      coverage:
+        NH3: {ln_K_ref: 10.13, dH_kJ: -100}   # ~90% NH3 coverage at 25 ppm, 1,050 F
+      ln_k_ref: 5.99                           # k = 400 1/s at 1,050 F
+      Ea_kJ: 50
+  nh3_ox_n2:
+    equation: 4 NH3 + 3 O2 -> 2 N2 + 6 H2O
+    role: side
+    rate: {key: NH3, orders: {NH3: 1}, ln_k_ref: 3.40, Ea_kJ: 140}
+  nh3_ox_no:
+    equation: 4 NH3 + 5 O2 -> 4 NO + 6 H2O
+    role: side
+    note: Makes NO, so NOx conversion falls at high temperature.
+    rate: {key: NH3, orders: {NH3: 1}, ln_k_ref: 2.08, Ea_kJ: 180}
+  nh3_ox_n2o:
+    equation: 2 NH3 + 2 O2 -> N2O + 3 H2O
+    role: side
+    rate: {key: NH3, orders: {NH3: 1}, ln_k_ref: 1.39, Ea_kJ: 120}
+
+metrics:
+  nox_conversion:
+    kind: conversion
+    species: [NO, NO2]
+    description: Gate 1 needs >= 0.92 from 800 to 1,150 F
+  nox_out:
+    kind: outlet
+    species: [NO, NO2]
+    basis: {dry: true, o2_ref_pct: 15}
+  nh3_slip:
+    kind: outlet
+    species: [NH3]
+    basis: {dry: true, o2_ref_pct: 15}
+    description: Gate 1 needs <= 2 ppm
+  n2o_out:
+    kind: outlet
+    species: [N2O]
+    basis: {dry: true, o2_ref_pct: 15}
+    description: Gate 1 needs <= 1 ppm
+  nh3_per_nox:
+    kind: consumption_ratio
+    numerator: [NH3]
+    denominator: [NO, NO2]
+    description: 1.0 for clean SCR; above 1 means ammonia is burning instead of reducing NOx

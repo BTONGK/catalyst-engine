@@ -1,0 +1,44 @@
+# EXAMPLE VALUES THROUGHOUT. This file shows the calculation; every number below
+# (turbine, monolith, fan, prices, both catalysts) gets replaced with an integrator's
+# figures during customer discovery before any result is quoted.
+
+name: Simple-cycle frame turbine, tempered vs hot SCR (example)
+pack: scr_hot
+note: >
+  Catalyst parameters are the pack's illustrative defaults (a conventional catalyst)
+  and an illustrative target catalyst that burns 7x less ammonia. Neither is a measurement.
+
+exhaust:
+  flow_kg_s: 535
+  temperature_F: 1150
+  pressure_kPa: 103.0
+  composition: {N2: 74.5 %, O2: 12.5 %, CO2: 3.9 %, H2O: 8.3 %, AR: 0.8 %}
+
+pollutants: {NO: 25 ppm}
+reagent: {species: NH3, ratio: [0.9, 1.3], to: [NO, NO2]}   # sizing picks the dose within this range
+balance: N2
+ambient_F: 80
+
+targets:
+  nox_conversion: {min: 0.92}
+  nh3_slip: {max: 2.0}
+  n2o_out: {max: 1.0}
+
+monolith: {cpsi: 64, wall_mm: 0.6, face_velocity_m_s: 6.0}
+fan: {pressure_rise_kPa: 3.0, efficiency: 0.75}
+economics: {electricity_usd_per_mwh: 60, hours_per_year: 8000, reagent_usd_per_tonne: 600}
+
+catalysts:
+  conventional:
+    description: Pack defaults, shaped like a conventional catalyst
+  hot_target:
+    description: Same SCR activity, 7x less ammonia oxidation
+    params:
+      nh3_ox_n2.ln_k_ref: 1.40
+      nh3_ox_no.ln_k_ref: 0.08
+      nh3_ox_n2o.ln_k_ref: -0.61
+
+designs:
+  - {name: tempered to 900 F, catalyst: conventional, tempered_to_F: 900}
+  - {name: conventional at 1150 F, catalyst: conventional}
+  - {name: hot target at 1150 F, catalyst: hot_target}

@@ -1,0 +1,72 @@
+# Oxidation catalyst for lean-burn gas engines (the analysis's product #2): CO,
+# formaldehyde and methane oxidation, plus NO -> NO2, which is equilibrium-limited
+# at high temperature. Runs on the same flow rig and FTIR as scr_hot.
+#
+# Rate parameters are ILLUSTRATIVE defaults, not measurements of any product.
+
+id: oxidation_engine
+name: Gas-engine oxidation catalyst (CO, HCHO, CH4, NO)
+version: 1
+status: draft-illustrative-parameters
+description: >
+  Formaldehyde must leave at or below 14 ppmvd @ 15% O2 across 450-1,350 F catalyst
+  inlet temperatures. CO oxidation follows a Voltz-type law (self-inhibited by CO).
+
+reference_temperature_F: 800
+water: H2O
+oxygen: O2
+
+species:
+  CO:   {formula: CO}
+  CO2:  {formula: CO2}
+  HCHO: {formula: CH2O, cantera: CH2O}
+  CH4:  {formula: CH4}
+  NO:   {formula: NO}
+  NO2:  {formula: NO2}
+  O2:   {formula: O2}
+  H2O:  {formula: H2O}
+  N2:   {formula: N2}
+
+pathways:
+  co_ox:
+    equation: CO + 0.5 O2 -> CO2
+    role: desired
+    rate:
+      key: CO
+      orders: {CO: 1}
+      inhibition:
+        CO: {ln_K_ref: 4.6, dH_kJ: -30}
+      inhibition_exponent: 2
+      ln_k_ref: 6.2
+      Ea_kJ: 80
+  hcho_ox:
+    equation: HCHO + O2 -> CO2 + H2O
+    role: desired
+    rate: {key: HCHO, orders: {HCHO: 1}, ln_k_ref: 5.7, Ea_kJ: 60}
+  ch4_ox:
+    equation: CH4 + 2 O2 -> CO2 + 2 H2O
+    role: desired
+    rate: {key: CH4, orders: {CH4: 1}, ln_k_ref: 1.1, Ea_kJ: 120}
+  no_ox:
+    equation: NO + 0.5 O2 <=> NO2
+    role: side
+    note: Reversible; equilibrium from thermodynamics caps NO2 at high temperature.
+    rate: {key: NO, orders: {NO: 1, O2: 0.5}, ln_k_ref: 3.0, Ea_kJ: 40}
+
+metrics:
+  co_conversion:   {kind: conversion, species: [CO]}
+  hcho_conversion: {kind: conversion, species: [HCHO]}
+  ch4_conversion:  {kind: conversion, species: [CH4]}
+  hcho_out:
+    kind: outlet
+    species: [HCHO]
+    basis: {dry: true, o2_ref_pct: 15}
+    description: Federal engine rule limit 14 ppmvd @ 15% O2
+  co_out:
+    kind: outlet
+    species: [CO]
+    basis: {dry: true, o2_ref_pct: 15}
+  no2_out:
+    kind: outlet
+    species: [NO2]
+    basis: {dry: true, o2_ref_pct: 15}

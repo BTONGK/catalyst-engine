@@ -1,0 +1,31 @@
+id: oxidation-screen-v1
+pack: oxidation_engine
+version: 1
+status: draft
+description: >
+  Simulated lean-burn engine exhaust across the 450-1,350 F inlet window the
+  federal engine rule covers. Feed levels are EXAMPLE values; replace them with
+  measured engine-out data from a design partner.
+
+open_questions:
+  - "Feed composition is an example lean-burn engine; replace with partner data."
+  - "Space velocity (50,000 1/h) is a placeholder pending the reference catalyst's commissioning run."
+
+analyzer:
+  name: FTIR
+  measured: [CO, HCHO, CH4, NO, NO2]
+  sigma_abs_ppm: 0.5
+  sigma_rel: 0.02
+  lod_ppm: {CO: 1.0, HCHO: 0.5, CH4: 2.0, NO: 0.5, NO2: 0.5}
+
+steps:
+  - id: screen
+    purpose: Light-off and high-temperature performance
+    feed: {CO: 500 ppm, HCHO: 60 ppm, CH4: 1500 ppm, NO: 200 ppm, O2: 10 %, H2O: 10 %, CO2: 6 %, N2: balance}
+    ghsv_per_h: 50000
+    temperatures_F: [450, 600, 750, 900, 1050, 1200, 1350]
+  - id: kinetic
+    purpose: Higher space velocity to keep conversions off 100% for rate constants
+    feed: {CO: 500 ppm, HCHO: 60 ppm, CH4: 1500 ppm, NO: 200 ppm, O2: 10 %, H2O: 10 %, CO2: 6 %, N2: balance}
+    ghsv_per_h: 400000
+    temperatures_F: [450, 600, 750, 900, 1050]
