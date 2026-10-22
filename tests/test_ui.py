@@ -46,3 +46,29 @@ def test_fit_lab_flags_aliasing_when_a_step_is_dropped():
     next(b for b in at.button if b.label == "Fit").click().run()
     assert not at.exception, at.exception
     assert any("confounds" in w.value for w in at.warning)
+
+
+def test_lab_data_shows_the_demo_campaign():
+    at = AppTest.from_file(str(VIEWS / "labdata.py"), default_timeout=120).run()
+    assert not at.exception, at.exception
+    assert _metric(at, "Prediction log").endswith("entries")
+    assert any(m.label == "Model picks" for m in at.metric)
+    at.selectbox(key="lab_run").set_value("R-0003").run()  # the demo's failed run
+    assert not at.exception, at.exception
+    assert any("Still to run" in w.value for w in at.warning)
+
+
+def test_lab_store_starts_empty_and_takes_records():
+    from catalyst_engine.data.records import add_formulation
+    from catalyst_engine.data.store import Store, store_path
+
+    at = AppTest.from_file(str(VIEWS / "labdata.py"), default_timeout=120).run()
+    at.segmented_control(key="lab_store").set_value("Lab store").run()
+    assert not at.exception, at.exception
+    if not (store_path("lab") / "store.db").exists():
+        next(b for b in at.button if b.label == "Create the lab store").click().run()
+    store = Store(store_path("lab"))
+    add_formulation(store, "Reference catalyst", [{"material": "Fe", "amount": 1.5, "unit": "wt%"}], role="reference")
+    at.run()
+    assert not at.exception, at.exception
+    assert _metric(at, "Catalysts") == "1" and store.kind == "lab"

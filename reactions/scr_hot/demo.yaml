@@ -1,0 +1,98 @@
+# The simulated demo store for the data platform. Every catalyst, composition and result here is made up:
+# `truth` shifts the pack's illustrative parameters to make each simulated catalyst, and `believed` is what
+# the demo model expected, which sets its logged prediction. The store it builds is the simulated store.
+
+seed: 20261021
+model: demo model (illustrative)
+sample: {form: monolith core, volume_mL: 10.0, mass_g: 6.2}
+
+campaign:
+  name: Demo batch 1
+  protocol: scr-yardstick-v1
+  rig: bench-1 (simulated)
+  notes: Nine candidates, three per arm, against the reference run at the start and end of the batch.
+  # Kinetic step: conversion sits near 65-80%, so a better catalyst shows a clear margin.
+  hit_rule: {metric: nox_conversion, step: kinetic, temperatures_F: [1050, 1150], rule: beats_reference, margin: 0.03}
+
+reference:
+  name: Reference hot-SCR catalyst
+  components:
+    - {material: Fe, role: active, amount: 1.5, unit: wt%}
+    - {material: BEA zeolite, role: support, amount: balance, unit: ""}
+  preparation: Commercial washcoated monolith, cored to 10 mL.
+
+candidates:
+  - name: Candidate 01
+    arm: model
+    rationale: Highest predicted margin at 1,150 F.
+    components: [{material: Fe, role: active, amount: 2.0, unit: wt%}, {material: Ce, role: promoter, amount: 0.5, unit: wt%},
+                 {material: BEA zeolite, role: support, amount: balance, unit: ""}]
+    truth: {scr.ln_k_ref: 0.45, nh3_ox_no.ln_k_ref: -0.6}
+    believed: {scr.ln_k_ref: 0.35, nh3_ox_no.ln_k_ref: -0.4}
+    interval: 0.04
+  - name: Candidate 02
+    arm: expert
+    rationale: Tungsten-rich titania holds acidity at high temperature.
+    components: [{material: V2O5, role: active, amount: 1.0, unit: wt%}, {material: WO3, role: promoter, amount: 8.0, unit: wt%},
+                 {material: TiO2-SiO2, role: support, amount: balance, unit: ""}]
+    truth: {scr.ln_k_ref: 0.35}
+    believed: {scr.ln_k_ref: 0.15}
+    interval: 0.04
+    runs:
+      - {stop_after_points: 4, notes: "Furnace controller tripped during the design step."}
+      - {notes: "Retest on a fresh core."}
+  - name: Candidate 03
+    arm: random
+    rationale: Drawn at random from the batch design space.
+    components: [{material: Cu, role: active, amount: 1.0, unit: wt%}, {material: MFI zeolite, role: support, amount: balance, unit: ""}]
+    truth: {scr.ln_k_ref: -0.4}
+    believed: {scr.ln_k_ref: -0.1}
+    interval: 0.04
+  - name: Candidate 04
+    arm: model
+    rationale: Lower ammonia oxidation predicted at equal SCR rate.
+    components: [{material: Fe, role: active, amount: 1.0, unit: wt%}, {material: CHA zeolite, role: support, amount: balance, unit: ""}]
+    truth: {scr.ln_k_ref: 0.30, nh3_ox_n2.ln_k_ref: -0.5}
+    believed: {scr.ln_k_ref: 0.25, nh3_ox_n2.ln_k_ref: -0.3}
+    interval: 0.04
+  - name: Candidate 05
+    arm: expert
+    rationale: More iron for more SCR sites.
+    components: [{material: Fe, role: active, amount: 3.0, unit: wt%}, {material: MFI zeolite, role: support, amount: balance, unit: ""}]
+    truth: {scr.ln_k_ref: -0.15, nh3_ox_n2.ln_k_ref: -0.3}
+    believed: {scr.ln_k_ref: 0.05}
+    interval: 0.04
+  - name: Candidate 06
+    arm: random
+    rationale: Drawn at random from the batch design space.
+    components: [{material: MnOx, role: active, amount: 2.0, unit: wt%}, {material: CeO2, role: promoter, amount: 2.0, unit: wt%},
+                 {material: TiO2, role: support, amount: balance, unit: ""}]
+    truth: {scr.ln_k_ref: 0.05, nh3_ox_no.ln_k_ref: 0.2}
+    believed: {scr.ln_k_ref: 0.0}
+    interval: 0.04
+    runs:
+      - {short_hold: {step: kinetic, temperature_F: 1150, seconds: 150}, notes: "Hold at 1,150 F ended early for a gas-cylinder change."}
+      - {notes: "Retest with the full hold."}
+  - name: Candidate 07
+    arm: model
+    rationale: Zirconia predicted to slow ammonia oxidation.
+    components: [{material: Fe, role: active, amount: 1.5, unit: wt%}, {material: ZrO2, role: promoter, amount: 1.0, unit: wt%},
+                 {material: BEA zeolite, role: support, amount: balance, unit: ""}]
+    truth: {scr.ln_k_ref: 0.10}
+    believed: {scr.ln_k_ref: 0.20}
+    interval: 0.04
+  - name: Candidate 08
+    arm: expert
+    rationale: Ceria-zirconia stores oxygen for the SCR cycle.
+    components: [{material: WO3, role: active, amount: 10.0, unit: wt%}, {material: CeO2-ZrO2, role: support, amount: balance, unit: ""}]
+    truth: {nh3_ox_n2.ln_k_ref: 0.3}
+    believed: {scr.ln_k_ref: 0.1}
+    interval: 0.04
+  - name: Candidate 09
+    arm: random
+    rationale: Drawn at random from the batch design space.
+    components: [{material: Nb2O5, role: active, amount: 3.0, unit: wt%}, {material: CeO2, role: promoter, amount: 5.0, unit: wt%},
+                 {material: TiO2, role: support, amount: balance, unit: ""}]
+    truth: {nh3_ox_no.ln_k_ref: 0.4}
+    believed: {nh3_ox_no.ln_k_ref: 0.2}
+    interval: 0.04

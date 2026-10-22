@@ -11,15 +11,15 @@ uv sync
 uv run ce ui                      # opens http://localhost:8501
 ```
 
-Seven pages: Overview (progress, next steps and decisions from `docs/status.yaml`), Atomistic check
-(model checks from `experiments/*/report.yaml`), Reactions, Catalyst playground, Design scenarios,
-Calculators and Fit lab. Every page reads the files on disk, so a new pack, an edited YAML file or a
+Eight pages: Overview (progress, next steps and decisions from `docs/status.yaml`), Lab data
+(catalysts, runs, campaign scores and the prediction log), Atomistic check (model checks from
+`experiments/*/report.yaml`), Reactions, Catalyst playground, Design scenarios, Calculators and Fit lab. Every page reads the files on disk, so a new pack, an edited YAML file or a
 new experiment summary shows up on the next page load.
 
 ## Command line
 
 ```sh
-uv run pytest                     # 47 tests, ~20 s
+uv run pytest                     # 65 tests, ~25 s
 uv run ce packs                   # reaction packs and whether each loads
 uv run ce show scr_hot            # pathways, metrics, protocols, open questions
 uv run ce simulate scr_hot        # run the yardstick protocol through the reactor model
@@ -29,6 +29,27 @@ uv run ce permit --ppm 2 --cap-tpy 100
 uv run ce fit scr_hot bench.csv --out fitted.yaml    # CSV: step, T_F, out_<species>_ppm, ...
 uv run ce decay aging.csv                            # CSV: hours, activity[, sigma]
 ```
+
+## Lab data and the prediction log
+
+```sh
+uv run ce data init                                  # the lab store, in data/lab (outside git)
+uv run ce data add-formulation "Reference" --role reference --component Fe:active:1.5:wt% --component BEA:support:balance:
+uv run ce data add-sample F-0001 --volume-ml 10
+uv run ce data add-campaign "Batch 1" --pack scr_hot --rig bench-1 --reference F-0001 \
+    --metric nox_conversion --step kinetic --temperature 1050 --temperature 1150 --margin 0.03
+uv run ce data pick C-0001 F-0002 --arm model        # logged before the catalyst is made
+uv run ce data ingest run.csv --campaign C-0001 --sample S-0002
+uv run ce data score C-0001                          # hit rates per arm, once `ce data unblind C-0001`
+uv run ce data verify                                # hash chain and raw files
+uv run ce data anchor                                # head hash into docs/prediction_anchors.md; commit it
+uv run ce data demo                                  # rebuild the simulated demo store
+```
+
+Every table is append-only; a correction is a new record that `supersedes` the old one. Raw analyzer
+files are stored under their SHA-256 and set read-only. A campaign fixes the protocol version (by hash),
+the rig, the reference and the hit rule before any pick, and refuses runs that differ. The lab store
+refuses files with the simulated marker, so simulated data stays in `data/simulated`.
 
 All rate parameters in the packs are illustrative until the catalysis lead's review and the rig replace them.
 Example scenarios use example inputs throughout.

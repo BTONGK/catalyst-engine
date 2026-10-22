@@ -12,10 +12,12 @@ import yaml
 from rich.console import Console
 from rich.table import Table
 
+from catalyst_engine.data.cli import data_app
 from catalyst_engine.packs import list_packs, load_pack
 from catalyst_engine.units import f_to_k, k_to_f
 
 app = typer.Typer(no_args_is_help=True, add_completion=False, help="Closed-loop catalyst discovery engine.")
+app.add_typer(data_app, name="data")
 console = Console()
 
 
@@ -216,9 +218,6 @@ def permit(
     console.print(f"MW under a {cap_tpy:g} ton/yr cap: {max_mw_under_cap(cap_tpy, rate, heat_rate, hours):,.0f}")
 
 
-if __name__ == "__main__":
-    app()
-
 
 @app.command()
 def ui(port: Annotated[int, typer.Option(help="Local port")] = 8501) -> None:
@@ -233,3 +232,7 @@ def ui(port: Annotated[int, typer.Option(help="Local port")] = 8501) -> None:
         subprocess.run(cmd, check=False)
     except KeyboardInterrupt:
         pass
+
+
+if __name__ == "__main__":
+    app()

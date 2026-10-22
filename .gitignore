@@ -7,5 +7,5 @@ build/
 *.egg-info/
 
 # Lab data never lives in git: real and simulated stores are separate, both local.
-data/
+/data/
 .DS_Store

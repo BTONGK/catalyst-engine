@@ -9,6 +9,9 @@
   the app's Atomistic check page renders with `results/summary.json`. Put results there, not only in a README.
 - Materials Project API key: `~/.config/.pmgrc.yaml` (`PMG_MAPI_KEY`, read by pymatgen and mp-api). Keep it out of
   the repository and out of logs.
+- Lab data lives in `data/lab` (real) and `data/simulated` (demo), both outside git; `CE_DATA_DIR` moves them
+  and the tests point it at a temp folder. Hit rates and gate claims come from the lab store only. Rebuild the
+  demo with `uv run ce data demo` after changing `reactions/<pack>/demo.yaml`.
 - Commit only when asked.
 - UMA (fairchem-core 2.23) lives in the conda Python at `/opt/miniconda3/bin/python3`, separate from this
   project's Python 3.12 venv. Checkpoint: `~/uma/checkpoints/uma-s-1p1.pt`. Run it with

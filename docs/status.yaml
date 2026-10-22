@@ -23,6 +23,11 @@ proof_sequence:
 recent:
   - date: 2026-10-21
     item: >
+      Phase 2, the data platform and prediction log: catalysts, samples, runs and raw analyzer files with
+      provenance, steady-state points with automatic checks, campaigns tied to one protocol version and rig,
+      and a hash-chained log of picks and predictions. The Lab data page walks a simulated campaign end to end.
+  - date: 2026-10-21
+    item: >
       Materials Project key saved and checked. It returns anatase TiO2, V2O5 and WO3 at 0 meV/atom
       above the hull, ready for the stability screen.
   - date: 2026-10-21
@@ -45,14 +50,17 @@ recent:
       fits, and the system-value tools.
 
 next_steps:
-  - step: Build the data platform and prediction log (Phase 2)
-    owner: Claude
-    why: >
-      Every later claim rests on predictions logged before the lab measures them, so the log comes before
-      batch 1 is chosen.
   - step: Review the pack parameters and protocols, and set the batch-1 design space
     owner: You
     why: As catalysis lead, your review replaces the illustrative parameters and defines what batch 1 explores.
+  - step: Send a sample export from the rig's analyzer or logger
+    owner: You
+    why: >
+      The Lab data page reads one CSV layout (Add data tab, File format). A real export lets the reader match
+      the rig before the first run.
+  - step: "Build the virtual rig (Phase 3): hidden catalysts across the batch-1 design space"
+    owner: Claude
+    why: Runs the whole loop, picks to scores, on simulated catalysts before lab money is spent.
   - step: Ask counsel to review the UMA policy line on critical infrastructure
     owner: You
     why: Clears the atomistic layer for commercial use.
@@ -73,14 +81,17 @@ phases:
       aging fits with uncertainty, system-value calculators. Two reaction packs.
   - id: 2
     name: Data platform
-    status: next
+    status: done
     summary: >
       Samples, versioned protocols and runs; raw files stored by fingerprint; FTIR ingest
       with automatic checks; a tamper-evident log of predictions made before each experiment.
+      Lab data page; `ce data` commands.
   - id: 3
     name: Virtual rig
-    status: planned
-    summary: Simulated catalysts that produce realistic FTIR files, so the whole loop runs before the lab exists.
+    status: next
+    summary: >
+      Simulated catalysts that produce realistic FTIR files, so the whole loop runs before the lab exists.
+      Started: simulated analyzer logs feed the Lab data demo.
   - id: 4
     name: Learning and planning
     status: planned
@@ -161,3 +172,9 @@ decisions:
   - item: Review pack parameters, protocols and the batch-1 design space before batch 1
     owner: You (catalysis lead)
     status: open
+  - item: Where the lab store is backed up
+    owner: You
+    status: open
+    detail: >
+      Lab records and raw files live in data/lab on this Mac, outside git by design. The prediction log's
+      head hash goes into git through `ce data anchor`; the store itself needs a backup location before batch 1.

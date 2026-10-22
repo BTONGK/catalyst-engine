@@ -88,8 +88,8 @@ reactions/
 |---|---|---|
 | 0 | Repo, environment, tests | Done |
 | 1 | Chemistry core, two packs, kinetic and aging fits, system value | Done (38 tests) |
-| 2 | Data platform: formulations, samples, protocols, runs, raw files by hash, append-only; FTIR ingest with steady-state detection and checks; reference-run enforcement; hash-chained prediction log | Next |
-| 3 | Virtual rig: hidden "true" catalysts whose properties carry across reactions, producing FTIR-style files with noise, drift and failed runs | |
+| 2 | Data platform: formulations, samples, protocols, runs, raw files by hash, append-only; FTIR ingest with steady-state detection and checks; reference-run enforcement; hash-chained prediction log | Done 2026-10-21 (`src/catalyst_engine/data/`, `ce data`, the app's Lab data page) |
+| 3 | Virtual rig: hidden "true" catalysts whose properties carry across reactions, producing FTIR-style files with noise, drift and failed runs | Started: simulated analyzer logs (bypass, settling holds, noise, failed and short runs) feed the demo store |
 | 4 | Multi-task models (shared catalyst representation, a head per pathway), conformal calibration, batch planner scored through the reactor model, gate scorecards, transfer scorecard | |
 | 5 | Atomistic descriptors (binding energies of N, O, NH3, CO and others on catalyst site types via UMA), Materials Project stability, OCx24 retrospective | Started: UMA test run done (see the app's Atomistic check page) |
 | 6 | MCP server and agents, literature extraction into a low-trust tier, reports | |
@@ -123,6 +123,8 @@ reactions/
   "operation of critical infrastructure"; the atomistic backend stays swappable.
 - Materials Project API key: saved 2026-10-21 in `~/.config/.pmgrc.yaml`, outside the repository.
 - The catalysis lead (the founder, from 2026-10-21) reviews pack parameters, protocols and the starting design space.
+- Rig logger export: confirm it can write the analyzer CSV the Lab data page ingests (or adapt the reader to it).
+- Lab store backup: `data/lab/` lives outside git on this Mac; choose where it is backed up before batch 1.
 
 ## Deliberately not built
 
