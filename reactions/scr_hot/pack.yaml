@@ -57,23 +57,28 @@ metrics:
   nox_conversion:
     kind: conversion
     species: [NO, NO2]
-    description: Gate 1 needs >= 0.92 from 800 to 1,150 F
+    description: Share of NOx removed. Gate 1 needs 0.92 or more from 800 to 1,150 F.
+    target: {min: 0.92, label: Gate 1}
   nox_out:
     kind: outlet
     species: [NO, NO2]
     basis: {dry: true, o2_ref_pct: 15}
+    description: NOx leaving the catalyst, on the permit basis.
+    target: {max: 2.0, label: BACT limit}
   nh3_slip:
     kind: outlet
     species: [NH3]
     basis: {dry: true, o2_ref_pct: 15}
-    description: Gate 1 needs <= 2 ppm
+    description: Unreacted ammonia leaving the stack. Gate 1 allows up to 2 ppm.
+    target: {max: 2.0, label: Gate 1}
   n2o_out:
     kind: outlet
     species: [N2O]
     basis: {dry: true, o2_ref_pct: 15}
-    description: Gate 1 needs <= 1 ppm
+    description: Nitrous oxide, a greenhouse gas made by ammonia oxidation. Gate 1 allows up to 1 ppm.
+    target: {max: 1.0, label: Gate 1}
   nh3_per_nox:
     kind: consumption_ratio
     numerator: [NH3]
     denominator: [NO, NO2]
-    description: 1.0 for clean SCR; above 1 means ammonia is burning instead of reducing NOx
+    description: Ammonia used per NOx removed. 1.0 is clean SCR; higher values mean ammonia is burning off.

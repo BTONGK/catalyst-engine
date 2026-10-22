@@ -1,0 +1,1014 @@
+{
+ "generated": "2026-10-21",
+ "metals": {
+  "adsorbates": [
+   "N",
+   "NH",
+   "NH2",
+   "NH3",
+   "O",
+   "OH",
+   "NO"
+  ],
+  "metals": [
+   "Ru",
+   "Rh",
+   "Pd",
+   "Ag",
+   "Ir",
+   "Pt",
+   "Au",
+   "Ni",
+   "Cu"
+  ],
+  "binding": [
+   {
+    "metal": "Ru",
+    "adsorbate": "N",
+    "E": -0.7933,
+    "site": "hcp"
+   },
+   {
+    "metal": "Ru",
+    "adsorbate": "NH",
+    "E": -1.1351,
+    "site": "hcp"
+   },
+   {
+    "metal": "Ru",
+    "adsorbate": "NH2",
+    "E": -1.0781,
+    "site": "fcc"
+   },
+   {
+    "metal": "Ru",
+    "adsorbate": "NH3",
+    "E": -1.5144,
+    "site": "ontop"
+   },
+   {
+    "metal": "Ru",
+    "adsorbate": "O",
+    "E": -0.1834,
+    "site": "hcp"
+   },
+   {
+    "metal": "Ru",
+    "adsorbate": "OH",
+    "E": -0.0118,
+    "site": "fcc"
+   },
+   {
+    "metal": "Ru",
+    "adsorbate": "NO",
+    "E": 1.0338,
+    "site": "ontop"
+   },
+   {
+    "metal": "Rh",
+    "adsorbate": "N",
+    "E": -0.1786,
+    "site": "hcp"
+   },
+   {
+    "metal": "Rh",
+    "adsorbate": "NH",
+    "E": -0.6447,
+    "site": "fcc"
+   },
+   {
+    "metal": "Rh",
+    "adsorbate": "NH2",
+    "E": -0.8292,
+    "site": "fcc"
+   },
+   {
+    "metal": "Rh",
+    "adsorbate": "NH3",
+    "E": -1.4696,
+    "site": "ontop"
+   },
+   {
+    "metal": "Rh",
+    "adsorbate": "O",
+    "E": 0.558,
+    "site": "fcc"
+   },
+   {
+    "metal": "Rh",
+    "adsorbate": "OH",
+    "E": 0.4352,
+    "site": "bridge"
+   },
+   {
+    "metal": "Rh",
+    "adsorbate": "NO",
+    "E": 1.1964,
+    "site": "hcp"
+   },
+   {
+    "metal": "Pd",
+    "adsorbate": "N",
+    "E": 0.6229,
+    "site": "fcc"
+   },
+   {
+    "metal": "Pd",
+    "adsorbate": "NH",
+    "E": 0.0789,
+    "site": "fcc"
+   },
+   {
+    "metal": "Pd",
+    "adsorbate": "NH2",
+    "E": -0.329,
+    "site": "fcc"
+   },
+   {
+    "metal": "Pd",
+    "adsorbate": "NH3",
+    "E": -1.3064,
+    "site": "ontop"
+   },
+   {
+    "metal": "Pd",
+    "adsorbate": "O",
+    "E": 1.4029,
+    "site": "fcc"
+   },
+   {
+    "metal": "Pd",
+    "adsorbate": "OH",
+    "E": 0.9176,
+    "site": "bridge"
+   },
+   {
+    "metal": "Pd",
+    "adsorbate": "NO",
+    "E": 1.4941,
+    "site": "fcc"
+   },
+   {
+    "metal": "Ag",
+    "adsorbate": "N",
+    "E": 3.2127,
+    "site": "fcc"
+   },
+   {
+    "metal": "Ag",
+    "adsorbate": "NH",
+    "E": 1.5713,
+    "site": "fcc"
+   },
+   {
+    "metal": "Ag",
+    "adsorbate": "NH2",
+    "E": 0.2624,
+    "site": "bridge"
+   },
+   {
+    "metal": "Ag",
+    "adsorbate": "NH3",
+    "E": -0.9854,
+    "site": "ontop"
+   },
+   {
+    "metal": "Ag",
+    "adsorbate": "O",
+    "E": 2.2403,
+    "site": "fcc"
+   },
+   {
+    "metal": "Ag",
+    "adsorbate": "OH",
+    "E": 0.8483,
+    "site": "fcc"
+   },
+   {
+    "metal": "Ag",
+    "adsorbate": "NO",
+    "E": 3.3407,
+    "site": "fcc"
+   },
+   {
+    "metal": "Ir",
+    "adsorbate": "N",
+    "E": 0.2029,
+    "site": "hcp"
+   },
+   {
+    "metal": "Ir",
+    "adsorbate": "NH",
+    "E": -0.3696,
+    "site": "fcc"
+   },
+   {
+    "metal": "Ir",
+    "adsorbate": "NH2",
+    "E": -0.6637,
+    "site": "fcc"
+   },
+   {
+    "metal": "Ir",
+    "adsorbate": "NH3",
+    "E": -1.4864,
+    "site": "ontop"
+   },
+   {
+    "metal": "Ir",
+    "adsorbate": "O",
+    "E": 1.0052,
+    "site": "fcc"
+   },
+   {
+    "metal": "Ir",
+    "adsorbate": "OH",
+    "E": 0.7904,
+    "site": "bridge"
+   },
+   {
+    "metal": "Ir",
+    "adsorbate": "NO",
+    "E": 1.7843,
+    "site": "ontop"
+   },
+   {
+    "metal": "Pt",
+    "adsorbate": "N",
+    "E": 0.6128,
+    "site": "fcc"
+   },
+   {
+    "metal": "Pt",
+    "adsorbate": "NH",
+    "E": -0.0269,
+    "site": "fcc"
+   },
+   {
+    "metal": "Pt",
+    "adsorbate": "NH2",
+    "E": -0.4442,
+    "site": "bridge"
+   },
+   {
+    "metal": "Pt",
+    "adsorbate": "NH3",
+    "E": -1.4782,
+    "site": "ontop"
+   },
+   {
+    "metal": "Pt",
+    "adsorbate": "O",
+    "E": 1.5968,
+    "site": "fcc"
+   },
+   {
+    "metal": "Pt",
+    "adsorbate": "OH",
+    "E": 1.1454,
+    "site": "bridge"
+   },
+   {
+    "metal": "Pt",
+    "adsorbate": "NO",
+    "E": 1.9158,
+    "site": "fcc"
+   },
+   {
+    "metal": "Au",
+    "adsorbate": "N",
+    "E": 2.948,
+    "site": "fcc"
+   },
+   {
+    "metal": "Au",
+    "adsorbate": "NH",
+    "E": 1.5916,
+    "site": "fcc"
+   },
+   {
+    "metal": "Au",
+    "adsorbate": "NH2",
+    "E": 0.4487,
+    "site": "bridge"
+   },
+   {
+    "metal": "Au",
+    "adsorbate": "NH3",
+    "E": -1.0119,
+    "site": "ontop"
+   },
+   {
+    "metal": "Au",
+    "adsorbate": "O",
+    "E": 2.7905,
+    "site": "fcc"
+   },
+   {
+    "metal": "Au",
+    "adsorbate": "OH",
+    "E": 1.538,
+    "site": "bridge"
+   },
+   {
+    "metal": "Au",
+    "adsorbate": "NO",
+    "E": 3.4944,
+    "site": "fcc"
+   },
+   {
+    "metal": "Ni",
+    "adsorbate": "N",
+    "E": -0.2998,
+    "site": "fcc"
+   },
+   {
+    "metal": "Ni",
+    "adsorbate": "NH",
+    "E": -0.901,
+    "site": "fcc"
+   },
+   {
+    "metal": "Ni",
+    "adsorbate": "NH2",
+    "E": -0.909,
+    "site": "bridge"
+   },
+   {
+    "metal": "Ni",
+    "adsorbate": "NH3",
+    "E": -1.4026,
+    "site": "ontop"
+   },
+   {
+    "metal": "Ni",
+    "adsorbate": "O",
+    "E": 0.1176,
+    "site": "fcc"
+   },
+   {
+    "metal": "Ni",
+    "adsorbate": "OH",
+    "E": 0.1323,
+    "site": "fcc"
+   },
+   {
+    "metal": "Ni",
+    "adsorbate": "NO",
+    "E": 0.9506,
+    "site": "fcc"
+   },
+   {
+    "metal": "Cu",
+    "adsorbate": "N",
+    "E": 1.6628,
+    "site": "fcc"
+   },
+   {
+    "metal": "Cu",
+    "adsorbate": "NH",
+    "E": 0.3465,
+    "site": "fcc"
+   },
+   {
+    "metal": "Cu",
+    "adsorbate": "NH2",
+    "E": -0.3232,
+    "site": "bridge"
+   },
+   {
+    "metal": "Cu",
+    "adsorbate": "NH3",
+    "E": -1.1073,
+    "site": "ontop"
+   },
+   {
+    "metal": "Cu",
+    "adsorbate": "O",
+    "E": 1.0671,
+    "site": "fcc"
+   },
+   {
+    "metal": "Cu",
+    "adsorbate": "OH",
+    "E": 0.3715,
+    "site": "fcc"
+   },
+   {
+    "metal": "Cu",
+    "adsorbate": "NO",
+    "E": 2.5914,
+    "site": "fcc"
+   }
+  ],
+  "scaling": [
+   {
+    "x": "N",
+    "y": "NH",
+    "slope": 0.6839204966504342,
+    "intercept": -0.5504220373817369,
+    "expected": 0.6666666666666666,
+    "r2": 0.9797468448892643,
+    "points": [
+     {
+      "metal": "Ru",
+      "x": -0.7933,
+      "y": -1.1351
+     },
+     {
+      "metal": "Rh",
+      "x": -0.1786,
+      "y": -0.6447
+     },
+     {
+      "metal": "Pd",
+      "x": 0.6229,
+      "y": 0.0789
+     },
+     {
+      "metal": "Ag",
+      "x": 3.2127,
+      "y": 1.5713
+     },
+     {
+      "metal": "Ir",
+      "x": 0.2029,
+      "y": -0.3696
+     },
+     {
+      "metal": "Pt",
+      "x": 0.6128,
+      "y": -0.0269
+     },
+     {
+      "metal": "Au",
+      "x": 2.948,
+      "y": 1.5916
+     },
+     {
+      "metal": "Ni",
+      "x": -0.2998,
+      "y": -0.901
+     },
+     {
+      "metal": "Cu",
+      "x": 1.6628,
+      "y": 0.3465
+     }
+    ]
+   },
+   {
+    "x": "N",
+    "y": "NH2",
+    "slope": 0.35249710151641855,
+    "intercept": -0.7424325377729768,
+    "expected": 0.3333333333333333,
+    "r2": 0.9442853917073873,
+    "points": [
+     {
+      "metal": "Ru",
+      "x": -0.7933,
+      "y": -1.0781
+     },
+     {
+      "metal": "Rh",
+      "x": -0.1786,
+      "y": -0.8292
+     },
+     {
+      "metal": "Pd",
+      "x": 0.6229,
+      "y": -0.329
+     },
+     {
+      "metal": "Ag",
+      "x": 3.2127,
+      "y": 0.2624
+     },
+     {
+      "metal": "Ir",
+      "x": 0.2029,
+      "y": -0.6637
+     },
+     {
+      "metal": "Pt",
+      "x": 0.6128,
+      "y": -0.4442
+     },
+     {
+      "metal": "Au",
+      "x": 2.948,
+      "y": 0.4487
+     },
+     {
+      "metal": "Ni",
+      "x": -0.2998,
+      "y": -0.909
+     },
+     {
+      "metal": "Cu",
+      "x": 1.6628,
+      "y": -0.3232
+     }
+    ]
+   },
+   {
+    "x": "O",
+    "y": "OH",
+    "slope": 0.47563403230603424,
+    "intercept": 0.12528415863528522,
+    "expected": 0.5,
+    "r2": 0.8394820382680371,
+    "points": [
+     {
+      "metal": "Ru",
+      "x": -0.1834,
+      "y": -0.0118
+     },
+     {
+      "metal": "Rh",
+      "x": 0.558,
+      "y": 0.4352
+     },
+     {
+      "metal": "Pd",
+      "x": 1.4029,
+      "y": 0.9176
+     },
+     {
+      "metal": "Ag",
+      "x": 2.2403,
+      "y": 0.8483
+     },
+     {
+      "metal": "Ir",
+      "x": 1.0052,
+      "y": 0.7904
+     },
+     {
+      "metal": "Pt",
+      "x": 1.5968,
+      "y": 1.1454
+     },
+     {
+      "metal": "Au",
+      "x": 2.7905,
+      "y": 1.538
+     },
+     {
+      "metal": "Ni",
+      "x": 0.1176,
+      "y": 0.1323
+     },
+     {
+      "metal": "Cu",
+      "x": 1.0671,
+      "y": 0.3715
+     }
+    ]
+   }
+  ],
+  "orderings": [
+   {
+    "strong": "Ru",
+    "weak": "Rh",
+    "element": "N",
+    "e_strong": -0.7933,
+    "e_weak": -0.1786,
+    "agrees": true
+   },
+   {
+    "strong": "Ru",
+    "weak": "Rh",
+    "element": "O",
+    "e_strong": -0.1834,
+    "e_weak": 0.558,
+    "agrees": true
+   },
+   {
+    "strong": "Rh",
+    "weak": "Pd",
+    "element": "N",
+    "e_strong": -0.1786,
+    "e_weak": 0.6229,
+    "agrees": true
+   },
+   {
+    "strong": "Rh",
+    "weak": "Pd",
+    "element": "O",
+    "e_strong": 0.558,
+    "e_weak": 1.4029,
+    "agrees": true
+   },
+   {
+    "strong": "Pd",
+    "weak": "Ag",
+    "element": "N",
+    "e_strong": 0.6229,
+    "e_weak": 3.2127,
+    "agrees": true
+   },
+   {
+    "strong": "Pd",
+    "weak": "Ag",
+    "element": "O",
+    "e_strong": 1.4029,
+    "e_weak": 2.2403,
+    "agrees": true
+   },
+   {
+    "strong": "Ni",
+    "weak": "Cu",
+    "element": "N",
+    "e_strong": -0.2998,
+    "e_weak": 1.6628,
+    "agrees": true
+   },
+   {
+    "strong": "Ni",
+    "weak": "Cu",
+    "element": "O",
+    "e_strong": 0.1176,
+    "e_weak": 1.0671,
+    "agrees": true
+   },
+   {
+    "strong": "Cu",
+    "weak": "Ag",
+    "element": "N",
+    "e_strong": 1.6628,
+    "e_weak": 3.2127,
+    "agrees": true
+   },
+   {
+    "strong": "Cu",
+    "weak": "Ag",
+    "element": "O",
+    "e_strong": 1.0671,
+    "e_weak": 2.2403,
+    "agrees": true
+   },
+   {
+    "strong": "Pt",
+    "weak": "Au",
+    "element": "N",
+    "e_strong": 0.6128,
+    "e_weak": 2.948,
+    "agrees": true
+   },
+   {
+    "strong": "Pt",
+    "weak": "Au",
+    "element": "O",
+    "e_strong": 1.5968,
+    "e_weak": 2.7905,
+    "agrees": true
+   },
+   {
+    "strong": "Ir",
+    "weak": "Pt",
+    "element": "N",
+    "e_strong": 0.2029,
+    "e_weak": 0.6128,
+    "agrees": true
+   },
+   {
+    "strong": "Ir",
+    "weak": "Pt",
+    "element": "O",
+    "e_strong": 1.0052,
+    "e_weak": 1.5968,
+    "agrees": true
+   }
+  ],
+  "molecules": [
+   {
+    "metal": "Ru",
+    "NH3": -0.6994,
+    "NO": -2.6132
+   },
+   {
+    "metal": "Rh",
+    "NH3": -0.6546000000000001,
+    "NO": -2.4505999999999997
+   },
+   {
+    "metal": "Pd",
+    "NH3": -0.49140000000000006,
+    "NO": -2.1529
+   },
+   {
+    "metal": "Ag",
+    "NH3": -0.1704000000000001,
+    "NO": -0.3062999999999998
+   },
+   {
+    "metal": "Ir",
+    "NH3": -0.6714,
+    "NO": -1.8626999999999998
+   },
+   {
+    "metal": "Pt",
+    "NH3": -0.6632,
+    "NO": -1.7311999999999999
+   },
+   {
+    "metal": "Au",
+    "NH3": -0.19690000000000007,
+    "NO": -0.15259999999999962
+   },
+   {
+    "metal": "Ni",
+    "NH3": -0.5876000000000001,
+    "NO": -2.6963999999999997
+   },
+   {
+    "metal": "Cu",
+    "NH3": -0.2923,
+    "NO": -1.0555999999999996
+   }
+  ],
+  "flagged": [
+   {
+    "metal": "Au",
+    "adsorbate": "NO",
+    "site": "ontop",
+    "anomaly": "desorbed"
+   }
+  ],
+  "relaxations": 144,
+  "converged": 144
+ },
+ "oxides": {
+  "cases": [
+   {
+    "label": "NH3 on TiO2 (Ti site)",
+    "system": "anatase TiO2(101)",
+    "molecule": "NH3",
+    "site": "Ti5c",
+    "oc20": -0.6389,
+    "omat": -1.1613,
+    "known": "binds 1.23 \u00b1 0.1 eV (TPD); 1.20 eV (optB88-vdW DFT)",
+    "known_range": [
+     -1.33,
+     -1.13
+    ],
+    "source": "koust",
+    "contact_oc20": "N\u2013Ti 2.40 \u00c5",
+    "contact_omat": "N\u2013Ti 2.28 \u00c5",
+    "note": ""
+   },
+   {
+    "label": "NH3 on TiO2, full layer",
+    "system": "anatase TiO2(101)",
+    "molecule": "NH3",
+    "site": "Ti5c, full monolayer (per molecule)",
+    "oc20": -0.3023,
+    "omat": -0.9935,
+    "known": "0.28 eV weaker per molecule than an isolated molecule",
+    "known_range": null,
+    "source": "koust",
+    "contact_oc20": null,
+    "contact_omat": null,
+    "note": ""
+   },
+   {
+    "label": "NO on TiO2 (Ti site)",
+    "system": "anatase TiO2(101)",
+    "molecule": "NO",
+    "site": "Ti5c",
+    "oc20": -0.2223,
+    "omat": -0.619,
+    "known": "weakly held",
+    "known_range": null,
+    "source": "topsoe",
+    "contact_oc20": "N\u2013Ti 3.26 \u00c5",
+    "contact_omat": "N\u2013Ti 2.43 \u00c5",
+    "note": ""
+   },
+   {
+    "label": "NH3 on V2O5 (V site)",
+    "system": "V2O5(001)",
+    "molecule": "NH3",
+    "site": "V Lewis",
+    "oc20": -0.3515,
+    "omat": -0.6311,
+    "known": "binds about 0.1\u20130.3 eV (cluster RPBE)",
+    "known_range": [
+     -0.3,
+     -0.1
+    ],
+    "source": "hu_berlin",
+    "contact_oc20": "N\u2013V 2.78 \u00c5",
+    "contact_omat": "N\u2013V 2.47 \u00c5",
+    "note": ""
+   },
+   {
+    "label": "NO on V2O5 (V site)",
+    "system": "V2O5(001)",
+    "molecule": "NO",
+    "site": "V Lewis",
+    "oc20": -0.5366,
+    "omat": -0.6598,
+    "known": "weakly held",
+    "known_range": null,
+    "source": "topsoe",
+    "contact_oc20": "N\u2013O 2.86 \u00c5",
+    "contact_omat": "N\u2013O 2.83 \u00c5",
+    "note": ""
+   },
+   {
+    "label": "NH3 on V2O5 (V\u2013OH site)",
+    "system": "V2O5(001)",
+    "molecule": "NH3",
+    "site": "V-OH Bronsted",
+    "oc20": -1.3158,
+    "omat": -1.6409,
+    "known": "proton transfers; NH4+ binds strongly",
+    "known_range": null,
+    "source": "yin",
+    "contact_oc20": null,
+    "contact_omat": null,
+    "note": "proton moved to N (NH4+ formed)"
+   }
+  ],
+  "monolayer_shift": {
+   "oc20": 0.3366,
+   "omat": 0.16779999999999995
+  },
+  "monolayer_shift_known": 0.28,
+  "relaxations": 12,
+  "converged": 12
+ },
+ "gas": [
+  {
+   "task": "oc20",
+   "quantity": "H2 energy",
+   "uma_eV": -6.97,
+   "reference_eV": -6.954,
+   "reference": "OC20 reference"
+  },
+  {
+   "task": "oc20",
+   "quantity": "N2 energy",
+   "uma_eV": -16.182,
+   "reference_eV": -16.166,
+   "reference": "OC20 reference"
+  },
+  {
+   "task": "oc20",
+   "quantity": "H2O energy",
+   "uma_eV": -14.155,
+   "reference_eV": -14.158,
+   "reference": "OC20 reference"
+  },
+  {
+   "task": "oc20",
+   "quantity": "NH3 formation",
+   "uma_eV": -0.843,
+   "reference_eV": -0.815,
+   "reference": "experiment"
+  },
+  {
+   "task": "oc20",
+   "quantity": "NO formation",
+   "uma_eV": 3.574,
+   "reference_eV": 3.647,
+   "reference": "experiment"
+  },
+  {
+   "task": "omat",
+   "quantity": "H2 energy",
+   "uma_eV": -6.644,
+   "reference_eV": -6.954,
+   "reference": "OC20 reference"
+  },
+  {
+   "task": "omat",
+   "quantity": "N2 energy",
+   "uma_eV": -16.291,
+   "reference_eV": -16.166,
+   "reference": "OC20 reference"
+  },
+  {
+   "task": "omat",
+   "quantity": "H2O energy",
+   "uma_eV": -13.926,
+   "reference_eV": -14.158,
+   "reference": "OC20 reference"
+  },
+  {
+   "task": "omat",
+   "quantity": "NH3 formation",
+   "uma_eV": -1.065,
+   "reference_eV": -0.815,
+   "reference": "experiment"
+  },
+  {
+   "task": "omat",
+   "quantity": "NO formation",
+   "uma_eV": 3.392,
+   "reference_eV": 3.647,
+   "reference": "experiment"
+  }
+ ],
+ "lattice": [
+  {
+   "crystal": "anatase",
+   "task": "oc20",
+   "axis": "a",
+   "experiment_A": 3.784,
+   "uma_A": 3.846,
+   "change_pct": 1.6
+  },
+  {
+   "crystal": "anatase",
+   "task": "oc20",
+   "axis": "b",
+   "experiment_A": 3.784,
+   "uma_A": 3.846,
+   "change_pct": 1.6
+  },
+  {
+   "crystal": "anatase",
+   "task": "oc20",
+   "axis": "c",
+   "experiment_A": 9.514,
+   "uma_A": 9.818,
+   "change_pct": 3.2
+  },
+  {
+   "crystal": "anatase",
+   "task": "omat",
+   "axis": "a",
+   "experiment_A": 3.784,
+   "uma_A": 3.817,
+   "change_pct": 0.8
+  },
+  {
+   "crystal": "anatase",
+   "task": "omat",
+   "axis": "b",
+   "experiment_A": 3.784,
+   "uma_A": 3.817,
+   "change_pct": 0.8
+  },
+  {
+   "crystal": "anatase",
+   "task": "omat",
+   "axis": "c",
+   "experiment_A": 9.514,
+   "uma_A": 9.628,
+   "change_pct": 1.2
+  },
+  {
+   "crystal": "V2O5",
+   "task": "oc20",
+   "axis": "a",
+   "experiment_A": 11.512,
+   "uma_A": 11.221,
+   "change_pct": -2.5
+  },
+  {
+   "crystal": "V2O5",
+   "task": "oc20",
+   "axis": "b",
+   "experiment_A": 3.564,
+   "uma_A": 3.653,
+   "change_pct": 2.5
+  },
+  {
+   "crystal": "V2O5",
+   "task": "oc20",
+   "axis": "c",
+   "experiment_A": 4.368,
+   "uma_A": 7.224,
+   "change_pct": 65.4
+  },
+  {
+   "crystal": "V2O5",
+   "task": "omat",
+   "axis": "a",
+   "experiment_A": 11.512,
+   "uma_A": 11.432,
+   "change_pct": -0.7
+  },
+  {
+   "crystal": "V2O5",
+   "task": "omat",
+   "axis": "b",
+   "experiment_A": 3.564,
+   "uma_A": 3.651,
+   "change_pct": 2.4
+  },
+  {
+   "crystal": "V2O5",
+   "task": "omat",
+   "axis": "c",
+   "experiment_A": 4.368,
+   "uma_A": 4.953,
+   "change_pct": 13.4
+  }
+ ]
+}

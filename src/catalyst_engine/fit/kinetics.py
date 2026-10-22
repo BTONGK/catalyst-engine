@@ -19,7 +19,7 @@ from scipy.optimize import least_squares
 
 from catalyst_engine.chem.reactor import Conditions, outlet, solve
 from catalyst_engine.packs import Pack, ProtocolSpec
-from catalyst_engine.units import f_to_k
+from catalyst_engine.units import f_to_k, k_to_f
 
 # Above these standard deviations a parameter is reported as poorly determined.
 POORLY_DETERMINED = {"ln_k_ref": 0.7, "Ea_kJ": 30.0, "ln_K_ref": 2.0, "dH_kJ": 50.0}
@@ -48,7 +48,7 @@ def observations_from_table(pack: Pack, protocol: ProtocolSpec, rows: list[dict]
             t_k = float(row["T_C"]) + 273.15
         else:
             t_k = f_to_k(float(row["T_F"]))
-        feed = step.feed_fractions(species)
+        feed = step.feed_fractions(species, pack.spec.water)
         for s in species:
             v = row.get(f"in_{s}_ppm")
             if v not in ("", None):
@@ -60,6 +60,20 @@ def observations_from_table(pack: Pack, protocol: ProtocolSpec, rows: list[dict]
                 measured[s] = float(v)
         obs.append(Observation(step.id, t_k, feed, step.ghsv_per_h, step.pressure_kPa * 1000.0, measured))
     return obs
+
+
+def simulated_readings(pack: Pack, protocol: ProtocolSpec, params: dict[str, float] | None = None, seed: int = 0) -> list[dict]:
+    """What the protocol's analyzer would report for a catalyst with `params`: the model plus reading noise.
+    Rows have the same columns `observations_from_table` reads."""
+    rows = pack.simulate(params, protocol.id)
+    rng = np.random.default_rng(seed)
+    an = protocol.analyzer
+    for r in rows:
+        r["T_F"] = k_to_f(r["T_K"])
+        for s in an.measured:
+            v = r[f"out_{s}_ppm"]
+            r[f"out_{s}_ppm"] = max(0.0, v + rng.normal(0, np.hypot(an.sigma_abs_ppm, an.sigma_rel * v)))
+    return rows
 
 
 def read_observations(pack: Pack, protocol: ProtocolSpec, path: Path) -> list[Observation]:

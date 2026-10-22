@@ -1,0 +1,11 @@
+task,quantity,uma_eV,reference_eV,reference
+oc20,H2 energy,-6.970,-6.954,OC20 reference
+oc20,N2 energy,-16.182,-16.166,OC20 reference
+oc20,H2O energy,-14.155,-14.158,OC20 reference
+oc20,NH3 formation,-0.843,-0.815,experiment
+oc20,NO formation,3.574,3.647,experiment
+omat,H2 energy,-6.644,-6.954,OC20 reference
+omat,N2 energy,-16.291,-16.166,OC20 reference
+omat,H2O energy,-13.926,-14.158,OC20 reference
+omat,NH3 formation,-1.065,-0.815,experiment
+omat,NO formation,3.392,3.647,experiment

@@ -1,0 +1,8 @@
+task,system,adsorbate,site,E_bind_eV,steps,converged,seconds,note
+omat,gas,NH3,formation from N2+H2,-1.0655,0,True,2,experiment -0.81
+omat,anatase TiO2(101),NH3,Ti5c,-1.1613,54,True,108,1/6 ML
+omat,anatase TiO2(101),NO,Ti5c,-0.6190,40,True,86,1/6 ML
+omat,anatase TiO2(101),NH3,"Ti5c, full monolayer (per molecule)",-0.9935,57,True,143,6 NH3
+omat,V2O5(001),NH3,V Lewis,-0.6311,46,True,57,
+omat,V2O5(001),NO,V Lewis,-0.6598,42,True,52,
+omat,V2O5(001),NH3,V-OH Bronsted,-1.6409,94,True,159,proton moved to N (NH4+ formed)

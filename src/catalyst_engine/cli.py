@@ -218,3 +218,18 @@ def permit(
 
 if __name__ == "__main__":
     app()
+
+
+@app.command()
+def ui(port: Annotated[int, typer.Option(help="Local port")] = 8501) -> None:
+    """Open the engine's app in your browser."""
+    import subprocess
+    import sys
+
+    app_path = Path(__file__).parent / "ui" / "app.py"
+    cmd = [sys.executable, "-m", "streamlit", "run", str(app_path), "--server.port", str(port),
+           "--browser.gatherUsageStats", "false", "--theme.primaryColor", "#0f766e"]
+    try:
+        subprocess.run(cmd, check=False)
+    except KeyboardInterrupt:
+        pass

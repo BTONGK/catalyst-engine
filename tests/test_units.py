@@ -1,5 +1,6 @@
 import pytest
 
+from catalyst_engine.packs import load_pack
 from catalyst_engine.units import (
     DRY,
     PERMIT_15,
@@ -49,3 +50,16 @@ def test_parse_fraction():
     assert parse_fraction(0.5) == 0.5
     with pytest.raises(ValueError):
         parse_fraction(25)  # ambiguous without a unit
+
+
+def test_dry_basis_feed_scales_everything_but_water():
+    # The yardstick reads "25 ppm NOx, 15% O2, 10% H2O" on a dry basis: the gas actually fed is wet.
+    p = load_pack("scr_hot")
+    step = p.protocol("scr-yardstick-v1").step("design")
+    y = dict(zip(p.network.species, step.feed_fractions(p.network.species, p.spec.water)))
+    assert y["H2O"] == pytest.approx(0.10)
+    assert y["O2"] == pytest.approx(0.135)
+    assert y["NO"] == pytest.approx(22.5e-6)
+    assert sum(y.values()) == pytest.approx(1.0)
+    # With O2 at 15% of the dry gas, a wet analyzer reading needs only the water correction to reach permit units.
+    assert convert(1.0, WET, PERMIT_15, h2o_frac=y["H2O"], o2_wet_frac=y["O2"]) == pytest.approx(1 / 0.9)

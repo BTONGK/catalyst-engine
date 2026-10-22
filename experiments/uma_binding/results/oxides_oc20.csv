@@ -1,0 +1,7 @@
+task,system,adsorbate,site,E_bind_eV,steps,converged,seconds,note
+oc20,anatase TiO2(101),NH3,Ti5c,-0.6389,47,True,92,1/6 ML
+oc20,anatase TiO2(101),NO,Ti5c,-0.2223,34,True,67,1/6 ML
+oc20,anatase TiO2(101),NH3,"Ti5c, full monolayer (per molecule)",-0.3023,73,True,183,6 NH3
+oc20,V2O5(001),NH3,V Lewis,-0.3515,50,True,53,
+oc20,V2O5(001),NO,V Lewis,-0.5366,32,True,34,
+oc20,V2O5(001),NH3,V-OH Bronsted,-1.3158,81,True,138,proton moved to N (NH4+ formed)

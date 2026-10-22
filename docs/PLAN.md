@@ -91,35 +91,41 @@ reactions/
 | 2 | Data platform: formulations, samples, protocols, runs, raw files by hash, append-only; FTIR ingest with steady-state detection and checks; reference-run enforcement; hash-chained prediction log | Next |
 | 3 | Virtual rig: hidden "true" catalysts whose properties carry across reactions, producing FTIR-style files with noise, drift and failed runs | |
 | 4 | Multi-task models (shared catalyst representation, a head per pathway), conformal calibration, batch planner scored through the reactor model, gate scorecards, transfer scorecard | |
-| 5 | Atomistic descriptors (binding energies of N, O, NH3, CO and others on catalyst site types via UMA), Materials Project stability, OCx24 retrospective | Needs UMA access |
+| 5 | Atomistic descriptors (binding energies of N, O, NH3, CO and others on catalyst site types via UMA), Materials Project stability, OCx24 retrospective | Started: UMA test run done (see the app's Atomistic check page) |
 | 6 | MCP server and agents, literature extraction into a low-trust tier, reports | |
 
 ## Findings so far (from simulation with illustrative parameters)
 
-- **Basis ambiguity in the yardstick.** "15% O2" without a basis moves the 2 ppm limits by
-  11-55%. The protocol records its choice (wet) as an open question.
+- **The bench gas is set in permit units.** The analysis gives "15% O2" without a basis; read wet
+  or dry it moves the 2 ppm limits by 11-55%. Decided 2026-10-21: dry, matching permits (40 CFR
+  60.335) and the turbine NOx range, so a wet FTIR reading times 1.11 is ppmvd @ 15% O2.
 - **Measure rate constants away from full conversion.** At 92% conversion a 0.5 ppm reading
   error moves k about 10%; near 63% about 5%. The yardstick adds a high space-velocity step.
 - **The ammonia-oxidation step needs about 200 ppm NH3.** At 25 ppm the NO and N2O it forms sit
   near the FTIR noise floor and the fitter flags those pathways as unmeasurable; at 200 ppm all
-  eight SCR parameters are recovered (N2O activation energy +/-6 instead of +/-55 kJ/mol).
+  eight SCR parameters are recovered (N2O activation energy +/-6 instead of about +/-47 kJ/mol).
   To confirm on the real rig: first-order ammonia kinetics at 200 ppm.
 - **Hot SCR on honeycombs is partly a mass-transfer problem.** At 1,150 F the NOx reaction is
   limited by diffusion to the wall while ammonia oxidation is not, so a catalyst needs a larger
   cut in ammonia oxidation than bench kinetics alone suggest, plus a tuned NH3/NOx ratio.
+- **UMA ranks candidates well (atomistic check).** On nine metals it follows the textbook scaling
+  rules and all 14 periodic-table orderings. Its materials mode matches measured NH3 binding on
+  anatase (1.16 vs 1.23 ± 0.1 eV), and both modes rank the SCR acid sites correctly. Its NO
+  energies on vanadia are artifacts. Details: the app's Atomistic check page.
 - **Example scenario (all example inputs):** tempered design 58 m3 of catalyst, 34% tempering
   air, 623 kW of fans; hot target design 36 m3, no fans, more ammonia (ratio 1.30 vs 1.05).
 
 ## Open decisions and to-dos
 
-- Bench feed O2 basis (wet or dry) before batch 1.
+- Bench feed O2 basis: dry (decided 2026-10-21; the catalysis lead can revisit before batch 1).
 - Design space velocities from the reference catalyst's commissioning run.
-- Request UMA access on Hugging Face (manual approval). Have counsel read its Acceptable Use
-  Policy line on "operation of critical infrastructure"; the atomistic backend stays swappable.
-- Materials Project API key (free).
-- A catalysis chemist reviews pack parameters, protocols and the starting design space.
+- UMA access granted (2026-10-21). Have counsel read its Acceptable Use Policy line on
+  "operation of critical infrastructure"; the atomistic backend stays swappable.
+- Materials Project API key: saved 2026-10-21 in `~/.config/.pmgrc.yaml`, outside the repository.
+- The catalysis lead (the founder, from 2026-10-21) reviews pack parameters, protocols and the starting design space.
 
 ## Deliberately not built
 
-Foundation models of our own, a DFT engine, robot drivers before hardware is chosen, a web UI
-before the command line and reports prove out, and a generic all-domain platform.
+Foundation models of our own, a DFT engine, robot drivers before hardware is chosen, and a generic
+all-domain platform. (A local app, `uv run ce ui`, was added on request so the project can be followed
+without reading the code.)

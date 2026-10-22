@@ -1,0 +1,15 @@
+W1021 15:46:24.245000 23809 site-packages/torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+WARNING:root:If 'dataset_list' is provided in the config, the code assumes that each dataset maps to itself. Please use 'dataset_mapping' as 'dataset_list' is deprecated and will be removed in the future.
+WARNING:root:If 'dataset_list' is provided in the config, the code assumes that each dataset maps to itself. Please use 'dataset_mapping' as 'dataset_list' is deprecated and will be removed in the future.
+WARNING:root:Model is being compiled this might take a while for the first time
+WARNING:root:The UMA fast path (merge_mole + compile) is only available for fixed composition, task, charge, and spin. This is optimized for MD applications. Falling back to a less optimized version for subsequent evaluations. Reason: 'Compositions differ from merged model'.
+Use inference_settings='batch' for heterogeneous batched evaluations.
+WARNING:root:If 'dataset_list' is provided in the config, the code assumes that each dataset maps to itself. Please use 'dataset_mapping' as 'dataset_list' is deprecated and will be removed in the future.
+[oc20] anatase TiO2(101) NH3@Ti5c: -0.639 eV (47 steps) 1/6 ML
+[oc20] anatase TiO2(101) NO@Ti5c: -0.222 eV (34 steps) 1/6 ML
+[oc20] anatase TiO2(101) NH3@Ti5c, full monolayer (per molecule): -0.302 eV (73 steps) 6 NH3
+/opt/miniconda3/lib/python3.14/site-packages/ase/io/cif.py:411: UserWarning: crystal system 'orthorhombic' is not interpreted for space group Spacegroup(59, setting=1). This may result in wrong setting!
+  warnings.warn(
+[oc20] V2O5(001) NH3@V Lewis: -0.352 eV (50 steps) 
+[oc20] V2O5(001) NO@V Lewis: -0.537 eV (32 steps) 
+[oc20] V2O5(001) NH3@V-OH Bronsted: -1.316 eV (81 steps) proton moved to N (NH4+ formed)

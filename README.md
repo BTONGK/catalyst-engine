@@ -4,11 +4,22 @@ The computational layer of a closed-loop catalyst discovery company: reaction pa
 general kinetics engine, kinetic and aging fits, and system-value calculations. The plan
 and its reasoning are in [docs/PLAN.md](docs/PLAN.md).
 
-## Quickstart
+## The app
 
 ```sh
 uv sync
-uv run pytest                     # 38 tests, ~15 s
+uv run ce ui                      # opens http://localhost:8501
+```
+
+Seven pages: Overview (progress, next steps and decisions from `docs/status.yaml`), Atomistic check
+(model checks from `experiments/*/report.yaml`), Reactions, Catalyst playground, Design scenarios,
+Calculators and Fit lab. Every page reads the files on disk, so a new pack, an edited YAML file or a
+new experiment summary shows up on the next page load.
+
+## Command line
+
+```sh
+uv run pytest                     # 47 tests, ~20 s
 uv run ce packs                   # reaction packs and whether each loads
 uv run ce show scr_hot            # pathways, metrics, protocols, open questions
 uv run ce simulate scr_hot        # run the yardstick protocol through the reactor model
@@ -19,7 +30,7 @@ uv run ce fit scr_hot bench.csv --out fitted.yaml    # CSV: step, T_F, out_<spec
 uv run ce decay aging.csv                            # CSV: hours, activity[, sigma]
 ```
 
-All rate parameters in the packs are illustrative until a chemist and the rig replace them.
+All rate parameters in the packs are illustrative until the catalysis lead's review and the rig replace them.
 Example scenarios use example inputs throughout.
 
 ## Adding a reaction

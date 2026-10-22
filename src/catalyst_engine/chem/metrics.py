@@ -20,12 +20,32 @@ class BasisSpec(BaseModel):
         return Basis(dry=self.dry, o2_ref_pct=self.o2_ref_pct)
 
 
+class TargetSpec(BaseModel):
+    """A pack-level target for display and screening, e.g. a permit limit. Campaign gates live elsewhere."""
+
+    model_config = ConfigDict(extra="forbid")
+    min: float | None = None
+    max: float | None = None
+    label: str = ""
+
+    @model_validator(mode="after")
+    def _one(self) -> "TargetSpec":
+        if (self.min is None) == (self.max is None):
+            raise ValueError("a target takes exactly one of min or max")
+        return self
+
+    @property
+    def value(self) -> float:
+        return self.min if self.min is not None else self.max  # type: ignore[return-value]
+
+
 class MetricSpec(BaseModel):
     """conversion: 1 - out/in of a species group. outlet: ppm of a group on a basis.
     consumption_ratio: moles of `numerator` consumed per mole of `denominator` consumed."""
 
     model_config = ConfigDict(extra="forbid")
     kind: Literal["conversion", "outlet", "consumption_ratio"]
+    target: TargetSpec | None = None
     species: list[str] = []
     numerator: list[str] = []
     denominator: list[str] = []

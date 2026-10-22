@@ -1,0 +1,13 @@
+crystal,task,axis,experiment_A,uma_A,change_pct
+anatase,oc20,a,3.784,3.846,1.6
+anatase,oc20,b,3.784,3.846,1.6
+anatase,oc20,c,9.514,9.818,3.2
+anatase,omat,a,3.784,3.817,0.8
+anatase,omat,b,3.784,3.817,0.8
+anatase,omat,c,9.514,9.628,1.2
+V2O5,oc20,a,11.512,11.221,-2.5
+V2O5,oc20,b,3.564,3.653,2.5
+V2O5,oc20,c,4.368,7.224,65.4
+V2O5,omat,a,11.512,11.432,-0.7
+V2O5,omat,b,3.564,3.651,2.4
+V2O5,omat,c,4.368,4.953,13.4

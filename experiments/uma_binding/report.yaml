@@ -1,0 +1,101 @@
+# Text for the app's Atomistic check page. Numbers come from results/summary.json (written by analyze.py).
+title: UMA test run
+question: Does UMA, the open atomistic model planned for the atomistic layer, reproduce known catalyst chemistry?
+run_date: 2026-10-21
+model: uma-s-1p1 (fairchem-core 2.23) on this Mac's CPU
+summary: results/summary.json
+
+verdict: >
+  UMA is ready to rank candidates. It reproduces textbook metal chemistry and puts the ammonia sites on
+  titania and vanadia in the right order. Its oxide energies shift with the mode, so each catalyst family
+  gets a short calibration against known values.
+
+# The case and mode shown as a headline number on the page
+headline: {case: "NH3 on TiO2 (Ti site)", mode: omat, label: "Ammonia on titania", compare: "measured 1.23 ± 0.1"}
+
+modes:
+  - id: oc20
+    name: Catalysis mode
+    about: Learned from OC20, molecules on metal and alloy surfaces, computed with the RPBE functional.
+  - id: omat
+    name: Materials mode
+    about: Learned from OMat24, bulk inorganic crystals, computed with PBE (plus a +U correction for metals such as vanadium).
+
+findings:
+  - On nine metals, UMA follows the textbook scaling rules (NH, NH2 and OH binding track N and O binding at the predicted slopes) and all 14 periodic-table orderings.
+  - The materials mode matches the measured ammonia binding on titania, 1.16 eV against 1.23 ± 0.1, with a Ti–N bond of 2.28 Å.
+  - Both modes rank the ammonia sites in the order the benchmarks give. The vanadium hydroxyl site holds it hardest (ammonium forms there), then titania, then the vanadia V site.
+  - The catalysis mode binds ammonia on titania at about half the measured strength. Oxide surfaces sit outside its training data.
+  - Nitric oxide on vanadia reads 0.5–0.7 eV in both modes while sitting 2.8–2.9 Å from the surface, a distance where a weak hold is expected. These numbers are model artifacts.
+  - Gas-phase references in the catalysis mode match experiment within 0.07 eV, so its numbers reflect the model itself.
+
+implications:
+  - Rank candidates with UMA, using the materials mode for oxides and the catalysis mode for metals.
+  - Run both modes and carry the gap between them (typically 0.3–0.5 eV on oxides) into the shared model as uncertainty.
+  - Calibrate each catalyst family against a few measured or DFT values.
+  - Use ammonia binding at acid sites as the descriptor and keep nitric oxide binding on vanadia out of the inputs.
+
+next_test: >
+  Vanadia on titania with tungsten or molybdenum, the real catalyst family, plus oxygen-vacancy energies as a
+  measure of how easily the surface gives up oxygen, compared with published DFT.
+
+limits:
+  - One starting placement per oxide case.
+  - Both training functionals leave out dispersion (van der Waals attraction), which experiment includes. Part of the materials mode's match on titania is likely a cancellation of errors.
+  - The vanadia benchmarks come from cluster calculations, since single-crystal measurements for V2O5 are scarce.
+  - Slabs use the experimental lattice; the Reference checks tab shows how far each mode's own lattice sits from it.
+
+speed: >
+  On this Mac's CPU a metal relaxation takes 3–5 s and a 100-atom oxide relaxation 0.5–3 min, roughly
+  40–200 oxide relaxations per hour.
+
+reference_notes:
+  gas: >
+    Binding energies need the energy of the free gas molecule. The catalysis mode's own H2, N2 and H2O match the
+    OC20 references it was trained against, and its ammonia and nitric oxide formation energies match experiment,
+    so the gas side of every catalysis-mode number is sound. The materials mode computes its own gas molecules, so
+    its binding energies stay internally consistent; its ammonia formation energy sits 0.25 eV from experiment.
+  lattice: >
+    Each mode relaxes the bulk crystals to its own lattice. The materials mode lands next to published DFT for
+    anatase (3.82 and 9.61 Å). V2O5 keeps its in-plane lattice within 2.5% in both modes; its layers spread apart
+    (13% in the materials mode, 42–65% across runs in the catalysis mode) because both modes leave out the weak
+    attraction that holds the layers together. The slab test keeps the experimental spacing.
+
+method:
+  - heading: Metals
+    text: >
+      Nine close-packed surfaces (fcc(111) for Pt, Pd, Rh, Ir, Ni, Cu, Ag, Au; hcp(0001) for Ru), 3×3 cells four
+      layers thick with the bottom two fixed. N, NH, NH2, NH3, O, OH and NO each start at two or three sites; the
+      catalysis mode relaxes every placement (LBFGS, 0.05 eV/Å) and the lowest energy counts, leaving out
+      placements where the molecule left the surface or broke apart. References: 1/2 N2, H2O − H2 and 1/2 H2, the
+      OC20 convention.
+  - heading: Oxides
+    text: >
+      Experimental crystal structures from the Crystallography Open Database (anatase COD 9015929; V2O5 COD
+      2020756), checked against their known bond lengths. Anatase (101): three TiO2 layers (Ti36O72) with five-fold
+      Ti and two-fold O on top. V2O5: two whole layers of the layered surface (V24O60). Sites: ammonia and nitric
+      oxide on the five-fold Ti; both on the exposed V; ammonia next to a V–OH group. Each case runs in both modes.
+  - heading: Gas molecules
+    text: >
+      Catalysis mode: OC20 atomic references plus experimental formation energies (NIST-JANAF at 0 K, zero-point
+      energies removed): NH3 −0.815 eV, NO +3.647 eV. Materials mode: each molecule in a 15 Å box in the same mode.
+
+sources:
+  abild: {cite: "Abild-Pedersen et al., Phys. Rev. Lett. 99, 016105 (2007): scaling relations", url: "https://doi.org/10.1103/PhysRevLett.99.016105"}
+  koust: {cite: "Koust et al., ammonia on anatase TiO2(101), TPD and optB88-vdW DFT (2018 preprint)", url: "https://pure.au.dk/ws/files/181268137/preprint_koust.pdf"}
+  hu_berlin: {cite: "SFB 546 project C6, ammonia on V2O5 clusters (HU Berlin, 2010)", url: "https://www.chemie.hu-berlin.de/sfb546/WS2010/Vortrag2010_C6.pdf"}
+  yin: {cite: "Yin et al., J. Phys. Chem. B (1999): ammonia at V2O5 Brønsted sites", url: "https://scholarcommons.sc.edu/eche_facpub/708"}
+  topsoe: {cite: "Topsøe, Science 265, 1217 (1994): the vanadia SCR mechanism", url: "https://doi.org/10.1126/science.265.5176.1217"}
+  cod: {cite: "Crystallography Open Database, entries 9015929 and 2020756", url: "https://www.crystallography.net/cod/"}
+  uma: {cite: "UMA model card (Meta FAIR)", url: "https://huggingface.co/facebook/UMA"}
+
+rerun: |
+  export TORCHDYNAMO_DISABLE=1
+  PY=/opt/miniconda3/bin/python3
+  cd experiments/uma_binding
+  $PY metals.py --out results/metals_all.csv
+  $PY oxides.py --task oc20 --out results/oxides_oc20.csv
+  $PY oxides.py --task omat --out results/oxides_omat.csv
+  $PY gas.py --out results/gas.csv
+  $PY lattice.py --out results/lattice.csv
+  $PY analyze.py        # writes results/summary.json for this page

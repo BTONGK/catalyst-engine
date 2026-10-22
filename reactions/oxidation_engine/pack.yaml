@@ -54,19 +54,22 @@ pathways:
     rate: {key: NO, orders: {NO: 1, O2: 0.5}, ln_k_ref: 3.0, Ea_kJ: 40}
 
 metrics:
-  co_conversion:   {kind: conversion, species: [CO]}
-  hcho_conversion: {kind: conversion, species: [HCHO]}
-  ch4_conversion:  {kind: conversion, species: [CH4]}
+  co_conversion:   {kind: conversion, species: [CO], description: Share of carbon monoxide oxidized.}
+  hcho_conversion: {kind: conversion, species: [HCHO], description: Share of formaldehyde oxidized.}
+  ch4_conversion:  {kind: conversion, species: [CH4], description: Share of methane oxidized (the hardest of the three).}
   hcho_out:
     kind: outlet
     species: [HCHO]
     basis: {dry: true, o2_ref_pct: 15}
-    description: Federal engine rule limit 14 ppmvd @ 15% O2
+    description: Formaldehyde leaving the catalyst. The federal engine rule allows up to 14 ppmvd @ 15% O2.
+    target: {max: 14.0, label: Engine rule}
   co_out:
     kind: outlet
     species: [CO]
     basis: {dry: true, o2_ref_pct: 15}
+    description: Carbon monoxide leaving the catalyst, on the permit basis.
   no2_out:
     kind: outlet
     species: [NO2]
     basis: {dry: true, o2_ref_pct: 15}
+    description: NO2 formed over the catalyst; thermodynamics caps it at high temperature.

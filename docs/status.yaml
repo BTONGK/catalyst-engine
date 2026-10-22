@@ -1,0 +1,163 @@
+# Project status shown on the app's Overview page. Updated at the end of every phase.
+updated: 2026-10-21
+focus_pack: scr_hot   # the app opens on this reaction
+
+headline: >
+  Prove AI finds far better catalysts on high-temperature SCR, then show the same engine
+  finds catalysts for each new reaction faster.
+
+proof_sequence:
+  - step: Hot SCR
+    goal: AI-proposed catalysts beat the commercial reference on the bench (Gates 1 and 4)
+    status: building
+  - step: Engine oxidation catalyst
+    goal: Same rig and FTIR; the shared model finds a winner in fewer experiments
+    status: planned
+  - step: Electrocatalysis, retrospective
+    goal: The engine ranks public OCx24 catalysts before any lab spend
+    status: planned
+  - step: Electrochemistry lab module
+    goal: The expansion market, on a new assay
+    status: planned
+
+recent:
+  - date: 2026-10-21
+    item: >
+      Materials Project key saved and checked. It returns anatase TiO2, V2O5 and WO3 at 0 meV/atom
+      above the hull, ready for the stability screen.
+  - date: 2026-10-21
+    item: You take the catalysis lead role.
+  - date: 2026-10-21
+    item: Bench gas set on a dry basis, in permit units. The O2 basis decision is closed.
+  - date: 2026-10-21
+    item: Atomistic check page in this app, with the full UMA results.
+  - date: 2026-10-21
+    item: >
+      UMA test run. It matches textbook metal chemistry and the measured ammonia binding on titania, and
+      it ranks the ammonia sites on vanadia and titania in the right order.
+  - date: 2026-10-21
+    item: UMA installed and running on this Mac.
+  - date: 2026-10-21
+    item: This app, with pages for the reactions, a catalyst playground, design scenarios, calculators and fits.
+  - date: 2026-10-21
+    item: >
+      Phases 0 and 1: reaction packs for hot SCR and engine oxidation, the kinetics engine, kinetic and aging
+      fits, and the system-value tools.
+
+next_steps:
+  - step: Build the data platform and prediction log (Phase 2)
+    owner: Claude
+    why: >
+      Every later claim rests on predictions logged before the lab measures them, so the log comes before
+      batch 1 is chosen.
+  - step: Review the pack parameters and protocols, and set the batch-1 design space
+    owner: You
+    why: As catalysis lead, your review replaces the illustrative parameters and defines what batch 1 explores.
+  - step: Ask counsel to review the UMA policy line on critical infrastructure
+    owner: You
+    why: Clears the atomistic layer for commercial use.
+  - step: "Atomistic test 2: vanadia on titania with tungsten or molybdenum"
+    owner: Claude
+    why: Moves the UMA check from textbook surfaces to the real catalyst family.
+
+phases:
+  - id: 0
+    name: Foundations
+    status: done
+    summary: Repository, Python environment, test suite.
+  - id: 1
+    name: Chemistry core
+    status: done
+    summary: >
+      Reactions as data files, one kinetics engine for any reaction network, kinetic and
+      aging fits with uncertainty, system-value calculators. Two reaction packs.
+  - id: 2
+    name: Data platform
+    status: next
+    summary: >
+      Samples, versioned protocols and runs; raw files stored by fingerprint; FTIR ingest
+      with automatic checks; a tamper-evident log of predictions made before each experiment.
+  - id: 3
+    name: Virtual rig
+    status: planned
+    summary: Simulated catalysts that produce realistic FTIR files, so the whole loop runs before the lab exists.
+  - id: 4
+    name: Learning and planning
+    status: planned
+    summary: >
+      One model across reactions, calibrated uncertainty, an experiment planner, gate
+      scorecards and the cross-reaction transfer score.
+  - id: 5
+    name: Atomistic layer
+    status: building
+    summary: >
+      Binding energies from open atomistic models (UMA), Materials Project stability, OCx24 benchmark.
+      First check done: UMA ranks candidates well (Atomistic check page).
+  - id: 6
+    name: Agents
+    status: planned
+    summary: Claude agents that operate the loop, read the literature and write the weekly report.
+
+findings:
+  - title: UMA tracks metal chemistry and ranks the SCR acid sites
+    detail: >
+      On nine metals UMA reproduces the textbook scaling of NHx and OH binding and all 14
+      periodic-table orderings. On titania and vanadia both of its modes rank the ammonia sites the
+      same way: vanadium hydroxyl (ammonium forms), then titania Ti, then the vanadia Lewis site.
+      The materials mode matches the measured ammonia binding on titania, 1.16 eV against
+      1.23 ± 0.1. Nitric oxide energies on vanadia read high in both modes, so ammonia binding is the
+      descriptor to carry into Phase 5, with the gap between modes as its uncertainty.
+    source: UMA test run, experiments/uma_binding (2026-10-21); benchmarks in its README.
+  - title: The ammonia test step needs 200 ppm
+    detail: >
+      At 25 ppm the NO and N2O formed by ammonia burn-off sit at the FTIR noise floor and three
+      ammonia-oxidation rates are aliased, like confounded factors in a DOE. At 200 ppm all eight
+      SCR parameters come out cleanly (N2O activation energy within about 6 kJ/mol, against about 47
+      at 25 ppm).
+    source: Simulation with illustrative parameters; confirm on the rig.
+  - title: Hot SCR on honeycombs is partly a diffusion problem
+    detail: >
+      At 1,150 F the NOx reaction runs as fast as NO can reach the channel wall, while ammonia
+      burn-off keeps its full chemical rate. A hot catalyst therefore needs a deep cut in
+      ammonia oxidation plus a tuned ammonia dose.
+    source: Simulation with illustrative parameters.
+  - title: The bench gas is set in permit units
+    detail: >
+      The analysis states 15% O2 and leaves its basis open. The bench recipe reads it as dry, the way
+      permits and turbine NOx ranges are quoted, so a wet FTIR reading times 1.11 is ppmvd @ 15% O2
+      and a 2.0 ppm permit limit equals 1.80 ppm on the analyzer. The wet reading would have
+      needed 1.55 and 1.29 ppm.
+    source: Analysis page 20; 40 CFR 60.335; arithmetic. Decided 2026-10-21.
+  - title: Rate constants read best near 60-80% conversion
+    detail: >
+      A 0.5 ppm reading error moves the rate constant about 10% at 92% conversion and about 5%
+      near 63%. The yardstick includes a high space-velocity step for this.
+    source: Arithmetic.
+  - title: Gate 4 needs about 76 formulations per arm
+    detail: >
+      Telling a 20% hit rate from a 5% hit rate at 95% confidence and 80% power takes about 76
+      model picks and 76 expert picks. Batch 1 answers the kill question; the Gate 4 claim builds
+      over about six batches.
+    source: Two-proportion power calculation.
+
+decisions:
+  - item: "O2 basis for the bench yardstick: dry (decided 2026-10-21)"
+    owner: You
+    status: closed
+    detail: >
+      Source: the analysis PDF, page 20, "The yardstick": simulated simple-cycle exhaust with 25 ppm NOx in,
+      15% O2 and 10% H2O, the analysis author's own proposal. Dry matches permit units (40 CFR 60.335) and the
+      9-25 ppm turbine range the 25 ppm comes from. The bench gas is 22.5 ppm NO, 13.5% O2 and 10% H2O as fed,
+      and a 2.0 ppm permit limit equals 1.80 ppm on the analyzer. Decided by you as catalysis lead.
+  - item: UMA model access on Hugging Face (granted; uma-s-1p1 checkpoint in ~/uma/checkpoints)
+    owner: You
+    status: closed
+  - item: Ask counsel to review the UMA policy line on critical infrastructure
+    owner: You
+    status: open
+  - item: Materials Project API key (saved in ~/.config/.pmgrc.yaml, outside the repository)
+    owner: You
+    status: closed
+  - item: Review pack parameters, protocols and the batch-1 design space before batch 1
+    owner: You (catalysis lead)
+    status: open

@@ -104,11 +104,17 @@ class StepSpec(_Temperatures):
     id: str
     purpose: str = ""
     feed: dict[str, str | float]
-    feed_basis: Literal["wet"] = "wet"  # what the mass-flow controllers make; other bases are deliberate future work
+    # wet: every fraction is a share of the whole gas, as the mass-flow controllers make it.
+    # dry: every fraction except water is a share of the dry gas (the permit convention); water is a share of the whole.
+    feed_basis: Literal["wet", "dry"] = "wet"
     ghsv_per_h: float
     pressure_kPa: float = 101.325
 
-    def feed_fractions(self, species: list[str]) -> np.ndarray:
+    def feed_fractions(self, species: list[str], water: str | None = None) -> np.ndarray:
+        """Wet mole fractions in `species` order; `water` names the pack's water species (needed for a dry feed)."""
+        dry = self.feed_basis == "dry"
+        if dry and (water is None or self.feed.get(water, "balance") == "balance"):
+            raise ValueError(f"step {self.id}: a dry-basis feed needs the water species and its share of the whole gas")
         y = np.zeros(len(species))
         balance = [s for s, v in self.feed.items() if v == "balance"]
         if len(balance) > 1:
@@ -116,7 +122,7 @@ class StepSpec(_Temperatures):
         for s, v in self.feed.items():
             if s not in species:
                 raise ValueError(f"step {self.id}: feed species {s!r} is not in the pack")
-            if v != "balance":
+            if v != "balance" and not (dry and s == water):
                 y[species.index(s)] = parse_fraction(v)
         rest = 1.0 - y.sum()
         if rest < -1e-12:
@@ -125,6 +131,10 @@ class StepSpec(_Temperatures):
             y[species.index(balance[0])] = rest
         elif rest > 1e-9:
             raise ValueError(f"step {self.id}: feed sums to {1 - rest:.6f}; name a balance species")
+        if dry:
+            w = parse_fraction(self.feed[water])
+            y *= 1.0 - w
+            y[species.index(water)] = w
         return y
 
 
@@ -184,7 +194,7 @@ class Pack:
     def conditions(self, protocol: ProtocolSpec) -> tuple[Conditions, list[ConditionRow]]:
         rows, feeds, temps, pressures, ghsv = [], [], [], [], []
         for step in protocol.steps:
-            y = step.feed_fractions(self.network.species)
+            y = step.feed_fractions(self.network.species, self.spec.water)
             for t in step.kelvin():
                 rows.append(ConditionRow(step.id, t))
                 feeds.append(y)

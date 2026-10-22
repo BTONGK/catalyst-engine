@@ -6,15 +6,16 @@ pack: scr_hot
 version: 1
 status: draft
 description: >
-  Simulated simple-cycle exhaust: 25 ppm NOx, 15% O2, 10% H2O, NH3/NOx = 1.0,
-  gases read by FTIR. Three steps: the design-point screen, a higher space velocity
-  that keeps conversion near 60-80% so rate constants are well measured, and an
-  ammonia-only step that separates ammonia oxidation from SCR.
+  Simulated simple-cycle exhaust on a dry basis, the permit convention: 25 ppmvd NOx, 15% O2 dry,
+  NH3/NOx = 1.0, with 10% H2O in the whole gas (so 22.5 ppm NO and 13.5% O2 wet). Gases read by
+  FTIR, which reports wet ppm; a wet reading times 1.11 is ppmvd @ 15% O2. Three steps: the
+  design-point screen, a higher space velocity that keeps conversion near 60-80% so rate constants
+  are well measured, and an ammonia-only step that separates ammonia oxidation from SCR.
 
+# O2 basis, decided 2026-10-21: dry. The analysis (page 20) gives 15% O2 without a basis; its 25 ppm NOx comes
+# from the 9-25 ppm turbine range, which turbine makers quote as ppmvd @ 15% O2, so the dry reading keeps the
+# recipe in permit units. Under the wet reading a wet bench reading converts to permit units at 1.55x instead of 1.11x.
 open_questions:
-  - "The analysis says 15% O2 without a basis. This protocol makes 15% O2 on a wet basis
-     (what the flow controllers set). Gate limits in ppmvd @ 15% O2 read about 1.55x the
-     wet ppm under these conditions, versus 1.11x if the 15% were dry. Decide before batch 1."
   - "Design space velocity (30,000 1/h) is a placeholder; set it from the reference
      catalyst's commissioning run so the reference sits near the 92% target at 800 F."
 
@@ -29,11 +30,13 @@ steps:
   - id: design
     purpose: Gate 1 screen at the design space velocity
     feed: {NO: 25 ppm, NH3: 25 ppm, O2: 15 %, H2O: 10 %, N2: balance}
+    feed_basis: dry
     ghsv_per_h: 30000
     temperatures_F: [650, 800, 950, 1050, 1150]
   - id: kinetic
     purpose: Rate constants measured away from full conversion (outlet error moves k ~5% here vs ~10% at 92%)
     feed: {NO: 25 ppm, NH3: 25 ppm, O2: 15 %, H2O: 10 %, N2: balance}
+    feed_basis: dry
     ghsv_per_h: 240000
     temperatures_F: [800, 950, 1050, 1150]
   - id: nh3_oxidation
@@ -42,5 +45,6 @@ steps:
       FTIR noise floor. At 25 ppm the NO and N2O it forms sit near 0.5 ppm and the fitter
       cannot separate those pathways.
     feed: {NH3: 200 ppm, O2: 15 %, H2O: 10 %, N2: balance}
+    feed_basis: dry
     ghsv_per_h: 30000
     temperatures_F: [900, 1000, 1100, 1200, 1300]
