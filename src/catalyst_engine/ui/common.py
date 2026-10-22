@@ -73,12 +73,15 @@ def _report(folder: Path, mtime_key: float) -> dict:
     return report
 
 
-def experiment_reports() -> dict[str, dict]:
-    """Experiments that publish a report.yaml, keyed by folder name; each carries its summary numbers as `data`."""
+def experiment_reports(kind: str = "atomistic") -> dict[str, dict]:
+    """Experiments that publish a report.yaml of one `kind` (atomistic unless the report says otherwise), keyed by
+    folder name; each carries its summary numbers as `data`."""
     out = {}
     for path in sorted((REPO / "experiments").glob("*/report.yaml")):
         stamps = [path.stat().st_mtime] + [p.stat().st_mtime for p in path.parent.glob("results/*.json")]
-        out[path.parent.name] = _report(path.parent, max(stamps))
+        report = _report(path.parent, max(stamps))
+        if report.get("kind", "atomistic") == kind:
+            out[path.parent.name] = report
     return out
 
 

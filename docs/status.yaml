@@ -23,6 +23,12 @@ proof_sequence:
 recent:
   - date: 2026-10-21
     item: >
+      Literature check: the engine reproduces a published Fe-ZSM-5 and Cu-chabazite (Metkar, University of
+      Houston, 2012) from 100 to 600 °C in its ideal reactor, from data read off the thesis figures. Fitted below
+      500 °C, it predicts 10 of 11 hotter points inside its 90% band. On our Gate 1 screen the published
+      Fe-ZSM-5 reaches 0.96 at 800 °F and 0.89 at 1,050 °F. Literature check page.
+  - date: 2026-10-21
+    item: >
       Phase 2, the data platform and prediction log: catalysts, samples, runs and raw analyzer files with
       provenance, steady-state points with automatic checks, campaigns tied to one protocol version and rig,
       and a hash-chained log of picks and predictions. The Lab data page walks a simulated campaign end to end.
@@ -52,12 +58,19 @@ recent:
 next_steps:
   - step: Review the pack parameters and protocols, and set the batch-1 design space
     owner: You
-    why: As catalysis lead, your review replaces the illustrative parameters and defines what batch 1 explores.
+    why: >
+      As catalysis lead, your review replaces the illustrative parameters and defines what batch 1 explores.
+      The Literature check page gives fitted values for a published Fe-ZSM-5 and Cu-chabazite to compare against.
   - step: Send a sample export from the rig's analyzer or logger
     owner: You
     why: >
       The Lab data page reads one CSV layout (Add data tab, File format). A real export lets the reader match
       the rig before the first run.
+  - step: "Literature check 2: a 400–850 °C Fe-zeolite dataset and a vanadia-tungsta-titania dataset"
+    owner: Claude
+    why: >
+      Covers the full hot-SCR range, including ammonia burning to NO, and the commercial reference family,
+      then refits with the monolith's film mass transfer to separate intrinsic rates from transport.
   - step: "Build the virtual rig (Phase 3): hidden catalysts across the batch-1 design space"
     owner: Claude
     why: Runs the whole loop, picks to scores, on simulated catalysts before lab money is spent.
@@ -107,9 +120,24 @@ phases:
   - id: 6
     name: Agents
     status: planned
-    summary: Claude agents that operate the loop, read the literature and write the weekly report.
+    summary: >
+      Claude agents that operate the loop, read the literature and write the weekly report.
+      Started: a figure digitizer turns published plots into fit-ready data (Literature check page).
 
 findings:
+  - title: The engine reproduces published zeolite SCR data
+    detail: >
+      In its ideal reactor, with four fitted numbers per catalyst, the engine matches a published Fe-ZSM-5
+      and Cu-chabazite from 100 to 600 °C: NO conversion within 0.020 and 0.011 on average, ammonia left in the
+      ammonia-only run within 12 and 9 ppm of 500. Cu-chabazite's drop in NO conversion above 400 °C comes out
+      of the same ammonia burn that fits its ammonia-only run.
+    source: Literature check, experiments/literature_scr (2026-10-21); data from Metkar, University of Houston, 2012.
+  - title: Measure ammonia burn in the operating window
+    detail: >
+      Fitted only below 500 °C, the model's 600 °C ammonia burn on Fe-ZSM-5 spans a factor of four, and its
+      Gate 1 band at 1,050 °F (0.88–0.96) straddles the 0.92 gate. With the 500–600 °C points the band tightens
+      to 0.87–0.90. The yardstick's ammonia-only step at 900–1,300 °F supplies exactly these numbers.
+    source: Literature check, holdout test (2026-10-21).
   - title: UMA tracks metal chemistry and ranks the SCR acid sites
     detail: >
       On nine metals UMA reproduces the textbook scaling of NHx and OH binding and all 14

@@ -11,15 +11,15 @@ uv sync
 uv run ce ui                      # opens http://localhost:8501
 ```
 
-Eight pages: Overview (progress, next steps and decisions from `docs/status.yaml`), Lab data
-(catalysts, runs, campaign scores and the prediction log), Atomistic check (model checks from
-`experiments/*/report.yaml`), Reactions, Catalyst playground, Design scenarios, Calculators and Fit lab. Every page reads the files on disk, so a new pack, an edited YAML file or a
+Nine pages: Overview (progress, next steps and decisions from `docs/status.yaml`), Lab data
+(catalysts, runs, campaign scores and the prediction log), Atomistic check and Literature check (model
+checks from `experiments/*/report.yaml`, sorted by the report's `kind`), Reactions, Catalyst playground, Design scenarios, Calculators and Fit lab. Every page reads the files on disk, so a new pack, an edited YAML file or a
 new experiment summary shows up on the next page load.
 
 ## Command line
 
 ```sh
-uv run pytest                     # 65 tests, ~25 s
+uv run pytest                     # 68 tests, ~30 s
 uv run ce packs                   # reaction packs and whether each loads
 uv run ce show scr_hot            # pathways, metrics, protocols, open questions
 uv run ce simulate scr_hot        # run the yardstick protocol through the reactor model
@@ -28,6 +28,8 @@ uv run ce tempering --exhaust-f 1150
 uv run ce permit --ppm 2 --cap-tpy 100
 uv run ce fit scr_hot bench.csv --out fitted.yaml    # CSV: step, T_F, out_<species>_ppm, ...
 uv run ce decay aging.csv                            # CSV: hours, activity[, sigma]
+uv run --with pymupdf python experiments/literature_scr/digitize.py   # published figures -> data/*.csv
+uv run python experiments/literature_scr/replicate.py                 # fit them, write results/summary.json
 ```
 
 ## Lab data and the prediction log

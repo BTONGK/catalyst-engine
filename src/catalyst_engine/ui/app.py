@@ -29,6 +29,7 @@ nav = st.navigation(
             st.Page(VIEWS / "overview.py", title="Overview", icon=":material/dashboard:", default=True),
             st.Page(VIEWS / "labdata.py", title="Lab data", icon=":material/database:"),
             st.Page(VIEWS / "atomistic.py", title="Atomistic check", icon=":material/biotech:"),
+            st.Page(VIEWS / "literature.py", title="Literature check", icon=":material/menu_book:"),
         ],
         "Explore": [
             st.Page(VIEWS / "reactions.py", title="Reactions", icon=":material/science:"),

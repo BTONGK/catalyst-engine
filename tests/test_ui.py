@@ -72,3 +72,21 @@ def test_lab_store_starts_empty_and_takes_records():
     at.run()
     assert not at.exception, at.exception
     assert _metric(at, "Catalysts") == "1" and store.kind == "lab"
+
+
+def test_literature_check_shows_both_fits():
+    at = AppTest.from_file(str(VIEWS / "literature.py"), default_timeout=60).run()
+    assert not at.exception, at.exception
+    assert any(m.label.endswith(", fitted") for m in at.metric)
+    for control in at.segmented_control:
+        control.set_value("holdout")
+    at.run()
+    assert not at.exception, at.exception
+    assert any("held-out points" in c.value for c in at.caption)
+
+
+def test_atomistic_page_keeps_to_atomistic_reports():
+    from catalyst_engine.ui import common
+
+    assert all(r.get("kind", "atomistic") == "atomistic" for r in common.experiment_reports().values())
+    assert all(r["kind"] == "literature" for r in common.experiment_reports("literature").values())

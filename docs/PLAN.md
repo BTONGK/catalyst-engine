@@ -92,7 +92,7 @@ reactions/
 | 3 | Virtual rig: hidden "true" catalysts whose properties carry across reactions, producing FTIR-style files with noise, drift and failed runs | Started: simulated analyzer logs (bypass, settling holds, noise, failed and short runs) feed the demo store |
 | 4 | Multi-task models (shared catalyst representation, a head per pathway), conformal calibration, batch planner scored through the reactor model, gate scorecards, transfer scorecard | |
 | 5 | Atomistic descriptors (binding energies of N, O, NH3, CO and others on catalyst site types via UMA), Materials Project stability, OCx24 retrospective | Started: UMA test run done (see the app's Atomistic check page) |
-| 6 | MCP server and agents, literature extraction into a low-trust tier, reports | |
+| 6 | MCP server and agents, literature extraction into a low-trust tier, reports | Started: figure digitizer and the literature check (`experiments/literature_scr/`, the app's Literature check page) |
 
 ## Findings so far (from simulation with illustrative parameters)
 
@@ -112,6 +112,13 @@ reactions/
   rules and all 14 periodic-table orderings. Its materials mode matches measured NH3 binding on
   anatase (1.16 vs 1.23 ± 0.1 eV), and both modes rank the SCR acid sites correctly. Its NO
   energies on vanadia are artifacts. Details: the app's Atomistic check page.
+- **The engine reproduces published zeolite SCR data (literature check, real measurements).** Digitized
+  from Metkar's 2012 thesis (Fe-ZSM-5 and Cu-chabazite monoliths, 100-600 C), both catalysts fit the
+  pack's own rate laws in the ideal reactor: NO conversion within 0.020 and 0.011 on average. Fitted below
+  500 C, the model predicts 10 of 11 hotter points inside its 90% band, with central estimates on the
+  optimistic side; the low-temperature fit leaves Fe-ZSM-5's Gate 1 call at 1,050 F open (0.88-0.96), and
+  the full data settle it at 0.87-0.90. Apparent activation energies sit at 56-84% of the thesis's
+  diffusion-resolved values. Details: the app's Literature check page.
 - **Example scenario (all example inputs):** tempered design 58 m3 of catalyst, 34% tempering
   air, 623 kW of fans; hot target design 36 m3, no fans, more ammonia (ratio 1.30 vs 1.05).
 

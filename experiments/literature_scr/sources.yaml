@@ -1,0 +1,61 @@
+# Published SCR measurements this check reproduces. Each figure is digitized by digitize.py from the source
+# file (downloaded to cache/, outside git); only the extracted numbers and their provenance live in data/.
+
+sources:
+  metkar2012:
+    cite: >
+      P. S. Metkar, "Experimental and Kinetic Modeling Studies of Selective Catalytic Reduction of NOx with NH3
+      on Fe- and Cu-Zeolite Monolithic Catalysts", PhD dissertation, University of Houston, 2012 (advisors
+      M. P. Harold and V. Balakotaiah).
+    url: https://uh-ir.tdl.org/items/dec7ab2f-feec-4eaa-9d24-e8cd811ad67d
+    pdf: https://uh-ir.tdl.org/bitstreams/0eb40ebd-8eff-4cab-bd04-abde0cc53c00/download
+    catalysts:
+      fe_zsm5: {name: Fe-ZSM-5, form: "washcoated cordierite monolith, 400 cpsi, 2 cm long, 34 channels"}
+      cu_cha: {name: Cu-chabazite, form: "washcoated cordierite monolith, 400 cpsi, 2 cm long, 34 channels"}
+    conditions: >
+      Steady state after about 25 min per point, 1000 sccm total in Ar, GHSV about 57,000 1/h (thesis p. 333
+      and ch. 9). Pretreated at 500 C in 5% O2. FTIR analyzer (MKS MultiGas 2030).
+    ghsv_per_h: 57000
+    # The thesis's own global model (Tables 9-3 and 9-4, p. 346): activation energies of standard SCR (step S4)
+    # and ammonia oxidation to N2 (S2). Its rates use NH3 coverage and mole fractions per washcoat volume, so
+    # only the activation energies compare directly with a fit of the engine's rate laws.
+    published_Ea_kJ:
+      fe_zsm5: {scr: 72.4, nh3_ox_n2: 90.8}
+      cu_cha: {scr: 89.1, nh3_ox_n2: 178.8}
+
+figures:
+  - id: metkar2012_fig9-3a
+    source: metkar2012
+    label: "Figure 9-3a: ammonia oxidation on Fe-ZSM-5"
+    page: 393          # PDF page (printed page 350)
+    image: 0
+    catalyst: fe_zsm5
+    feed: {NH3: 500 ppm, O2: 5 %, H2O: 2 %, N2: balance}   # balance is Ar in the source; both are inert here
+    x: {min: 100, max: 600, unit: C}
+    y: {min: 0, max: 600, unit: ppm}
+    series:
+      - {name: NH3, color: black, shape: triangle, quantity: out_NH3_ppm}
+      - {name: N2, color: black, shape: circle, quantity: out_N2_ppm}
+  - id: metkar2012_fig9-3b
+    source: metkar2012
+    label: "Figure 9-3b: ammonia oxidation on Cu-chabazite"
+    page: 393
+    image: 1
+    catalyst: cu_cha
+    feed: {NH3: 500 ppm, O2: 5 %, H2O: 2 %, N2: balance}
+    x: {min: 100, max: 600, unit: C}
+    y: {min: 0, max: 600, unit: ppm}
+    series:
+      - {name: NH3, color: black, shape: triangle, quantity: out_NH3_ppm}
+      - {name: N2, color: black, shape: circle, quantity: out_N2_ppm}
+  - id: metkar2012_fig9-5
+    source: metkar2012
+    label: "Figure 9-5: standard SCR, NO conversion"
+    page: 396          # printed page 353
+    image: 0
+    feed: {NO: 500 ppm, NH3: 500 ppm, O2: 5 %, H2O: 2 %, N2: balance}
+    x: {min: 50, max: 650, unit: C}
+    y: {min: 0, max: 1, unit: fraction}
+    series:
+      - {name: Cu-chabazite, color: blue, shape: circle, quantity: no_conversion, catalyst: cu_cha}
+      - {name: Fe-ZSM-5, color: red, shape: triangle, quantity: no_conversion, catalyst: fe_zsm5}

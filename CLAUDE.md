@@ -6,7 +6,10 @@
   `tests/test_packs.py::test_core_never_names_a_pack` enforces this. Reaction knowledge goes in `reactions/`.
 - App copy is affirmative: state what is true, with no negation words.
 - Model checks live in `experiments/<name>/`: scripts, `results/`, and a `report.yaml` (the write-up) that
-  the app's Atomistic check page renders with `results/summary.json`. Put results there, not only in a README.
+  the app renders with `results/summary.json`: the Atomistic check page by default, the Literature check page
+  for `kind: literature`. Put results there, not only in a README.
+- The repository is public. Published papers, theses and figure overlays stay in `experiments/<name>/cache/`
+  (git-ignored); the repository holds the digitized numbers, the scripts and the citations.
 - Materials Project API key: `~/.config/.pmgrc.yaml` (`PMG_MAPI_KEY`, read by pymatgen and mp-api). Keep it out of
   the repository and out of logs.
 - Lab data lives in `data/lab` (real) and `data/simulated` (demo), both outside git; `CE_DATA_DIR` moves them
