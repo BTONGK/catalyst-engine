@@ -77,9 +77,13 @@ def test_lab_store_starts_empty_and_takes_records():
 def test_literature_check_shows_both_fits():
     at = AppTest.from_file(str(VIEWS / "literature.py"), default_timeout=60).run()
     assert not at.exception, at.exception
-    assert any(m.label.endswith(", fitted") for m in at.metric)
+    summary = at.dataframe[0].value
+    assert len(summary) >= 3 and any(c.startswith("Gate 1 at") for c in summary.columns)
     for control in at.segmented_control:
         control.set_value("holdout")
+    for choice in at.multiselect:
+        if choice.key.startswith("lit-overlay-"):
+            choice.set_value(choice.options[:1])
     at.run()
     assert not at.exception, at.exception
     assert any("held-out points" in c.value for c in at.caption)

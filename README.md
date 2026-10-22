@@ -19,7 +19,7 @@ new experiment summary shows up on the next page load.
 ## Command line
 
 ```sh
-uv run pytest                     # 68 tests, ~30 s
+uv run pytest                     # 69 tests, ~40 s
 uv run ce packs                   # reaction packs and whether each loads
 uv run ce show scr_hot            # pathways, metrics, protocols, open questions
 uv run ce simulate scr_hot        # run the yardstick protocol through the reactor model
@@ -28,8 +28,8 @@ uv run ce tempering --exhaust-f 1150
 uv run ce permit --ppm 2 --cap-tpy 100
 uv run ce fit scr_hot bench.csv --out fitted.yaml    # CSV: step, T_F, out_<species>_ppm, ...
 uv run ce decay aging.csv                            # CSV: hours, activity[, sigma]
-uv run --with pymupdf python experiments/literature_scr/digitize.py   # published figures -> data/*.csv
-uv run python experiments/literature_scr/replicate.py                 # fit them, write results/summary.json
+uv run --with pymupdf python experiments/literature_scr/digitize.py   # published figures -> data/*.csv (sources: cache/)
+uv run python experiments/literature_scr/replicate.py                 # fit them (~20 min), write results/summary.json
 ```
 
 ## Lab data and the prediction log

@@ -7,51 +7,56 @@ model: The hot-SCR pack's own rate laws in the engine's isothermal plug-flow rea
 summary: results/summary.json
 
 verdict: >
-  Yes. With four fitted numbers per catalyst, the engine reproduces a published Fe-ZSM-5 and Cu-chabazite
-  across 100–600 °C, in both the ammonia-only run and the SCR run. Fitted on data below 500 °C, it predicts the
-  500–600 °C points inside its stated 90% band for 10 of 11 points, with its central estimate on the optimistic
-  side. Rates measured in the operating range settle the Gate 1 call.
-
-# The run whose fit error leads the Summary tab
-headline: {run: scr, label: NO conversion}
+  Yes, across four catalysts from three sources. With four to six fitted numbers each, the engine reproduces a
+  Fe-ZSM-5, a Cu-chabazite, a high-temperature Fe@ZSM-5 and a commercial vanadia over 100–850 °C at 500–5,000 ppm.
+  The fits leave one number open, and it decides Gate 1: ammonia coverage on the SCR site at the gas turbine's
+  25 ppm. Every dataset that lets coverage float puts it at 0.2–12%, against the pack's 89%, and that one choice moves
+  every catalyst's Gate 1 placement at 1,050 °F from 0.68–0.89 to 0.59 or lower. A hot-end bench step that varies
+  ammonia and NO concentration settles it.
 
 findings:
-  - "Fitted to every point, the model matches NO conversion within 0.020 on average for Fe-ZSM-5 (largest gap 0.045) and 0.011 for Cu-chabazite (largest gap 0.054)."
-  - "In the ammonia-only run, the ammonia left matches within 12 ppm on average for Fe-ZSM-5 and 9 ppm for Cu-chabazite, out of 500 ppm fed. The largest gaps sit at light-off, where Cu-chabazite ignites more sharply (395 ppm measured at 300 °C, 456 modeled) than a single Arrhenius pathway gives."
-  - "Cu-chabazite's NO conversion falls from 0.99 at 350 °C to 0.67 at 600 °C. The fit explains the drop with the same ammonia burn that fits the ammonia-only run: ammonia oxidizes before it can reduce NO, the competition the hot-SCR gate turns on."
-  - "Fitted only below 500 °C, the model predicts the 500–600 °C points inside its 90% band for 10 of 11 points. The one outside is Fe-ZSM-5 at 600 °C, where 79 ppm ammonia remained against a band of 83–360 ppm. The central estimates lean optimistic: NO conversion reads 0.03 high on Fe-ZSM-5 and 0.05 high on Cu-chabazite."
-  - "On our Gate 1 screen, the low-temperature fit puts Fe-ZSM-5 at 0.93 at 1,050 °F with a band of 0.88–0.96, straddling the 0.92 gate. With the 500–600 °C data included, the band tightens to 0.87–0.90, below the gate."
-  - "N2 made in each ammonia-only run equals half the ammonia used, within 2 ppm at every temperature, so ammonia burns to N2 alone in these runs."
-  - "The fitted activation energies run at 56–84% of the thesis values: SCR 47 against 72 kJ/mol (Fe-ZSM-5) and 50 against 89 (Cu-chabazite); ammonia oxidation 76 against 91 and 109 against 179. The thesis model resolves washcoat diffusion and film mass transfer; an ideal reactor folds both into lower apparent values, the direction transport theory predicts."
+  - "Fitted to every point, the model matches NO conversion within 0.011–0.025 on average for the three zeolites (largest gap 0.060), and the vanadia's NO out within 48 ppm of 5,000 fed (largest 195 ppm). Ammonia left in the ammonia-only runs matches within 9–18 ppm of 500 fed; the vanadia's N2O matches within 0.15 ppm."
+  - "Fitted below 500 °C, the Metkar zeolites' 500–600 °C points land inside the 90% band for 10 of 11, with NO conversion reading 0.03–0.05 high."
+  - "SCR has to be measured in the hot range. With 0.1Fe@ZSM-5's whole ammonia-only run plus its SCR below 700 °C in the fit, the predicted SCR at 700–850 °C reads 0.12 low on average (0 of 4 points in the band). Fitted below 460 °C, the vanadia's NO at 460–525 °C reads 95 ppm low (0 of 12 in the band): the burn of ammonia to NO that lifts NO from 150 to 210 ppm shows only in the hot points."
+  - "In 0.1Fe@ZSM-5's ammonia-only run, NOx leaves beside unburned ammonia from 600 °C up (about 20 ppm NOx with 140 ppm NH3 at 700 °C). With the pack's coverage, SCR would consume that NOx on the way out; the data call for SCR to slow as ammonia leaves the surface. Fitting the coverage cuts the gap in the NOx share from 0.074 to 0.031."
+  - "Letting the ammonia coverage float improves or matches every fit (reduced chi-square 2.8 to 2.1 for Fe-ZSM-5, 2.0 to 2.1 for Cu-chabazite, 4.0 to 2.7 for 0.1Fe@ZSM-5, 1.9 to 0.5 for the vanadia). At 25 ppm and 1,050 °F it puts the coverage at 9.6%, 12%, 3.2% and 0.2%, three to nine standard deviations below the pack's 89%. The vanadia paper's own adsorption constant, fitted in a 3-D reactor model with heat release, gives 0.13%."
+  - "That one choice moves the Gate 1 placement at 1,050 °F from 0.89 to 0.59 for Fe-ZSM-5, 0.68 to 0.27 for Cu-chabazite, 0.87 to 0.24 for 0.1Fe@ZSM-5, and 0.87 to below zero for the vanadia, where the fitted burn of ammonia to NO outruns SCR at 25 ppm and adds NOx. Held at the paper's own adsorption constant, the vanadia sits at 0.04."
+  - "Adding the monolith's gas-film mass transfer (fully developed laminar flow, Sherwood number 2.98, 1.1 mm channels) raises SCR's activation energy about a quarter of the way to the thesis values (47 to 54 kJ/mol against 72 for Fe-ZSM-5; 50 to 61 against 89 for Cu-chabazite) and fits less well (reduced chi-square 2.8 to 3.3 and 2.0 to 6.6). The film carries a minor share of the gap; washcoat diffusion, which the thesis resolves, carries the rest."
+  - "The sources check out against themselves. In Metkar's ammonia-only runs, N2 made equals half the ammonia used within 2 ppm at every temperature. In Xie's, NOx read directly (20.0, 75.5 and 118.5 ppm at 700, 750 and 800 °C) matches the NOx share times the ammonia used (18.0, 69.1, 108.9 ppm), which confirms the 500 ppm feed inferred for that run."
+  - "Apparent activation energies sit below the published models' values: 56–84% of the thesis values on the Metkar monoliths, and on the vanadia 66 against 85 kJ/mol for SCR and 165 against 190 for ammonia to N2O. The vanadia paper puts the ammonia coverage term in every rate; that term falls steeply with temperature, so its activation energies sit above the apparent first-order values a fit with the pack's rate laws gives (63 against 200 for ammonia to NO)."
 
 implications:
-  - "The engine's rate laws and reactor capture real zeolite SCR catalysts, so bench data fitted with them give usable rate constants."
-  - "Measure ammonia oxidation inside the operating window. The bench yardstick's ammonia-only step at 900–1,300 °F does exactly this, and this check shows why it earns its place: low-temperature rates leave the hot-end burn uncertain by a factor of four."
-  - "Published Fe-ZSM-5 lands near the gate on our screen (0.96 at 800 °F, 0.925 at 950 °F, 0.89 at 1,050 °F, 0.82 at 1,150 °F), so a commercial-class zeolite already sits close. Gate 1 asks for 3 more points of conversion at 1,050 °F and 10 more at 1,150 °F: a clear, reachable target for a better formulation."
-  - "Cu-chabazite reaches 0.98 at 650 °F and drops to 0.68 at 1,050 °F. It suits the cool end; the hot end calls for iron, vanadia or a new formulation."
+  - "The engine's rate laws and reactor reproduce zeolite and vanadia SCR catalysts from three independent sources, so bench data fitted with them give usable rate constants."
+  - "For your review: the deciding unknown for Gate 1 is the ammonia coverage at 25 ppm on the hot end, and every published dataset sits at 500 ppm or more. A concentration step on the bench yardstick would measure it directly: for example 950 and 1,150 °F with NO = NH3 at 25, 50 and 200 ppm. How SCR's rate scales with concentration across that step sets the coverage, and the fit then pins the Gate 1 placement within a narrow band."
+  - "Measure SCR and the ammonia burn inside the operating window. Low-temperature SCR, even with a full ammonia-only run beside it, misses the hot end on both high-temperature sources."
+  - "Read the pack's illustrative defaults as the optimistic case: they hold 89% coverage at 25 ppm. The earlier reading here that published Fe-ZSM-5 lands near the gate (0.89 at 1,050 °F) holds under that coverage; with the coverage its own data prefer, it lands at 0.59."
+  - "Fit monolith-core bench data with the film switched on, since the design scenarios add the film themselves and want intrinsic rates. Washcoat diffusion carries more of the gap than the film, so a powder or thin-washcoat bench sample keeps the measured rates closest to intrinsic."
 
 next_test: >
-  Add a high-temperature dataset: the 2026 Fe@ZSM-5 study in Industrial Chemistry & Materials runs
-  400–850 °C and reports ammonia oxidation to NO, the full hot-SCR range. Add a vanadia-tungsta-titania dataset,
-  the commercial reference family. Then switch on the monolith's film mass transfer in the reactor and refit, to
-  separate intrinsic rates from transport.
+  Run the concentration step on the bench once you approve it, or find published SCR kinetics at 10–100 ppm NOx above
+  450 °C to test the coverage directly. Then add washcoat diffusion to the reactor as an effectiveness factor per
+  pathway and refit the Metkar monoliths, to close the remaining activation-energy gap.
 
 limits:
-  - "Points come from the published figures. The digitizer locates each marker center within about one pixel (under 1 °C and about 1 ppm); overlays in cache/ show all 85 detected points."
-  - "The source's feed differs from our yardstick: 500 ppm NO and NH3, 5% O2 and 2% H2O, against 22.5 ppm, 13.5% and 10% on our bench. The pack's rate laws carry O2 and H2O as constant, so the Gate 1 numbers are a rough placement."
-  - "Ideal reactor: the fitted rate constants are apparent values for this 400 cpsi monolith at 57,000 1/h."
-  - "One source and two catalysts so far, both metal zeolites. The commercial hot-SCR reference is vanadia-tungsta-titania."
-  - "Ammonia oxidation to NO and N2O is switched off, matching the source's N balance up to 600 °C. Above that range those pathways become important."
+  - "Points come from the published figures. The digitizer locates each marker center within about one pixel. On the vanadia figures it finds 35 of the 37 NO markers (the other two overlap a neighbour within 1 K) and 35 N2O markers, where points at 0 ppm show as half markers on the axis, below detection either way. Overlays in cache/ show every detected point."
+  - "Every source's feed differs from our yardstick's 22.5 ppm, 13.5% O2 and 10% H2O: Metkar 500 ppm with 5% O2 and 2% H2O; Xie 1,000 ppm (500 ppm NH3 in the ammonia-only run) with 6% O2, dry; Odenbrand 5,000 ppm with 13% O2 and 5% H2O at 2.2 bar. The pack's rate laws carry O2 and H2O as constant, so the Gate 1 numbers are rough placements."
+  - "The coverage at 25 ppm comes from fits at 500–5,000 ppm through the pack's Langmuir form, an extrapolation of twenty- to two-hundredfold in concentration."
+  - "Ideal reactor: the fitted rate constants are apparent values for each sample as tested: a 400 cpsi monolith at 57,000 1/h (Metkar), a powder bed at 30,000 1/h (Xie), and 0.71–0.80 mm particles at 120,000 1/h (Odenbrand, where the paper estimates an internal effectiveness of 0.7 at 760 K)."
+  - "The vanadia runs release heat at 5,000 ppm; each point sits at the bed-exit temperature, the hottest spot in an adiabatic bed. The paper gives the catalyst as about 0.4 wt% vanadia on titania, likened to commercial V2O5-WO3/TiO2. Its ammonia went to a scrubber before the analyzers, and N2O from NO + NH3 is folded into ammonia oxidation to N2O here."
+  - "Xie et al. is open access under CC BY-NC 4.0; the 500 ppm feed of its ammonia-only run is inferred from three figures, and its NOx counts as NO here."
 
 method: >
-  digitize.py downloads the thesis PDF into cache/ (outside git), extracts each figure at its native resolution,
-  finds the plot frame from the axis lines, removes thin curves and text with a morphological opening, and keeps
-  the filled markers by color and shape. Pixel centers map linearly onto the axis limits. replicate.py builds a
-  bench protocol from each figure's feed, fits the pack's SCR and ammonia-oxidation rate constants and activation
-  energies to both runs at once with the engine's own fitter, and draws 300 parameter sets from the fit's
-  covariance for the 90% bands.
+  digitize.py reads each figure from the source PDF in cache/ (outside git) at its native resolution, finds the plot
+  frame from the axis lines, and maps pixels to values through the major tick marks. Filled markers come out by
+  color and shape after a morphological opening removes thin curves and text; open markers (rings and squares) come
+  out by matching their outline, which a crossing curve touches at two spots only. replicate.py builds a bench
+  protocol from each figure's feed, fits the pack's rate constants and activation energies to all of a catalyst's runs
+  at once with the engine's own fitter, and draws 300 parameter sets from the fit's covariance for the 90% bands. Each
+  model choice refits every point: ammonia coverage fitted, held at a published value, or gas-film mass transfer added
+  from the monolith's channel size.
 
 error_model: >
-  Each digitized reading carries 5 ppm plus 3% of its value: analyzer scatter plus plotting and digitizing. Readings
-  under 1 ppm are treated as below detection. The fits land at reduced chi-square 2.0–2.8 on this model, so the
-  bands include that extra spread.
+  Each digitized reading carries an absolute plus a relative error: 5 ppm plus 3% for Metkar, 15 ppm plus 5% for Xie
+  (its error bars), 0.5 ppm plus 4% for Odenbrand (one pixel is about 5 ppm NO and 0.02 ppm N2O there). Readings under
+  1 ppm count as below detection. The main fits land at reduced chi-square 1.9–4.0 on these models, so the bands
+  include that extra spread.

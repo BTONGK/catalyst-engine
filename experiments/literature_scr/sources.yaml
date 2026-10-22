@@ -12,6 +12,9 @@ sources:
     catalysts:
       fe_zsm5: {name: Fe-ZSM-5, form: "washcoated cordierite monolith, 400 cpsi, 2 cm long, 34 channels"}
       cu_cha: {name: Cu-chabazite, form: "washcoated cordierite monolith, 400 cpsi, 2 cm long, 34 channels"}
+    # Channel scale for the film mass-transfer refit: Table 9-1 gives the open channel's transverse length
+    # (area over perimeter) as 0.275 mm, a 1.1 mm square channel, so wall plus washcoat take 0.17 mm of the pitch.
+    monolith: {cpsi: 400, wall_mm: 0.17}
     conditions: >
       Steady state after about 25 min per point, 1000 sccm total in Ar, GHSV about 57,000 1/h (thesis p. 333
       and ch. 9). Pretreated at 500 C in 5% O2. FTIR analyzer (MKS MultiGas 2030).
@@ -22,6 +25,54 @@ sources:
     published_Ea_kJ:
       fe_zsm5: {scr: 72.4, nh3_ox_n2: 90.8}
       cu_cha: {scr: 89.1, nh3_ox_n2: 178.8}
+    published_model: thesis model (washcoat diffusion resolved)
+
+  xie2026:
+    cite: >
+      X. Xie, J. Yuan, L. Liu, H. Liu and Z. Sun, "Dual kinetic effect from confined iron nanoparticles in zeolite
+      modulates high-temperature catalytic NO reduction and NH3 oxidation", Ind. Chem. Mater. 4 (2026) 457-471,
+      doi:10.1039/d5im00245a. Open access under CC BY-NC 4.0.
+    url: https://doi.org/10.1039/d5im00245a
+    # The publisher's site sits behind a browser check: save the article as cache/xie2026.pdf and the supplementary
+    # information as cache/xie2026_si.pdf by hand.
+    pdf: null
+    catalysts:
+      fe01_zsm5: {name: 0.1Fe@ZSM-5, form: "ion-exchanged powder (0.1 wt% Fe target, Si/Al 27), quartz fixed bed"}
+    conditions: >
+      Quartz fixed bed, 2 L/min, GHSV 30,000 1/h, IR analyzer, each point averaged over 20 min at steady state.
+      SCR feed 1000 ppm NO, 1000 ppm NH3, 6% O2, N2 balance, no water. Ammonia oxidation runs feed 500 ppm NH3:
+      the figures give 140 ppm NH3 left and a 5% NOx share at 700 C, and 20 ppm NOx out, which only a 500 ppm feed
+      fits (Fig. 3c against Fig. 5b-c).
+    ghsv_per_h: 30000
+    # Supplementary Table S4: the paper's own kinetics for 0.1Fe@ZSM-5, fitted to points under 15% conversion
+    # with intraparticle diffusion checked negligible.
+    published_Ea_kJ:
+      fe01_zsm5: {scr: 52.12, nh3_ox_n2: "98.3 (all NH3 oxidation)", nh3_ox_no: "98.3 (all NH3 oxidation)"}
+    published_model: paper's model (points under 15% conversion)
+
+  odenbrand2017:
+    cite: >
+      C. U. I. Odenbrand, "High Temperature and High Concentration SCR of NO with NH3 for the Oxyfuel Combustion
+      Process: Fitting of Kinetics to Data from a Laboratory Reactor Experiment", Top. Catal. 60 (2017) 1317-1332,
+      doi:10.1007/s11244-017-0817-x. Open access under CC BY 4.0.
+    url: https://doi.org/10.1007/s11244-017-0817-x
+    # The publisher's site sits behind a browser check: save the article as cache/odenbrand2017.pdf by hand.
+    pdf: null
+    catalysts:
+      v_commercial: {name: Commercial vanadia, form: "commercial vanadia-on-titania catalyst, about 0.4 wt% V2O5 (the paper likens it to commercial V2O5-WO3/TiO2), crushed to 0.71-0.80 mm, 1.5 cm3 fixed bed"}
+    conditions: >
+      Gold-plated steel fixed bed at 2.2 bar, 180 NL/h (GHSV 120,000 1/h at NTP), steady state after 10-45 min.
+      Oxyfuel flue-gas feed: 5000 ppm NO, 5500 ppm NH3, 13.06% O2, 5.03% H2O (N2 balance in the paper's model).
+      Inlet stepped from 570 to 800 K in 25 K steps; each point is plotted at the bed-exit temperature. Ammonia is
+      scrubbed out before the analyzers: NO by chemiluminescence, N2O by NDIR.
+    ghsv_per_h: 120000
+    pressure_kPa: 220
+    # Table 5, fitted by hand in a 3-D reactor model with heat release and flow: SCR, NH3 oxidation to NO, and N2O
+    # from NH3 oxidation (plus N2O from NO + NH3 at 110 kJ/mol). Every rate carries NH3 coverage a*C/(1 + a*C) with
+    # a = 9e-9 m3/mol x exp(139 kJ/mol / RT).
+    published_Ea_kJ:
+      v_commercial: {scr: 85, nh3_ox_no: 200, nh3_ox_n2o: 190}
+    published_model: paper's 3-D reactor model (heat release resolved)
 
 figures:
   - id: metkar2012_fig9-3a
@@ -59,3 +110,157 @@ figures:
     series:
       - {name: Cu-chabazite, color: blue, shape: circle, quantity: no_conversion, catalyst: cu_cha}
       - {name: Fe-ZSM-5, color: red, shape: triangle, quantity: no_conversion, catalyst: fe_zsm5}
+  - id: xie2026_fig5b
+    source: xie2026
+    label: "Figure 5b: ammonia oxidation on 0.1Fe@ZSM-5, NH3 left"
+    page: 8
+    image: 0
+    crop: [740, 0, 1340, 510]
+    catalyst: fe01_zsm5
+    feed: {NH3: 500 ppm, O2: 6 %, N2: balance}
+    x: {ticks: [500, 550, 600, 650, 700, 750, 800, 850], unit: C}
+    y: {ticks: [0, 100, 200, 300, 400, 500], unit: ppm}
+    opening: 6
+    size: [10, 30]
+    exclude: [[1015, 25, 1055, 65]]   # legend marker
+    series:
+      - {name: NH3, color: [157, 55, 255], quantity: out_NH3_ppm}
+  - id: xie2026_fig5c
+    source: xie2026
+    label: "Figure 5c: ammonia oxidation on 0.1Fe@ZSM-5, share of ammonia burned to NOx"
+    page: 8
+    image: 0
+    crop: [1380, 0, 2013, 520]
+    catalyst: fe01_zsm5
+    feed: {NH3: 500 ppm, O2: 6 %, N2: balance}
+    x: {ticks: [500, 550, 600, 650, 700, 750, 800, 850], unit: C}
+    y: {ticks: [0.0, 0.1, 0.2, 0.3], unit: fraction}
+    opening: 6
+    size: [10, 30]
+    exclude: [[1445, 20, 1490, 62]]   # legend marker
+    series:
+      - {name: NOx share, color: [157, 55, 255], quantity: nox_selectivity}
+  - id: xie2026_fig5d
+    source: xie2026
+    label: "Figure 5d: standard SCR on 0.1Fe@ZSM-5, NO conversion"
+    page: 8
+    image: 0
+    crop: [40, 520, 670, 1075]
+    catalyst: fe01_zsm5
+    feed: {NO: 1000 ppm, NH3: 1000 ppm, O2: 6 %, N2: balance}
+    x: {ticks: [300, 400, 500, 600, 700, 800], unit: C}   # the 200 C tick sits behind the 200 C point's error bar
+    y: {ticks: [20, 40, 60, 80, 100], unit: "%"}   # the 0 tick sits on the bottom frame line
+    opening: 6
+    size: [10, 30]
+    exclude: [[255, 905, 300, 950]]   # legend marker
+    series:
+      - {name: NO conversion, color: [255, 145, 43], quantity: no_conversion_pct}
+  - id: xie2026_fig3c
+    source: xie2026
+    label: "Figure 3c: ammonia oxidation, NOx made, by iron loading"
+    page: 6
+    image: 0
+    crop: [1395, 10, 2013, 560]
+    feed: {NH3: 500 ppm, O2: 6 %, N2: balance}
+    x: {ticks: [700, 725, 750, 775, 800], unit: C}
+    y: {ticks: [0, 20, 40, 60, 80, 100, 120, 140], unit: ppm}   # the 160 tick sits on the top frame line
+    opening: 6
+    size: [10, 32]
+    exclude: [[1450, 40, 1700, 190]]   # legend
+    series:
+      - {name: HZSM-5, color: black, quantity: out_NOx_ppm, catalyst: hzsm5}
+      - {name: 0.05Fe@ZSM-5, color: [244, 61, 65], quantity: out_NOx_ppm, catalyst: fe005_zsm5}
+      - {name: 0.08Fe@ZSM-5, color: [22, 109, 222], quantity: out_NOx_ppm, catalyst: fe008_zsm5}
+      - {name: 0.1Fe@ZSM-5, color: [51, 174, 105], quantity: out_NOx_ppm, catalyst: fe01_zsm5}
+      - {name: 0.5Fe@ZSM-5, color: [180, 118, 221], quantity: out_NOx_ppm, catalyst: fe05_zsm5}
+  - id: odenbrand2017_fig2
+    source: odenbrand2017
+    label: "Figure 2: SCR at 5000 ppm NO on commercial vanadia, NO out"
+    page: 7
+    image: 0
+    catalyst: v_commercial
+    feed: {NO: 5000 ppm, NH3: 5500 ppm, O2: 13.06 %, H2O: 5.03 %, N2: balance}
+    t_step_C: 0.1   # each point sits at its own bed-exit temperature
+    x: {ticks: [620, 640, 660, 680, 700, 720, 740, 760, 780, 800, 820], unit: K}   # the 600 tick sits on the frame line
+    y: {ticks: [200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 3600, 3800], unit: ppm}
+    exclude: [[1290, 20, 1480, 130]]   # legend (its lettering holds rings)
+    series:
+      - {name: NO, color: black, shape: circle, open: {diameter: 20, score: 0.65}, quantity: out_NO_ppm}
+  - id: odenbrand2017_fig3
+    source: odenbrand2017
+    label: "Figure 3: the same runs, N2O out"
+    page: 8
+    image: 0
+    catalyst: v_commercial
+    feed: {NO: 5000 ppm, NH3: 5500 ppm, O2: 13.06 %, H2O: 5.03 %, N2: balance}
+    t_step_C: 0.1
+    x: {ticks: [550, 600, 650, 700, 750, 800], unit: K, tick_side: top}   # points at 0 ppm rest on the bottom axis
+    y: {ticks: [2, 4, 6, 8, 10, 12, 14, 16, 18], unit: ppm}   # the 0 and 20 ticks sit on the frame lines
+    series:
+      - {name: N2O, color: black, shape: square, open: {diameter: 22, score: 0.58}, quantity: out_N2O_ppm}   # points at 0 ppm show half a square
+
+# What replicate.py fits. Each dataset pairs a catalyst's runs (one bench step per run, read from the figures above),
+# the pathways whose rate constant and activation energy are fitted (the rest are switched off), the reading error,
+# and the held-out test: points at or above `from_C` in the listed runs are left out of the second fit and predicted.
+# The main fit keeps the pack's NH3 coverage on the SCR site; each alternative refits all points under a different
+# model choice, to show how much that choice moves the answer: more or fewer fitted parameters (`add`, `drop`),
+# parameters held at given values (`fixed`), or film mass transfer to the monolith wall (`film`, from the source's
+# channel geometry; the Gate 1 screen then runs on the intrinsic rates).
+datasets:
+  - id: metkar2012_fe_zsm5
+    source: metkar2012
+    catalyst: fe_zsm5
+    runs:
+      - {step: nh3_ox, figure: metkar2012_fig9-3a, series: NH3}
+      - {step: scr, figure: metkar2012_fig9-5, series: Fe-ZSM-5}
+    fit: [scr, nh3_ox_n2]          # ammonia burns to N2 alone here (the N2 readings close the balance)
+    error: {sigma_abs_ppm: 5, sigma_rel: 0.03}
+    holdout: {from_C: 500, runs: [nh3_ox, scr], label: "Fit below 500 °C, predict above"}
+    alternatives:
+      - {label: "Ammonia coverage fitted", add: [scr.cov.NH3.ln_K_ref, scr.cov.NH3.dH_kJ]}
+      - {label: "Film mass transfer included", film: true}
+    checks: [n2_balance]
+  - id: metkar2012_cu_cha
+    source: metkar2012
+    catalyst: cu_cha
+    runs:
+      - {step: nh3_ox, figure: metkar2012_fig9-3b, series: NH3}
+      - {step: scr, figure: metkar2012_fig9-5, series: Cu-chabazite}
+    fit: [scr, nh3_ox_n2]
+    error: {sigma_abs_ppm: 5, sigma_rel: 0.03}
+    holdout: {from_C: 500, runs: [nh3_ox, scr], label: "Fit below 500 °C, predict above"}
+    alternatives:
+      - {label: "Ammonia coverage fitted", add: [scr.cov.NH3.ln_K_ref, scr.cov.NH3.dH_kJ]}
+      - {label: "Film mass transfer included", film: true}
+    checks: [n2_balance]
+  - id: xie2026_fe01_zsm5
+    source: xie2026
+    catalyst: fe01_zsm5
+    runs:
+      - {step: nh3_ox, figure: xie2026_fig5b, series: NH3}
+      - {step: nh3_ox, figure: xie2026_fig5c, series: NOx share}
+      - {step: scr, figure: xie2026_fig5d, series: NO conversion}
+    fit: [scr, nh3_ox_n2, nh3_ox_no]   # NOx counts as NO; N2O stays near 1 ppm (Fig. 3d-e)
+    # NOx leaves the ammonia-only run beside unburned ammonia from 600 C up, which needs SCR to slow as ammonia
+    # desorbs: the comparison fits the SCR site's ammonia coverage.
+    alternatives:
+      - {label: "Ammonia coverage fitted", add: [scr.cov.NH3.ln_K_ref, scr.cov.NH3.dH_kJ]}
+    error: {sigma_abs_ppm: 15, sigma_rel: 0.05}   # the error bars run about ±20 ppm NH3 and ±3-5 points of conversion
+    # The bench yardstick's logic: the ammonia-only run at every temperature plus SCR below 700 C predicts SCR above.
+    holdout: {from_C: 700, runs: [scr], label: "Fit the ammonia run and SCR below 700 °C, predict SCR above"}
+    checks: [nox_two_figures]
+  - id: odenbrand2017_vanadia
+    source: odenbrand2017
+    catalyst: v_commercial
+    runs:
+      - {step: scr, figure: odenbrand2017_fig2, series: NO}
+      - {step: scr, figure: odenbrand2017_fig3, series: N2O}
+    fit: [scr, nh3_ox_no, nh3_ox_n2o]   # the paper's own scheme; ammonia is scrubbed out before the analyzers
+    error: {sigma_abs_ppm: 0.5, sigma_rel: 0.04}   # 1 px is about 5 ppm NO and 0.02 ppm N2O on these figures
+    holdout: {from_C: 460, runs: [scr], label: "Fit below 460 °C, predict above"}
+    alternatives:
+      - {label: "Ammonia coverage fitted", add: [scr.cov.NH3.ln_K_ref, scr.cov.NH3.dH_kJ]}
+      # Table 5's adsorption constant, a = 9e-9 m3/mol x exp(139 kJ/mol / RT), at the pack's 1,050 F reference.
+      - label: "Paper's ammonia adsorption"
+        fixed: {scr.cov.NH3.ln_K_ref: 1.407, scr.cov.NH3.dH_kJ: -139}
+        note: "Ammonia coverage held at the paper's fitted adsorption constant (Table 5)."

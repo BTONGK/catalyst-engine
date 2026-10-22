@@ -1,15 +1,36 @@
 {
  "run_date": "2026-10-21",
  "pack": "scr_hot",
- "source": {
-  "cite": "P. S. Metkar, \"Experimental and Kinetic Modeling Studies of Selective Catalytic Reduction of NOx with NH3 on Fe- and Cu-Zeolite Monolithic Catalysts\", PhD dissertation, University of Houston, 2012 (advisors M. P. Harold and V. Balakotaiah).\n",
-  "url": "https://uh-ir.tdl.org/items/dec7ab2f-feec-4eaa-9d24-e8cd811ad67d",
-  "conditions": "Steady state after about 25 min per point, 1000 sccm total in Ar, GHSV about 57,000 1/h (thesis p. 333 and ch. 9). Pretreated at 500 C in 5% O2. FTIR analyzer (MKS MultiGas 2030).\n",
-  "ghsv_per_h": 57000
+ "sources": {
+  "metkar2012": {
+   "cite": "P. S. Metkar, \"Experimental and Kinetic Modeling Studies of Selective Catalytic Reduction of NOx with NH3 on Fe- and Cu-Zeolite Monolithic Catalysts\", PhD dissertation, University of Houston, 2012 (advisors M. P. Harold and V. Balakotaiah).\n",
+   "url": "https://uh-ir.tdl.org/items/dec7ab2f-feec-4eaa-9d24-e8cd811ad67d",
+   "conditions": "Steady state after about 25 min per point, 1000 sccm total in Ar, GHSV about 57,000 1/h (thesis p. 333 and ch. 9). Pretreated at 500 C in 5% O2. FTIR analyzer (MKS MultiGas 2030).\n",
+   "ghsv_per_h": 57000,
+   "id": "metkar2012",
+   "pressure_kPa": 101.325
+  },
+  "xie2026": {
+   "cite": "X. Xie, J. Yuan, L. Liu, H. Liu and Z. Sun, \"Dual kinetic effect from confined iron nanoparticles in zeolite modulates high-temperature catalytic NO reduction and NH3 oxidation\", Ind. Chem. Mater. 4 (2026) 457-471, doi:10.1039/d5im00245a. Open access under CC BY-NC 4.0.\n",
+   "url": "https://doi.org/10.1039/d5im00245a",
+   "conditions": "Quartz fixed bed, 2 L/min, GHSV 30,000 1/h, IR analyzer, each point averaged over 20 min at steady state. SCR feed 1000 ppm NO, 1000 ppm NH3, 6% O2, N2 balance, no water. Ammonia oxidation runs feed 500 ppm NH3: the figures give 140 ppm NH3 left and a 5% NOx share at 700 C, and 20 ppm NOx out, which only a 500 ppm feed fits (Fig. 3c against Fig. 5b-c).\n",
+   "ghsv_per_h": 30000,
+   "id": "xie2026",
+   "pressure_kPa": 101.325
+  },
+  "odenbrand2017": {
+   "cite": "C. U. I. Odenbrand, \"High Temperature and High Concentration SCR of NO with NH3 for the Oxyfuel Combustion Process: Fitting of Kinetics to Data from a Laboratory Reactor Experiment\", Top. Catal. 60 (2017) 1317-1332, doi:10.1007/s11244-017-0817-x. Open access under CC BY 4.0.\n",
+   "url": "https://doi.org/10.1007/s11244-017-0817-x",
+   "conditions": "Gold-plated steel fixed bed at 2.2 bar, 180 NL/h (GHSV 120,000 1/h at NTP), steady state after 10-45 min. Oxyfuel flue-gas feed: 5000 ppm NO, 5500 ppm NH3, 13.06% O2, 5.03% H2O (N2 balance in the paper's model). Inlet stepped from 570 to 800 K in 25 K steps; each point is plotted at the bed-exit temperature. Ammonia is scrubbed out before the analyzers: NO by chemiluminescence, N2O by NDIR.\n",
+   "ghsv_per_h": 120000,
+   "id": "odenbrand2017",
+   "pressure_kPa": 220
+  }
  },
  "figures": [
   {
    "id": "metkar2012_fig9-3a",
+   "source": "metkar2012",
    "label": "Figure 9-3a: ammonia oxidation on Fe-ZSM-5",
    "page": 393,
    "feed": {
@@ -21,6 +42,7 @@
   },
   {
    "id": "metkar2012_fig9-3b",
+   "source": "metkar2012",
    "label": "Figure 9-3b: ammonia oxidation on Cu-chabazite",
    "page": 393,
    "feed": {
@@ -32,6 +54,7 @@
   },
   {
    "id": "metkar2012_fig9-5",
+   "source": "metkar2012",
    "label": "Figure 9-5: standard SCR, NO conversion",
    "page": 396,
    "feed": {
@@ -41,37 +64,86 @@
     "H2O": "2 %",
     "N2": "balance"
    }
+  },
+  {
+   "id": "xie2026_fig5b",
+   "source": "xie2026",
+   "label": "Figure 5b: ammonia oxidation on 0.1Fe@ZSM-5, NH3 left",
+   "page": 8,
+   "feed": {
+    "NH3": "500 ppm",
+    "O2": "6 %",
+    "N2": "balance"
+   }
+  },
+  {
+   "id": "xie2026_fig5c",
+   "source": "xie2026",
+   "label": "Figure 5c: ammonia oxidation on 0.1Fe@ZSM-5, share of ammonia burned to NOx",
+   "page": 8,
+   "feed": {
+    "NH3": "500 ppm",
+    "O2": "6 %",
+    "N2": "balance"
+   }
+  },
+  {
+   "id": "xie2026_fig5d",
+   "source": "xie2026",
+   "label": "Figure 5d: standard SCR on 0.1Fe@ZSM-5, NO conversion",
+   "page": 8,
+   "feed": {
+    "NO": "1000 ppm",
+    "NH3": "1000 ppm",
+    "O2": "6 %",
+    "N2": "balance"
+   }
+  },
+  {
+   "id": "xie2026_fig3c",
+   "source": "xie2026",
+   "label": "Figure 3c: ammonia oxidation, NOx made, by iron loading",
+   "page": 6,
+   "feed": {
+    "NH3": "500 ppm",
+    "O2": "6 %",
+    "N2": "balance"
+   }
+  },
+  {
+   "id": "odenbrand2017_fig2",
+   "source": "odenbrand2017",
+   "label": "Figure 2: SCR at 5000 ppm NO on commercial vanadia, NO out",
+   "page": 7,
+   "feed": {
+    "NO": "5000 ppm",
+    "NH3": "5500 ppm",
+    "O2": "13.06 %",
+    "H2O": "5.03 %",
+    "N2": "balance"
+   }
+  },
+  {
+   "id": "odenbrand2017_fig3",
+   "source": "odenbrand2017",
+   "label": "Figure 3: the same runs, N2O out",
+   "page": 8,
+   "feed": {
+    "NO": "5000 ppm",
+    "NH3": "5500 ppm",
+    "O2": "13.06 %",
+    "H2O": "5.03 %",
+    "N2": "balance"
+   }
   }
  ],
  "reactor": "isothermal plug flow, ideal (no mass-transfer limits)",
- "fitted": [
-  "scr.ln_k_ref",
-  "scr.Ea_kJ",
-  "nh3_ox_n2.ln_k_ref",
-  "nh3_ox_n2.Ea_kJ"
- ],
- "switched_off": [
-  "nh3_ox_no.ln_k_ref",
-  "nh3_ox_n2o.ln_k_ref"
- ],
  "pathways": {
   "scr": "Standard SCR",
-  "nh3_ox_n2": "NH3 oxidation to N2"
+  "nh3_ox_n2": "NH3 oxidation to N2",
+  "nh3_ox_no": "NH3 oxidation to NO",
+  "nh3_ox_n2o": "NH3 oxidation to N2O"
  },
- "analyzer": {
-  "name": "digitized figure",
-  "measured": [
-   "NO",
-   "NH3"
-  ],
-  "sigma_abs_ppm": 5.0,
-  "sigma_rel": 0.03,
-  "lod_ppm": {
-   "NO": 1.0,
-   "NH3": 1.0
-  }
- },
- "holdout_from_C": 500.0,
  "t_ref_C": 565.6,
  "t_ref_F": 1050.0,
  "yardstick": {
@@ -87,13 +159,18 @@
    "scr.ln_k_ref": 5.99,
    "scr.Ea_kJ": 50.0,
    "nh3_ox_n2.ln_k_ref": 3.4,
-   "nh3_ox_n2.Ea_kJ": 140.0
+   "nh3_ox_n2.Ea_kJ": 140.0,
+   "nh3_ox_no.ln_k_ref": 2.08,
+   "nh3_ox_no.Ea_kJ": 180.0,
+   "nh3_ox_n2o.ln_k_ref": 1.39,
+   "nh3_ox_n2o.Ea_kJ": 120.0
   },
   "k_ref_per_s": {
    "scr": 399.415,
-   "nh3_ox_n2": 29.964
+   "nh3_ox_n2": 29.964,
+   "nh3_ox_no": 8.004,
+   "nh3_ox_n2o": 4.015
   },
-  "k_ratio_scr_to_nh3_ox": 13.33,
   "yardstick": [
    {
     "T_F": 650,
@@ -121,65 +198,112 @@
   "fe_zsm5": {
    "name": "Fe-ZSM-5",
    "form": "washcoated cordierite monolith, 400 cpsi, 2 cm long, 34 channels",
+   "source": "metkar2012",
    "published_Ea_kJ": {
     "scr": 72.4,
     "nh3_ox_n2": 90.8
    },
-   "n2_check": [
+   "published_model": "thesis model (washcoat diffusion resolved)",
+   "fitted": [
+    "scr.ln_k_ref",
+    "scr.Ea_kJ",
+    "nh3_ox_n2.ln_k_ref",
+    "nh3_ox_n2.Ea_kJ"
+   ],
+   "switched_off": [
+    "nh3_ox_no.ln_k_ref",
+    "nh3_ox_n2o.ln_k_ref"
+   ],
+   "pathways": [
+    "scr",
+    "nh3_ox_n2"
+   ],
+   "analyzer": {
+    "name": "digitized figure",
+    "measured": [
+     "NO",
+     "NH3"
+    ],
+    "sigma_abs_ppm": 5.0,
+    "sigma_rel": 0.03,
+    "lod_ppm": {
+     "NO": 1.0,
+     "NH3": 1.0
+    }
+   },
+   "holdout_test": {
+    "from_C": 500,
+    "runs": [
+     "nh3_ox",
+     "scr"
+    ],
+    "label": "Fit below 500 \u00b0C, predict above"
+   },
+   "range_C": [
+    100.0,
+    600.0
+   ],
+   "checks": [
     {
-     "T_C": 100.0,
-     "n2_ppm": 0.0,
-     "half_nh3_used_ppm": 1.0
-    },
-    {
-     "T_C": 150.0,
-     "n2_ppm": 0.0,
-     "half_nh3_used_ppm": 0.7
-    },
-    {
-     "T_C": 200.0,
-     "n2_ppm": 1.2,
-     "half_nh3_used_ppm": 1.6
-    },
-    {
-     "T_C": 250.0,
-     "n2_ppm": 1.8,
-     "half_nh3_used_ppm": 2.5
-    },
-    {
-     "T_C": 300.0,
-     "n2_ppm": 6.6,
-     "half_nh3_used_ppm": 8.5
-    },
-    {
-     "T_C": 350.0,
-     "n2_ppm": 24.6,
-     "half_nh3_used_ppm": 25.6
-    },
-    {
-     "T_C": 400.0,
-     "n2_ppm": 36.6,
-     "half_nh3_used_ppm": 37.6
-    },
-    {
-     "T_C": 450.0,
-     "n2_ppm": 47.4,
-     "half_nh3_used_ppm": 48.7
-    },
-    {
-     "T_C": 500.0,
-     "n2_ppm": 86.4,
-     "half_nh3_used_ppm": 87.1
-    },
-    {
-     "T_C": 550.0,
-     "n2_ppm": 159.0,
-     "half_nh3_used_ppm": 159.7
-    },
-    {
-     "T_C": 600.0,
-     "n2_ppm": 210.0,
-     "half_nh3_used_ppm": 210.7
+     "title": "Nitrogen balance in the ammonia-only run",
+     "caption": "N2 made equals half the ammonia used when ammonia burns to N2 alone.",
+     "rows": [
+      {
+       "\u00b0C": 100.0,
+       "N2 measured (ppm)": 0.0,
+       "Half the NH3 used (ppm)": 1.0
+      },
+      {
+       "\u00b0C": 150.0,
+       "N2 measured (ppm)": 0.0,
+       "Half the NH3 used (ppm)": 0.7
+      },
+      {
+       "\u00b0C": 200.0,
+       "N2 measured (ppm)": 1.2,
+       "Half the NH3 used (ppm)": 1.6
+      },
+      {
+       "\u00b0C": 250.0,
+       "N2 measured (ppm)": 1.8,
+       "Half the NH3 used (ppm)": 2.5
+      },
+      {
+       "\u00b0C": 300.0,
+       "N2 measured (ppm)": 6.6,
+       "Half the NH3 used (ppm)": 8.5
+      },
+      {
+       "\u00b0C": 350.0,
+       "N2 measured (ppm)": 24.6,
+       "Half the NH3 used (ppm)": 25.6
+      },
+      {
+       "\u00b0C": 400.0,
+       "N2 measured (ppm)": 36.6,
+       "Half the NH3 used (ppm)": 37.6
+      },
+      {
+       "\u00b0C": 450.0,
+       "N2 measured (ppm)": 47.4,
+       "Half the NH3 used (ppm)": 48.7
+      },
+      {
+       "\u00b0C": 500.0,
+       "N2 measured (ppm)": 86.4,
+       "Half the NH3 used (ppm)": 87.1
+      },
+      {
+       "\u00b0C": 550.0,
+       "N2 measured (ppm)": 159.0,
+       "Half the NH3 used (ppm)": 159.7
+      },
+      {
+       "\u00b0C": 600.0,
+       "N2 measured (ppm)": 210.0,
+       "Half the NH3 used (ppm)": 210.7
+      }
+     ]
     }
    ],
    "full": {
@@ -202,14 +326,12 @@
      "scr": 519.079,
      "nh3_ox_n2": 59.146
     },
-    "k_ratio_scr_to_nh3_ox": 8.78,
-    "t_ref_C": 565.6,
     "panels": [
      {
+      "id": "nh3_ox.out_NH3_ppm",
       "title": "Ammonia oxidation run (NH3 + O2 only)",
+      "figure": "Figure 9-3a: ammonia oxidation on Fe-ZSM-5",
       "unit": "NH3 out (ppm)",
-      "species": "NH3",
-      "id": "nh3_ox",
       "curve": {
        "T_C": [
         100.0,
@@ -264,10 +386,7 @@
         590.0,
         600.0,
         610.0,
-        620.0,
-        630.0,
-        640.0,
-        650.0
+        620.0
        ],
        "value": [
         500.0,
@@ -322,10 +441,7 @@
         99.9,
         82.84,
         67.56,
-        54.15,
-        42.61,
-        32.88,
-        24.86
+        54.15
        ],
        "lo": [
         499.99,
@@ -380,10 +496,7 @@
         86.31,
         69.61,
         54.4,
-        41.7,
-        31.39,
-        22.97,
-        16.25
+        41.7
        ],
        "hi": [
         500.0,
@@ -438,10 +551,7 @@
         111.93,
         95.48,
         79.98,
-        66.45,
-        54.47,
-        43.96,
-        34.95
+        66.45
        ]
       },
       "points": [
@@ -547,10 +657,10 @@
       ]
      },
      {
+      "id": "scr.no_conversion",
       "title": "Standard SCR run (NO + NH3 + O2)",
+      "figure": "Figure 9-5: standard SCR, NO conversion",
       "unit": "NO conversion",
-      "species": "NO",
-      "id": "scr",
       "curve": {
        "T_C": [
         100.0,
@@ -605,10 +715,7 @@
         590.0,
         600.0,
         610.0,
-        620.0,
-        630.0,
-        640.0,
-        650.0
+        620.0
        ],
        "value": [
         0.0056,
@@ -663,10 +770,7 @@
         0.9029,
         0.8988,
         0.8946,
-        0.8903,
-        0.8858,
-        0.8812,
-        0.8765
+        0.8903
        ],
        "lo": [
         0.0037,
@@ -721,10 +825,7 @@
         0.8881,
         0.8834,
         0.878,
-        0.8725,
-        0.8671,
-        0.8612,
-        0.8558
+        0.8725
        ],
        "hi": [
         0.0083,
@@ -779,10 +880,7 @@
         0.9167,
         0.9139,
         0.9111,
-        0.908,
-        0.905,
-        0.902,
-        0.8988
+        0.908
        ]
       },
       "points": [
@@ -888,25 +986,6 @@
       ]
      }
     ],
-    "errors_fit": {
-     "nh3_ox": {
-      "unit": "NH3 out (ppm)",
-      "n": 11,
-      "mean_abs": 11.5918,
-      "max_abs": 32.82,
-      "mean": 4.1173,
-      "in_band": 3
-     },
-     "scr": {
-      "unit": "NO conversion",
-      "n": 11,
-      "mean_abs": 0.0204,
-      "max_abs": 0.0447,
-      "mean": 0.003,
-      "in_band": 4
-     }
-    },
-    "errors_predicted": {},
     "yardstick": [
      {
       "T_F": 650,
@@ -938,7 +1017,26 @@
       "lo": 0.7997,
       "hi": 0.8494
      }
-    ]
+    ],
+    "errors_fit": {
+     "nh3_ox.out_NH3_ppm": {
+      "unit": "NH3 out (ppm)",
+      "n": 11,
+      "mean_abs": 11.5918,
+      "max_abs": 32.82,
+      "mean": 4.1173,
+      "in_band": 3
+     },
+     "scr.no_conversion": {
+      "unit": "NO conversion",
+      "n": 11,
+      "mean_abs": 0.0204,
+      "max_abs": 0.0447,
+      "mean": 0.003,
+      "in_band": 4
+     }
+    },
+    "errors_predicted": {}
    },
    "holdout": {
     "params": {
@@ -960,14 +1058,12 @@
      "scr": 503.237,
      "nh3_ox_n2": 30.291
     },
-    "k_ratio_scr_to_nh3_ox": 16.61,
-    "t_ref_C": 565.6,
     "panels": [
      {
+      "id": "nh3_ox.out_NH3_ppm",
       "title": "Ammonia oxidation run (NH3 + O2 only)",
+      "figure": "Figure 9-3a: ammonia oxidation on Fe-ZSM-5",
       "unit": "NH3 out (ppm)",
-      "species": "NH3",
-      "id": "nh3_ox",
       "curve": {
        "T_C": [
         100.0,
@@ -1022,10 +1118,7 @@
         590.0,
         600.0,
         610.0,
-        620.0,
-        630.0,
-        640.0,
-        650.0
+        620.0
        ],
        "value": [
         499.76,
@@ -1080,10 +1173,7 @@
         242.11,
         231.58,
         221.18,
-        210.93,
-        200.85,
-        190.96,
-        181.3
+        210.93
        ],
        "lo": [
         490.86,
@@ -1138,10 +1228,7 @@
         97.44,
         83.49,
         70.59,
-        59.02,
-        48.78,
-        39.87,
-        32.21
+        59.02
        ],
        "hi": [
         499.99,
@@ -1196,10 +1283,7 @@
         362.69,
         359.54,
         356.95,
-        354.4,
-        351.61,
-        349.45,
-        347.06
+        354.4
        ]
       },
       "points": [
@@ -1305,10 +1389,10 @@
       ]
      },
      {
+      "id": "scr.no_conversion",
       "title": "Standard SCR run (NO + NH3 + O2)",
+      "figure": "Figure 9-5: standard SCR, NO conversion",
       "unit": "NO conversion",
-      "species": "NO",
-      "id": "scr",
       "curve": {
        "T_C": [
         100.0,
@@ -1363,10 +1447,7 @@
         590.0,
         600.0,
         610.0,
-        620.0,
-        630.0,
-        640.0,
-        650.0
+        620.0
        ],
        "value": [
         0.006,
@@ -1421,10 +1502,7 @@
         0.9487,
         0.9485,
         0.9483,
-        0.9481,
-        0.9479,
-        0.9475,
-        0.9471
+        0.9481
        ],
        "lo": [
         0.0034,
@@ -1479,10 +1557,7 @@
         0.9009,
         0.8976,
         0.894,
-        0.8904,
-        0.8866,
-        0.8828,
-        0.8788
+        0.8904
        ],
        "hi": [
         0.0101,
@@ -1537,10 +1612,7 @@
         0.9767,
         0.9774,
         0.9779,
-        0.9783,
-        0.9786,
-        0.9789,
-        0.9793
+        0.9783
        ]
       },
       "points": [
@@ -1646,42 +1718,6 @@
       ]
      }
     ],
-    "errors_fit": {
-     "nh3_ox": {
-      "unit": "NH3 out (ppm)",
-      "n": 8,
-      "mean_abs": 4.9388,
-      "max_abs": 17.36,
-      "mean": -2.5238,
-      "in_band": 8
-     },
-     "scr": {
-      "unit": "NO conversion",
-      "n": 8,
-      "mean_abs": 0.0256,
-      "max_abs": 0.0471,
-      "mean": 0.0049,
-      "in_band": 2
-     }
-    },
-    "errors_predicted": {
-     "nh3_ox": {
-      "unit": "NH3 out (ppm)",
-      "n": 3,
-      "mean_abs": 89.5833,
-      "max_abs": 152.98,
-      "mean": 89.5833,
-      "in_band": 2
-     },
-     "scr": {
-      "unit": "NO conversion",
-      "n": 3,
-      "mean_abs": 0.0309,
-      "max_abs": 0.0411,
-      "mean": 0.0309,
-      "in_band": 3
-     }
-    },
     "yardstick": [
      {
       "T_F": 650,
@@ -1713,66 +1749,522 @@
       "lo": 0.8245,
       "hi": 0.9574
      }
-    ]
-   }
+    ],
+    "errors_fit": {
+     "nh3_ox.out_NH3_ppm": {
+      "unit": "NH3 out (ppm)",
+      "n": 8,
+      "mean_abs": 4.9388,
+      "max_abs": 17.36,
+      "mean": -2.5238,
+      "in_band": 8
+     },
+     "scr.no_conversion": {
+      "unit": "NO conversion",
+      "n": 8,
+      "mean_abs": 0.0256,
+      "max_abs": 0.0471,
+      "mean": 0.0049,
+      "in_band": 2
+     }
+    },
+    "errors_predicted": {
+     "nh3_ox.out_NH3_ppm": {
+      "unit": "NH3 out (ppm)",
+      "n": 3,
+      "mean_abs": 89.5833,
+      "max_abs": 152.98,
+      "mean": 89.5833,
+      "in_band": 2
+     },
+     "scr.no_conversion": {
+      "unit": "NO conversion",
+      "n": 3,
+      "mean_abs": 0.0309,
+      "max_abs": 0.0411,
+      "mean": 0.0309,
+      "in_band": 3
+     }
+    }
+   },
+   "alternatives": [
+    {
+     "label": "Ammonia coverage fitted",
+     "note": "",
+     "chi2_reduced": 2.115,
+     "n_params": 6,
+     "poorly_determined": [],
+     "params": {
+      "scr.ln_k_ref": 7.1425,
+      "scr.Ea_kJ": 58.6912,
+      "nh3_ox_n2.ln_k_ref": 4.0774,
+      "nh3_ox_n2.Ea_kJ": 78.5544,
+      "scr.cov.NH3.ln_K_ref": 5.7784,
+      "scr.cov.NH3.dH_kJ": -20.972
+     },
+     "std": {
+      "scr.ln_k_ref": 0.5288,
+      "scr.Ea_kJ": 6.9403,
+      "nh3_ox_n2.ln_k_ref": 0.0368,
+      "nh3_ox_n2.Ea_kJ": 4.6172,
+      "scr.cov.NH3.ln_K_ref": 0.8695,
+      "scr.cov.NH3.dH_kJ": 10.7008
+     },
+     "fixed": {},
+     "film": false,
+     "errors_fit": {
+      "nh3_ox.out_NH3_ppm": {
+       "unit": "NH3 out (ppm)",
+       "n": 11,
+       "mean_abs": 11.31,
+       "max_abs": 34.89,
+       "mean": 5.7045,
+       "in_band": 0
+      },
+      "scr.no_conversion": {
+       "unit": "NO conversion",
+       "n": 11,
+       "mean_abs": 0.0189,
+       "max_abs": 0.0626,
+       "mean": -0.0071,
+       "in_band": 1
+      }
+     },
+     "curves": {
+      "nh3_ox.out_NH3_ppm": [
+       500.0,
+       500.0,
+       500.0,
+       499.99,
+       499.99,
+       499.98,
+       499.97,
+       499.95,
+       499.92,
+       499.88,
+       499.82,
+       499.74,
+       499.62,
+       499.45,
+       499.22,
+       498.91,
+       498.5,
+       497.96,
+       497.26,
+       496.36,
+       495.22,
+       493.77,
+       491.97,
+       489.74,
+       487.01,
+       483.69,
+       479.68,
+       474.9,
+       469.24,
+       462.58,
+       454.83,
+       445.87,
+       435.61,
+       423.96,
+       410.85,
+       396.24,
+       380.1,
+       362.46,
+       343.37,
+       322.94,
+       301.33,
+       278.73,
+       255.41,
+       231.63,
+       207.75,
+       184.1,
+       161.04,
+       138.93,
+       118.08,
+       98.77,
+       81.23,
+       65.61,
+       51.98
+      ],
+      "scr.no_conversion": [
+       0.0016,
+       0.0026,
+       0.004,
+       0.006,
+       0.0089,
+       0.013,
+       0.0186,
+       0.0261,
+       0.036,
+       0.0489,
+       0.0653,
+       0.0858,
+       0.111,
+       0.1415,
+       0.1777,
+       0.2197,
+       0.2675,
+       0.3206,
+       0.3783,
+       0.4393,
+       0.5021,
+       0.5647,
+       0.6252,
+       0.6817,
+       0.7326,
+       0.7769,
+       0.8142,
+       0.8446,
+       0.8687,
+       0.8876,
+       0.902,
+       0.9129,
+       0.921,
+       0.9269,
+       0.9311,
+       0.9339,
+       0.9355,
+       0.9362,
+       0.9361,
+       0.9352,
+       0.9338,
+       0.9318,
+       0.9294,
+       0.9265,
+       0.9234,
+       0.9199,
+       0.9163,
+       0.9124,
+       0.9085,
+       0.9043,
+       0.9001,
+       0.8958,
+       0.8913
+      ]
+     },
+     "yardstick": [
+      {
+       "T_F": 650,
+       "value": 0.5087,
+       "lo": 0.3176,
+       "hi": 0.6897
+      },
+      {
+       "T_F": 800,
+       "value": 0.6513,
+       "lo": 0.4921,
+       "hi": 0.7732
+      },
+      {
+       "T_F": 950,
+       "value": 0.6486,
+       "lo": 0.5273,
+       "hi": 0.7353
+      },
+      {
+       "T_F": 1050,
+       "value": 0.5852,
+       "lo": 0.4595,
+       "hi": 0.6711
+      },
+      {
+       "T_F": 1150,
+       "value": 0.505,
+       "lo": 0.3747,
+       "hi": 0.6041
+      }
+     ]
+    },
+    {
+     "label": "Film mass transfer included",
+     "note": "",
+     "chi2_reduced": 3.329,
+     "n_params": 4,
+     "poorly_determined": [],
+     "params": {
+      "scr.ln_k_ref": 6.7266,
+      "scr.Ea_kJ": 53.5645,
+      "nh3_ox_n2.ln_k_ref": 4.124,
+      "nh3_ox_n2.Ea_kJ": 77.5757
+     },
+     "std": {
+      "scr.ln_k_ref": 0.1687,
+      "scr.Ea_kJ": 3.124,
+      "nh3_ox_n2.ln_k_ref": 0.0468,
+      "nh3_ox_n2.Ea_kJ": 5.3916
+     },
+     "fixed": {},
+     "film": true,
+     "errors_fit": {
+      "nh3_ox.out_NH3_ppm": {
+       "unit": "NH3 out (ppm)",
+       "n": 11,
+       "mean_abs": 12.2309,
+       "max_abs": 33.32,
+       "mean": 4.7327,
+       "in_band": 0
+      },
+      "scr.no_conversion": {
+       "unit": "NO conversion",
+       "n": 11,
+       "mean_abs": 0.0233,
+       "max_abs": 0.051,
+       "mean": -0.0049,
+       "in_band": 0
+      }
+     },
+     "curves": {
+      "nh3_ox.out_NH3_ppm": [
+       500.0,
+       500.0,
+       500.0,
+       499.99,
+       499.99,
+       499.98,
+       499.96,
+       499.94,
+       499.91,
+       499.86,
+       499.79,
+       499.69,
+       499.56,
+       499.36,
+       499.11,
+       498.76,
+       498.3,
+       497.7,
+       496.92,
+       495.92,
+       494.66,
+       493.07,
+       491.1,
+       488.67,
+       485.71,
+       482.12,
+       477.82,
+       472.71,
+       466.67,
+       459.62,
+       451.45,
+       442.07,
+       431.38,
+       419.32,
+       405.84,
+       390.91,
+       374.55,
+       356.79,
+       337.73,
+       317.49,
+       296.25,
+       274.22,
+       251.66,
+       228.84,
+       206.08,
+       183.69,
+       161.97,
+       141.21,
+       121.67,
+       103.56,
+       87.05,
+       72.23,
+       59.14
+      ],
+      "scr.no_conversion": [
+       0.0027,
+       0.004,
+       0.006,
+       0.0088,
+       0.0127,
+       0.0178,
+       0.0246,
+       0.0335,
+       0.0449,
+       0.0592,
+       0.0769,
+       0.0984,
+       0.1243,
+       0.1548,
+       0.1903,
+       0.2306,
+       0.2758,
+       0.3254,
+       0.3788,
+       0.4352,
+       0.4934,
+       0.5523,
+       0.6104,
+       0.6665,
+       0.7193,
+       0.7678,
+       0.8114,
+       0.8495,
+       0.882,
+       0.9091,
+       0.9312,
+       0.9486,
+       0.9611,
+       0.9582,
+       0.9551,
+       0.9519,
+       0.9484,
+       0.9448,
+       0.9409,
+       0.9369,
+       0.9326,
+       0.9281,
+       0.9235,
+       0.9186,
+       0.9136,
+       0.9083,
+       0.9028,
+       0.8972,
+       0.8914,
+       0.8854,
+       0.8792,
+       0.8729,
+       0.8665
+      ]
+     },
+     "yardstick": [
+      {
+       "T_F": 650,
+       "value": 0.9375,
+       "lo": 0.9252,
+       "hi": 0.9505
+      },
+      {
+       "T_F": 800,
+       "value": 0.9664,
+       "lo": 0.9567,
+       "hi": 0.9738
+      },
+      {
+       "T_F": 950,
+       "value": 0.945,
+       "lo": 0.9335,
+       "hi": 0.9544
+      },
+      {
+       "T_F": 1050,
+       "value": 0.9193,
+       "lo": 0.9014,
+       "hi": 0.9358
+      },
+      {
+       "T_F": 1150,
+       "value": 0.8743,
+       "lo": 0.8456,
+       "hi": 0.902
+      }
+     ]
+    }
+   ],
+   "n_params": 4
   },
   "cu_cha": {
    "name": "Cu-chabazite",
    "form": "washcoated cordierite monolith, 400 cpsi, 2 cm long, 34 channels",
+   "source": "metkar2012",
    "published_Ea_kJ": {
     "scr": 89.1,
     "nh3_ox_n2": 178.8
    },
-   "n2_check": [
+   "published_model": "thesis model (washcoat diffusion resolved)",
+   "fitted": [
+    "scr.ln_k_ref",
+    "scr.Ea_kJ",
+    "nh3_ox_n2.ln_k_ref",
+    "nh3_ox_n2.Ea_kJ"
+   ],
+   "switched_off": [
+    "nh3_ox_no.ln_k_ref",
+    "nh3_ox_n2o.ln_k_ref"
+   ],
+   "pathways": [
+    "scr",
+    "nh3_ox_n2"
+   ],
+   "analyzer": {
+    "name": "digitized figure",
+    "measured": [
+     "NO",
+     "NH3"
+    ],
+    "sigma_abs_ppm": 5.0,
+    "sigma_rel": 0.03,
+    "lod_ppm": {
+     "NO": 1.0,
+     "NH3": 1.0
+    }
+   },
+   "holdout_test": {
+    "from_C": 500,
+    "runs": [
+     "nh3_ox",
+     "scr"
+    ],
+    "label": "Fit below 500 \u00b0C, predict above"
+   },
+   "range_C": [
+    100.0,
+    600.0
+   ],
+   "checks": [
     {
-     "T_C": 100.0,
-     "n2_ppm": -0.6,
-     "half_nh3_used_ppm": 0.3
-    },
-    {
-     "T_C": 150.0,
-     "n2_ppm": -0.6,
-     "half_nh3_used_ppm": 0.3
-    },
-    {
-     "T_C": 200.0,
-     "n2_ppm": 1.7,
-     "half_nh3_used_ppm": 3.1
-    },
-    {
-     "T_C": 250.0,
-     "n2_ppm": 6.7,
-     "half_nh3_used_ppm": 8.1
-    },
-    {
-     "T_C": 300.0,
-     "n2_ppm": 51.7,
-     "half_nh3_used_ppm": 52.5
-    },
-    {
-     "T_C": 350.0,
-     "n2_ppm": 98.3,
-     "half_nh3_used_ppm": 99.7
-    },
-    {
-     "T_C": 400.0,
-     "n2_ppm": 224.4,
-     "half_nh3_used_ppm": 225.8
-    },
-    {
-     "T_C": 450.0,
-     "n2_ppm": 246.7,
-     "half_nh3_used_ppm": 248.1
-    },
-    {
-     "T_C": 500.0,
-     "n2_ppm": 249.4,
-     "half_nh3_used_ppm": 250.3
-    },
-    {
-     "T_C": 550.0,
-     "n2_ppm": 249.4,
-     "half_nh3_used_ppm": 250.8
+     "title": "Nitrogen balance in the ammonia-only run",
+     "caption": "N2 made equals half the ammonia used when ammonia burns to N2 alone.",
+     "rows": [
+      {
+       "\u00b0C": 100.0,
+       "N2 measured (ppm)": -0.6,
+       "Half the NH3 used (ppm)": 0.3
+      },
+      {
+       "\u00b0C": 150.0,
+       "N2 measured (ppm)": -0.6,
+       "Half the NH3 used (ppm)": 0.3
+      },
+      {
+       "\u00b0C": 200.0,
+       "N2 measured (ppm)": 1.7,
+       "Half the NH3 used (ppm)": 3.1
+      },
+      {
+       "\u00b0C": 250.0,
+       "N2 measured (ppm)": 6.7,
+       "Half the NH3 used (ppm)": 8.1
+      },
+      {
+       "\u00b0C": 300.0,
+       "N2 measured (ppm)": 51.7,
+       "Half the NH3 used (ppm)": 52.5
+      },
+      {
+       "\u00b0C": 350.0,
+       "N2 measured (ppm)": 98.3,
+       "Half the NH3 used (ppm)": 99.7
+      },
+      {
+       "\u00b0C": 400.0,
+       "N2 measured (ppm)": 224.4,
+       "Half the NH3 used (ppm)": 225.8
+      },
+      {
+       "\u00b0C": 450.0,
+       "N2 measured (ppm)": 246.7,
+       "Half the NH3 used (ppm)": 248.1
+      },
+      {
+       "\u00b0C": 500.0,
+       "N2 measured (ppm)": 249.4,
+       "Half the NH3 used (ppm)": 250.3
+      },
+      {
+       "\u00b0C": 550.0,
+       "N2 measured (ppm)": 249.4,
+       "Half the NH3 used (ppm)": 250.8
+      }
+     ]
     }
    ],
    "full": {
@@ -1795,14 +2287,12 @@
      "scr": 7773.903,
      "nh3_ox_n2": 4422.467
     },
-    "k_ratio_scr_to_nh3_ox": 1.76,
-    "t_ref_C": 565.6,
     "panels": [
      {
+      "id": "nh3_ox.out_NH3_ppm",
       "title": "Ammonia oxidation run (NH3 + O2 only)",
+      "figure": "Figure 9-3b: ammonia oxidation on Cu-chabazite",
       "unit": "NH3 out (ppm)",
-      "species": "NH3",
-      "id": "nh3_ox",
       "curve": {
        "T_C": [
         100.0,
@@ -1857,10 +2347,7 @@
         590.0,
         600.0,
         610.0,
-        620.0,
-        630.0,
-        640.0,
-        650.0
+        620.0
        ],
        "value": [
         500.0,
@@ -1900,9 +2387,6 @@
         0.58,
         0.09,
         0.01,
-        0.0,
-        0.0,
-        0.0,
         0.0,
         0.0,
         0.0,
@@ -1973,9 +2457,6 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        0.0,
-        0.0,
         0.0
        ],
        "hi": [
@@ -2016,9 +2497,6 @@
         0.79,
         0.13,
         0.02,
-        0.0,
-        0.0,
-        0.0,
         0.0,
         0.0,
         0.0,
@@ -2131,10 +2609,10 @@
       ]
      },
      {
+      "id": "scr.no_conversion",
       "title": "Standard SCR run (NO + NH3 + O2)",
+      "figure": "Figure 9-5: standard SCR, NO conversion",
       "unit": "NO conversion",
-      "species": "NO",
-      "id": "scr",
       "curve": {
        "T_C": [
         100.0,
@@ -2189,10 +2667,7 @@
         590.0,
         600.0,
         610.0,
-        620.0,
-        630.0,
-        640.0,
-        650.0
+        620.0
        ],
        "value": [
         0.0436,
@@ -2247,10 +2722,7 @@
         0.6852,
         0.6678,
         0.6502,
-        0.6324,
-        0.6146,
-        0.5966,
-        0.5784
+        0.6324
        ],
        "lo": [
         0.0389,
@@ -2305,10 +2777,7 @@
         0.6643,
         0.646,
         0.6269,
-        0.6083,
-        0.5893,
-        0.57,
-        0.5508
+        0.6083
        ],
        "hi": [
         0.0482,
@@ -2363,10 +2832,7 @@
         0.7063,
         0.6901,
         0.6741,
-        0.6577,
-        0.6412,
-        0.6247,
-        0.6075
+        0.6577
        ]
       },
       "points": [
@@ -2481,25 +2947,6 @@
       ]
      }
     ],
-    "errors_fit": {
-     "nh3_ox": {
-      "unit": "NH3 out (ppm)",
-      "n": 10,
-      "mean_abs": 9.357,
-      "max_abs": 60.51,
-      "mean": 6.187,
-      "in_band": 4
-     },
-     "scr": {
-      "unit": "NO conversion",
-      "n": 12,
-      "mean_abs": 0.0109,
-      "max_abs": 0.0539,
-      "mean": 0.0026,
-      "in_band": 9
-     }
-    },
-    "errors_predicted": {},
     "yardstick": [
      {
       "T_F": 650,
@@ -2531,7 +2978,26 @@
       "lo": 0.478,
       "hi": 0.5333
      }
-    ]
+    ],
+    "errors_fit": {
+     "nh3_ox.out_NH3_ppm": {
+      "unit": "NH3 out (ppm)",
+      "n": 10,
+      "mean_abs": 9.357,
+      "max_abs": 60.51,
+      "mean": 6.187,
+      "in_band": 4
+     },
+     "scr.no_conversion": {
+      "unit": "NO conversion",
+      "n": 12,
+      "mean_abs": 0.0109,
+      "max_abs": 0.0539,
+      "mean": 0.0026,
+      "in_band": 9
+     }
+    },
+    "errors_predicted": {}
    },
    "holdout": {
     "params": {
@@ -2553,14 +3019,12 @@
      "scr": 8555.044,
      "nh3_ox_n2": 3472.584
     },
-    "k_ratio_scr_to_nh3_ox": 2.46,
-    "t_ref_C": 565.6,
     "panels": [
      {
+      "id": "nh3_ox.out_NH3_ppm",
       "title": "Ammonia oxidation run (NH3 + O2 only)",
+      "figure": "Figure 9-3b: ammonia oxidation on Cu-chabazite",
       "unit": "NH3 out (ppm)",
-      "species": "NH3",
-      "id": "nh3_ox",
       "curve": {
        "T_C": [
         100.0,
@@ -2615,10 +3079,7 @@
         590.0,
         600.0,
         610.0,
-        620.0,
-        630.0,
-        640.0,
-        650.0
+        620.0
        ],
        "value": [
         500.0,
@@ -2658,9 +3119,6 @@
         1.06,
         0.22,
         0.03,
-        0.0,
-        0.0,
-        0.0,
         0.0,
         0.0,
         0.0,
@@ -2731,9 +3189,6 @@
         0.0,
         0.0,
         0.0,
-        0.0,
-        0.0,
-        0.0,
         0.0
        ],
        "hi": [
@@ -2776,9 +3231,6 @@
         0.25,
         0.05,
         0.01,
-        0.0,
-        0.0,
-        0.0,
         0.0,
         0.0,
         0.0,
@@ -2889,10 +3341,10 @@
       ]
      },
      {
+      "id": "scr.no_conversion",
       "title": "Standard SCR run (NO + NH3 + O2)",
+      "figure": "Figure 9-5: standard SCR, NO conversion",
       "unit": "NO conversion",
-      "species": "NO",
-      "id": "scr",
       "curve": {
        "T_C": [
         100.0,
@@ -2947,10 +3399,7 @@
         590.0,
         600.0,
         610.0,
-        620.0,
-        630.0,
-        640.0,
-        650.0
+        620.0
        ],
        "value": [
         0.0407,
@@ -3005,10 +3454,7 @@
         0.7453,
         0.7313,
         0.7172,
-        0.7028,
-        0.6882,
-        0.6734,
-        0.6583
+        0.7028
        ],
        "lo": [
         0.0302,
@@ -3063,10 +3509,7 @@
         0.6657,
         0.6465,
         0.6286,
-        0.6105,
-        0.5919,
-        0.5732,
-        0.5545
+        0.6105
        ],
        "hi": [
         0.0515,
@@ -3121,10 +3564,7 @@
         0.8184,
         0.8098,
         0.8007,
-        0.7913,
-        0.7816,
-        0.7717,
-        0.7616
+        0.7913
        ]
       },
       "points": [
@@ -3239,42 +3679,6 @@
       ]
      }
     ],
-    "errors_fit": {
-     "nh3_ox": {
-      "unit": "NH3 out (ppm)",
-      "n": 8,
-      "mean_abs": 11.3563,
-      "max_abs": 53.82,
-      "mean": 6.1938,
-      "in_band": 2
-     },
-     "scr": {
-      "unit": "NO conversion",
-      "n": 9,
-      "mean_abs": 0.0131,
-      "max_abs": 0.0466,
-      "mean": 0.0031,
-      "in_band": 6
-     }
-    },
-    "errors_predicted": {
-     "nh3_ox": {
-      "unit": "NH3 out (ppm)",
-      "n": 2,
-      "mean_abs": 0.0,
-      "max_abs": 0.0,
-      "mean": 0.0,
-      "in_band": 2
-     },
-     "scr": {
-      "unit": "NO conversion",
-      "n": 3,
-      "mean_abs": 0.0493,
-      "max_abs": 0.0616,
-      "mean": 0.0493,
-      "in_band": 3
-     }
-    },
     "yardstick": [
      {
       "T_F": 650,
@@ -3306,8 +3710,5587 @@
       "lo": 0.4805,
       "hi": 0.6933
      }
-    ]
-   }
+    ],
+    "errors_fit": {
+     "nh3_ox.out_NH3_ppm": {
+      "unit": "NH3 out (ppm)",
+      "n": 8,
+      "mean_abs": 11.3563,
+      "max_abs": 53.82,
+      "mean": 6.1938,
+      "in_band": 2
+     },
+     "scr.no_conversion": {
+      "unit": "NO conversion",
+      "n": 9,
+      "mean_abs": 0.0131,
+      "max_abs": 0.0466,
+      "mean": 0.0031,
+      "in_band": 6
+     }
+    },
+    "errors_predicted": {
+     "nh3_ox.out_NH3_ppm": {
+      "unit": "NH3 out (ppm)",
+      "n": 2,
+      "mean_abs": 0.0,
+      "max_abs": 0.0,
+      "mean": 0.0,
+      "in_band": 2
+     },
+     "scr.no_conversion": {
+      "unit": "NO conversion",
+      "n": 3,
+      "mean_abs": 0.0493,
+      "max_abs": 0.0616,
+      "mean": 0.0493,
+      "in_band": 3
+     }
+    }
+   },
+   "alternatives": [
+    {
+     "label": "Ammonia coverage fitted",
+     "note": "",
+     "chi2_reduced": 2.073,
+     "n_params": 6,
+     "poorly_determined": [],
+     "params": {
+      "scr.ln_k_ref": 9.2779,
+      "scr.Ea_kJ": 53.2025,
+      "nh3_ox_n2.ln_k_ref": 8.0772,
+      "nh3_ox_n2.Ea_kJ": 101.6698,
+      "scr.cov.NH3.ln_K_ref": 6.0743,
+      "scr.cov.NH3.dH_kJ": -37.2322
+     },
+     "std": {
+      "scr.ln_k_ref": 0.574,
+      "scr.Ea_kJ": 5.0933,
+      "nh3_ox_n2.ln_k_ref": 0.2703,
+      "nh3_ox_n2.Ea_kJ": 6.53,
+      "scr.cov.NH3.ln_K_ref": 1.3767,
+      "scr.cov.NH3.dH_kJ": 23.8341
+     },
+     "fixed": {},
+     "film": false,
+     "errors_fit": {
+      "nh3_ox.out_NH3_ppm": {
+       "unit": "NH3 out (ppm)",
+       "n": 10,
+       "mean_abs": 9.15,
+       "max_abs": 51.62,
+       "mean": 4.578,
+       "in_band": 2
+      },
+      "scr.no_conversion": {
+       "unit": "NO conversion",
+       "n": 12,
+       "mean_abs": 0.0117,
+       "max_abs": 0.0353,
+       "mean": 0.0005,
+       "in_band": 0
+      }
+     },
+     "curves": {
+      "nh3_ox.out_NH3_ppm": [
+       500.0,
+       500.0,
+       500.0,
+       499.99,
+       499.98,
+       499.96,
+       499.92,
+       499.86,
+       499.75,
+       499.56,
+       499.25,
+       498.74,
+       497.94,
+       496.71,
+       494.82,
+       492.01,
+       487.9,
+       482.0,
+       473.67,
+       462.17,
+       446.62,
+       426.08,
+       399.66,
+       366.72,
+       327.06,
+       281.31,
+       231.1,
+       179.25,
+       129.44,
+       85.58,
+       50.79,
+       26.44,
+       11.75,
+       4.32,
+       1.27,
+       0.28,
+       0.05,
+       0.01,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ],
+      "scr.no_conversion": [
+       0.0357,
+       0.0539,
+       0.0792,
+       0.1135,
+       0.1585,
+       0.2156,
+       0.2855,
+       0.3677,
+       0.4599,
+       0.5581,
+       0.6566,
+       0.7488,
+       0.8284,
+       0.8912,
+       0.9357,
+       0.9637,
+       0.9789,
+       0.9859,
+       0.9884,
+       0.9885,
+       0.9873,
+       0.9852,
+       0.9826,
+       0.9795,
+       0.976,
+       0.972,
+       0.9675,
+       0.9625,
+       0.957,
+       0.9508,
+       0.9441,
+       0.9366,
+       0.9285,
+       0.9196,
+       0.9101,
+       0.8997,
+       0.8886,
+       0.8767,
+       0.864,
+       0.8505,
+       0.8363,
+       0.8212,
+       0.8054,
+       0.7889,
+       0.7716,
+       0.7537,
+       0.7352,
+       0.7161,
+       0.6964,
+       0.6763,
+       0.6558,
+       0.6349,
+       0.6138
+      ]
+     },
+     "yardstick": [
+      {
+       "T_F": 650,
+       "value": 0.9288,
+       "lo": 0.4136,
+       "hi": 0.9659
+      },
+      {
+       "T_F": 800,
+       "value": 0.7461,
+       "lo": 0.2986,
+       "hi": 0.8646
+      },
+      {
+       "T_F": 950,
+       "value": 0.4515,
+       "lo": 0.1829,
+       "hi": 0.6381
+      },
+      {
+       "T_F": 1050,
+       "value": 0.2742,
+       "lo": 0.1235,
+       "hi": 0.4436
+      },
+      {
+       "T_F": 1150,
+       "value": 0.1536,
+       "lo": 0.0705,
+       "hi": 0.2744
+      }
+     ]
+    },
+    {
+     "label": "Film mass transfer included",
+     "note": "",
+     "chi2_reduced": 6.594,
+     "n_params": 4,
+     "poorly_determined": [],
+     "params": {
+      "scr.ln_k_ref": 10.2327,
+      "scr.Ea_kJ": 61.0257,
+      "nh3_ox_n2.ln_k_ref": 7.102,
+      "nh3_ox_n2.Ea_kJ": 78.295
+     },
+     "std": {
+      "scr.ln_k_ref": 0.4234,
+      "scr.Ea_kJ": 4.0942,
+      "nh3_ox_n2.ln_k_ref": 0.0734,
+      "nh3_ox_n2.Ea_kJ": 2.7105
+     },
+     "fixed": {},
+     "film": true,
+     "errors_fit": {
+      "nh3_ox.out_NH3_ppm": {
+       "unit": "NH3 out (ppm)",
+       "n": 10,
+       "mean_abs": 11.072,
+       "max_abs": 43.54,
+       "mean": 1.116,
+       "in_band": 0
+      },
+      "scr.no_conversion": {
+       "unit": "NO conversion",
+       "n": 12,
+       "mean_abs": 0.0259,
+       "max_abs": 0.061,
+       "mean": -0.0202,
+       "in_band": 0
+      }
+     },
+     "curves": {
+      "nh3_ox.out_NH3_ppm": [
+       499.98,
+       499.96,
+       499.92,
+       499.86,
+       499.76,
+       499.6,
+       499.34,
+       498.95,
+       498.36,
+       497.49,
+       496.23,
+       494.44,
+       491.94,
+       488.5,
+       483.84,
+       477.65,
+       469.56,
+       459.15,
+       446.0,
+       429.69,
+       409.86,
+       386.26,
+       358.84,
+       327.78,
+       293.56,
+       257.02,
+       219.3,
+       181.77,
+       145.9,
+       113.06,
+       84.36,
+       60.46,
+       41.55,
+       27.35,
+       17.24,
+       10.41,
+       6.03,
+       3.36,
+       1.81,
+       0.94,
+       0.48,
+       0.24,
+       0.12,
+       0.06,
+       0.03,
+       0.01,
+       0.01,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ],
+      "scr.no_conversion": [
+       0.023,
+       0.0371,
+       0.058,
+       0.0882,
+       0.1302,
+       0.1862,
+       0.2577,
+       0.3446,
+       0.4441,
+       0.5509,
+       0.6572,
+       0.7545,
+       0.8361,
+       0.8981,
+       0.9411,
+       0.9681,
+       0.9837,
+       0.9836,
+       0.9812,
+       0.9782,
+       0.9748,
+       0.9708,
+       0.9663,
+       0.9609,
+       0.9548,
+       0.9479,
+       0.9401,
+       0.9316,
+       0.9222,
+       0.912,
+       0.901,
+       0.8894,
+       0.8772,
+       0.8645,
+       0.8515,
+       0.8382,
+       0.8248,
+       0.8115,
+       0.7984,
+       0.7855,
+       0.7729,
+       0.7608,
+       0.7492,
+       0.7382,
+       0.7277,
+       0.7178,
+       0.7086,
+       0.6999,
+       0.6918,
+       0.6843,
+       0.6774,
+       0.6709,
+       0.665
+      ]
+     },
+     "yardstick": [
+      {
+       "T_F": 650,
+       "value": 0.9833,
+       "lo": 0.9761,
+       "hi": 0.9883
+      },
+      {
+       "T_F": 800,
+       "value": 0.9753,
+       "lo": 0.96,
+       "hi": 0.9846
+      },
+      {
+       "T_F": 950,
+       "value": 0.963,
+       "lo": 0.9349,
+       "hi": 0.9792
+      },
+      {
+       "T_F": 1050,
+       "value": 0.9475,
+       "lo": 0.9053,
+       "hi": 0.9717
+      },
+      {
+       "T_F": 1150,
+       "value": 0.919,
+       "lo": 0.8546,
+       "hi": 0.9564
+      }
+     ]
+    }
+   ],
+   "n_params": 4
+  },
+  "fe01_zsm5": {
+   "name": "0.1Fe@ZSM-5",
+   "form": "ion-exchanged powder (0.1 wt% Fe target, Si/Al 27), quartz fixed bed",
+   "source": "xie2026",
+   "published_Ea_kJ": {
+    "scr": 52.12,
+    "nh3_ox_n2": "98.3 (all NH3 oxidation)",
+    "nh3_ox_no": "98.3 (all NH3 oxidation)"
+   },
+   "published_model": "paper's model (points under 15% conversion)",
+   "fitted": [
+    "scr.ln_k_ref",
+    "scr.Ea_kJ",
+    "nh3_ox_n2.ln_k_ref",
+    "nh3_ox_n2.Ea_kJ",
+    "nh3_ox_no.ln_k_ref",
+    "nh3_ox_no.Ea_kJ"
+   ],
+   "switched_off": [
+    "nh3_ox_n2o.ln_k_ref"
+   ],
+   "pathways": [
+    "scr",
+    "nh3_ox_n2",
+    "nh3_ox_no"
+   ],
+   "analyzer": {
+    "name": "digitized figure",
+    "measured": [
+     "NO",
+     "NH3"
+    ],
+    "sigma_abs_ppm": 15.0,
+    "sigma_rel": 0.05,
+    "lod_ppm": {
+     "NO": 1.0,
+     "NH3": 1.0
+    }
+   },
+   "holdout_test": {
+    "from_C": 700,
+    "runs": [
+     "scr"
+    ],
+    "label": "Fit the ammonia run and SCR below 700 \u00b0C, predict SCR above"
+   },
+   "range_C": [
+    200.0,
+    850.0
+   ],
+   "checks": [
+    {
+     "title": "NOx made in the ammonia-only run, read two ways",
+     "caption": "One figure reports the NOx directly; two others give it as the share of burned ammonia times the ammonia used, with a 500 ppm feed. Agreement confirms the feed and the readings.",
+     "rows": [
+      {
+       "\u00b0C": 700.0,
+       "NOx reported (ppm)": 20.0,
+       "Share \u00d7 NH3 used (ppm)": 18.0
+      },
+      {
+       "\u00b0C": 750.0,
+       "NOx reported (ppm)": 75.5,
+       "Share \u00d7 NH3 used (ppm)": 69.1
+      },
+      {
+       "\u00b0C": 800.0,
+       "NOx reported (ppm)": 118.5,
+       "Share \u00d7 NH3 used (ppm)": 108.9
+      }
+     ]
+    }
+   ],
+   "full": {
+    "params": {
+     "scr.ln_k_ref": 4.4401,
+     "scr.Ea_kJ": 43.0201,
+     "nh3_ox_n2.ln_k_ref": 0.941,
+     "nh3_ox_n2.Ea_kJ": 14.3573,
+     "nh3_ox_no.ln_k_ref": 0.3235,
+     "nh3_ox_no.Ea_kJ": 126.5486
+    },
+    "std": {
+     "scr.ln_k_ref": 0.0888,
+     "scr.Ea_kJ": 3.4602,
+     "nh3_ox_n2.ln_k_ref": 1.2804,
+     "nh3_ox_n2.Ea_kJ": 126.4319,
+     "nh3_ox_no.ln_k_ref": 0.8928,
+     "nh3_ox_no.Ea_kJ": 26.4659
+    },
+    "poorly_determined": [
+     "nh3_ox_n2.ln_k_ref",
+     "nh3_ox_n2.Ea_kJ",
+     "nh3_ox_no.ln_k_ref"
+    ],
+    "chi2_reduced": 4.03,
+    "n_points": 28,
+    "k_ref_per_s": {
+     "scr": 84.781,
+     "nh3_ox_n2": 2.563,
+     "nh3_ox_no": 1.382
+    },
+    "panels": [
+     {
+      "id": "nh3_ox.out_NH3_ppm",
+      "title": "Ammonia oxidation run (NH3 + O2 only)",
+      "figure": "Figure 5b: ammonia oxidation on 0.1Fe@ZSM-5, NH3 left",
+      "unit": "NH3 out (ppm)",
+      "curve": {
+       "T_C": [
+        200.0,
+        210.0,
+        220.0,
+        230.0,
+        240.0,
+        250.0,
+        260.0,
+        270.0,
+        280.0,
+        290.0,
+        300.0,
+        310.0,
+        320.0,
+        330.0,
+        340.0,
+        350.0,
+        360.0,
+        370.0,
+        380.0,
+        390.0,
+        400.0,
+        410.0,
+        420.0,
+        430.0,
+        440.0,
+        450.0,
+        460.0,
+        470.0,
+        480.0,
+        490.0,
+        500.0,
+        510.0,
+        520.0,
+        530.0,
+        540.0,
+        550.0,
+        560.0,
+        570.0,
+        580.0,
+        590.0,
+        600.0,
+        610.0,
+        620.0,
+        630.0,
+        640.0,
+        650.0,
+        660.0,
+        670.0,
+        680.0,
+        690.0,
+        700.0,
+        710.0,
+        720.0,
+        730.0,
+        740.0,
+        750.0,
+        760.0,
+        770.0,
+        780.0,
+        790.0,
+        800.0,
+        810.0,
+        820.0,
+        830.0,
+        840.0,
+        850.0,
+        860.0,
+        870.0
+       ],
+       "value": [
+        482.23,
+        481.25,
+        480.27,
+        479.29,
+        478.31,
+        477.34,
+        476.37,
+        475.4,
+        474.44,
+        473.49,
+        472.54,
+        471.6,
+        470.67,
+        469.75,
+        468.84,
+        467.92,
+        467.01,
+        466.1,
+        465.18,
+        464.25,
+        463.29,
+        462.29,
+        461.24,
+        460.12,
+        458.9,
+        457.56,
+        456.05,
+        454.32,
+        452.34,
+        450.02,
+        447.29,
+        444.07,
+        440.26,
+        435.73,
+        430.37,
+        424.03,
+        416.56,
+        407.81,
+        397.61,
+        385.8,
+        372.24,
+        356.81,
+        339.41,
+        320.0,
+        298.63,
+        275.38,
+        250.49,
+        224.26,
+        197.14,
+        169.66,
+        142.47,
+        116.28,
+        91.79,
+        69.69,
+        50.53,
+        34.71,
+        22.37,
+        13.42,
+        7.44,
+        3.81,
+        1.81,
+        0.81,
+        0.34,
+        0.14,
+        0.05,
+        0.02,
+        0.01,
+        0.0
+       ],
+       "lo": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.67,
+        6.11,
+        32.12,
+        90.31,
+        165.38,
+        211.68,
+        265.42,
+        283.92,
+        295.67,
+        296.88,
+        275.21,
+        250.6,
+        228.14,
+        194.33,
+        159.97,
+        132.62,
+        106.8,
+        55.35,
+        30.02,
+        11.91,
+        3.82,
+        0.74,
+        0.08,
+        0.01,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ],
+       "hi": [
+        500.0,
+        500.0,
+        500.0,
+        500.0,
+        500.0,
+        500.0,
+        500.0,
+        500.0,
+        500.0,
+        500.0,
+        500.0,
+        500.0,
+        500.0,
+        499.99,
+        499.99,
+        499.98,
+        499.97,
+        499.94,
+        499.9,
+        499.85,
+        499.77,
+        499.67,
+        499.45,
+        499.06,
+        498.64,
+        498.04,
+        497.15,
+        495.97,
+        493.82,
+        490.12,
+        486.76,
+        482.34,
+        477.31,
+        468.77,
+        461.21,
+        450.27,
+        439.28,
+        427.39,
+        417.56,
+        406.13,
+        389.6,
+        374.89,
+        357.13,
+        337.11,
+        316.95,
+        295.81,
+        271.97,
+        245.79,
+        219.54,
+        191.95,
+        163.26,
+        138.52,
+        111.94,
+        89.48,
+        67.39,
+        49.83,
+        35.62,
+        25.32,
+        16.89,
+        10.87,
+        6.85,
+        4.16,
+        2.44,
+        1.5,
+        0.83,
+        0.48,
+        0.27,
+        0.16
+       ]
+      },
+      "points": [
+       {
+        "T_C": 500.0,
+        "measured": 476.72,
+        "model": 447.29,
+        "lo": 265.42,
+        "hi": 486.76,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 550.0,
+        "measured": 405.44,
+        "model": 424.03,
+        "lo": 250.6,
+        "hi": 450.27,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 600.0,
+        "measured": 366.13,
+        "model": 372.24,
+        "lo": 106.8,
+        "hi": 389.6,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 650.0,
+        "measured": 220.25,
+        "model": 275.38,
+        "lo": 0.74,
+        "hi": 295.81,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 700.0,
+        "measured": 139.64,
+        "model": 142.47,
+        "lo": 0.0,
+        "hi": 163.26,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 750.0,
+        "measured": 55.04,
+        "model": 34.71,
+        "lo": 0.0,
+        "hi": 49.83,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 800.0,
+        "measured": 6.41,
+        "model": 1.81,
+        "lo": 0.0,
+        "hi": 6.85,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 850.0,
+        "measured": 6.41,
+        "model": 0.02,
+        "lo": 0.0,
+        "hi": 0.48,
+        "in_band": false,
+        "used_in_fit": true
+       }
+      ]
+     },
+     {
+      "id": "nh3_ox.nox_selectivity",
+      "title": "Ammonia oxidation run (NH3 + O2 only)",
+      "figure": "Figure 5c: ammonia oxidation on 0.1Fe@ZSM-5, share of ammonia burned to NOx",
+      "unit": "Share of burned NH3 that makes NOx",
+      "curve": {
+       "T_C": [
+        200.0,
+        210.0,
+        220.0,
+        230.0,
+        240.0,
+        250.0,
+        260.0,
+        270.0,
+        280.0,
+        290.0,
+        300.0,
+        310.0,
+        320.0,
+        330.0,
+        340.0,
+        350.0,
+        360.0,
+        370.0,
+        380.0,
+        390.0,
+        400.0,
+        410.0,
+        420.0,
+        430.0,
+        440.0,
+        450.0,
+        460.0,
+        470.0,
+        480.0,
+        490.0,
+        500.0,
+        510.0,
+        520.0,
+        530.0,
+        540.0,
+        550.0,
+        560.0,
+        570.0,
+        580.0,
+        590.0,
+        600.0,
+        610.0,
+        620.0,
+        630.0,
+        640.0,
+        650.0,
+        660.0,
+        670.0,
+        680.0,
+        690.0,
+        700.0,
+        710.0,
+        720.0,
+        730.0,
+        740.0,
+        750.0,
+        760.0,
+        770.0,
+        780.0,
+        790.0,
+        800.0,
+        810.0,
+        820.0,
+        830.0,
+        840.0,
+        850.0,
+        860.0,
+        870.0
+       ],
+       "value": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0001,
+        0.0001,
+        0.0002,
+        0.0003,
+        0.0004,
+        0.0006,
+        0.0008,
+        0.0012,
+        0.0016,
+        0.0022,
+        0.0029,
+        0.0039,
+        0.0051,
+        0.0066,
+        0.0085,
+        0.0108,
+        0.0135,
+        0.0167,
+        0.0204,
+        0.0246,
+        0.0294,
+        0.0346,
+        0.0401,
+        0.0459,
+        0.0518,
+        0.0576,
+        0.0632,
+        0.0683,
+        0.0727,
+        0.0764,
+        0.0791,
+        0.0809,
+        0.0817,
+        0.0817,
+        0.0807,
+        0.079,
+        0.0766,
+        0.0736,
+        0.0701,
+        0.0663,
+        0.0622,
+        0.0579,
+        0.0536,
+        0.0494,
+        0.0454,
+        0.0418,
+        0.039,
+        0.0371,
+        0.0367,
+        0.0381,
+        0.042,
+        0.0486,
+        0.0583,
+        0.0709,
+        0.0862,
+        0.1038,
+        0.1235,
+        0.1451,
+        0.1684,
+        0.1932,
+        0.2193
+       ],
+       "lo": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0001,
+        0.0002,
+        0.0003,
+        0.0005,
+        0.0008,
+        0.0012,
+        0.0017,
+        0.0025,
+        0.0031,
+        0.0038,
+        0.0041,
+        0.005,
+        0.006,
+        0.0073,
+        0.006,
+        0.0059,
+        0.006,
+        0.0055,
+        0.0049,
+        0.0043,
+        0.0035,
+        0.0027,
+        0.0023,
+        0.002,
+        0.002,
+        0.0024,
+        0.0031,
+        0.0037,
+        0.0046,
+        0.0056,
+        0.0066,
+        0.0078,
+        0.0088,
+        0.0098,
+        0.0109,
+        0.0111,
+        0.0107,
+        0.0103,
+        0.0098,
+        0.0099,
+        0.0094,
+        0.0086,
+        0.0078,
+        0.0071,
+        0.0066,
+        0.0063,
+        0.0058,
+        0.0054
+       ],
+       "hi": [
+        0.9118,
+        0.8923,
+        0.87,
+        0.8429,
+        0.8169,
+        0.7872,
+        0.7573,
+        0.7232,
+        0.6869,
+        0.641,
+        0.6011,
+        0.5599,
+        0.4929,
+        0.4765,
+        0.4408,
+        0.4037,
+        0.3677,
+        0.3335,
+        0.3169,
+        0.2971,
+        0.2617,
+        0.2452,
+        0.2498,
+        0.2371,
+        0.2216,
+        0.2275,
+        0.207,
+        0.2047,
+        0.2079,
+        0.2011,
+        0.2009,
+        0.1952,
+        0.1903,
+        0.1854,
+        0.1775,
+        0.1712,
+        0.1627,
+        0.1551,
+        0.1481,
+        0.1394,
+        0.1312,
+        0.1234,
+        0.1159,
+        0.1082,
+        0.101,
+        0.0951,
+        0.0881,
+        0.0834,
+        0.0771,
+        0.0721,
+        0.0673,
+        0.0631,
+        0.059,
+        0.0563,
+        0.0548,
+        0.0571,
+        0.062,
+        0.0673,
+        0.0753,
+        0.0885,
+        0.1016,
+        0.1177,
+        0.137,
+        0.1568,
+        0.1768,
+        0.2008,
+        0.2277,
+        0.2569
+       ]
+      },
+      "points": [
+       {
+        "T_C": 500.0,
+        "measured": 0.0041,
+        "model": 0.0459,
+        "lo": 0.0041,
+        "hi": 0.2009,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 550.0,
+        "measured": 0.0073,
+        "model": 0.0727,
+        "lo": 0.0059,
+        "hi": 0.1712,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 600.0,
+        "measured": 0.031,
+        "model": 0.0817,
+        "lo": 0.0035,
+        "hi": 0.1312,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 650.0,
+        "measured": 0.0291,
+        "model": 0.0701,
+        "lo": 0.0024,
+        "hi": 0.0951,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 700.0,
+        "measured": 0.05,
+        "model": 0.0494,
+        "lo": 0.0066,
+        "hi": 0.0673,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 750.0,
+        "measured": 0.1553,
+        "model": 0.0367,
+        "lo": 0.0111,
+        "hi": 0.0571,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 800.0,
+        "measured": 0.2207,
+        "model": 0.0709,
+        "lo": 0.0094,
+        "hi": 0.1016,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 850.0,
+        "measured": 0.2903,
+        "model": 0.1684,
+        "lo": 0.0063,
+        "hi": 0.2008,
+        "in_band": false,
+        "used_in_fit": true
+       }
+      ]
+     },
+     {
+      "id": "scr.no_conversion",
+      "title": "Standard SCR run (NO + NH3 + O2)",
+      "figure": "Figure 5d: standard SCR on 0.1Fe@ZSM-5, NO conversion",
+      "unit": "NO conversion",
+      "curve": {
+       "T_C": [
+        200.0,
+        210.0,
+        220.0,
+        230.0,
+        240.0,
+        250.0,
+        260.0,
+        270.0,
+        280.0,
+        290.0,
+        300.0,
+        310.0,
+        320.0,
+        330.0,
+        340.0,
+        350.0,
+        360.0,
+        370.0,
+        380.0,
+        390.0,
+        400.0,
+        410.0,
+        420.0,
+        430.0,
+        440.0,
+        450.0,
+        460.0,
+        470.0,
+        480.0,
+        490.0,
+        500.0,
+        510.0,
+        520.0,
+        530.0,
+        540.0,
+        550.0,
+        560.0,
+        570.0,
+        580.0,
+        590.0,
+        600.0,
+        610.0,
+        620.0,
+        630.0,
+        640.0,
+        650.0,
+        660.0,
+        670.0,
+        680.0,
+        690.0,
+        700.0,
+        710.0,
+        720.0,
+        730.0,
+        740.0,
+        750.0,
+        760.0,
+        770.0,
+        780.0,
+        790.0,
+        800.0,
+        810.0,
+        820.0,
+        830.0,
+        840.0,
+        850.0,
+        860.0,
+        870.0
+       ],
+       "value": [
+        0.0488,
+        0.0596,
+        0.072,
+        0.0863,
+        0.1025,
+        0.1207,
+        0.1409,
+        0.1633,
+        0.1878,
+        0.2143,
+        0.2428,
+        0.2732,
+        0.3054,
+        0.3391,
+        0.374,
+        0.4101,
+        0.4469,
+        0.4841,
+        0.5215,
+        0.5586,
+        0.5953,
+        0.6311,
+        0.6658,
+        0.6991,
+        0.7308,
+        0.7606,
+        0.7885,
+        0.8144,
+        0.8381,
+        0.8596,
+        0.879,
+        0.8963,
+        0.9115,
+        0.9246,
+        0.9357,
+        0.9442,
+        0.9475,
+        0.9455,
+        0.9425,
+        0.939,
+        0.9349,
+        0.9302,
+        0.9249,
+        0.919,
+        0.9124,
+        0.9052,
+        0.8972,
+        0.8885,
+        0.879,
+        0.8687,
+        0.8576,
+        0.8456,
+        0.8327,
+        0.8189,
+        0.8042,
+        0.7885,
+        0.7718,
+        0.7541,
+        0.7353,
+        0.7153,
+        0.6943,
+        0.672,
+        0.6486,
+        0.6239,
+        0.598,
+        0.5708,
+        0.5424,
+        0.5126
+       ],
+       "lo": [
+        0.0003,
+        0.0003,
+        0.0003,
+        0.0003,
+        0.0003,
+        0.0003,
+        0.0003,
+        0.0003,
+        0.0003,
+        0.0004,
+        0.0005,
+        0.0007,
+        0.0012,
+        0.0022,
+        0.004,
+        0.0073,
+        0.0119,
+        0.0187,
+        0.0301,
+        0.0447,
+        0.0671,
+        0.1114,
+        0.172,
+        0.2441,
+        0.3252,
+        0.4116,
+        0.5161,
+        0.6119,
+        0.6941,
+        0.7542,
+        0.805,
+        0.837,
+        0.8501,
+        0.8568,
+        0.8475,
+        0.8388,
+        0.8359,
+        0.8227,
+        0.8063,
+        0.7817,
+        0.7626,
+        0.7279,
+        0.688,
+        0.6495,
+        0.6131,
+        0.5804,
+        0.5439,
+        0.5015,
+        0.4521,
+        0.4179,
+        0.3912,
+        0.365,
+        0.3366,
+        0.3061,
+        0.2706,
+        0.2352,
+        0.2027,
+        0.1732,
+        0.1461,
+        0.1219,
+        0.1008,
+        0.0828,
+        0.0675,
+        0.0547,
+        0.044,
+        0.0353,
+        0.0282,
+        0.0225
+       ],
+       "hi": [
+        0.0805,
+        0.0955,
+        0.1124,
+        0.131,
+        0.1519,
+        0.1745,
+        0.1989,
+        0.2251,
+        0.2517,
+        0.2795,
+        0.3086,
+        0.3409,
+        0.3745,
+        0.4099,
+        0.443,
+        0.4766,
+        0.512,
+        0.547,
+        0.5814,
+        0.6163,
+        0.6501,
+        0.6816,
+        0.7109,
+        0.7397,
+        0.7683,
+        0.7942,
+        0.8206,
+        0.8437,
+        0.8657,
+        0.8842,
+        0.9033,
+        0.9182,
+        0.9306,
+        0.9407,
+        0.948,
+        0.9549,
+        0.9591,
+        0.9575,
+        0.9544,
+        0.9506,
+        0.9466,
+        0.9421,
+        0.9366,
+        0.9305,
+        0.9235,
+        0.9165,
+        0.9086,
+        0.9004,
+        0.8903,
+        0.8803,
+        0.8687,
+        0.8564,
+        0.8452,
+        0.8335,
+        0.8182,
+        0.8034,
+        0.7885,
+        0.7711,
+        0.754,
+        0.7359,
+        0.7169,
+        0.6974,
+        0.6783,
+        0.6584,
+        0.6393,
+        0.6202,
+        0.5993,
+        0.5786
+       ]
+      },
+      "points": [
+       {
+        "T_C": 200.0,
+        "measured": 0.0559,
+        "model": 0.0488,
+        "lo": 0.0003,
+        "hi": 0.0805,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 300.0,
+        "measured": 0.215,
+        "model": 0.2428,
+        "lo": 0.0005,
+        "hi": 0.3086,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 400.0,
+        "measured": 0.6252,
+        "model": 0.5953,
+        "lo": 0.0671,
+        "hi": 0.6501,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 450.0,
+        "measured": 0.7536,
+        "model": 0.7606,
+        "lo": 0.4116,
+        "hi": 0.7942,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 500.0,
+        "measured": 0.8559,
+        "model": 0.879,
+        "lo": 0.805,
+        "hi": 0.9033,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 550.0,
+        "measured": 0.9332,
+        "model": 0.9442,
+        "lo": 0.8388,
+        "hi": 0.9549,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 600.0,
+        "measured": 0.9445,
+        "model": 0.9349,
+        "lo": 0.7626,
+        "hi": 0.9466,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 650.0,
+        "measured": 0.9559,
+        "model": 0.9052,
+        "lo": 0.5804,
+        "hi": 0.9165,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 700.0,
+        "measured": 0.898,
+        "model": 0.8576,
+        "lo": 0.3912,
+        "hi": 0.8687,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 750.0,
+        "measured": 0.7695,
+        "model": 0.7885,
+        "lo": 0.2352,
+        "hi": 0.8034,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 800.0,
+        "measured": 0.6866,
+        "model": 0.6943,
+        "lo": 0.1008,
+        "hi": 0.7169,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 850.0,
+        "measured": 0.6309,
+        "model": 0.5708,
+        "lo": 0.0353,
+        "hi": 0.6202,
+        "in_band": false,
+        "used_in_fit": true
+       }
+      ]
+     }
+    ],
+    "yardstick": [
+     {
+      "T_F": 650,
+      "value": 0.3857,
+      "lo": 0.0043,
+      "hi": 0.4539
+     },
+     {
+      "T_F": 800,
+      "value": 0.6838,
+      "lo": 0.2135,
+      "hi": 0.7261
+     },
+     {
+      "T_F": 950,
+      "value": 0.8598,
+      "lo": 0.806,
+      "hi": 0.8811
+     },
+     {
+      "T_F": 1050,
+      "value": 0.873,
+      "lo": 0.7777,
+      "hi": 0.8907
+     },
+     {
+      "T_F": 1150,
+      "value": 0.8259,
+      "lo": 0.559,
+      "hi": 0.8463
+     }
+    ],
+    "errors_fit": {
+     "nh3_ox.out_NH3_ppm": {
+      "unit": "NH3 out (ppm)",
+      "n": 8,
+      "mean_abs": 17.9262,
+      "max_abs": 55.13,
+      "mean": 2.7387,
+      "in_band": 6
+     },
+     "nh3_ox.nox_selectivity": {
+      "unit": "Share of burned NH3 that makes NOx",
+      "n": 8,
+      "mean_abs": 0.0737,
+      "max_abs": 0.1498,
+      "mean": -0.024,
+      "in_band": 5
+     },
+     "scr.no_conversion": {
+      "unit": "NO conversion",
+      "n": 12,
+      "mean_abs": 0.0245,
+      "max_abs": 0.0601,
+      "mean": -0.0085,
+      "in_band": 9
+     }
+    },
+    "errors_predicted": {}
+   },
+   "holdout": {
+    "params": {
+     "scr.ln_k_ref": 4.3771,
+     "scr.Ea_kJ": 40.8394,
+     "nh3_ox_n2.ln_k_ref": 1.5151,
+     "nh3_ox_n2.Ea_kJ": 48.6814,
+     "nh3_ox_no.ln_k_ref": -0.8558,
+     "nh3_ox_no.Ea_kJ": 175.5415
+    },
+    "std": {
+     "scr.ln_k_ref": 0.0895,
+     "scr.Ea_kJ": 3.4773,
+     "nh3_ox_n2.ln_k_ref": 0.44,
+     "nh3_ox_n2.Ea_kJ": 57.124,
+     "nh3_ox_no.ln_k_ref": 1.5971,
+     "nh3_ox_no.Ea_kJ": 49.6465
+    },
+    "poorly_determined": [
+     "nh3_ox_n2.Ea_kJ",
+     "nh3_ox_no.ln_k_ref",
+     "nh3_ox_no.Ea_kJ"
+    ],
+    "chi2_reduced": 2.93,
+    "n_points": 24,
+    "k_ref_per_s": {
+     "scr": 79.603,
+     "nh3_ox_n2": 4.55,
+     "nh3_ox_no": 0.425
+    },
+    "panels": [
+     {
+      "id": "nh3_ox.out_NH3_ppm",
+      "title": "Ammonia oxidation run (NH3 + O2 only)",
+      "figure": "Figure 5b: ammonia oxidation on 0.1Fe@ZSM-5, NH3 left",
+      "unit": "NH3 out (ppm)",
+      "curve": {
+       "T_C": [
+        200.0,
+        210.0,
+        220.0,
+        230.0,
+        240.0,
+        250.0,
+        260.0,
+        270.0,
+        280.0,
+        290.0,
+        300.0,
+        310.0,
+        320.0,
+        330.0,
+        340.0,
+        350.0,
+        360.0,
+        370.0,
+        380.0,
+        390.0,
+        400.0,
+        410.0,
+        420.0,
+        430.0,
+        440.0,
+        450.0,
+        460.0,
+        470.0,
+        480.0,
+        490.0,
+        500.0,
+        510.0,
+        520.0,
+        530.0,
+        540.0,
+        550.0,
+        560.0,
+        570.0,
+        580.0,
+        590.0,
+        600.0,
+        610.0,
+        620.0,
+        630.0,
+        640.0,
+        650.0,
+        660.0,
+        670.0,
+        680.0,
+        690.0,
+        700.0,
+        710.0,
+        720.0,
+        730.0,
+        740.0,
+        750.0,
+        760.0,
+        770.0,
+        780.0,
+        790.0,
+        800.0,
+        810.0,
+        820.0,
+        830.0,
+        840.0,
+        850.0,
+        860.0,
+        870.0
+       ],
+       "value": [
+        499.28,
+        499.09,
+        498.87,
+        498.59,
+        498.27,
+        497.89,
+        497.45,
+        496.93,
+        496.34,
+        495.67,
+        494.9,
+        494.04,
+        493.06,
+        491.97,
+        490.76,
+        489.41,
+        487.93,
+        486.3,
+        484.52,
+        482.58,
+        480.46,
+        478.18,
+        475.7,
+        473.04,
+        470.17,
+        467.08,
+        463.77,
+        460.22,
+        456.4,
+        452.29,
+        447.86,
+        443.07,
+        437.87,
+        432.19,
+        425.95,
+        419.06,
+        411.39,
+        402.81,
+        393.15,
+        382.22,
+        369.8,
+        355.68,
+        339.61,
+        321.37,
+        300.78,
+        277.73,
+        252.21,
+        224.38,
+        194.65,
+        163.65,
+        132.31,
+        101.85,
+        73.64,
+        49.09,
+        29.42,
+        15.32,
+        6.7,
+        2.41,
+        0.72,
+        0.18,
+        0.04,
+        0.01,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ],
+       "lo": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.01,
+        0.06,
+        0.34,
+        1.12,
+        2.59,
+        5.54,
+        11.13,
+        19.75,
+        31.67,
+        46.85,
+        64.91,
+        85.25,
+        107.35,
+        130.35,
+        153.46,
+        168.48,
+        182.14,
+        203.7,
+        230.69,
+        242.54,
+        262.37,
+        276.02,
+        293.94,
+        305.78,
+        316.86,
+        318.92,
+        317.96,
+        316.91,
+        315.32,
+        307.98,
+        300.5,
+        287.2,
+        263.05,
+        222.89,
+        191.98,
+        167.75,
+        129.16,
+        95.85,
+        66.78,
+        42.41,
+        26.46,
+        17.7,
+        9.43,
+        5.24,
+        3.29,
+        1.38,
+        0.54,
+        0.25,
+        0.09,
+        0.02,
+        0.01,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ],
+       "hi": [
+        500.0,
+        500.0,
+        500.0,
+        500.0,
+        500.0,
+        500.0,
+        500.0,
+        500.0,
+        499.99,
+        499.99,
+        499.99,
+        499.98,
+        499.97,
+        499.94,
+        499.91,
+        499.86,
+        499.78,
+        499.66,
+        499.5,
+        499.28,
+        498.98,
+        498.55,
+        497.9,
+        497.16,
+        496.27,
+        495.01,
+        493.35,
+        491.29,
+        488.92,
+        485.99,
+        482.48,
+        478.18,
+        472.25,
+        465.74,
+        459.16,
+        450.23,
+        438.88,
+        429.13,
+        415.57,
+        404.24,
+        390.78,
+        373.71,
+        356.87,
+        338.41,
+        318.6,
+        296.01,
+        269.79,
+        239.75,
+        209.95,
+        180.52,
+        149.79,
+        118.72,
+        89.44,
+        61.7,
+        40.95,
+        25.65,
+        14.63,
+        6.91,
+        3.25,
+        1.3,
+        0.48,
+        0.21,
+        0.11,
+        0.04,
+        0.02,
+        0.01,
+        0.01,
+        0.0
+       ]
+      },
+      "points": [
+       {
+        "T_C": 500.0,
+        "measured": 476.72,
+        "model": 447.86,
+        "lo": 316.86,
+        "hi": 482.48,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 550.0,
+        "measured": 405.44,
+        "model": 419.06,
+        "lo": 307.98,
+        "hi": 450.23,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 600.0,
+        "measured": 366.13,
+        "model": 369.8,
+        "lo": 191.98,
+        "hi": 390.78,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 650.0,
+        "measured": 220.25,
+        "model": 277.73,
+        "lo": 42.41,
+        "hi": 296.01,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 700.0,
+        "measured": 139.64,
+        "model": 132.31,
+        "lo": 3.29,
+        "hi": 149.79,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 750.0,
+        "measured": 55.04,
+        "model": 15.32,
+        "lo": 0.02,
+        "hi": 25.65,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 800.0,
+        "measured": 6.41,
+        "model": 0.04,
+        "lo": 0.0,
+        "hi": 0.48,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 850.0,
+        "measured": 6.41,
+        "model": 0.0,
+        "lo": 0.0,
+        "hi": 0.01,
+        "in_band": false,
+        "used_in_fit": true
+       }
+      ]
+     },
+     {
+      "id": "nh3_ox.nox_selectivity",
+      "title": "Ammonia oxidation run (NH3 + O2 only)",
+      "figure": "Figure 5c: ammonia oxidation on 0.1Fe@ZSM-5, share of ammonia burned to NOx",
+      "unit": "Share of burned NH3 that makes NOx",
+      "curve": {
+       "T_C": [
+        200.0,
+        210.0,
+        220.0,
+        230.0,
+        240.0,
+        250.0,
+        260.0,
+        270.0,
+        280.0,
+        290.0,
+        300.0,
+        310.0,
+        320.0,
+        330.0,
+        340.0,
+        350.0,
+        360.0,
+        370.0,
+        380.0,
+        390.0,
+        400.0,
+        410.0,
+        420.0,
+        430.0,
+        440.0,
+        450.0,
+        460.0,
+        470.0,
+        480.0,
+        490.0,
+        500.0,
+        510.0,
+        520.0,
+        530.0,
+        540.0,
+        550.0,
+        560.0,
+        570.0,
+        580.0,
+        590.0,
+        600.0,
+        610.0,
+        620.0,
+        630.0,
+        640.0,
+        650.0,
+        660.0,
+        670.0,
+        680.0,
+        690.0,
+        700.0,
+        710.0,
+        720.0,
+        730.0,
+        740.0,
+        750.0,
+        760.0,
+        770.0,
+        780.0,
+        790.0,
+        800.0,
+        810.0,
+        820.0,
+        830.0,
+        840.0,
+        850.0,
+        860.0,
+        870.0
+       ],
+       "value": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0002,
+        0.0003,
+        0.0004,
+        0.0005,
+        0.0007,
+        0.0009,
+        0.0012,
+        0.0016,
+        0.0021,
+        0.0027,
+        0.0034,
+        0.0043,
+        0.0053,
+        0.0066,
+        0.0081,
+        0.0098,
+        0.0117,
+        0.0139,
+        0.0164,
+        0.0191,
+        0.022,
+        0.0251,
+        0.0283,
+        0.0315,
+        0.0347,
+        0.0377,
+        0.0404,
+        0.0427,
+        0.0446,
+        0.0458,
+        0.0464,
+        0.0463,
+        0.0455,
+        0.044,
+        0.0421,
+        0.0399,
+        0.0378,
+        0.0364,
+        0.0368,
+        0.0403,
+        0.0486,
+        0.0626,
+        0.0821,
+        0.1061,
+        0.1339,
+        0.1649,
+        0.1987,
+        0.2348,
+        0.2729,
+        0.3126,
+        0.3535,
+        0.3951
+       ],
+       "lo": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0002,
+        0.0002,
+        0.0002,
+        0.0003,
+        0.0004,
+        0.0005,
+        0.0006,
+        0.0007,
+        0.0008,
+        0.001,
+        0.0012,
+        0.0015,
+        0.0018,
+        0.002,
+        0.0023,
+        0.0026,
+        0.0029,
+        0.0034,
+        0.0037,
+        0.0041,
+        0.0043,
+        0.0041,
+        0.004,
+        0.0042,
+        0.0049,
+        0.0059,
+        0.0071,
+        0.0089,
+        0.0116,
+        0.0153,
+        0.0208,
+        0.0284,
+        0.039,
+        0.0523,
+        0.0668,
+        0.0816,
+        0.1007,
+        0.1157,
+        0.1428,
+        0.1648,
+        0.1873,
+        0.2084,
+        0.2235
+       ],
+       "hi": [
+        0.0001,
+        0.0002,
+        0.0003,
+        0.0004,
+        0.0006,
+        0.0009,
+        0.0014,
+        0.0019,
+        0.0024,
+        0.0029,
+        0.0038,
+        0.0047,
+        0.0061,
+        0.0081,
+        0.0104,
+        0.0125,
+        0.0161,
+        0.021,
+        0.0257,
+        0.0311,
+        0.0372,
+        0.044,
+        0.0514,
+        0.0593,
+        0.0715,
+        0.0866,
+        0.0982,
+        0.1076,
+        0.1199,
+        0.1316,
+        0.1358,
+        0.1423,
+        0.1393,
+        0.137,
+        0.1349,
+        0.1291,
+        0.1284,
+        0.1223,
+        0.1165,
+        0.112,
+        0.1081,
+        0.1054,
+        0.0987,
+        0.0948,
+        0.0904,
+        0.0861,
+        0.0811,
+        0.076,
+        0.0723,
+        0.0688,
+        0.0664,
+        0.0674,
+        0.0666,
+        0.0666,
+        0.0718,
+        0.0844,
+        0.0984,
+        0.1165,
+        0.1345,
+        0.1568,
+        0.184,
+        0.2169,
+        0.2542,
+        0.295,
+        0.3362,
+        0.3802,
+        0.4223,
+        0.4669
+       ]
+      },
+      "points": [
+       {
+        "T_C": 500.0,
+        "measured": 0.0041,
+        "model": 0.0081,
+        "lo": 0.0005,
+        "hi": 0.1358,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 550.0,
+        "measured": 0.0073,
+        "model": 0.0191,
+        "lo": 0.0012,
+        "hi": 0.1291,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 600.0,
+        "measured": 0.031,
+        "model": 0.0347,
+        "lo": 0.0026,
+        "hi": 0.1081,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 650.0,
+        "measured": 0.0291,
+        "model": 0.0458,
+        "lo": 0.0043,
+        "hi": 0.0861,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 700.0,
+        "measured": 0.05,
+        "model": 0.0421,
+        "lo": 0.0059,
+        "hi": 0.0664,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 750.0,
+        "measured": 0.1553,
+        "model": 0.0403,
+        "lo": 0.0208,
+        "hi": 0.0844,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 800.0,
+        "measured": 0.2207,
+        "model": 0.1339,
+        "lo": 0.0816,
+        "hi": 0.184,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 850.0,
+        "measured": 0.2903,
+        "model": 0.3126,
+        "lo": 0.1873,
+        "hi": 0.3802,
+        "in_band": true,
+        "used_in_fit": true
+       }
+      ]
+     },
+     {
+      "id": "scr.no_conversion",
+      "title": "Standard SCR run (NO + NH3 + O2)",
+      "figure": "Figure 5d: standard SCR on 0.1Fe@ZSM-5, NO conversion",
+      "unit": "NO conversion",
+      "curve": {
+       "T_C": [
+        200.0,
+        210.0,
+        220.0,
+        230.0,
+        240.0,
+        250.0,
+        260.0,
+        270.0,
+        280.0,
+        290.0,
+        300.0,
+        310.0,
+        320.0,
+        330.0,
+        340.0,
+        350.0,
+        360.0,
+        370.0,
+        380.0,
+        390.0,
+        400.0,
+        410.0,
+        420.0,
+        430.0,
+        440.0,
+        450.0,
+        460.0,
+        470.0,
+        480.0,
+        490.0,
+        500.0,
+        510.0,
+        520.0,
+        530.0,
+        540.0,
+        550.0,
+        560.0,
+        570.0,
+        580.0,
+        590.0,
+        600.0,
+        610.0,
+        620.0,
+        630.0,
+        640.0,
+        650.0,
+        660.0,
+        670.0,
+        680.0,
+        690.0,
+        700.0,
+        710.0,
+        720.0,
+        730.0,
+        740.0,
+        750.0,
+        760.0,
+        770.0,
+        780.0,
+        790.0,
+        800.0,
+        810.0,
+        820.0,
+        830.0,
+        840.0,
+        850.0,
+        860.0,
+        870.0
+       ],
+       "value": [
+        0.058,
+        0.07,
+        0.0837,
+        0.0991,
+        0.1164,
+        0.1357,
+        0.1569,
+        0.18,
+        0.2051,
+        0.2319,
+        0.2606,
+        0.2909,
+        0.3226,
+        0.3556,
+        0.3896,
+        0.4244,
+        0.4597,
+        0.4952,
+        0.5308,
+        0.566,
+        0.6006,
+        0.6344,
+        0.6672,
+        0.6986,
+        0.7285,
+        0.7569,
+        0.7834,
+        0.8081,
+        0.8309,
+        0.8518,
+        0.8707,
+        0.8877,
+        0.9029,
+        0.9161,
+        0.9275,
+        0.9368,
+        0.9427,
+        0.9423,
+        0.9396,
+        0.9363,
+        0.9324,
+        0.9279,
+        0.9227,
+        0.9167,
+        0.9097,
+        0.9017,
+        0.8924,
+        0.8818,
+        0.8698,
+        0.8562,
+        0.8409,
+        0.8237,
+        0.8046,
+        0.7834,
+        0.76,
+        0.7344,
+        0.7064,
+        0.6761,
+        0.6432,
+        0.608,
+        0.5702,
+        0.53,
+        0.4874,
+        0.4425,
+        0.3952,
+        0.3458,
+        0.2945,
+        0.2412
+       ],
+       "lo": [
+        0.0069,
+        0.0101,
+        0.0148,
+        0.0213,
+        0.0301,
+        0.0417,
+        0.057,
+        0.0762,
+        0.1,
+        0.1286,
+        0.1587,
+        0.1947,
+        0.2327,
+        0.2661,
+        0.3013,
+        0.3386,
+        0.3777,
+        0.4183,
+        0.4593,
+        0.4968,
+        0.5353,
+        0.5741,
+        0.6089,
+        0.6495,
+        0.6836,
+        0.7123,
+        0.7428,
+        0.7689,
+        0.7907,
+        0.8123,
+        0.8297,
+        0.8453,
+        0.859,
+        0.8681,
+        0.8694,
+        0.8714,
+        0.8731,
+        0.8723,
+        0.8624,
+        0.8472,
+        0.8291,
+        0.8191,
+        0.8029,
+        0.7825,
+        0.7561,
+        0.7313,
+        0.7053,
+        0.688,
+        0.6816,
+        0.6659,
+        0.6566,
+        0.6331,
+        0.6211,
+        0.6019,
+        0.5849,
+        0.5508,
+        0.5158,
+        0.4796,
+        0.4424,
+        0.4062,
+        0.3895,
+        0.3478,
+        0.3033,
+        0.2494,
+        0.2039,
+        0.1515,
+        0.0901,
+        0.0425
+       ],
+       "hi": [
+        0.0984,
+        0.1148,
+        0.1326,
+        0.1524,
+        0.1737,
+        0.1966,
+        0.2209,
+        0.2467,
+        0.2735,
+        0.3004,
+        0.331,
+        0.3611,
+        0.3918,
+        0.4233,
+        0.456,
+        0.4879,
+        0.5202,
+        0.5509,
+        0.584,
+        0.6139,
+        0.6449,
+        0.6755,
+        0.7036,
+        0.7316,
+        0.7596,
+        0.7854,
+        0.8113,
+        0.8333,
+        0.8545,
+        0.8747,
+        0.8943,
+        0.9106,
+        0.9237,
+        0.935,
+        0.9438,
+        0.9487,
+        0.9535,
+        0.9536,
+        0.9505,
+        0.9475,
+        0.9444,
+        0.94,
+        0.9338,
+        0.9285,
+        0.9206,
+        0.9124,
+        0.9034,
+        0.8949,
+        0.8843,
+        0.8732,
+        0.8587,
+        0.8428,
+        0.8242,
+        0.8048,
+        0.7838,
+        0.7579,
+        0.7302,
+        0.7012,
+        0.6734,
+        0.6471,
+        0.618,
+        0.5921,
+        0.5664,
+        0.5429,
+        0.5156,
+        0.4831,
+        0.4646,
+        0.4477
+       ]
+      },
+      "points": [
+       {
+        "T_C": 200.0,
+        "measured": 0.0559,
+        "model": 0.058,
+        "lo": 0.0069,
+        "hi": 0.0984,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 300.0,
+        "measured": 0.215,
+        "model": 0.2606,
+        "lo": 0.1587,
+        "hi": 0.331,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 400.0,
+        "measured": 0.6252,
+        "model": 0.6006,
+        "lo": 0.5353,
+        "hi": 0.6449,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 450.0,
+        "measured": 0.7536,
+        "model": 0.7569,
+        "lo": 0.7123,
+        "hi": 0.7854,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 500.0,
+        "measured": 0.8559,
+        "model": 0.8707,
+        "lo": 0.8297,
+        "hi": 0.8943,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 550.0,
+        "measured": 0.9332,
+        "model": 0.9368,
+        "lo": 0.8714,
+        "hi": 0.9487,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 600.0,
+        "measured": 0.9445,
+        "model": 0.9324,
+        "lo": 0.8291,
+        "hi": 0.9444,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 650.0,
+        "measured": 0.9559,
+        "model": 0.9017,
+        "lo": 0.7313,
+        "hi": 0.9124,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 700.0,
+        "measured": 0.898,
+        "model": 0.8409,
+        "lo": 0.6566,
+        "hi": 0.8587,
+        "in_band": false,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 750.0,
+        "measured": 0.7695,
+        "model": 0.7344,
+        "lo": 0.5508,
+        "hi": 0.7579,
+        "in_band": false,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 800.0,
+        "measured": 0.6866,
+        "model": 0.5702,
+        "lo": 0.3895,
+        "hi": 0.618,
+        "in_band": false,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 850.0,
+        "measured": 0.6309,
+        "model": 0.3458,
+        "lo": 0.1515,
+        "hi": 0.4831,
+        "in_band": false,
+        "used_in_fit": false
+       }
+      ]
+     }
+    ],
+    "yardstick": [
+     {
+      "T_F": 650,
+      "value": 0.4008,
+      "lo": 0.3133,
+      "hi": 0.4666
+     },
+     {
+      "T_F": 800,
+      "value": 0.6841,
+      "lo": 0.6332,
+      "hi": 0.717
+     },
+     {
+      "T_F": 950,
+      "value": 0.8517,
+      "lo": 0.8063,
+      "hi": 0.8723
+     },
+     {
+      "T_F": 1050,
+      "value": 0.8646,
+      "lo": 0.8072,
+      "hi": 0.884
+     },
+     {
+      "T_F": 1150,
+      "value": 0.819,
+      "lo": 0.6884,
+      "hi": 0.8424
+     }
+    ],
+    "errors_fit": {
+     "nh3_ox.out_NH3_ppm": {
+      "unit": "NH3 out (ppm)",
+      "n": 8,
+      "mean_abs": 20.4325,
+      "max_abs": 57.48,
+      "mean": -1.74,
+      "in_band": 5
+     },
+     "nh3_ox.nox_selectivity": {
+      "unit": "Share of burned NH3 that makes NOx",
+      "n": 8,
+      "mean_abs": 0.0335,
+      "max_abs": 0.115,
+      "mean": -0.0189,
+      "in_band": 6
+     },
+     "scr.no_conversion": {
+      "unit": "NO conversion",
+      "n": 8,
+      "mean_abs": 0.02,
+      "max_abs": 0.0542,
+      "mean": -0.0027,
+      "in_band": 6
+     }
+    },
+    "errors_predicted": {
+     "scr.no_conversion": {
+      "unit": "NO conversion",
+      "n": 4,
+      "mean_abs": 0.1234,
+      "max_abs": 0.2851,
+      "mean": -0.1234,
+      "in_band": 0
+     }
+    }
+   },
+   "alternatives": [
+    {
+     "label": "Ammonia coverage fitted",
+     "note": "",
+     "chi2_reduced": 2.709,
+     "n_params": 8,
+     "poorly_determined": [
+      "scr.ln_k_ref",
+      "nh3_ox_n2.ln_k_ref",
+      "nh3_ox_n2.Ea_kJ",
+      "nh3_ox_no.ln_k_ref"
+     ],
+     "params": {
+      "scr.ln_k_ref": 5.7458,
+      "scr.Ea_kJ": 66.5998,
+      "nh3_ox_n2.ln_k_ref": 1.1734,
+      "nh3_ox_n2.Ea_kJ": 14.393,
+      "nh3_ox_no.ln_k_ref": -0.061,
+      "nh3_ox_no.Ea_kJ": 154.5608,
+      "scr.cov.NH3.ln_K_ref": 4.6238,
+      "scr.cov.NH3.dH_kJ": -19.5303
+     },
+     "std": {
+      "scr.ln_k_ref": 0.884,
+      "scr.Ea_kJ": 14.8825,
+      "nh3_ox_n2.ln_k_ref": 0.7096,
+      "nh3_ox_n2.Ea_kJ": 79.5686,
+      "nh3_ox_no.ln_k_ref": 0.7542,
+      "nh3_ox_no.Ea_kJ": 27.4915,
+      "scr.cov.NH3.ln_K_ref": 1.2789,
+      "scr.cov.NH3.dH_kJ": 16.0068
+     },
+     "fixed": {},
+     "film": false,
+     "errors_fit": {
+      "nh3_ox.out_NH3_ppm": {
+       "unit": "NH3 out (ppm)",
+       "n": 8,
+       "mean_abs": 22.9113,
+       "max_abs": 48.24,
+       "mean": -4.4487,
+       "in_band": 0
+      },
+      "nh3_ox.nox_selectivity": {
+       "unit": "Share of burned NH3 that makes NOx",
+       "n": 8,
+       "mean_abs": 0.0308,
+       "max_abs": 0.0667,
+       "mean": -0.0099,
+       "in_band": 0
+      },
+      "scr.no_conversion": {
+       "unit": "NO conversion",
+       "n": 12,
+       "mean_abs": 0.0295,
+       "max_abs": 0.0452,
+       "mean": -0.0125,
+       "in_band": 0
+      }
+     },
+     "curves": {
+      "nh3_ox.out_NH3_ppm": [
+       477.78,
+       476.55,
+       475.33,
+       474.11,
+       472.88,
+       471.67,
+       470.46,
+       469.25,
+       468.06,
+       466.87,
+       465.7,
+       464.54,
+       463.39,
+       462.26,
+       461.14,
+       460.03,
+       458.94,
+       457.86,
+       456.79,
+       455.73,
+       454.67,
+       453.61,
+       452.54,
+       451.45,
+       450.32,
+       449.14,
+       447.87,
+       446.48,
+       444.93,
+       443.16,
+       441.1,
+       438.66,
+       435.74,
+       432.21,
+       427.92,
+       422.69,
+       416.32,
+       408.56,
+       399.19,
+       387.92,
+       374.49,
+       358.66,
+       340.21,
+       319.01,
+       295.06,
+       268.49,
+       239.65,
+       209.12,
+       177.68,
+       146.35,
+       116.27,
+       88.58,
+       64.3,
+       44.16,
+       28.47,
+       17.08,
+       9.45,
+       4.78,
+       2.19,
+       0.9,
+       0.33,
+       0.11,
+       0.03,
+       0.01,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ],
+      "nh3_ox.nox_selectivity": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0001,
+       0.0001,
+       0.0001,
+       0.0002,
+       0.0003,
+       0.0005,
+       0.0007,
+       0.001,
+       0.0013,
+       0.0018,
+       0.0024,
+       0.0032,
+       0.0042,
+       0.0054,
+       0.0069,
+       0.0086,
+       0.0107,
+       0.013,
+       0.0157,
+       0.0186,
+       0.0219,
+       0.0253,
+       0.0288,
+       0.0323,
+       0.0357,
+       0.0389,
+       0.0418,
+       0.0443,
+       0.0464,
+       0.0481,
+       0.0494,
+       0.0503,
+       0.0511,
+       0.0518,
+       0.0526,
+       0.0536,
+       0.0548,
+       0.0566,
+       0.0591,
+       0.0624,
+       0.0669,
+       0.0726,
+       0.0797,
+       0.0886,
+       0.0991,
+       0.1114,
+       0.1254,
+       0.1408,
+       0.1577,
+       0.1757,
+       0.1948,
+       0.2148,
+       0.2356,
+       0.257,
+       0.279,
+       0.3015
+      ],
+      "scr.no_conversion": [
+       0.0129,
+       0.0178,
+       0.0241,
+       0.0323,
+       0.0426,
+       0.0554,
+       0.0713,
+       0.0904,
+       0.1132,
+       0.1399,
+       0.1708,
+       0.2058,
+       0.2449,
+       0.2877,
+       0.3335,
+       0.3817,
+       0.4313,
+       0.4811,
+       0.5301,
+       0.5772,
+       0.6214,
+       0.6623,
+       0.6992,
+       0.7321,
+       0.7611,
+       0.7864,
+       0.8083,
+       0.8272,
+       0.8434,
+       0.8574,
+       0.8694,
+       0.8797,
+       0.8885,
+       0.896,
+       0.9024,
+       0.9077,
+       0.9121,
+       0.9155,
+       0.9181,
+       0.9199,
+       0.9207,
+       0.9207,
+       0.9197,
+       0.9178,
+       0.9148,
+       0.9107,
+       0.9054,
+       0.8988,
+       0.891,
+       0.8819,
+       0.8716,
+       0.8601,
+       0.8474,
+       0.8337,
+       0.8189,
+       0.803,
+       0.7862,
+       0.7683,
+       0.7494,
+       0.7296,
+       0.7088,
+       0.687,
+       0.6643,
+       0.6407,
+       0.6162,
+       0.5909,
+       0.5647,
+       0.5378
+      ]
+     },
+     "yardstick": [
+      {
+       "T_F": 650,
+       "value": 0.0538,
+       "lo": 0.0025,
+       "hi": 0.1241
+      },
+      {
+       "T_F": 800,
+       "value": 0.12,
+       "lo": 0.0297,
+       "hi": 0.2305
+      },
+      {
+       "T_F": 950,
+       "value": 0.2009,
+       "lo": 0.0915,
+       "hi": 0.3145
+      },
+      {
+       "T_F": 1050,
+       "value": 0.2412,
+       "lo": 0.1163,
+       "hi": 0.3312
+      },
+      {
+       "T_F": 1150,
+       "value": 0.2329,
+       "lo": 0.0699,
+       "hi": 0.3257
+      }
+     ]
+    }
+   ],
+   "n_params": 6
+  },
+  "v_commercial": {
+   "name": "Commercial vanadia",
+   "form": "commercial vanadia-on-titania catalyst, about 0.4 wt% V2O5 (the paper likens it to commercial V2O5-WO3/TiO2), crushed to 0.71-0.80 mm, 1.5 cm3 fixed bed",
+   "source": "odenbrand2017",
+   "published_Ea_kJ": {
+    "scr": 85,
+    "nh3_ox_no": 200,
+    "nh3_ox_n2o": 190
+   },
+   "published_model": "paper's 3-D reactor model (heat release resolved)",
+   "fitted": [
+    "scr.ln_k_ref",
+    "scr.Ea_kJ",
+    "nh3_ox_no.ln_k_ref",
+    "nh3_ox_no.Ea_kJ",
+    "nh3_ox_n2o.ln_k_ref",
+    "nh3_ox_n2o.Ea_kJ"
+   ],
+   "switched_off": [
+    "nh3_ox_n2.ln_k_ref"
+   ],
+   "pathways": [
+    "scr",
+    "nh3_ox_no",
+    "nh3_ox_n2o"
+   ],
+   "analyzer": {
+    "name": "digitized figure",
+    "measured": [
+     "NO",
+     "N2O"
+    ],
+    "sigma_abs_ppm": 0.5,
+    "sigma_rel": 0.04,
+    "lod_ppm": {
+     "NO": 1.0,
+     "N2O": 1.0
+    }
+   },
+   "holdout_test": {
+    "from_C": 460,
+    "runs": [
+     "scr"
+    ],
+    "label": "Fit below 460 \u00b0C, predict above"
+   },
+   "range_C": [
+    291.7,
+    524.9
+   ],
+   "checks": [],
+   "full": {
+    "params": {
+     "scr.ln_k_ref": 6.1285,
+     "scr.Ea_kJ": 66.2075,
+     "nh3_ox_no.ln_k_ref": 3.3412,
+     "nh3_ox_no.Ea_kJ": 63.4621,
+     "nh3_ox_n2o.ln_k_ref": 1.6291,
+     "nh3_ox_n2o.Ea_kJ": 165.4591
+    },
+    "std": {
+     "scr.ln_k_ref": 0.0238,
+     "scr.Ea_kJ": 0.9756,
+     "nh3_ox_no.ln_k_ref": 0.0434,
+     "nh3_ox_no.Ea_kJ": 3.0461,
+     "nh3_ox_n2o.ln_k_ref": 0.0906,
+     "nh3_ox_n2o.Ea_kJ": 6.4683
+    },
+    "poorly_determined": [],
+    "chi2_reduced": 1.883,
+    "n_points": 70,
+    "k_ref_per_s": {
+     "scr": 458.759,
+     "nh3_ox_no": 28.252,
+     "nh3_ox_n2o": 5.099
+    },
+    "panels": [
+     {
+      "id": "scr.out_NO_ppm",
+      "title": "Standard SCR run (NO + NH3 + O2)",
+      "figure": "Figure 2: SCR at 5000 ppm NO on commercial vanadia, NO out",
+      "unit": "NO out (ppm)",
+      "curve": {
+       "T_C": [
+        250.0,
+        260.0,
+        270.0,
+        280.0,
+        290.0,
+        300.0,
+        310.0,
+        320.0,
+        330.0,
+        340.0,
+        350.0,
+        360.0,
+        370.0,
+        380.0,
+        390.0,
+        400.0,
+        410.0,
+        420.0,
+        430.0,
+        440.0,
+        450.0,
+        460.0,
+        470.0,
+        480.0,
+        490.0,
+        500.0,
+        510.0,
+        520.0,
+        530.0,
+        540.0,
+        550.0
+       ],
+       "value": [
+        4772.7,
+        4705.0,
+        4621.7,
+        4520.6,
+        4399.4,
+        4256.2,
+        4089.3,
+        3897.6,
+        3680.9,
+        3439.9,
+        3176.5,
+        2893.9,
+        2596.8,
+        2290.9,
+        1983.0,
+        1680.9,
+        1391.9,
+        1123.3,
+        881.2,
+        669.9,
+        492.0,
+        347.6,
+        235.1,
+        168.0,
+        167.0,
+        166.5,
+        166.5,
+        167.0,
+        168.2,
+        170.0,
+        172.6
+       ],
+       "lo": [
+        4750.3,
+        4678.2,
+        4589.9,
+        4483.4,
+        4356.7,
+        4208.0,
+        4035.8,
+        3839.2,
+        3618.3,
+        3374.8,
+        3111.8,
+        2831.8,
+        2538.1,
+        2237.3,
+        1935.2,
+        1640.0,
+        1360.4,
+        1100.2,
+        864.4,
+        656.5,
+        480.1,
+        336.6,
+        224.8,
+        159.2,
+        160.4,
+        161.2,
+        159.6,
+        157.0,
+        154.2,
+        153.1,
+        151.7
+       ],
+       "hi": [
+        4794.1,
+        4730.8,
+        4652.2,
+        4555.8,
+        4439.3,
+        4301.3,
+        4139.0,
+        3951.0,
+        3737.0,
+        3497.0,
+        3233.5,
+        2949.7,
+        2649.6,
+        2339.0,
+        2025.7,
+        1717.8,
+        1422.3,
+        1147.6,
+        899.1,
+        683.6,
+        502.6,
+        357.9,
+        244.9,
+        179.4,
+        174.0,
+        171.7,
+        172.8,
+        175.9,
+        180.2,
+        185.3,
+        191.2
+       ]
+      },
+      "points": [
+       {
+        "T_C": 330.1,
+        "measured": 3483.5,
+        "model": 3678.6,
+        "lo": 3616.0,
+        "hi": 3734.7,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 349.9,
+        "measured": 3138.6,
+        "model": 3179.2,
+        "lo": 3114.5,
+        "hi": 3236.2,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 351.0,
+        "measured": 3122.3,
+        "model": 3149.0,
+        "lo": 3084.5,
+        "hi": 3205.9,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 357.0,
+        "measured": 2989.4,
+        "model": 2980.5,
+        "lo": 2917.4,
+        "hi": 3036.1,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 362.9,
+        "measured": 2863.6,
+        "model": 2809.0,
+        "lo": 2747.8,
+        "hi": 2864.0,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 368.9,
+        "measured": 2709.8,
+        "model": 2630.0,
+        "lo": 2570.9,
+        "hi": 2683.1,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 375.1,
+        "measured": 2551.3,
+        "model": 2441.4,
+        "lo": 2385.2,
+        "hi": 2492.9,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 383.0,
+        "measured": 2336.9,
+        "model": 2198.4,
+        "lo": 2146.7,
+        "hi": 2244.4,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 388.9,
+        "measured": 2131.8,
+        "model": 2016.8,
+        "lo": 1968.5,
+        "hi": 2059.9,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 396.0,
+        "measured": 1919.8,
+        "model": 1800.6,
+        "lo": 1756.9,
+        "hi": 1840.0,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 400.0,
+        "measured": 1787.0,
+        "model": 1680.9,
+        "lo": 1640.0,
+        "hi": 1717.8,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 401.0,
+        "measured": 1745.0,
+        "model": 1651.2,
+        "lo": 1611.4,
+        "hi": 1687.5,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 407.9,
+        "measured": 1512.0,
+        "model": 1451.1,
+        "lo": 1417.8,
+        "hi": 1483.0,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 414.9,
+        "measured": 1316.2,
+        "model": 1257.4,
+        "lo": 1230.1,
+        "hi": 1284.6,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 420.9,
+        "measured": 1101.8,
+        "model": 1100.4,
+        "lo": 1077.5,
+        "hi": 1124.1,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 423.9,
+        "measured": 1008.6,
+        "model": 1025.5,
+        "lo": 1004.7,
+        "hi": 1047.1,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 424.9,
+        "measured": 994.6,
+        "model": 1001.1,
+        "lo": 981.0,
+        "hi": 1022.0,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 426.0,
+        "measured": 980.6,
+        "model": 974.6,
+        "lo": 955.3,
+        "hi": 995.0,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 432.0,
+        "measured": 803.5,
+        "model": 836.4,
+        "lo": 820.2,
+        "hi": 853.1,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 436.9,
+        "measured": 673.0,
+        "model": 732.0,
+        "lo": 718.1,
+        "hi": 745.9,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 441.8,
+        "measured": 575.2,
+        "model": 635.4,
+        "lo": 622.6,
+        "hi": 648.5,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 449.9,
+        "measured": 444.7,
+        "model": 493.6,
+        "lo": 481.7,
+        "hi": 504.3,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 455.8,
+        "measured": 379.4,
+        "model": 404.2,
+        "lo": 393.2,
+        "hi": 414.2,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 460.9,
+        "measured": 328.1,
+        "model": 336.2,
+        "lo": 325.1,
+        "hi": 346.5,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 464.8,
+        "measured": 276.9,
+        "model": 289.8,
+        "lo": 278.9,
+        "hi": 299.8,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 474.8,
+        "measured": 216.3,
+        "model": 191.6,
+        "lo": 182.3,
+        "hi": 200.9,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 475.7,
+        "measured": 218.6,
+        "model": 184.2,
+        "lo": 175.3,
+        "hi": 193.5,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 480.8,
+        "measured": 193.0,
+        "model": 167.9,
+        "lo": 159.0,
+        "hi": 179.0,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 485.9,
+        "measured": 174.3,
+        "model": 167.4,
+        "lo": 159.7,
+        "hi": 176.1,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 490.8,
+        "measured": 160.4,
+        "model": 167.0,
+        "lo": 160.5,
+        "hi": 173.7,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 499.8,
+        "measured": 151.0,
+        "model": 166.5,
+        "lo": 161.2,
+        "hi": 171.7,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 504.8,
+        "measured": 155.7,
+        "model": 166.5,
+        "lo": 160.5,
+        "hi": 171.7,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 509.8,
+        "measured": 160.4,
+        "model": 166.5,
+        "lo": 159.6,
+        "hi": 172.8,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 514.9,
+        "measured": 160.4,
+        "model": 166.7,
+        "lo": 158.5,
+        "hi": 174.4,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 524.9,
+        "measured": 211.6,
+        "model": 167.5,
+        "lo": 155.5,
+        "hi": 177.9,
+        "in_band": false,
+        "used_in_fit": true
+       }
+      ]
+     },
+     {
+      "id": "scr.out_N2O_ppm",
+      "title": "Standard SCR run (NO + NH3 + O2)",
+      "figure": "Figure 3: the same runs, N2O out",
+      "unit": "N2O out (ppm)",
+      "curve": {
+       "T_C": [
+        250.0,
+        260.0,
+        270.0,
+        280.0,
+        290.0,
+        300.0,
+        310.0,
+        320.0,
+        330.0,
+        340.0,
+        350.0,
+        360.0,
+        370.0,
+        380.0,
+        390.0,
+        400.0,
+        410.0,
+        420.0,
+        430.0,
+        440.0,
+        450.0,
+        460.0,
+        470.0,
+        480.0,
+        490.0,
+        500.0,
+        510.0,
+        520.0,
+        530.0,
+        540.0,
+        550.0
+       ],
+       "value": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.01,
+        0.01,
+        0.02,
+        0.03,
+        0.05,
+        0.09,
+        0.13,
+        0.2,
+        0.31,
+        0.45,
+        0.64,
+        0.89,
+        1.22,
+        1.65,
+        2.17,
+        2.82,
+        3.6,
+        4.53,
+        5.62,
+        6.92,
+        8.47,
+        10.32,
+        12.49,
+        15.05,
+        18.04,
+        21.53
+       ],
+       "lo": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.01,
+        0.01,
+        0.02,
+        0.04,
+        0.06,
+        0.1,
+        0.15,
+        0.23,
+        0.34,
+        0.5,
+        0.72,
+        1.01,
+        1.4,
+        1.89,
+        2.51,
+        3.26,
+        4.19,
+        5.28,
+        6.57,
+        8.07,
+        9.7,
+        11.66,
+        13.85,
+        16.45,
+        19.28
+       ],
+       "hi": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.01,
+        0.01,
+        0.02,
+        0.03,
+        0.05,
+        0.08,
+        0.12,
+        0.19,
+        0.27,
+        0.4,
+        0.56,
+        0.79,
+        1.07,
+        1.45,
+        1.91,
+        2.47,
+        3.13,
+        3.93,
+        4.85,
+        5.92,
+        7.24,
+        8.86,
+        10.83,
+        13.36,
+        16.26,
+        19.74,
+        23.95
+       ]
+      },
+      "points": [
+       {
+        "T_C": 291.7,
+        "measured": 0.39,
+        "model": 0.0,
+        "lo": 0.0,
+        "hi": 0.01,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 305.7,
+        "measured": 0.1,
+        "model": 0.01,
+        "lo": 0.01,
+        "hi": 0.02,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 317.7,
+        "measured": 0.1,
+        "model": 0.02,
+        "lo": 0.01,
+        "hi": 0.03,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 329.7,
+        "measured": 0.1,
+        "model": 0.03,
+        "lo": 0.02,
+        "hi": 0.05,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 349.7,
+        "measured": 0.1,
+        "model": 0.09,
+        "lo": 0.06,
+        "hi": 0.12,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 350.7,
+        "measured": 0.1,
+        "model": 0.09,
+        "lo": 0.06,
+        "hi": 0.13,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 368.8,
+        "measured": 0.2,
+        "model": 0.2,
+        "lo": 0.14,
+        "hi": 0.26,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 372.2,
+        "measured": 0.2,
+        "model": 0.22,
+        "lo": 0.16,
+        "hi": 0.3,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 374.9,
+        "measured": 0.2,
+        "model": 0.25,
+        "lo": 0.18,
+        "hi": 0.33,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 382.8,
+        "measured": 0.29,
+        "model": 0.34,
+        "lo": 0.26,
+        "hi": 0.44,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 388.8,
+        "measured": 0.39,
+        "model": 0.43,
+        "lo": 0.33,
+        "hi": 0.54,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 395.8,
+        "measured": 0.59,
+        "model": 0.55,
+        "lo": 0.43,
+        "hi": 0.69,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 399.6,
+        "measured": 0.68,
+        "model": 0.63,
+        "lo": 0.5,
+        "hi": 0.78,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 401.6,
+        "measured": 0.78,
+        "model": 0.67,
+        "lo": 0.53,
+        "hi": 0.83,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 407.9,
+        "measured": 0.89,
+        "model": 0.83,
+        "lo": 0.67,
+        "hi": 1.01,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 414.7,
+        "measured": 1.09,
+        "model": 1.04,
+        "lo": 0.85,
+        "hi": 1.24,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 420.8,
+        "measured": 1.48,
+        "model": 1.25,
+        "lo": 1.04,
+        "hi": 1.48,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 424.8,
+        "measured": 1.58,
+        "model": 1.41,
+        "lo": 1.18,
+        "hi": 1.66,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 431.9,
+        "measured": 1.99,
+        "model": 1.74,
+        "lo": 1.49,
+        "hi": 2.01,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 436.9,
+        "measured": 2.18,
+        "model": 2.0,
+        "lo": 1.73,
+        "hi": 2.28,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 441.9,
+        "measured": 2.49,
+        "model": 2.29,
+        "lo": 2.0,
+        "hi": 2.58,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 449.8,
+        "measured": 3.08,
+        "model": 2.81,
+        "lo": 2.49,
+        "hi": 3.12,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 455.8,
+        "measured": 3.18,
+        "model": 3.26,
+        "lo": 2.92,
+        "hi": 3.58,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 460.9,
+        "measured": 3.69,
+        "model": 3.68,
+        "lo": 3.34,
+        "hi": 4.01,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 464.9,
+        "measured": 4.07,
+        "model": 4.04,
+        "lo": 3.69,
+        "hi": 4.37,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 475.0,
+        "measured": 4.87,
+        "model": 5.05,
+        "lo": 4.72,
+        "hi": 5.35,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 476.0,
+        "measured": 5.09,
+        "model": 5.16,
+        "lo": 4.83,
+        "hi": 5.46,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 480.9,
+        "measured": 5.79,
+        "model": 5.73,
+        "lo": 5.39,
+        "hi": 6.02,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 485.9,
+        "measured": 6.18,
+        "model": 6.36,
+        "lo": 6.02,
+        "hi": 6.66,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 490.9,
+        "measured": 6.59,
+        "model": 7.05,
+        "lo": 6.7,
+        "hi": 7.37,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 499.9,
+        "measured": 8.59,
+        "model": 8.46,
+        "lo": 8.05,
+        "hi": 8.84,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 504.9,
+        "measured": 9.3,
+        "model": 9.34,
+        "lo": 8.82,
+        "hi": 9.75,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 509.8,
+        "measured": 9.98,
+        "model": 10.28,
+        "lo": 9.66,
+        "hi": 10.79,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 514.8,
+        "measured": 10.88,
+        "model": 11.32,
+        "lo": 10.61,
+        "hi": 11.99,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 524.9,
+        "measured": 14.68,
+        "model": 13.7,
+        "lo": 12.69,
+        "hi": 14.72,
+        "in_band": true,
+        "used_in_fit": true
+       }
+      ]
+     }
+    ],
+    "yardstick": [
+     {
+      "T_F": 650,
+      "value": 0.5242,
+      "lo": 0.5089,
+      "hi": 0.5412
+     },
+     {
+      "T_F": 800,
+      "value": 0.8956,
+      "lo": 0.8888,
+      "hi": 0.9007
+     },
+     {
+      "T_F": 950,
+      "value": 0.8883,
+      "lo": 0.8871,
+      "hi": 0.8896
+     },
+     {
+      "T_F": 1050,
+      "value": 0.8661,
+      "lo": 0.8611,
+      "hi": 0.8715
+     },
+     {
+      "T_F": 1150,
+      "value": 0.8141,
+      "lo": 0.803,
+      "hi": 0.8262
+     }
+    ],
+    "errors_fit": {
+     "scr.out_NO_ppm": {
+      "unit": "NO out (ppm)",
+      "n": 35,
+      "mean_abs": 47.6,
+      "max_abs": 195.1,
+      "mean": -14.5771,
+      "in_band": 12
+     },
+     "scr.out_N2O_ppm": {
+      "unit": "N2O out (ppm)",
+      "n": 35,
+      "mean_abs": 0.1537,
+      "max_abs": 0.98,
+      "mean": -0.0446,
+      "in_band": 30
+     }
+    },
+    "errors_predicted": {}
+   },
+   "holdout": {
+    "params": {
+     "scr.ln_k_ref": 6.2083,
+     "scr.Ea_kJ": 71.1097,
+     "nh3_ox_no.ln_k_ref": -29.7754,
+     "nh3_ox_no.Ea_kJ": 273.4893,
+     "nh3_ox_n2o.ln_k_ref": 0.9664,
+     "nh3_ox_n2o.Ea_kJ": 142.652
+    },
+    "std": {
+     "scr.ln_k_ref": 0.0293,
+     "scr.Ea_kJ": 1.0281,
+     "nh3_ox_no.ln_k_ref": 0.0,
+     "nh3_ox_no.Ea_kJ": 0.0,
+     "nh3_ox_n2o.ln_k_ref": 0.6311,
+     "nh3_ox_n2o.Ea_kJ": 25.104
+    },
+    "poorly_determined": [],
+    "chi2_reduced": 0.476,
+    "n_points": 46,
+    "k_ref_per_s": {
+     "scr": 496.839,
+     "nh3_ox_no": 0.0,
+     "nh3_ox_n2o": 2.628
+    },
+    "panels": [
+     {
+      "id": "scr.out_NO_ppm",
+      "title": "Standard SCR run (NO + NH3 + O2)",
+      "figure": "Figure 2: SCR at 5000 ppm NO on commercial vanadia, NO out",
+      "unit": "NO out (ppm)",
+      "curve": {
+       "T_C": [
+        250.0,
+        260.0,
+        270.0,
+        280.0,
+        290.0,
+        300.0,
+        310.0,
+        320.0,
+        330.0,
+        340.0,
+        350.0,
+        360.0,
+        370.0,
+        380.0,
+        390.0,
+        400.0,
+        410.0,
+        420.0,
+        430.0,
+        440.0,
+        450.0,
+        460.0,
+        470.0,
+        480.0,
+        490.0,
+        500.0,
+        510.0,
+        520.0,
+        530.0,
+        540.0,
+        550.0
+       ],
+       "value": [
+        4822.9,
+        4765.3,
+        4692.8,
+        4602.8,
+        4492.7,
+        4359.9,
+        4201.9,
+        4017.0,
+        3803.9,
+        3562.8,
+        3294.8,
+        3003.0,
+        2692.1,
+        2368.4,
+        2040.0,
+        1715.8,
+        1405.3,
+        1117.6,
+        860.2,
+        638.7,
+        455.8,
+        311.6,
+        203.2,
+        125.9,
+        73.8,
+        40.7,
+        21.1,
+        10.2,
+        4.6,
+        1.9,
+        0.7
+       ],
+       "lo": [
+        4803.5,
+        4741.7,
+        4664.6,
+        4569.8,
+        4454.7,
+        4316.9,
+        4154.3,
+        3965.4,
+        3748.4,
+        3505.7,
+        3237.7,
+        2947.2,
+        2638.4,
+        2320.9,
+        1999.1,
+        1683.9,
+        1380.6,
+        1097.0,
+        844.7,
+        624.4,
+        442.8,
+        299.5,
+        192.7,
+        117.1,
+        67.3,
+        36.2,
+        18.1,
+        8.5,
+        3.6,
+        1.4,
+        0.5
+       ],
+       "hi": [
+        4837.4,
+        4783.1,
+        4714.4,
+        4628.2,
+        4521.8,
+        4392.9,
+        4238.4,
+        4056.6,
+        3846.3,
+        3605.9,
+        3338.3,
+        3046.4,
+        2733.2,
+        2405.4,
+        2071.2,
+        1741.0,
+        1425.6,
+        1134.6,
+        873.2,
+        651.8,
+        468.3,
+        324.4,
+        215.1,
+        135.9,
+        81.9,
+        46.7,
+        25.1,
+        12.7,
+        6.0,
+        2.6,
+        1.1
+       ]
+      },
+      "points": [
+       {
+        "T_C": 330.1,
+        "measured": 3483.5,
+        "model": 3801.6,
+        "lo": 3746.1,
+        "hi": 3844.0,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 349.9,
+        "measured": 3138.6,
+        "model": 3297.6,
+        "lo": 3240.5,
+        "hi": 3341.1,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 351.0,
+        "measured": 3122.3,
+        "model": 3266.7,
+        "lo": 3209.5,
+        "hi": 3310.0,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 357.0,
+        "measured": 2989.4,
+        "model": 3092.8,
+        "lo": 3036.4,
+        "hi": 3136.4,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 362.9,
+        "measured": 2863.6,
+        "model": 2914.6,
+        "lo": 2859.2,
+        "hi": 2957.6,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 368.9,
+        "measured": 2709.8,
+        "model": 2727.1,
+        "lo": 2673.0,
+        "hi": 2768.5,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 375.1,
+        "measured": 2551.3,
+        "model": 2528.1,
+        "lo": 2476.2,
+        "hi": 2567.3,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 383.0,
+        "measured": 2336.9,
+        "model": 2270.0,
+        "lo": 2225.5,
+        "hi": 2305.4,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 388.9,
+        "measured": 2131.8,
+        "model": 2076.1,
+        "lo": 2034.4,
+        "hi": 2108.1,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 396.0,
+        "measured": 1919.8,
+        "model": 1844.3,
+        "lo": 1808.4,
+        "hi": 1872.1,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 400.0,
+        "measured": 1787.0,
+        "model": 1715.8,
+        "lo": 1683.9,
+        "hi": 1741.0,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 401.0,
+        "measured": 1745.0,
+        "model": 1684.0,
+        "lo": 1652.7,
+        "hi": 1708.6,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 407.9,
+        "measured": 1512.0,
+        "model": 1468.9,
+        "lo": 1442.6,
+        "hi": 1490.1,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 414.9,
+        "measured": 1316.2,
+        "model": 1261.0,
+        "lo": 1238.2,
+        "hi": 1280.2,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 420.9,
+        "measured": 1101.8,
+        "model": 1093.1,
+        "lo": 1072.7,
+        "hi": 1109.6,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 423.9,
+        "measured": 1008.6,
+        "model": 1013.2,
+        "lo": 994.9,
+        "hi": 1028.0,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 424.9,
+        "measured": 994.6,
+        "model": 987.3,
+        "lo": 969.7,
+        "hi": 1001.7,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 426.0,
+        "measured": 980.6,
+        "model": 959.1,
+        "lo": 941.5,
+        "hi": 973.1,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 432.0,
+        "measured": 803.5,
+        "model": 812.9,
+        "lo": 797.9,
+        "hi": 825.2,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 436.9,
+        "measured": 673.0,
+        "model": 703.3,
+        "lo": 688.7,
+        "hi": 716.3,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 441.8,
+        "measured": 575.2,
+        "model": 602.9,
+        "lo": 588.5,
+        "hi": 616.1,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 449.9,
+        "measured": 444.7,
+        "model": 457.5,
+        "lo": 444.4,
+        "hi": 470.0,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 455.8,
+        "measured": 379.4,
+        "model": 367.6,
+        "lo": 355.2,
+        "hi": 380.3,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 460.9,
+        "measured": 328.1,
+        "model": 300.4,
+        "lo": 288.3,
+        "hi": 313.3,
+        "in_band": false,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 464.8,
+        "measured": 276.9,
+        "model": 255.3,
+        "lo": 243.6,
+        "hi": 268.0,
+        "in_band": false,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 474.8,
+        "measured": 216.3,
+        "model": 162.5,
+        "lo": 152.8,
+        "hi": 173.8,
+        "in_band": false,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 475.7,
+        "measured": 218.6,
+        "model": 155.6,
+        "lo": 146.1,
+        "hi": 166.7,
+        "in_band": false,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 480.8,
+        "measured": 193.0,
+        "model": 120.9,
+        "lo": 112.2,
+        "hi": 130.8,
+        "in_band": false,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 485.9,
+        "measured": 174.3,
+        "model": 92.5,
+        "lo": 85.1,
+        "hi": 101.5,
+        "in_band": false,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 490.8,
+        "measured": 160.4,
+        "model": 70.5,
+        "lo": 64.2,
+        "hi": 78.4,
+        "in_band": false,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 499.8,
+        "measured": 151.0,
+        "model": 41.3,
+        "lo": 36.6,
+        "hi": 47.2,
+        "in_band": false,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 504.8,
+        "measured": 155.7,
+        "model": 30.0,
+        "lo": 26.2,
+        "hi": 34.9,
+        "in_band": false,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 509.8,
+        "measured": 160.4,
+        "model": 21.4,
+        "lo": 18.4,
+        "hi": 25.4,
+        "in_band": false,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 514.9,
+        "measured": 160.4,
+        "model": 14.9,
+        "lo": 12.6,
+        "hi": 18.1,
+        "in_band": false,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 524.9,
+        "measured": 211.6,
+        "model": 7.0,
+        "lo": 5.7,
+        "hi": 8.9,
+        "in_band": false,
+        "used_in_fit": false
+       }
+      ]
+     },
+     {
+      "id": "scr.out_N2O_ppm",
+      "title": "Standard SCR run (NO + NH3 + O2)",
+      "figure": "Figure 3: the same runs, N2O out",
+      "unit": "N2O out (ppm)",
+      "curve": {
+       "T_C": [
+        250.0,
+        260.0,
+        270.0,
+        280.0,
+        290.0,
+        300.0,
+        310.0,
+        320.0,
+        330.0,
+        340.0,
+        350.0,
+        360.0,
+        370.0,
+        380.0,
+        390.0,
+        400.0,
+        410.0,
+        420.0,
+        430.0,
+        440.0,
+        450.0,
+        460.0,
+        470.0,
+        480.0,
+        490.0,
+        500.0,
+        510.0,
+        520.0,
+        530.0,
+        540.0,
+        550.0
+       ],
+       "value": [
+        0.0,
+        0.0,
+        0.0,
+        0.01,
+        0.01,
+        0.02,
+        0.03,
+        0.04,
+        0.06,
+        0.1,
+        0.15,
+        0.21,
+        0.31,
+        0.43,
+        0.6,
+        0.81,
+        1.08,
+        1.42,
+        1.83,
+        2.34,
+        2.94,
+        3.66,
+        4.51,
+        5.51,
+        6.69,
+        8.09,
+        9.75,
+        11.7,
+        14.02,
+        16.75,
+        19.96
+       ],
+       "lo": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.01,
+        0.01,
+        0.02,
+        0.03,
+        0.05,
+        0.09,
+        0.14,
+        0.22,
+        0.35,
+        0.52,
+        0.78,
+        1.09,
+        1.54,
+        2.05,
+        2.49,
+        2.96,
+        3.45,
+        3.88,
+        4.38,
+        4.91,
+        5.53,
+        6.17,
+        6.91,
+        7.73,
+        8.66
+       ],
+       "hi": [
+        0.01,
+        0.02,
+        0.03,
+        0.04,
+        0.06,
+        0.09,
+        0.12,
+        0.17,
+        0.23,
+        0.31,
+        0.4,
+        0.52,
+        0.65,
+        0.8,
+        0.98,
+        1.22,
+        1.52,
+        1.81,
+        2.18,
+        2.68,
+        3.46,
+        4.6,
+        6.17,
+        8.21,
+        10.92,
+        14.24,
+        18.51,
+        23.83,
+        30.47,
+        38.71,
+        48.78
+       ]
+      },
+      "points": [
+       {
+        "T_C": 291.7,
+        "measured": 0.39,
+        "model": 0.01,
+        "lo": 0.0,
+        "hi": 0.07,
+        "in_band": false,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 305.7,
+        "measured": 0.1,
+        "model": 0.02,
+        "lo": 0.0,
+        "hi": 0.11,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 317.7,
+        "measured": 0.1,
+        "model": 0.04,
+        "lo": 0.01,
+        "hi": 0.16,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 329.7,
+        "measured": 0.1,
+        "model": 0.06,
+        "lo": 0.02,
+        "hi": 0.23,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 349.7,
+        "measured": 0.1,
+        "model": 0.14,
+        "lo": 0.05,
+        "hi": 0.4,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 350.7,
+        "measured": 0.1,
+        "model": 0.15,
+        "lo": 0.05,
+        "hi": 0.41,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 368.8,
+        "measured": 0.2,
+        "model": 0.29,
+        "lo": 0.13,
+        "hi": 0.63,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 372.2,
+        "measured": 0.2,
+        "model": 0.33,
+        "lo": 0.15,
+        "hi": 0.68,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 374.9,
+        "measured": 0.2,
+        "model": 0.36,
+        "lo": 0.18,
+        "hi": 0.72,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 382.8,
+        "measured": 0.29,
+        "model": 0.47,
+        "lo": 0.25,
+        "hi": 0.84,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 388.8,
+        "measured": 0.39,
+        "model": 0.57,
+        "lo": 0.33,
+        "hi": 0.95,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 395.8,
+        "measured": 0.59,
+        "model": 0.71,
+        "lo": 0.44,
+        "hi": 1.11,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 399.6,
+        "measured": 0.68,
+        "model": 0.8,
+        "lo": 0.51,
+        "hi": 1.21,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 401.6,
+        "measured": 0.78,
+        "model": 0.85,
+        "lo": 0.56,
+        "hi": 1.26,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 407.9,
+        "measured": 0.89,
+        "model": 1.02,
+        "lo": 0.72,
+        "hi": 1.45,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 414.7,
+        "measured": 1.09,
+        "model": 1.23,
+        "lo": 0.91,
+        "hi": 1.65,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 420.8,
+        "measured": 1.48,
+        "model": 1.45,
+        "lo": 1.12,
+        "hi": 1.84,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 424.8,
+        "measured": 1.58,
+        "model": 1.61,
+        "lo": 1.3,
+        "hi": 1.98,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 431.9,
+        "measured": 1.99,
+        "model": 1.92,
+        "lo": 1.62,
+        "hi": 2.26,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 436.9,
+        "measured": 2.18,
+        "model": 2.17,
+        "lo": 1.87,
+        "hi": 2.48,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 441.9,
+        "measured": 2.49,
+        "model": 2.44,
+        "lo": 2.13,
+        "hi": 2.8,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 449.8,
+        "measured": 3.08,
+        "model": 2.93,
+        "lo": 2.48,
+        "hi": 3.44,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 455.8,
+        "measured": 3.18,
+        "model": 3.34,
+        "lo": 2.76,
+        "hi": 4.06,
+        "in_band": true,
+        "used_in_fit": true
+       },
+       {
+        "T_C": 460.9,
+        "measured": 3.69,
+        "model": 3.73,
+        "lo": 3.02,
+        "hi": 4.72,
+        "in_band": true,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 464.9,
+        "measured": 4.07,
+        "model": 4.06,
+        "lo": 3.23,
+        "hi": 5.29,
+        "in_band": true,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 475.0,
+        "measured": 4.87,
+        "model": 4.99,
+        "lo": 3.66,
+        "hi": 7.13,
+        "in_band": true,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 476.0,
+        "measured": 5.09,
+        "model": 5.09,
+        "lo": 3.71,
+        "hi": 7.33,
+        "in_band": true,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 480.9,
+        "measured": 5.79,
+        "model": 5.61,
+        "lo": 3.92,
+        "hi": 8.43,
+        "in_band": true,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 485.9,
+        "measured": 6.18,
+        "model": 6.18,
+        "lo": 4.15,
+        "hi": 9.72,
+        "in_band": true,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 490.9,
+        "measured": 6.59,
+        "model": 6.81,
+        "lo": 4.42,
+        "hi": 11.2,
+        "in_band": true,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 499.9,
+        "measured": 8.59,
+        "model": 8.08,
+        "lo": 4.9,
+        "hi": 14.2,
+        "in_band": true,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 504.9,
+        "measured": 9.3,
+        "model": 8.87,
+        "lo": 5.2,
+        "hi": 16.14,
+        "in_band": true,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 509.8,
+        "measured": 9.98,
+        "model": 9.71,
+        "lo": 5.52,
+        "hi": 18.41,
+        "in_band": true,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 514.8,
+        "measured": 10.88,
+        "model": 10.65,
+        "lo": 5.82,
+        "hi": 20.91,
+        "in_band": true,
+        "used_in_fit": false
+       },
+       {
+        "T_C": 524.9,
+        "measured": 14.68,
+        "model": 12.79,
+        "lo": 6.52,
+        "hi": 26.9,
+        "in_band": true,
+        "used_in_fit": false
+       }
+      ]
+     }
+    ],
+    "yardstick": [
+     {
+      "T_F": 650,
+      "value": 0.4875,
+      "lo": 0.4758,
+      "hi": 0.5031
+     },
+     {
+      "T_F": 800,
+      "value": 0.9484,
+      "lo": 0.9471,
+      "hi": 0.95
+     },
+     {
+      "T_F": 950,
+      "value": 0.9908,
+      "lo": 0.9894,
+      "hi": 0.9915
+     },
+     {
+      "T_F": 1050,
+      "value": 0.9875,
+      "lo": 0.9775,
+      "hi": 0.9901
+     },
+     {
+      "T_F": 1150,
+      "value": 0.9762,
+      "lo": 0.9322,
+      "hi": 0.9861
+     }
+    ],
+    "errors_fit": {
+     "scr.out_NO_ppm": {
+      "unit": "NO out (ppm)",
+      "n": 23,
+      "mean_abs": 59.9609,
+      "max_abs": 318.1,
+      "mean": 16.387,
+      "in_band": 9
+     },
+     "scr.out_N2O_ppm": {
+      "unit": "N2O out (ppm)",
+      "n": 23,
+      "mean_abs": 0.1074,
+      "max_abs": 0.38,
+      "mean": 0.0317,
+      "in_band": 22
+     }
+    },
+    "errors_predicted": {
+     "scr.out_NO_ppm": {
+      "unit": "NO out (ppm)",
+      "n": 12,
+      "mean_abs": 94.5333,
+      "max_abs": 204.6,
+      "mean": -94.5333,
+      "in_band": 0
+     },
+     "scr.out_N2O_ppm": {
+      "unit": "N2O out (ppm)",
+      "n": 12,
+      "mean_abs": 0.325,
+      "max_abs": 1.89,
+      "mean": -0.2617,
+      "in_band": 12
+     }
+    }
+   },
+   "alternatives": [
+    {
+     "label": "Ammonia coverage fitted",
+     "note": "",
+     "chi2_reduced": 0.489,
+     "n_params": 8,
+     "poorly_determined": [
+      "nh3_ox_no.ln_k_ref",
+      "nh3_ox_no.Ea_kJ"
+     ],
+     "params": {
+      "scr.ln_k_ref": 6.2705,
+      "scr.Ea_kJ": 72.2767,
+      "nh3_ox_no.ln_k_ref": 2.063,
+      "nh3_ox_no.Ea_kJ": 72.4459,
+      "nh3_ox_n2o.ln_k_ref": 0.9634,
+      "nh3_ox_n2o.Ea_kJ": 140.2737,
+      "scr.cov.NH3.ln_K_ref": 1.8408,
+      "scr.cov.NH3.dH_kJ": -203.502
+     },
+     "std": {
+      "scr.ln_k_ref": 0.0484,
+      "scr.Ea_kJ": 3.4583,
+      "nh3_ox_no.ln_k_ref": 1.9389,
+      "nh3_ox_no.Ea_kJ": 147.0505,
+      "nh3_ox_n2o.ln_k_ref": 0.5061,
+      "nh3_ox_n2o.Ea_kJ": 16.1954,
+      "scr.cov.NH3.ln_K_ref": 0.8821,
+      "scr.cov.NH3.dH_kJ": 38.3242
+     },
+     "fixed": {},
+     "film": false,
+     "errors_fit": {
+      "scr.out_NO_ppm": {
+       "unit": "NO out (ppm)",
+       "n": 35,
+       "mean_abs": 44.7057,
+       "max_abs": 338.3,
+       "mean": 11.8714,
+       "in_band": 1
+      },
+      "scr.out_N2O_ppm": {
+       "unit": "N2O out (ppm)",
+       "n": 35,
+       "mean_abs": 0.1463,
+       "max_abs": 0.51,
+       "mean": 0.0337,
+       "in_band": 0
+      }
+     },
+     "curves": {
+      "scr.out_NO_ppm": [
+       4832.2,
+       4776.4,
+       4705.9,
+       4617.9,
+       4509.7,
+       4378.5,
+       4221.7,
+       4037.4,
+       3824.1,
+       3581.8,
+       3311.6,
+       3016.4,
+       2701.2,
+       2372.6,
+       2039.1,
+       1710.3,
+       1396.6,
+       1107.8,
+       852.5,
+       637.1,
+       465.0,
+       336.1,
+       246.9,
+       190.9,
+       161.4,
+       152.3,
+       160.5,
+       184.9,
+       226.6,
+       287.6,
+       371.0
+      ],
+      "scr.out_N2O_ppm": [
+       0.0,
+       0.0,
+       0.0,
+       0.01,
+       0.01,
+       0.02,
+       0.03,
+       0.05,
+       0.07,
+       0.11,
+       0.16,
+       0.24,
+       0.33,
+       0.47,
+       0.64,
+       0.86,
+       1.13,
+       1.47,
+       1.88,
+       2.37,
+       2.95,
+       3.63,
+       4.45,
+       5.44,
+       6.67,
+       8.22,
+       10.22,
+       12.85,
+       16.35,
+       21.08,
+       27.48
+      ]
+     },
+     "yardstick": [
+      {
+       "T_F": 650,
+       "value": 0.4787,
+       "lo": -0.9874,
+       "hi": 0.4838
+      },
+      {
+       "T_F": 800,
+       "value": 0.6101,
+       "lo": -0.8438,
+       "hi": 0.6547
+      },
+      {
+       "T_F": 950,
+       "value": 0.0196,
+       "lo": -0.8174,
+       "hi": 0.0635
+      },
+      {
+       "T_F": 1050,
+       "value": -0.2092,
+       "lo": -0.8971,
+       "hi": -0.0052
+      },
+      {
+       "T_F": 1150,
+       "value": -0.3538,
+       "lo": -0.968,
+       "hi": -0.0159
+      }
+     ]
+    },
+    {
+     "label": "Paper's ammonia adsorption",
+     "note": "Ammonia coverage held at the paper's fitted adsorption constant (Table 5).",
+     "chi2_reduced": 2.379,
+     "n_params": 6,
+     "poorly_determined": [],
+     "params": {
+      "scr.ln_k_ref": 6.7579,
+      "scr.Ea_kJ": 87.2751,
+      "nh3_ox_no.ln_k_ref": -25.5119,
+      "nh3_ox_no.Ea_kJ": 45.6106,
+      "nh3_ox_n2o.ln_k_ref": 0.8292,
+      "nh3_ox_n2o.Ea_kJ": 134.5221
+     },
+     "std": {
+      "scr.ln_k_ref": 0.016,
+      "scr.Ea_kJ": 0.7572,
+      "nh3_ox_no.ln_k_ref": 0.0,
+      "nh3_ox_no.Ea_kJ": 0.0,
+      "nh3_ox_n2o.ln_k_ref": 0.0926,
+      "nh3_ox_n2o.Ea_kJ": 6.6424
+     },
+     "fixed": {
+      "scr.cov.NH3.ln_K_ref": 1.407,
+      "scr.cov.NH3.dH_kJ": -139
+     },
+     "film": false,
+     "errors_fit": {
+      "scr.out_NO_ppm": {
+       "unit": "NO out (ppm)",
+       "n": 35,
+       "mean_abs": 106.6086,
+       "max_abs": 643.0,
+       "mean": 70.9571,
+       "in_band": 0
+      },
+      "scr.out_N2O_ppm": {
+       "unit": "N2O out (ppm)",
+       "n": 35,
+       "mean_abs": 0.1831,
+       "max_abs": 0.58,
+       "mean": 0.0563,
+       "in_band": 0
+      }
+     },
+     "curves": {
+      "scr.out_NO_ppm": [
+       4923.4,
+       4890.9,
+       4846.8,
+       4787.9,
+       4710.6,
+       4610.6,
+       4483.3,
+       4324.1,
+       4128.6,
+       3893.6,
+       3617.3,
+       3300.5,
+       2947.7,
+       2567.1,
+       2171.8,
+       1778.4,
+       1405.8,
+       1072.7,
+       793.7,
+       576.1,
+       418.3,
+       311.1,
+       242.4,
+       200.7,
+       177.5,
+       167.2,
+       166.2,
+       172.6,
+       185.3,
+       203.7,
+       227.6
+      ],
+      "scr.out_N2O_ppm": [
+       0.0,
+       0.0,
+       0.01,
+       0.01,
+       0.02,
+       0.02,
+       0.04,
+       0.06,
+       0.09,
+       0.14,
+       0.2,
+       0.28,
+       0.39,
+       0.54,
+       0.72,
+       0.95,
+       1.23,
+       1.55,
+       1.94,
+       2.39,
+       2.93,
+       3.58,
+       4.37,
+       5.37,
+       6.62,
+       8.22,
+       10.27,
+       12.91,
+       16.29,
+       20.63,
+       26.18
+      ]
+     },
+     "yardstick": [
+      {
+       "T_F": 650,
+       "value": 0.2854,
+       "lo": 0.2774,
+       "hi": 0.2953
+      },
+      {
+       "T_F": 800,
+       "value": 0.2072,
+       "lo": 0.205,
+       "hi": 0.2095
+      },
+      {
+       "T_F": 950,
+       "value": 0.0789,
+       "lo": 0.0776,
+       "hi": 0.0798
+      },
+      {
+       "T_F": 1050,
+       "value": 0.0411,
+       "lo": 0.0399,
+       "hi": 0.042
+      },
+      {
+       "T_F": 1150,
+       "value": 0.0213,
+       "lo": 0.0201,
+       "hi": 0.0221
+      }
+     ]
+    }
+   ],
+   "n_params": 6
   }
  }
 }

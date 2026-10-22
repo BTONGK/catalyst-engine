@@ -33,6 +33,7 @@ class Observation:
     ghsv_per_h: float
     p_pa: float
     measured_ppm: dict[str, float]  # wet ppm at the outlet
+    km_a: np.ndarray | None = None  # (n_pathways,) 1/s, external mass transfer to each pathway's key species
 
 
 def observations_from_table(pack: Pack, protocol: ProtocolSpec, rows: list[dict]) -> list[Observation]:
@@ -116,11 +117,15 @@ def fit_kinetics(
     if unknown:
         raise KeyError(f"unknown parameters {sorted(unknown)}")
     an = protocol.analyzer
+    with_film = [o.km_a is not None for o in observations]
+    if any(with_film) and not all(with_film):
+        raise ValueError("give external mass transfer (km_a) for every observation or for none")
     cond = Conditions(
         np.array([o.t_k for o in observations]),
         np.array([o.p_pa for o in observations]),
         np.array([o.ghsv_per_h for o in observations]),
         np.array([o.feed for o in observations]),
+        np.array([o.km_a for o in observations]) if all(with_film) else None,
     )
     # Flatten the measured points: (observation index, species index, value, sigma, lod)
     pts = []
@@ -144,7 +149,8 @@ def fit_kinetics(
         """Predicted ppm for several parameter vectors in one reactor call: (m, n_points)."""
         m = len(xs)
         tiled = Conditions(
-            np.tile(cond.t_k, m), np.tile(cond.p_pa, m), np.tile(cond.ghsv_per_h, m), np.tile(cond.feed, (m, 1))
+            np.tile(cond.t_k, m), np.tile(cond.p_pa, m), np.tile(cond.ghsv_per_h, m), np.tile(cond.feed, (m, 1)),
+            None if cond.km_a is None else np.tile(cond.km_a, (m, 1)),
         )
         params = {k: np.full(m * n_obs, v) for k, v in base.items()}
         for j, n in enumerate(names):

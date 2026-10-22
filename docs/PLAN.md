@@ -92,7 +92,7 @@ reactions/
 | 3 | Virtual rig: hidden "true" catalysts whose properties carry across reactions, producing FTIR-style files with noise, drift and failed runs | Started: simulated analyzer logs (bypass, settling holds, noise, failed and short runs) feed the demo store |
 | 4 | Multi-task models (shared catalyst representation, a head per pathway), conformal calibration, batch planner scored through the reactor model, gate scorecards, transfer scorecard | |
 | 5 | Atomistic descriptors (binding energies of N, O, NH3, CO and others on catalyst site types via UMA), Materials Project stability, OCx24 retrospective | Started: UMA test run done (see the app's Atomistic check page) |
-| 6 | MCP server and agents, literature extraction into a low-trust tier, reports | Started: figure digitizer and the literature check (`experiments/literature_scr/`, the app's Literature check page) |
+| 6 | MCP server and agents, literature extraction into a low-trust tier, reports | Started: figure digitizer (filled and open markers) and the literature check, four catalysts from three sources (`experiments/literature_scr/`, the app's Literature check page) |
 
 ## Findings so far (from simulation with illustrative parameters)
 
@@ -119,6 +119,13 @@ reactions/
   optimistic side; the low-temperature fit leaves Fe-ZSM-5's Gate 1 call at 1,050 F open (0.88-0.96), and
   the full data settle it at 0.87-0.90. Apparent activation energies sit at 56-84% of the thesis's
   diffusion-resolved values. Details: the app's Literature check page.
+- **Ammonia coverage at 25 ppm decides Gate 1 (literature check 2).** Adding a high-temperature
+  Fe@ZSM-5 (Xie et al. 2026, 200-850 C) and a commercial vanadia (Odenbrand 2017, 5,000 ppm), all four
+  catalysts fit. Let the SCR site's NH3 coverage float and every dataset puts it at 0.2-12% at 25 ppm and
+  1,050 F, against the pack's 89%; the Gate 1 placement at 1,050 F then falls from 0.68-0.89 to 0.59 or lower.
+  The data sit at 500-5,000 ppm, so a hot-end concentration step on the bench (proposed, for the catalysis
+  lead's review) settles it. Cooler data miss the hot end on both high-temperature sources, and the gas film
+  carries about a quarter of the activation-energy gap on the thesis monoliths.
 - **Example scenario (all example inputs):** tempered design 58 m3 of catalyst, 34% tempering
   air, 623 kW of fans; hot target design 36 m3, no fans, more ammonia (ratio 1.30 vs 1.05).
 
