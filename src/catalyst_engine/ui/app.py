@@ -16,33 +16,48 @@ if newest_source > getattr(catalyst_engine, "LOADED_AT", 0):
     st.cache_data.clear()
     st.cache_resource.clear()
 
-from catalyst_engine.ui import common  # noqa: E402  (imported after the freshness check above)
+from catalyst_engine.design import screening  # noqa: E402  (imported after the freshness check above)
+from catalyst_engine.ui import common  # noqa: E402
 
 VIEWS = Path(__file__).parent / "views"
 
 st.set_page_config(page_title="Catalyst engine", page_icon=":material/science:", layout="wide")
 common.style()
+screening.add_examples()
 
 nav = st.navigation(
     {
-        "Project": [
-            st.Page(VIEWS / "overview.py", title="Overview", icon=":material/dashboard:", default=True),
-            st.Page(VIEWS / "labdata.py", title="Lab data", icon=":material/database:"),
-            st.Page(VIEWS / "atomistic.py", title="Atomistic check", icon=":material/biotech:"),
-            st.Page(VIEWS / "literature.py", title="Literature check", icon=":material/menu_book:"),
+        "Start": [
+            st.Page(VIEWS / "home.py", title="Home", icon=":material/home:", default=True),
+            st.Page(VIEWS / "manual.py", title="Manual", icon=":material/menu_book:"),
         ],
-        "Explore": [
+        "Design": [
+            st.Page(VIEWS / "design.py", title="Design a catalyst", icon=":material/add_circle:"),
+            st.Page(VIEWS / "results.py", title="Results", icon=":material/leaderboard:"),
+            st.Page(VIEWS / "materials.py", title="Materials", icon=":material/view_in_ar:"),
             st.Page(VIEWS / "reactions.py", title="Reactions", icon=":material/science:"),
+        ],
+        "Simulate": [
             st.Page(VIEWS / "playground.py", title="Catalyst playground", icon=":material/tune:"),
             st.Page(VIEWS / "scenarios.py", title="Design scenarios", icon=":material/factory:"),
-        ],
-        "Tools": [
             st.Page(VIEWS / "calculators.py", title="Calculators", icon=":material/calculate:"),
             st.Page(VIEWS / "fitlab.py", title="Fit lab", icon=":material/query_stats:"),
+        ],
+        "Check accuracy": [
+            st.Page(VIEWS / "atomistic.py", title="Model accuracy", icon=":material/biotech:"),
+            st.Page(VIEWS / "literature.py", title="Literature check", icon=":material/fact_check:"),
+        ],
+        "Lab (optional)": [
+            st.Page(VIEWS / "labdata.py", title="Lab data", icon=":material/database:"),
+        ],
+        "Project": [
+            st.Page(VIEWS / "overview.py", title="Project status", icon=":material/dashboard:"),
         ],
     },
     expanded=True,
 )
 with st.sidebar:
-    st.caption("All catalyst parameters are illustrative until your review and the rig supply real ones.")
+    engine = common.engine_status()
+    st.caption(("UMA ready" if engine["uma"]["ready"] else "UMA needs setting up") + " · "
+               + ("Materials Project connected" if engine["mp_key"] else "Materials Project key needed"))
 nav.run()

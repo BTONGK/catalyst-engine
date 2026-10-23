@@ -1,0 +1,16 @@
+id: nh3-cracking-screen-v1
+pack: nh3_decomposition
+version: 1
+status: draft
+description: Ammonia diluted in argon at 1 bar, a common lab comparison.
+analyzer:
+  name: Gas chromatograph
+  measured: [NH3, H2, N2]
+  sigma_abs_ppm: 50
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Conversion against temperature
+    feed: {NH3: 10 %, AR: balance}
+    ghsv_per_h: 30000
+    temperatures_C: [250, 300, 350, 400, 450, 500, 550, 600, 650]

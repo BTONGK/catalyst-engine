@@ -1,0 +1,16 @@
+id: smr-screen-v1
+pack: steam_reforming
+version: 1
+status: draft
+description: Methane with three steam per carbon, diluted in nitrogen, at 1 bar.
+analyzer:
+  name: Gas chromatograph
+  measured: [CH4, CO, CO2, H2]
+  sigma_abs_ppm: 50
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Methane conversion against temperature
+    feed: {CH4: 10 %, H2O: 30 %, N2: balance}
+    ghsv_per_h: 20000
+    temperatures_C: [400, 450, 500, 550, 600, 650, 700, 750, 800, 850]

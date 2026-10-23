@@ -2,10 +2,11 @@
 
 A pack is a folder under `reactions/`:
 
-    reactions/<id>/pack.yaml          species, pathways, rate-law forms, metrics
+    reactions/<id>/pack.yaml          species, pathways, rate-law forms, metrics, screening descriptor
     reactions/<id>/protocols/*.yaml   test protocols (feeds, temperatures, space velocities, analyzer)
 
-The engine core never imports a pack. Adding a reaction means adding a folder.
+Reactions built in the app go to `<data dir>/reactions/<id>/` in the same layout. The engine core never imports a
+pack. Adding a reaction means adding a folder.
 """
 
 from __future__ import annotations
@@ -24,11 +25,17 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from catalyst_engine.chem.metrics import MetricSpec, evaluate
 from catalyst_engine.chem.network import AdsorptionSpec, Network, NetworkSpec, PathwaySpec, SpeciesSpec
 from catalyst_engine.chem.reactor import Conditions, outlet
+from catalyst_engine.design.spec import ScreeningSpec
 from catalyst_engine.units import c_to_k, f_to_k, parse_fraction
 
 PACKS_DIR = Path(os.environ.get("CE_PACKS_DIR", Path(__file__).resolve().parents[2] / "reactions"))
 
-__all__ = ["AdsorptionSpec", "Pack", "PackSpec", "ProtocolSpec", "list_packs", "load_pack"]
+
+def user_packs_dir() -> Path:
+    """Reactions built in the app: <data dir>/reactions, outside git like the lab data (CE_DATA_DIR moves it)."""
+    return Path(os.environ.get("CE_DATA_DIR", Path(__file__).resolve().parents[2] / "data")) / "reactions"
+
+__all__ = ["AdsorptionSpec", "Pack", "PackSpec", "ProtocolSpec", "StepSpec", "list_packs", "load_pack", "pack_path"]
 
 
 class _Strict(BaseModel):
@@ -61,6 +68,8 @@ class PackSpec(_Strict):
     version: int
     status: str
     description: str = ""
+    summary: str = ""  # one plain-language sentence for the app's reaction cards
+    category: str = "Other"
     reference_temperature_F: float | None = None
     reference_temperature_K: float | None = None
     water: str | None = None
@@ -68,6 +77,7 @@ class PackSpec(_Strict):
     species: dict[str, SpeciesSpec]
     pathways: dict[str, PathwaySpec]
     metrics: dict[str, MetricSpec] = Field(default_factory=dict)
+    screening: ScreeningSpec | None = None
 
     @model_validator(mode="after")
     def _check(self) -> "PackSpec":
@@ -77,6 +87,12 @@ class PackSpec(_Strict):
             missing = m.referenced() - set(self.species)
             if missing:
                 raise ValueError(f"metric {mid}: undeclared species {sorted(missing)}")
+        if self.screening is not None:
+            unknown = set(self.screening.pathways) - set(self.pathways)
+            if unknown:
+                raise ValueError(f"screening names unknown pathways {sorted(unknown)}")
+            if self.screening.metric not in self.metrics:
+                raise ValueError(f"screening metric {self.screening.metric!r} is not a pack metric")
         return self
 
     def network_spec(self) -> NetworkSpec:
@@ -242,10 +258,18 @@ def read_yaml(path: Path) -> dict:
     return data
 
 
+def pack_path(pack_id: str) -> Path:
+    """A pack's folder: the shipped library first, then the reactions built in the app."""
+    for root in (PACKS_DIR, user_packs_dir()):
+        if (root / pack_id / "pack.yaml").exists():
+            return root / pack_id
+    return PACKS_DIR / pack_id
+
+
 def load_pack(pack: str | Path) -> Pack:
     path = Path(pack)
     if not path.exists():
-        path = PACKS_DIR / str(pack)
+        path = pack_path(str(pack))
     spec = PackSpec.model_validate(read_yaml(path / "pack.yaml"))
     if spec.id != path.name:
         raise ValueError(f"pack id {spec.id!r} must match its folder name {path.name!r}")
@@ -266,5 +290,6 @@ def load_pack(pack: str | Path) -> Pack:
 
 
 def list_packs(root: Path | None = None) -> list[str]:
-    root = root or PACKS_DIR
-    return sorted(p.name for p in root.iterdir() if (p / "pack.yaml").exists())
+    """Pack ids in `root`, or in the shipped library plus the reactions built in the app."""
+    roots = [root] if root else [PACKS_DIR, user_packs_dir()]
+    return sorted({p.name for r in roots if r.is_dir() for p in r.iterdir() if (p / "pack.yaml").exists()})

@@ -1,0 +1,51 @@
+# Nitrous oxide decomposition. Rate parameters are ILLUSTRATIVE: the rate constant is set so the reference
+# catalyst (rhodium) removes half the N2O at 400 C under the screen protocol.
+
+id: n2o_decomposition
+name: N2O removal
+version: 1
+status: draft-illustrative-parameters
+summary: Breaks down nitrous oxide, a greenhouse gas 270 times stronger than CO2, in nitric-acid plant exhaust.
+category: Clean air
+description: >
+  Nitrous oxide splits into nitrogen and an oxygen atom on the catalyst; the oxygen atoms pair up and leave as
+  O2. Oxygen in the exhaust slows catalysts that hold it tightly. First order in N2O.
+
+reference_temperature_K: 673.15
+water: H2O
+oxygen: O2
+
+species:
+  N2O: {formula: N2O}
+  N2:  {formula: N2}
+  O2:  {formula: O2}
+  H2O: {formula: H2O}
+
+pathways:
+  decomposition:
+    equation: 2 N2O -> 2 N2 + O2
+    role: desired
+    rate: {key: N2O, orders: {N2O: 1}, ln_k_ref: 2.251, Ea_kJ: 100}
+
+metrics:
+  n2o_conversion:
+    kind: conversion
+    species: [N2O]
+    description: Share of the nitrous oxide destroyed.
+    target: {min: 0.9, label: Target}
+  n2o_out:
+    kind: outlet
+    species: [N2O]
+    description: Nitrous oxide left in the gas.
+
+screening:
+  descriptor: {O: 1}
+  pathways: [decomposition]
+  metric: n2o_conversion
+  reference: {formula: Rh, name: Rhodium}
+  optimum_shift_eV: 0.0
+  suggested_elements: [Rh, Ru, Ir, Pd, Pt, Co, Ni, Cu, Fe, Mn]
+  basis: >
+    Each N2O leaves an oxygen atom behind, so oxygen binding sets the balance: tight binders split N2O easily but
+    clog with oxygen, loose binders release oxygen but split N2O slowly. Rhodium and ruthenium rank among the
+    most active metals (Kapteijn et al., Appl. Catal. B 1996); the top is set at rhodium's binding.

@@ -11,9 +11,10 @@ from catalyst_engine.ui import common
 MODE_COLORS = {"oc20": "#d97706", "omat": common.ACCENT}
 
 reports = common.experiment_reports()
-st.title("Atomistic check")
+st.title("Model accuracy")
+st.caption("How closely the atomistic model (UMA) matches published binding energies: the check behind every ranking on the Results page.")
 if not reports:
-    st.info("Atomistic checks appear here once an experiment folder holds a report.yaml.")
+    st.info("Model checks appear here once an experiment folder holds a report.yaml.")
     st.stop()
 name = st.selectbox("Experiment", list(reports), format_func=lambda k: reports[k]["title"]) if len(reports) > 1 else next(iter(reports))
 rep = reports[name]

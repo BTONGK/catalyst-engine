@@ -1,0 +1,51 @@
+# Ammonia decomposition for hydrogen. Rate parameters are ILLUSTRATIVE: the rate constant is set so the reference
+# catalyst (ruthenium) converts half the ammonia at 400 C under the screen protocol.
+
+id: nh3_decomposition
+name: Ammonia cracking
+version: 1
+status: draft-illustrative-parameters
+summary: Splits ammonia into hydrogen and nitrogen, so ammonia can carry hydrogen by ship and truck.
+category: Hydrogen and energy
+description: >
+  Ammonia stores hydrogen densely and ships like propane; at the destination a catalyst splits it back. The
+  reaction takes in heat and runs near completion above about 400 C at 1 bar, so the catalyst sets how low the
+  temperature can go. First order in NH3.
+
+reference_temperature_K: 673.15
+
+species:
+  NH3: {formula: NH3}
+  N2:  {formula: N2}
+  H2:  {formula: H2}
+  AR:  {formula: Ar, cantera: AR}
+
+pathways:
+  cracking:
+    equation: 2 NH3 <=> N2 + 3 H2
+    role: desired
+    rate: {key: NH3, orders: {NH3: 1}, ln_k_ref: 2.681, Ea_kJ: 110}
+
+metrics:
+  nh3_conversion:
+    kind: conversion
+    species: [NH3]
+    description: Share of the ammonia split into hydrogen and nitrogen.
+    target: {min: 0.99, label: Fuel-cell grade}
+  h2_yield:
+    kind: yield
+    species: [H2]
+    denominator: [NH3]
+    description: Hydrogen made per ammonia fed (1.5 is the most possible).
+
+screening:
+  descriptor: {N: 1}
+  pathways: [cracking]
+  metric: nh3_conversion
+  reference: {formula: Ru, name: Ruthenium}
+  optimum_shift_eV: 0.0
+  suggested_elements: [Ru, Ni, Rh, Co, Ir, Fe, Mo, Pt, Cu]
+  basis: >
+    Nitrogen binding sets the rate: the N atoms left on the surface have to pair up and leave as N2. Measured
+    activity runs Ru > Ni > Rh > Co > Ir > Fe >> Pt > Cr > Pd > Cu (Ganley et al., Catal. Lett. 2004), with
+    ruthenium on top; the top is set at ruthenium's binding.

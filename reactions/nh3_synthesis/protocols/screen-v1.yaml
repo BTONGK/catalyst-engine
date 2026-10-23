@@ -1,0 +1,17 @@
+id: nh3-synthesis-screen-v1
+pack: nh3_synthesis
+version: 1
+status: draft
+description: Stoichiometric synthesis gas at 100 bar, the pressure of a modern ammonia loop.
+analyzer:
+  name: Gas chromatograph
+  measured: [NH3]
+  sigma_abs_ppm: 50
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Conversion against temperature at loop pressure
+    feed: {N2: 25 %, H2: balance}
+    ghsv_per_h: 10000
+    pressure_kPa: 10000
+    temperatures_C: [300, 325, 350, 375, 400, 425, 450, 475, 500, 550]

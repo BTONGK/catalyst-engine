@@ -7,6 +7,7 @@ from typing import Literal
 import numpy as np
 from pydantic import BaseModel, ConfigDict, model_validator
 
+from catalyst_engine.chem.formula import element_counts
 from catalyst_engine.chem.network import Network
 from catalyst_engine.units import Basis, from_wet
 
@@ -40,11 +41,14 @@ class TargetSpec(BaseModel):
 
 
 class MetricSpec(BaseModel):
-    """conversion: 1 - out/in of a species group. outlet: ppm of a group on a basis.
-    consumption_ratio: moles of `numerator` consumed per mole of `denominator` consumed."""
+    """conversion: share of a species group's moles fed that react. outlet: ppm of a group on a basis.
+    consumption_ratio: moles of `numerator` consumed per mole of `denominator` consumed.
+    yield: moles of `species` formed per mole of `denominator` fed.
+    Molar quantities use the outlet's total flow, from an element balance, so reactions that change the number
+    of molecules (ammonia or methanol synthesis) read correctly."""
 
     model_config = ConfigDict(extra="forbid")
-    kind: Literal["conversion", "outlet", "consumption_ratio"]
+    kind: Literal["conversion", "outlet", "consumption_ratio", "yield"]
     target: TargetSpec | None = None
     species: list[str] = []
     numerator: list[str] = []
@@ -58,6 +62,9 @@ class MetricSpec(BaseModel):
         if self.kind == "consumption_ratio":
             if not (self.numerator and self.denominator):
                 raise ValueError("consumption_ratio needs numerator and denominator")
+        elif self.kind == "yield":
+            if not (self.species and self.denominator):
+                raise ValueError("yield needs species and denominator")
         elif not self.species:
             raise ValueError(f"{self.kind} needs species")
         if self.kind != "outlet" and (self.basis.dry or self.basis.o2_ref_pct is not None):
@@ -69,10 +76,21 @@ class MetricSpec(BaseModel):
             return self.unit
         if self.kind == "outlet":
             return self.basis.to_basis().label
-        return "fraction" if self.kind == "conversion" else "mol/mol"
+        return "fraction" if self.kind in ("conversion", "yield") else "mol/mol"
 
     def referenced(self) -> set[str]:
         return set(self.species) | set(self.numerator) | set(self.denominator)
+
+
+def flow_ratio(network: Network, feed: np.ndarray, out: np.ndarray) -> np.ndarray:
+    """Outlet over inlet total molar flow, from the balance of the element most present in the feed."""
+    elements = sorted({el for sp in network.spec.species.values() for el in element_counts(sp.formula)})
+    counts = np.array([[element_counts(network.spec.species[s].formula).get(el, 0) for el in elements]
+                       for s in network.species], dtype=float)
+    atoms_in, atoms_out = feed @ counts, out @ counts
+    j = np.argmax(atoms_in.sum(axis=0))
+    with np.errstate(divide="ignore", invalid="ignore"):
+        return np.where(atoms_out[:, j] > 0, atoms_in[:, j] / atoms_out[:, j], 1.0)
 
 
 def evaluate(spec: MetricSpec, network: Network, feed: np.ndarray, out: np.ndarray) -> np.ndarray:
@@ -82,13 +100,18 @@ def evaluate(spec: MetricSpec, network: Network, feed: np.ndarray, out: np.ndarr
         return y[:, [network.index(s) for s in group]].sum(axis=1)
 
     with np.errstate(divide="ignore", invalid="ignore"):
+        if spec.kind in ("conversion", "consumption_ratio", "yield"):
+            moles_out = out * flow_ratio(network, feed, out)[:, None]  # per mole of feed
         if spec.kind == "conversion":
             y_in = total(feed, spec.species)
-            return np.where(y_in > 0, 1.0 - total(out, spec.species) / y_in, np.nan)
+            return np.where(y_in > 0, 1.0 - total(moles_out, spec.species) / y_in, np.nan)
         if spec.kind == "consumption_ratio":
-            num = total(feed, spec.numerator) - total(out, spec.numerator)
-            den = total(feed, spec.denominator) - total(out, spec.denominator)
+            num = total(feed, spec.numerator) - total(moles_out, spec.numerator)
+            den = total(feed, spec.denominator) - total(moles_out, spec.denominator)
             return np.where(den > 0, num / den, np.nan)  # undefined unless the denominator is consumed
+        if spec.kind == "yield":
+            fed = total(feed, spec.denominator)
+            return np.where(fed > 0, (total(moles_out, spec.species) - total(feed, spec.species)) / fed, np.nan)
     ppm_wet = total(out, spec.species) * 1e6
     basis = spec.basis.to_basis()
     if not basis.dry:

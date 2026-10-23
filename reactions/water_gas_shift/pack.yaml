@@ -1,0 +1,51 @@
+# Water-gas shift. Rate parameters are ILLUSTRATIVE: the rate constant is set so the reference catalyst (copper)
+# gets halfway to equilibrium at 220 C under the screen protocol.
+
+id: water_gas_shift
+name: Water-gas shift
+version: 1
+status: draft-illustrative-parameters
+summary: Turns carbon monoxide and steam into extra hydrogen, a key step in every hydrogen plant.
+category: Hydrogen and energy
+description: >
+  CO reacts with steam to make CO2 and hydrogen. The reaction gives off heat, so equilibrium favors low
+  temperature, and a catalyst that works cool removes more CO. First order in CO, with the approach to
+  equilibrium from thermodynamics.
+
+reference_temperature_K: 493.15
+water: H2O
+
+species:
+  CO:  {formula: CO}
+  H2O: {formula: H2O}
+  CO2: {formula: CO2}
+  H2:  {formula: H2}
+  N2:  {formula: N2}
+
+pathways:
+  shift:
+    equation: CO + H2O <=> CO2 + H2
+    role: desired
+    rate: {key: CO, orders: {CO: 1}, ln_k_ref: 1.232, Ea_kJ: 70}
+
+metrics:
+  co_conversion:
+    kind: conversion
+    species: [CO]
+    description: Share of the carbon monoxide shifted to hydrogen.
+  co_out:
+    kind: outlet
+    species: [CO]
+    description: Carbon monoxide left; fuel cells tolerate only a few ppm.
+
+screening:
+  descriptor: {O: 1}
+  pathways: [shift]
+  metric: co_conversion
+  reference: {formula: Cu, name: Copper}
+  optimum_shift_eV: 0.0
+  suggested_elements: [Cu, Au, Ag, Ni, Co, Fe, Pt, Pd, Zn]
+  basis: >
+    Oxygen binding sets low-temperature shift activity (Schumacher et al., J. Catal. 2005): water has to split on
+    the surface and the O left behind has to leave with CO. Copper, the industrial low-temperature catalyst, sits
+    near the top; the top is set at copper's binding.

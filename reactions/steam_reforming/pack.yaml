@@ -1,0 +1,57 @@
+# Steam methane reforming. Rate parameters are ILLUSTRATIVE: the reforming rate constant is set so the reference
+# catalyst (nickel) gets halfway to equilibrium at 600 C under the screen protocol.
+
+id: steam_reforming
+name: Steam methane reforming
+version: 1
+status: draft-illustrative-parameters
+summary: Makes hydrogen from natural gas and steam, the way most of the world's hydrogen is made today.
+category: Hydrogen and energy
+description: >
+  Methane and steam make CO and hydrogen; the water-gas shift then turns part of the CO into more hydrogen. The
+  reaction takes in heat, so it runs hot, and a more active catalyst reaches equilibrium at a lower temperature.
+
+reference_temperature_K: 873.15
+water: H2O
+
+species:
+  CH4: {formula: CH4}
+  H2O: {formula: H2O}
+  CO:  {formula: CO}
+  CO2: {formula: CO2}
+  H2:  {formula: H2}
+  N2:  {formula: N2}
+
+pathways:
+  reforming:
+    equation: CH4 + H2O <=> CO + 3 H2
+    role: desired
+    rate: {key: CH4, orders: {CH4: 1}, ln_k_ref: 2.402, Ea_kJ: 110}
+  shift:
+    equation: CO + H2O <=> CO2 + H2
+    role: side
+    note: Water-gas shift, fast at reforming temperatures, so it stays near equilibrium.
+    rate: {key: CO, orders: {CO: 1}, ln_k_ref: 8.0, Ea_kJ: 60}
+
+metrics:
+  ch4_conversion:
+    kind: conversion
+    species: [CH4]
+    description: Share of the methane reformed.
+  h2_yield:
+    kind: yield
+    species: [H2]
+    denominator: [CH4]
+    description: Hydrogen made per methane fed (4 is the most possible).
+
+screening:
+  descriptor: {C: 0.5, O: 0.5}
+  pathways: [reforming]
+  metric: ch4_conversion
+  reference: {formula: Ni, name: Nickel}
+  optimum_shift_eV: 0.0
+  suggested_elements: [Ni, Ru, Rh, Co, Ir, Pt, Pd, Fe, Cu]
+  basis: >
+    Carbon and oxygen binding place reforming catalysts on a volcano (Jones et al., J. Catal. 2008): ruthenium,
+    rhodium and nickel sit near the top, and nickel is the industrial choice for its price. The descriptor
+    averages the C and O binding; the top is set at nickel's.

@@ -1,0 +1,49 @@
+# Ammonia synthesis (Haber-Bosch). Rate parameters are ILLUSTRATIVE: the rate constant is set so the reference
+# catalyst (ruthenium) gets halfway to equilibrium at 400 C under the screen protocol.
+
+id: nh3_synthesis
+name: Ammonia synthesis
+version: 1
+status: draft-illustrative-parameters
+summary: Makes ammonia, the starting point of most fertilizer, from nitrogen and hydrogen.
+category: Chemicals and fuels
+description: >
+  Nitrogen and hydrogen combine to ammonia at high pressure. The reaction gives off heat, so equilibrium caps
+  conversion more tightly as temperature rises: a better catalyst works at lower temperature, where the cap is
+  higher. First order in N2, with the approach to equilibrium from thermodynamics.
+
+reference_temperature_K: 673.15
+
+species:
+  N2:  {formula: N2}
+  H2:  {formula: H2}
+  NH3: {formula: NH3}
+
+pathways:
+  synthesis:
+    equation: N2 + 3 H2 <=> 2 NH3
+    role: desired
+    rate: {key: N2, orders: {N2: 1}, ln_k_ref: -4.207, Ea_kJ: 90}
+
+metrics:
+  n2_conversion:
+    kind: conversion
+    species: [N2]
+    description: Share of the nitrogen turned into ammonia.
+  nh3_yield:
+    kind: yield
+    species: [NH3]
+    denominator: [N2]
+    description: Ammonia made per nitrogen fed (2 is the most possible).
+
+screening:
+  descriptor: {N: 1}
+  pathways: [synthesis]
+  metric: n2_conversion
+  reference: {formula: Ru, name: Ruthenium}
+  optimum_shift_eV: 0.0
+  suggested_elements: [Ru, Fe, Co, Mo, Os, Ni, Re, W, Rh]
+  basis: >
+    Nitrogen binding sets ammonia synthesis rates (Logadottir et al., J. Catal. 2001; Jacobsen et al., JACS
+    2001): metals such as Mo hold nitrogen too tightly, metals such as Ni barely split N2, ruthenium and osmium
+    sit near the top, and alloys such as CoMo bind in between their parents. The top is set at ruthenium's.

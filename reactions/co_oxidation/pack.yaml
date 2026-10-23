@@ -1,0 +1,53 @@
+# CO oxidation: the textbook catalytic reaction and the first job of every exhaust catalyst.
+# Rate parameters are ILLUSTRATIVE: the rate constant is set so the reference catalyst (platinum) gets halfway
+# at 180 C under the screen protocol, a typical light-off for supported platinum.
+
+id: co_oxidation
+name: CO oxidation
+version: 1
+status: draft-illustrative-parameters
+summary: Turns poisonous carbon monoxide into carbon dioxide, the main job of a car's catalytic converter.
+category: Clean air
+description: >
+  Carbon monoxide burns with oxygen on the catalyst surface. A simple first-order rate law in CO stands in for
+  the full surface mechanism; the screening descriptor moves its barrier from one material to the next.
+
+reference_temperature_K: 453.15
+water: H2O
+oxygen: O2
+
+species:
+  CO:  {formula: CO}
+  O2:  {formula: O2}
+  CO2: {formula: CO2}
+  H2O: {formula: H2O}
+  N2:  {formula: N2}
+
+pathways:
+  co_ox:
+    equation: CO + 0.5 O2 -> CO2
+    role: desired
+    rate: {key: CO, orders: {CO: 1}, ln_k_ref: 2.259, Ea_kJ: 90}
+
+metrics:
+  co_conversion:
+    kind: conversion
+    species: [CO]
+    description: Share of the carbon monoxide turned into CO2.
+    target: {min: 0.9, label: Target}
+  co_out:
+    kind: outlet
+    species: [CO]
+    description: Carbon monoxide left in the gas.
+
+screening:
+  descriptor: {O: 1}
+  pathways: [co_ox]
+  metric: co_conversion
+  reference: {formula: Pt, name: Platinum}
+  optimum_shift_eV: 0.2
+  suggested_elements: [Pt, Pd, Rh, Ir, Ru, Au, Ag, Cu, Ni, Co]
+  basis: >
+    Oxygen binding sets CO oxidation activity on metals (Falsig et al., Angew. Chem. 2008): metals that hold
+    oxygen too tightly stay covered, metals that hold it too loosely leave O2 unsplit. Platinum sits a little on
+    the tight side, so the top of the volcano is set 0.2 eV weaker than platinum's binding.

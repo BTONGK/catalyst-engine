@@ -1,0 +1,16 @@
+id: co-screen-v1
+pack: co_oxidation
+version: 1
+status: draft
+description: A standard light-off test, 1% CO in excess oxygen, the way exhaust catalysts are compared.
+analyzer:
+  name: FTIR
+  measured: [CO, CO2]
+  sigma_abs_ppm: 2.0
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Light-off curve
+    feed: {CO: 1 %, O2: 5 %, H2O: 2 %, N2: balance}
+    ghsv_per_h: 30000
+    temperatures_C: [50, 75, 100, 125, 150, 175, 200, 225, 250, 300, 350]

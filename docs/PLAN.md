@@ -91,7 +91,7 @@ reactions/
 | 2 | Data platform: formulations, samples, protocols, runs, raw files by hash, append-only; FTIR ingest with steady-state detection and checks; reference-run enforcement; hash-chained prediction log | Done 2026-10-21 (`src/catalyst_engine/data/`, `ce data`, the app's Lab data page) |
 | 3 | Virtual rig: hidden "true" catalysts whose properties carry across reactions, producing FTIR-style files with noise, drift and failed runs | Started: simulated analyzer logs (bypass, settling holds, noise, failed and short runs) feed the demo store |
 | 4 | Multi-task models (shared catalyst representation, a head per pathway), conformal calibration, batch planner scored through the reactor model, gate scorecards, transfer scorecard | |
-| 5 | Atomistic descriptors (binding energies of N, O, NH3, CO and others on catalyst site types via UMA), Materials Project stability, OCx24 retrospective | Started: UMA test run done (see the app's Atomistic check page) |
+| 5 | Atomistic descriptors (binding energies of N, O, NH3, CO and others on catalyst site types via UMA), Materials Project stability, OCx24 retrospective | Built 2026-10-23: the catalyst design app (Materials Project search, UMA binding energies in a background worker, volcano ranking, reactor curves, 3D structures, in-app reaction builder); UMA test run on the app's Model accuracy page |
 | 6 | MCP server and agents, literature extraction into a low-trust tier, reports | Started: figure digitizer (filled and open markers) and the literature check, eight catalysts from four sources (`experiments/literature_scr/`, the app's Literature check page) |
 
 ## Findings so far (from simulation with illustrative parameters)
@@ -111,7 +111,7 @@ reactions/
 - **UMA ranks candidates well (atomistic check).** On nine metals it follows the textbook scaling
   rules and all 14 periodic-table orderings. Its materials mode matches measured NH3 binding on
   anatase (1.16 vs 1.23 ± 0.1 eV), and both modes rank the SCR acid sites correctly. Its NO
-  energies on vanadia are artifacts. Details: the app's Atomistic check page.
+  energies on vanadia are artifacts. Details: the app's Model accuracy page.
 - **The engine reproduces published zeolite SCR data (literature check, real measurements).** Digitized
   from Metkar's 2012 thesis (Fe-ZSM-5 and Cu-chabazite monoliths, 100-600 C), both catalysts fit the
   pack's own rate laws in the ideal reactor: NO conversion within 0.020 and 0.011 on average. Fitted below

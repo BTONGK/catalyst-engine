@@ -12,6 +12,7 @@ dependencies = [
     "cantera>=3.1",
     "typer>=0.15",
     "streamlit>=1.50",
+    "ase>=3.23",
 ]
 
 [project.scripts]

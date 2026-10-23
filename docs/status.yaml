@@ -1,4 +1,4 @@
-# Project status shown on the app's Overview page. Updated at the end of every phase.
+# Project status shown on the app's Project status page. Updated at the end of every phase.
 updated: 2026-10-23
 focus_pack: scr_hot   # the app opens on this reaction
 
@@ -23,8 +23,15 @@ proof_sequence:
 recent:
   - date: 2026-10-23
     item: >
-      Catalysis basics and Manual tabs on this page: a plain-language primer on catalysts and how they are tested,
-      then the steps to run an experiment in the app, written for any reaction.
+      The catalyst design app. Pick any of ten reactions (or add your own on the Reactions page), set the
+      conditions, choose pure metals or Materials Project crystals, and UMA computes each surface's binding energies
+      in the background. Results ranks the materials against the catalyst to beat on the reaction's volcano, with
+      performance curves, the volcano chart, 3D structures and CSV downloads. A new Home page and an illustrated
+      Manual walk through every step; a finished example screen (CO oxidation, 14 materials) ships with the app.
+  - date: 2026-10-23
+    item: >
+      Catalysis basics and the Manual: a plain-language primer on catalysts and how they are tested, then the
+      steps to run a design in the app, written for any reaction.
   - date: 2026-10-23
     item: >
       Literature check 3: a Siemens patent's four Fe-beta catalysts, measured at 50 ppm NO, the closest published
@@ -74,6 +81,17 @@ recent:
       fits, and the system-value tools.
 
 next_steps:
+  - step: Run a design screen on a reaction you care about, and tell me what reads unclear
+    owner: You
+    why: >
+      The Manual's "How to use the app" tab walks through it. Keep the temperature range near the reaction's
+      standard test; the app flags ranges beyond it.
+  - step: Set each reaction's volcano slopes from published scaling relations
+    owner: Claude
+    why: >
+      Every pack uses generic slopes (0.9 and 1.0 eV per eV), which push metals that bind strongly, such as Rh, Ru,
+      Ni and Co, far below what practice shows. Reaction-specific slopes and a CO-coverage term for CO oxidation
+      bring the ranking closer to published activity.
   - step: Review the pack parameters and protocols, and set the batch-1 design space
     owner: You
     why: >
@@ -136,7 +154,8 @@ phases:
     status: building
     summary: >
       Binding energies from open atomistic models (UMA), Materials Project stability, OCx24 benchmark.
-      First check done: UMA ranks candidates well (Atomistic check page).
+      First check done: UMA ranks candidates well (Model accuracy page). Built: the catalyst design app, for any
+      reaction with a screening block (Design a catalyst, Results, Materials, Reactions pages).
   - id: 6
     name: Agents
     status: planned
@@ -146,6 +165,13 @@ phases:
       so far (Literature check page).
 
 findings:
+  - title: The design app's first screen puts PdPt level with platinum for CO oxidation
+    detail: >
+      Fourteen materials, 56 relaxations, 11 minutes on this Mac. PdPt binds oxygen within 0.01 eV of platinum and
+      runs at 0.9 times its rate (likely range 0.02 to 43 times); CuPt and Pd follow. Metals that bind oxygen much
+      more strongly (Rh, Ru, Ni, Co) land a billion times slower or more, further below platinum than experiments
+      place them: the volcano slopes are generic, and the next step sets them per reaction.
+    source: Example screen, examples/screens/ (2026-10-23).
   - title: Measure at the turbine's concentration
     detail: >
       Seven of eight published catalysts place the SCR site's ammonia coverage at 25 ppm and 1,050 °F below the

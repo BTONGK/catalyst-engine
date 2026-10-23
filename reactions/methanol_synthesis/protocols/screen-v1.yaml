@@ -1,0 +1,17 @@
+id: methanol-screen-v1
+pack: methanol_synthesis
+version: 1
+status: draft
+description: CO2 and hydrogen at 3 to 1 and 50 bar, with a little nitrogen as an internal standard.
+analyzer:
+  name: Gas chromatograph
+  measured: [CO2, CO, CH3OH, H2O]
+  sigma_abs_ppm: 50
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Methanol yield against temperature
+    feed: {CO2: 24 %, N2: 4 %, H2: balance}
+    ghsv_per_h: 10000
+    pressure_kPa: 5000
+    temperatures_C: [180, 200, 220, 240, 260, 280, 300, 320]

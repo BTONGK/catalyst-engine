@@ -11,15 +11,46 @@ uv sync
 uv run ce ui                      # opens http://localhost:8501
 ```
 
-Nine pages: Overview (progress, next steps and decisions from `docs/status.yaml`, plus a catalysis primer and the user manual from `docs/manual.yaml`), Lab data
-(catalysts, runs, campaign scores and the prediction log), Atomistic check and Literature check (model
-checks from `experiments/*/report.yaml`, sorted by the report's `kind`), Reactions, Catalyst playground, Design scenarios, Calculators and Fit lab. Every page reads the files on disk, so a new pack, an edited YAML file or a
-new experiment summary shows up on the next page load.
+The app designs catalysts on the computer. Pick a reaction and its conditions, choose materials (pure metals,
+or alloys and oxides from the Materials Project), and a background run computes each surface's binding energies
+with Meta FAIR Chemistry's UMA model. The app then ranks the materials against the catalyst to beat on the
+reaction's Sabatier volcano, runs each one through the reactor model across the chosen temperatures, and shows
+the surfaces in 3D. The Manual page (from `docs/manual.yaml`, with screenshots in `docs/manual/`) walks through
+every step and has a plain-language primer on catalysis.
+
+Pages, as grouped in the sidebar:
+
+- **Start:** Home, Manual.
+- **Design:** Design a catalyst (reaction, conditions, materials, run), Results (ranking, performance curves,
+  volcano, 3D structures, CSV downloads), Materials (search the Materials Project or browse pure metals in 3D),
+  Reactions (the library, a form that adds a new reaction, and each reaction's full detail).
+- **Simulate:** Catalyst playground, Design scenarios, Calculators, Fit lab.
+- **Check accuracy:** Model accuracy and Literature check (model checks from `experiments/*/report.yaml`,
+  sorted by the report's `kind`).
+- **Lab (optional):** Lab data (catalysts, runs, campaign scores and the prediction log).
+- **Project:** Project status (progress, next steps and decisions from `docs/status.yaml`).
+
+Every page reads the files on disk, so a new pack, an edited YAML file or a new experiment summary shows up on
+the next page load.
+
+### What a design run needs
+
+- **UMA**, in its own Python: fairchem-core 2.23 and the `uma-s-1p1` checkpoint. The app looks for
+  `/opt/miniconda3/bin/python3` and `~/uma/checkpoints/uma-s-1p1.pt`; set `CE_UMA_PYTHON` and
+  `CE_UMA_CHECKPOINT` to point elsewhere. The worker (`src/catalyst_engine/design/uma_worker.py`) runs there as
+  a separate process.
+- **A Materials Project API key** (free, materialsproject.org) for alloys and oxides, read from `MP_API_KEY`,
+  `PMG_MAPI_KEY` or `~/.config/.pmgrc.yaml`. Pure metals work right away.
+
+Each screen is a folder in `data/screens/<id>/`: `job.json` (the request), `status.json`, `results.jsonl`
+(every binding energy), `structures/*.cif` and `log.txt`. A finished example screen ships in
+`examples/screens/` and lands in an empty `data/screens/` when the app opens. Reactions added in the app live
+in `data/reactions/`, and fetched crystal structures are cached in `data/materials/`.
 
 ## Command line
 
 ```sh
-uv run pytest                     # 69 tests, ~40 s
+uv run pytest                     # 111 tests, ~1 min
 uv run ce packs                   # reaction packs and whether each loads
 uv run ce show scr_hot            # pathways, metrics, protocols, open questions
 uv run ce simulate scr_hot        # run the yardstick protocol through the reactor model
@@ -75,8 +106,25 @@ pathways:
       Ea_kJ: 50
 ```
 
+A `screening` block makes the reaction designable: the adsorbates whose binding energy ranks materials, the
+pathways that follow it, the metric, the catalyst to beat and where the volcano's top sits relative to it:
+
+```yaml
+screening:
+  descriptor: {O: 1}          # weights; {C: 0.5, O: 0.5} averages two binding energies
+  pathways: [co_ox]
+  metric: co_conversion
+  reference: {formula: Pt, name: Platinum}
+  optimum_shift_eV: 0.2       # the top binds 0.2 eV more weakly than the reference
+  suggested_elements: [Pt, Pd, Rh, Ir, Ru, Au, Ag, Cu, Ni, Co]
+```
+
 The loader checks element balance, species in the thermo database, metric species and protocol
 feeds. `uv run pytest tests/test_packs.py` runs every pack through every protocol.
+
+The Reactions page's "Add a reaction" tab writes such a pack from a short form (`design/builder.py`) and
+calibrates its rate constant so the catalyst to beat reaches half the best possible result at a temperature
+the user names.
 
 ## Conventions
 
@@ -84,4 +132,4 @@ feeds. `uv run pytest tests/test_packs.py` runs every pack through every protoco
 - Rates are per m3 of catalyst with concentrations in mol/m3; first-order k is in 1/s.
 - Parameters are named `<pathway>.ln_k_ref`, `<pathway>.Ea_kJ`, `<pathway>.cov.<species>.ln_K_ref`.
 - Analyzer readings are wet ppm; metrics state their basis (`ppmvd @ 15% O2` for permits).
-- Lab data never lives in git (`data/` is ignored).
+- Lab data, screens and reactions built in the app stay outside git (`data/` is ignored).

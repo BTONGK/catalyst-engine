@@ -9,6 +9,8 @@ id: scr_hot
 name: High-temperature SCR of NOx with NH3
 version: 1
 status: draft-illustrative-parameters
+summary: Removes NOx, the gas behind smog, from hot gas-turbine exhaust by reacting it with ammonia.
+category: Clean air
 description: >
   Standard SCR competes with ammonia oxidation. At an NH3/NOx feed ratio of 1.0,
   reaching 92% NOx conversion leaves room to burn at most 2 of every 25 ppm of NH3,
@@ -82,3 +84,16 @@ metrics:
     numerator: [NH3]
     denominator: [NO, NO2]
     description: Ammonia used per NOx removed. 1.0 is clean SCR; higher values mean ammonia is burning off.
+
+screening:
+  descriptor: {NH3: 1}
+  pathways: [scr]
+  metric: nox_conversion
+  reference: {formula: V2O5, name: Vanadium oxide}
+  optimum_shift_eV: 0.0
+  suggested_elements: [V, W, Mo, Ti, Fe, Cu, Ce, Mn, Nb, Zr]
+  basis: >
+    Ammonia has to sit on the surface's acid sites to react with NO, so ammonia binding tracks SCR activity on
+    oxides: weak sites leave too little ammonia, overly strong ones hold it as a spectator. The top is set at
+    vanadium oxide's, the active part of commercial SCR catalysts. The oxide SCR volcano is less settled than the
+    metal volcanoes, so read this ranking as a first pass.

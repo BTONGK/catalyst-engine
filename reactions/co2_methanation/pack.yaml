@@ -1,0 +1,52 @@
+# CO2 methanation (Sabatier reaction). Rate parameters are ILLUSTRATIVE: the rate constant is set so the reference
+# catalyst (nickel) gets halfway to equilibrium at 330 C under the screen protocol.
+
+id: co2_methanation
+name: CO2 methanation
+version: 1
+status: draft-illustrative-parameters
+summary: Turns CO2 and hydrogen into methane, a way to store surplus solar and wind power as natural gas.
+category: Hydrogen and energy
+description: >
+  CO2 and hydrogen make methane and water. The reaction gives off heat, so equilibrium favors low temperature
+  and an active catalyst reaches high methane yields while still cool. First order in CO2, with the approach to
+  equilibrium.
+
+reference_temperature_K: 603.15
+water: H2O
+
+species:
+  CO2: {formula: CO2}
+  H2:  {formula: H2}
+  CH4: {formula: CH4}
+  H2O: {formula: H2O}
+  N2:  {formula: N2}
+
+pathways:
+  methanation:
+    equation: CO2 + 4 H2 <=> CH4 + 2 H2O
+    role: desired
+    rate: {key: CO2, orders: {CO2: 1}, ln_k_ref: 1.240, Ea_kJ: 80}
+
+metrics:
+  co2_conversion:
+    kind: conversion
+    species: [CO2]
+    description: Share of the CO2 turned into methane.
+  ch4_yield:
+    kind: yield
+    species: [CH4]
+    denominator: [CO2]
+    description: Methane made per CO2 fed.
+
+screening:
+  descriptor: {C: 0.5, O: 0.5}
+  pathways: [methanation]
+  metric: co2_conversion
+  reference: {formula: Ni, name: Nickel}
+  optimum_shift_eV: 0.0
+  suggested_elements: [Ni, Ru, Co, Fe, Rh, Pd, Pt, Cu, Mo]
+  basis: >
+    How strongly a metal holds carbon and oxygen, the two halves of a split CO, sets methanation rates (Bligaard
+    et al., J. Catal. 2004): iron holds them too tightly, platinum and palladium too loosely, and nickel,
+    ruthenium and cobalt sit near the top. The descriptor averages the C and O binding; the top is set at nickel's.

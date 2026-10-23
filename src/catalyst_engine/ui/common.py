@@ -12,12 +12,13 @@ import pandas as pd
 import streamlit as st
 import yaml
 
-from catalyst_engine.packs import PACKS_DIR, Pack, list_packs, load_pack, read_yaml
+from catalyst_engine.packs import PACKS_DIR, Pack, list_packs, load_pack, pack_path, read_yaml
 from catalyst_engine.units import k_to_f
 
 REPO = Path(__file__).resolve().parents[3]
 ACCENT = "#0f766e"
 REFERENCE_GRAY = "#9aa0a6"
+CATEGORIES = ["Clean air", "Hydrogen and energy", "Chemicals and fuels", "Other"]  # reaction groups, in display order
 TARGET_RED = "#d93025"
 
 STATUS = {
@@ -102,7 +103,7 @@ def _pack(pack_id: str, mtime_key: float) -> Pack:
 
 def pack(pack_id: str) -> Pack:
     """Packs reload automatically when their YAML files change."""
-    return _pack(pack_id, _mtime(PACKS_DIR / pack_id))
+    return _pack(pack_id, _mtime(pack_path(pack_id)))
 
 
 def pack_ids() -> list[str]:
@@ -127,7 +128,7 @@ def simulate(pack_id: str, protocol_id: str, params: tuple[tuple[str, float], ..
 
 
 def run_protocol(p: Pack, protocol_id: str, params: dict[str, float]) -> pd.DataFrame:
-    return simulate(p.id, protocol_id, tuple(sorted(params.items())), _mtime(PACKS_DIR / p.id))
+    return simulate(p.id, protocol_id, tuple(sorted(params.items())), _mtime(pack_path(p.id)))
 
 
 def metric_chart(df: pd.DataFrame, unit: str, target=None, height: int = 220, log_y: bool = False) -> alt.LayerChart:
@@ -222,9 +223,70 @@ def scenario_files() -> list[Path]:
 def catalyst_presets(pack_id: str) -> dict[str, dict[str, float]]:
     """Named catalysts declared in a pack's scenario files, usable as starting points."""
     presets = {}
-    for path in sorted((PACKS_DIR / pack_id / "scenarios").glob("*.yaml")):
+    for path in sorted((pack_path(pack_id) / "scenarios").glob("*.yaml")):
         data = read_yaml(path)
         for name, cat in (data.get("catalysts") or {}).items():
             label = f"{name}: {cat.get('description', '')}".rstrip(": ")
             presets[label] = dict(cat.get("params") or {})
     return presets
+
+
+# ---------------------------------------------------------------- catalyst design
+
+def screening_pack_ids() -> list[str]:
+    """Reactions that can rank materials (their pack declares a screening descriptor)."""
+    return [pid for pid in pack_ids() if pack(pid).spec.screening is not None]
+
+
+def link(page: str, label: str, icon: str | None = None) -> None:
+    """A link to another page of the app; plain text when the page runs on its own (as in tests)."""
+    try:
+        st.page_link(page, label=label, icon=icon)
+    except Exception:
+        st.markdown(f"**{label}**")
+
+
+@st.cache_data(show_spinner=False, ttl=60)
+def engine_status() -> dict:
+    from catalyst_engine.design import materials, screening
+
+    return {"uma": screening.uma_setup(), "mp_key": bool(materials.api_key())}
+
+
+@st.cache_data(show_spinner="Searching the Materials Project...", ttl=86400)
+def mp_search(elements: tuple[str, ...], max_elements: int, add_oxygen: bool, max_e_hull: float,
+              max_atoms: int) -> list[dict]:
+    from catalyst_engine.design import materials
+
+    return materials.search(list(elements), max_elements, add_oxygen, max_e_hull, max_atoms)
+
+
+@st.cache_data(show_spinner=False, ttl=86400)
+def mp_structure(material_id: str) -> dict:
+    from catalyst_engine.design import materials
+
+    return materials.structure(material_id)
+
+
+def category_order(category: str) -> tuple[int, str]:
+    """Sort key: the groups in CATEGORIES first, in that order, then any other group alphabetically."""
+    return (CATEGORIES.index(category) if category in CATEGORIES else len(CATEGORIES), category)
+
+
+def range_notes(pack: Pack, metric_kind: str, metric_species: list[str], t_lo: float, t_hi: float,
+                lowest_value: float) -> None:
+    """Notes under a design or its results: temperatures beyond the reaction's standard test, and a conversion
+    that runs below zero."""
+    from catalyst_engine.design import screening
+
+    std = [t - 273.15 for t in screening.design_step(pack).kelvin()]
+    if t_lo < min(std) - 25 or t_hi > max(std) + 25:
+        st.info(f"This reaction's standard test runs from {min(std):.0f} to {max(std):.0f} °C, and its rates are set "
+                "for that window. Results beyond it are an extrapolation, so treat them as rough.",
+                icon=":material/thermostat:")
+    if metric_kind == "conversion" and lowest_value < 0:
+        gases = " and ".join(metric_species)
+        leave, come = ("leave", "come") if len(metric_species) > 1 else ("leaves", "comes")
+        st.warning(f"Conversion below zero means more {gases} {leave} the reactor than {come} in: at these "
+                   f"temperatures the side reactions make {gases} faster than the main reaction removes it. A lower "
+                   "temperature range compares the catalysts where they do useful work.", icon=":material/warning:")

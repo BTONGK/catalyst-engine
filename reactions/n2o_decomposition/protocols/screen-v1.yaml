@@ -1,0 +1,16 @@
+id: n2o-screen-v1
+pack: n2o_decomposition
+version: 1
+status: draft
+description: Nitric-acid tail gas with 1,000 ppm N2O, oxygen and steam, at 1 bar.
+analyzer:
+  name: FTIR
+  measured: [N2O]
+  sigma_abs_ppm: 2.0
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: N2O conversion against temperature
+    feed: {N2O: 1000 ppm, O2: 2 %, H2O: 0.5 %, N2: balance}
+    ghsv_per_h: 20000
+    temperatures_C: [200, 250, 300, 350, 400, 450, 500, 550, 600, 650]

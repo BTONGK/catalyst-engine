@@ -8,6 +8,8 @@ id: oxidation_engine
 name: Gas-engine oxidation catalyst (CO, HCHO, CH4, NO)
 version: 1
 status: draft-illustrative-parameters
+summary: Burns carbon monoxide, formaldehyde and methane in the exhaust of natural-gas engines.
+category: Clean air
 description: >
   Formaldehyde must leave at or below 14 ppmvd @ 15% O2 across 450-1,350 F catalyst
   inlet temperatures. CO oxidation follows a Voltz-type law (self-inhibited by CO).
@@ -73,3 +75,16 @@ metrics:
     species: [NO2]
     basis: {dry: true, o2_ref_pct: 15}
     description: NO2 formed over the catalyst; thermodynamics caps it at high temperature.
+
+screening:
+  descriptor: {O: 1}
+  pathways: [co_ox, hcho_ox, ch4_ox]
+  metric: hcho_conversion
+  reference: {formula: Pt, name: Platinum}
+  optimum_shift_eV: 0.2
+  suggested_elements: [Pt, Pd, Rh, Ir, Ru, Au, Ag, Cu, Co, Mn]
+  basis: >
+    Oxygen binding sets oxidation activity on metals (Falsig et al., Angew. Chem. 2008): metals that hold oxygen
+    too tightly stay covered, metals that hold it too loosely leave O2 unsplit. Platinum sits a little on the
+    tight side, so the top is set 0.2 eV weaker than platinum's. Methane oxidation follows its own volcano, with
+    palladium oxide on top, so read the methane column as a first pass.

@@ -1,0 +1,16 @@
+id: wgs-screen-v1
+pack: water_gas_shift
+version: 1
+status: draft
+description: Reformer-like gas with excess steam at 1 bar.
+analyzer:
+  name: Gas chromatograph
+  measured: [CO, CO2, H2]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: CO conversion against temperature
+    feed: {CO: 10 %, H2O: 30 %, CO2: 5 %, H2: 20 %, N2: balance}
+    ghsv_per_h: 10000
+    temperatures_C: [150, 175, 200, 225, 250, 300, 350, 400, 450]

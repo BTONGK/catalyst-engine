@@ -1,0 +1,61 @@
+# Methanol from CO2 and hydrogen. Rate parameters are ILLUSTRATIVE: the methanol rate constant is set so the
+# reference catalyst (copper) gets halfway to the best possible methanol yield at 240 C under the screen protocol.
+
+id: methanol_synthesis
+name: Methanol from CO2
+version: 1
+status: draft-illustrative-parameters
+summary: Makes methanol, a liquid fuel and chemical building block, from captured CO2 and green hydrogen.
+category: Chemicals and fuels
+description: >
+  CO2 and hydrogen make methanol and water at 50-80 bar. The reverse water-gas shift competes, turning CO2 into
+  CO instead, so a good catalyst is both fast and selective. Both reactions approach their equilibria.
+
+reference_temperature_K: 513.15
+water: H2O
+
+species:
+  CO2:   {formula: CO2}
+  H2:    {formula: H2}
+  CH3OH: {formula: CH4O, cantera: CH3OH}
+  H2O:   {formula: H2O}
+  CO:    {formula: CO}
+  N2:    {formula: N2}
+
+pathways:
+  methanol:
+    equation: CO2 + 3 H2 <=> CH3OH + H2O
+    role: desired
+    rate: {key: CO2, orders: {CO2: 1}, ln_k_ref: -4.287, Ea_kJ: 65}
+  rwgs:
+    equation: CO2 + H2 <=> CO + H2O
+    role: side
+    note: Reverse water-gas shift; it wastes hydrogen on CO and grows faster with temperature.
+    rate: {key: CO2, orders: {CO2: 1}, ln_k_ref: -1.0, Ea_kJ: 110}
+
+metrics:
+  methanol_yield:
+    kind: yield
+    species: [CH3OH]
+    denominator: [CO2]
+    description: Methanol made per CO2 fed.
+  co2_conversion:
+    kind: conversion
+    species: [CO2]
+    description: Share of the CO2 that reacts, to methanol or to CO.
+  co_out:
+    kind: outlet
+    species: [CO]
+    description: Carbon monoxide made by the side reaction.
+
+screening:
+  descriptor: {O: 1}
+  pathways: [methanol]
+  metric: methanol_yield
+  reference: {formula: Cu, name: Copper}
+  optimum_shift_eV: 0.0
+  suggested_elements: [Cu, Zn, Ni, Ga, Pd, In, Co, Ag, Au]
+  basis: >
+    Oxygen binding is one of the two descriptors that place methanol catalysts on a volcano (Studt et al., Nature
+    Chem. 2014, which found Ni-Ga from it); copper, the industrial catalyst, sits near the top. The top is set at
+    copper's binding.
