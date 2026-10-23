@@ -6,16 +6,17 @@
   "example_converged": 56,
   "example_unconverged": 0,
   "example_anomalies": 0,
-  "example_minutes": 5.9,
+  "example_minutes": 12.5,
   "example_errors": 0,
   "example_unconverged_were_minimum": 0,
   "convergence_note": "In the example screen all 56 relaxations reached the force limit.",
   "alloys_changed": 4,
   "metals_unchanged": 10,
+  "metals_max_shift": 0.01,
   "benchmark_n": 9,
-  "benchmark_mae": 0.021,
-  "benchmark_max": 0.039,
-  "benchmark_mean": -0.021,
+  "benchmark_mae": 0.019,
+  "benchmark_max": 0.036,
+  "benchmark_mean": -0.019,
   "benchmark_r2": 0.9999,
   "gas_max_gap": 0.073,
   "lattice_oc20_max_pct": 3.0,
@@ -27,18 +28,18 @@
   "lattice_gap_max_rel": 1.7,
   "strain_error_est": 0.062,
   "strain_error_max": 0.148,
-  "slab_thickness_max_gap": 0.017,
-  "slab_width_gap_min": 0.044,
-  "slab_width_gap_max": 0.065,
-  "slab_width_spread": 0.02,
-  "slab_size_max_gap": 0.02,
+  "slab_thickness_max_gap": 0.014,
+  "slab_width_gap_min": 0.045,
+  "slab_width_gap_max": 0.06,
+  "slab_width_spread": 0.016,
+  "slab_size_max_gap": 0.016,
   "sites_same_minimum": 14,
   "sites_n": 14,
   "sites_max_gain": 0.0,
-  "tolerance_max_gap": 0.013,
-  "repro_max_gap": 0.0018,
+  "tolerance_max_gap": 0.014,
+  "repro_max_gap": 0.002,
   "seg_min": 0.2,
-  "seg_max": 1.27,
+  "seg_max": 1.9,
   "seg_n": 4,
   "face_fix_max_shift": 0.83,
   "face_fix_max_material": "CuPt",
@@ -70,7 +71,7 @@
   "peak_check_T": 180,
   "peak_move_largest": 0.34,
   "peak_move_co": 0.13,
-  "example_leader_spans": "Ag from 50 to 90 \u00b0C; Pt from 100 to 350 \u00b0C",
+  "example_leader_spans": "Ag from 50 to 80 \u00b0C; Pt from 90 to 350 \u00b0C",
   "example_t_lo": 50.0,
   "example_t_hi": 350.0,
   "example_pdpt_hot": 0.45,
@@ -88,8 +89,32 @@
   "calibrated_halfway": 8,
   "calibration_packs": 10,
   "calibration_note": "8 of 10 packs put the catalyst to beat at 50% of the best possible, within 2 points, at their anchor temperature. Gas-engine oxidation catalyst (CO, HCHO, CH4, NO) sits at 100% at 427 \u00b0C; High-temperature SCR of NOx with NH3 sits at 88% at 566 \u00b0C. These two packs came before the design app: their illustrative rates follow a conventional catalyst across the whole operating window, and their reference temperature anchors the rate constants in place of a light-off. The ranking within each reaction stays the same; their curves sit hotter or cooler accordingly.",
+  "film_exact_pct": 0.004,
+  "form_T_C": 566.0,
+  "form_T_F": 1050.0,
+  "form_film_drop_pts": 2.6,
+  "form_gain_powder_pts": 10.5,
+  "form_gain_film_pts": 9.0,
+  "form_entrance_factor": 1.01,
+  "form_entrance_pts": 0.0,
+  "form_coat_drop_lo_pts": 1.1,
+  "form_coat_drop_hi_pts": 7.1,
+  "form_cpsi": 400.0,
+  "form_channel_mm": 1.1,
+  "form_lit_fe": "47 kJ/mol in the ideal reactor, 54 with the film and 79 with film and coat, against the thesis's 72",
+  "form_lit_cu": "50, 61 and 106 against 89",
+  "nudge_n": 14,
+  "nudge_max_change": 0.008,
+  "iron_before": -4.7,
+  "iron_after": -0.65,
+  "iron_slab_drop": 4.61,
+  "iron_fcc_oc20": -0.26,
+  "iron_fcc_omat": 0.14,
+  "zeolite_best_mode": "oc20",
+  "zeolite_best_miss": 0.38,
+  "zeolite_misses": "0.38 eV in the oc20 mode, 0.53 eV in the omat mode, 1.19 eV in the odac mode",
   "generated": "2026-10-23",
-  "atomistic_minutes": 34.0
+  "atomistic_minutes": 76.0
  },
  "tables": {
   "faces": [
@@ -104,7 +129,7 @@
     "packing_per_A2": 0.15,
     "composition_gap": 0.0,
     "atoms": 36,
-    "E_after": 1.5784216445271175,
+    "E_after": 1.578780146507234,
     "face_before": [
      0,
      0,
@@ -123,7 +148,7 @@
     "packing_per_A2": 0.153,
     "composition_gap": 0.0,
     "atoms": 36,
-    "E_after": 1.384446426605911,
+    "E_after": 1.3847070917056845,
     "face_before": [
      0,
      0,
@@ -142,7 +167,7 @@
     "packing_per_A2": 0.16,
     "composition_gap": 0.0,
     "atoms": 64,
-    "E_after": 0.5246351098611859,
+    "E_after": 0.5251370804873323,
     "face_before": [
      0,
      0,
@@ -161,7 +186,7 @@
     "packing_per_A2": 0.157,
     "composition_gap": 0.0,
     "atoms": 36,
-    "E_after": 0.9867439714264838,
+    "E_after": 0.9863719940806623,
     "face_before": [
      0,
      0,
@@ -180,7 +205,7 @@
     "packing_per_A2": 0.158,
     "composition_gap": 0.0,
     "atoms": 36,
-    "E_after": -0.2017816743443399,
+    "E_after": -0.20193817306468365,
     "face_before": [
      0,
      0,
@@ -199,7 +224,7 @@
     "packing_per_A2": 0.139,
     "composition_gap": 0.0,
     "atoms": 27,
-    "E_after": 2.7893589121340403,
+    "E_after": 2.792949328443078,
     "face_before": [
      0,
      0,
@@ -218,7 +243,7 @@
     "packing_per_A2": 0.138,
     "composition_gap": 0.0,
     "atoms": 27,
-    "E_after": 2.23604438601373,
+    "E_after": 2.239768755515761,
     "face_before": [
      0,
      0,
@@ -237,7 +262,7 @@
     "packing_per_A2": 0.177,
     "composition_gap": 0.0,
     "atoms": 64,
-    "E_after": 1.0308268121358486,
+    "E_after": 1.0309392190565978,
     "face_before": [
      0,
      0,
@@ -256,7 +281,7 @@
     "packing_per_A2": 0.186,
     "composition_gap": 0.0,
     "atoms": 64,
-    "E_after": 0.07833992394754485,
+    "E_after": 0.08851840521297216,
     "face_before": [
      0,
      0,
@@ -275,7 +300,7 @@
     "packing_per_A2": 0.183,
     "composition_gap": 0.0,
     "atoms": 64,
-    "E_after": -0.5158251256705961,
+    "E_after": -0.5129541677256038,
     "face_before": [
      0,
      0,
@@ -294,7 +319,7 @@
     "packing_per_A2": 0.159,
     "composition_gap": 0.0,
     "atoms": 48,
-    "E_after": 1.3770374404608452,
+    "E_after": 1.376231937486728,
     "face_before": [
      0,
      0,
@@ -313,7 +338,7 @@
     "packing_per_A2": 0.162,
     "composition_gap": 0.0,
     "atoms": 48,
-    "E_after": 1.2635704134094743,
+    "E_after": 1.2656484001524069,
     "face_before": [
      1,
      1,
@@ -332,7 +357,7 @@
     "packing_per_A2": 0.15,
     "composition_gap": 0.0,
     "atoms": 48,
-    "E_after": 1.5012676269790353,
+    "E_after": 1.5005660915935612,
     "face_before": [
      0,
      0,
@@ -351,7 +376,7 @@
     "packing_per_A2": 0.166,
     "composition_gap": 0.0,
     "atoms": 64,
-    "E_after": 1.0732150884971707,
+    "E_after": 1.0740078450051618,
     "face_before": [
      0,
      0,
@@ -363,13 +388,13 @@
   "benchmark": [
    {
     "material": "Pt",
-    "E_app": 1.578,
+    "E_app": 1.579,
     "E_benchmark": 1.597,
     "difference": -0.018
    },
    {
     "material": "Pd",
-    "E_app": 1.384,
+    "E_app": 1.385,
     "E_benchmark": 1.403,
     "difference": -0.018
    },
@@ -381,27 +406,27 @@
    },
    {
     "material": "Ir",
-    "E_app": 0.987,
+    "E_app": 0.986,
     "E_benchmark": 1.005,
-    "difference": -0.018
+    "difference": -0.019
    },
    {
     "material": "Ru",
     "E_app": -0.202,
     "E_benchmark": -0.183,
-    "difference": -0.018
+    "difference": -0.019
    },
    {
     "material": "Au",
-    "E_app": 2.789,
+    "E_app": 2.793,
     "E_benchmark": 2.791,
-    "difference": -0.001
+    "difference": 0.002
    },
    {
     "material": "Ag",
-    "E_app": 2.236,
+    "E_app": 2.24,
     "E_benchmark": 2.24,
-    "difference": -0.004
+    "difference": -0.001
    },
    {
     "material": "Cu",
@@ -411,9 +436,9 @@
    },
    {
     "material": "Ni",
-    "E_app": 0.078,
+    "E_app": 0.089,
     "E_benchmark": 0.118,
-    "difference": -0.039
+    "difference": -0.029
    }
   ],
   "gas": [
@@ -563,7 +588,7 @@
    {
     "material": "Pt",
     "strain_pct": 2,
-    "E": 1.411
+    "E": 1.41
    },
    {
     "material": "Cu",
@@ -573,7 +598,7 @@
    {
     "material": "Cu",
     "strain_pct": -1,
-    "E": 1.094
+    "E": 1.097
    },
    {
     "material": "Cu",
@@ -583,12 +608,12 @@
    {
     "material": "Cu",
     "strain_pct": 1,
-    "E": 0.971
+    "E": 0.972
    },
    {
     "material": "Cu",
     "strain_pct": 2,
-    "E": 0.913
+    "E": 0.914
    }
   ],
   "slab_size": [
@@ -607,7 +632,7 @@
     "width_A": 7,
     "n_atoms": 45,
     "layers": 5,
-    "E": 1.566,
+    "E": 1.565,
     "site": "hollow 2"
    },
    {
@@ -616,7 +641,7 @@
     "width_A": 7,
     "n_atoms": 54,
     "layers": 6,
-    "E": 1.569,
+    "E": 1.568,
     "site": "hollow 1"
    },
    {
@@ -625,7 +650,7 @@
     "width_A": 10,
     "n_atoms": 100,
     "layers": 4,
-    "E": 1.522,
+    "E": 1.524,
     "site": "hollow 1"
    },
    {
@@ -634,7 +659,7 @@
     "width_A": 10,
     "n_atoms": 125,
     "layers": 5,
-    "E": 1.52,
+    "E": 1.518,
     "site": "hollow 1"
    },
    {
@@ -652,7 +677,7 @@
     "width_A": 7,
     "n_atoms": 45,
     "layers": 5,
-    "E": -0.218,
+    "E": -0.216,
     "site": "hollow 1"
    },
    {
@@ -661,7 +686,7 @@
     "width_A": 7,
     "n_atoms": 63,
     "layers": 7,
-    "E": -0.194,
+    "E": -0.195,
     "site": "hollow 1"
    },
    {
@@ -679,7 +704,7 @@
     "width_A": 10,
     "n_atoms": 125,
     "layers": 5,
-    "E": -0.267,
+    "E": -0.259,
     "site": "hollow 1"
    }
   ],
@@ -714,9 +739,9 @@
    {
     "material": "Ir",
     "sites_tried": 4,
-    "E_standard": 0.987,
+    "E_standard": 0.986,
     "site_standard": "hollow 2",
-    "E_all": 0.987,
+    "E_all": 0.986,
     "site_all": "hollow 2",
     "gain": 0.0
    },
@@ -732,18 +757,18 @@
    {
     "material": "Au",
     "sites_tried": 4,
-    "E_standard": 2.79,
+    "E_standard": 2.794,
     "site_standard": "hollow 1",
-    "E_all": 2.79,
+    "E_all": 2.794,
     "site_all": "hollow 1",
     "gain": 0.0
    },
    {
     "material": "Ag",
     "sites_tried": 4,
-    "E_standard": 2.236,
+    "E_standard": 2.239,
     "site_standard": "hollow 2",
-    "E_all": 2.236,
+    "E_all": 2.239,
     "site_all": "hollow 2",
     "gain": 0.0
    },
@@ -759,18 +784,18 @@
    {
     "material": "Ni",
     "sites_tried": 4,
-    "E_standard": 0.078,
+    "E_standard": 0.087,
     "site_standard": "hollow 1",
-    "E_all": 0.078,
+    "E_all": 0.087,
     "site_all": "hollow 1",
     "gain": 0.0
    },
    {
     "material": "Co",
     "sites_tried": 4,
-    "E_standard": -0.516,
+    "E_standard": -0.513,
     "site_standard": "hollow 2",
-    "E_all": -0.516,
+    "E_all": -0.513,
     "site_all": "hollow 2",
     "gain": 0.0
    },
@@ -786,27 +811,27 @@
    {
     "material": "CuPt",
     "sites_tried": 5,
-    "E_standard": 1.263,
+    "E_standard": 1.265,
     "site_standard": "hollow 1",
-    "E_all": 1.263,
+    "E_all": 1.265,
     "site_all": "hollow 1",
     "gain": 0.0
    },
    {
     "material": "PdPt",
     "sites_tried": 5,
-    "E_standard": 1.501,
+    "E_standard": 1.5,
     "site_standard": "bridge",
-    "E_all": 1.501,
+    "E_all": 1.5,
     "site_all": "bridge",
     "gain": 0.0
    },
    {
     "material": "Cu3Au",
     "sites_tried": 5,
-    "E_standard": 1.071,
+    "E_standard": 1.072,
     "site_standard": "hollow 1",
-    "E_all": 1.071,
+    "E_all": 1.072,
     "site_all": "hollow 1",
     "gain": 0.0
    }
@@ -815,24 +840,24 @@
    {
     "material": "Pt",
     "E_standard": 1.578,
-    "E_tight": 1.578,
-    "difference": 0.001
+    "E_tight": 1.579,
+    "difference": 0.0
    },
    {
     "material": "Pd",
     "E_standard": 1.384,
     "E_tight": 1.385,
-    "difference": 0.0
+    "difference": 0.001
    },
    {
     "material": "Rh",
     "E_standard": 0.525,
     "E_tight": 0.525,
-    "difference": 0.001
+    "difference": 0.0
    },
    {
     "material": "Ir",
-    "E_standard": 0.987,
+    "E_standard": 0.986,
     "E_tight": 0.986,
     "difference": -0.001
    },
@@ -844,15 +869,15 @@
    },
    {
     "material": "Au",
-    "E_standard": 2.79,
+    "E_standard": 2.794,
     "E_tight": 2.793,
-    "difference": 0.003
+    "difference": -0.001
    },
    {
     "material": "Ag",
-    "E_standard": 2.236,
+    "E_standard": 2.239,
     "E_tight": 2.239,
-    "difference": 0.004
+    "difference": 0.0
    },
    {
     "material": "Cu",
@@ -862,15 +887,15 @@
    },
    {
     "material": "Ni",
-    "E_standard": 0.078,
+    "E_standard": 0.087,
     "E_tight": 0.088,
-    "difference": 0.01
+    "difference": 0.001
    },
    {
     "material": "Co",
-    "E_standard": -0.516,
+    "E_standard": -0.513,
     "E_tight": -0.514,
-    "difference": 0.002
+    "difference": -0.0
    },
    {
     "material": "CuPd",
@@ -880,21 +905,21 @@
    },
    {
     "material": "CuPt",
-    "E_standard": 1.263,
+    "E_standard": 1.265,
     "E_tight": 1.27,
-    "difference": 0.008
+    "difference": 0.005
    },
    {
     "material": "PdPt",
-    "E_standard": 1.501,
+    "E_standard": 1.5,
     "E_tight": 1.514,
-    "difference": 0.013
+    "difference": 0.014
    },
    {
     "material": "Cu3Au",
-    "E_standard": 1.071,
+    "E_standard": 1.072,
     "E_tight": 1.074,
-    "difference": 0.003
+    "difference": 0.002
    }
   ],
   "segregation": [
@@ -919,7 +944,7 @@
     ],
     "surface": "top layer all Cu",
     "top_layer": "Cu12",
-    "E": 0.762,
+    "E": 0.765,
     "site": "bridge"
    },
    {
@@ -932,7 +957,7 @@
     "surface": "top layer all Pd",
     "top_layer": "Pd12",
     "E": 1.522,
-    "site": "hollow 2"
+    "site": "bridge"
    },
    {
     "material": "CuPt",
@@ -943,7 +968,7 @@
     ],
     "surface": "as cut from the bulk",
     "top_layer": "Cu6 Pt6",
-    "E": 1.263,
+    "E": 1.265,
     "site": "hollow 1"
    },
    {
@@ -955,7 +980,7 @@
     ],
     "surface": "top layer all Cu",
     "top_layer": "Cu12",
-    "E": 0.672,
+    "E": 0.681,
     "site": "hollow 1"
    },
    {
@@ -967,8 +992,8 @@
     ],
     "surface": "top layer all Pt",
     "top_layer": "Pt12",
-    "E": 1.943,
-    "site": "bridge"
+    "E": 1.951,
+    "site": "hollow 1"
    },
    {
     "material": "PdPt",
@@ -979,7 +1004,7 @@
     ],
     "surface": "as cut from the bulk",
     "top_layer": "Pd6 Pt6",
-    "E": 1.501,
+    "E": 1.5,
     "site": "bridge"
    },
    {
@@ -991,7 +1016,7 @@
     ],
     "surface": "top layer all Pd",
     "top_layer": "Pd12",
-    "E": 1.359,
+    "E": 1.358,
     "site": "bridge"
    },
    {
@@ -1003,7 +1028,7 @@
     ],
     "surface": "top layer all Pt",
     "top_layer": "Pt12",
-    "E": 1.559,
+    "E": 1.56,
     "site": "bridge"
    },
    {
@@ -1015,7 +1040,7 @@
     ],
     "surface": "as cut from the bulk",
     "top_layer": "Au4 Cu12",
-    "E": 1.071,
+    "E": 1.072,
     "site": "hollow 1"
    },
    {
@@ -1027,8 +1052,8 @@
     ],
     "surface": "top layer all Au",
     "top_layer": "Au16",
-    "E": 1.688,
-    "site": "bridge"
+    "E": 2.659,
+    "site": "hollow 1"
    },
    {
     "material": "Cu3Au",
@@ -1249,7 +1274,7 @@
    {
     "rank": 1,
     "material": "Pt",
-    "descriptor_eV": 1.578,
+    "descriptor_eV": 1.579,
     "shift_eV": 0.0,
     "rate_ratio": 1.0,
     "range_low": 1.0,
@@ -1260,18 +1285,18 @@
     "rank": 2,
     "material": "PdPt",
     "descriptor_eV": 1.501,
-    "shift_eV": 0.077,
-    "rate_ratio": 0.139,
-    "range_low": 0.003,
-    "range_high": 6.5,
-    "metric_at_design": 0.092
+    "shift_eV": 0.078,
+    "rate_ratio": 0.135,
+    "range_low": 0.0029,
+    "range_high": 6.3,
+    "metric_at_design": 0.089
    },
    {
     "rank": 3,
     "material": "Pd",
-    "descriptor_eV": 1.384,
+    "descriptor_eV": 1.385,
     "shift_eV": 0.194,
-    "rate_ratio": 0.00696,
+    "rate_ratio": 0.00694,
     "range_low": 0.00015,
     "range_high": 0.32,
     "metric_at_design": 0.005
@@ -1279,39 +1304,39 @@
    {
     "rank": 4,
     "material": "CuPd",
-    "descriptor_eV": 1.377,
-    "shift_eV": 0.201,
-    "rate_ratio": 0.00576,
+    "descriptor_eV": 1.376,
+    "shift_eV": 0.203,
+    "rate_ratio": 0.00559,
     "range_low": 0.00012,
-    "range_high": 0.27,
+    "range_high": 0.26,
     "metric_at_design": 0.004
    },
    {
     "rank": 5,
     "material": "Ag",
-    "descriptor_eV": 2.236,
-    "shift_eV": 0.212,
-    "rate_ratio": 0.0044,
-    "range_low": 0.00014,
-    "range_high": 0.14,
+    "descriptor_eV": 2.24,
+    "shift_eV": 0.215,
+    "rate_ratio": 0.00407,
+    "range_low": 0.00013,
+    "range_high": 0.13,
     "metric_at_design": 0.003
    },
    {
     "rank": 6,
     "material": "CuPt",
-    "descriptor_eV": 1.264,
-    "shift_eV": 0.315,
-    "rate_ratio": 0.000315,
-    "range_low": 6.8e-06,
+    "descriptor_eV": 1.266,
+    "shift_eV": 0.313,
+    "rate_ratio": 0.000329,
+    "range_low": 7.1e-06,
     "range_high": 0.015,
     "metric_at_design": 0.0
    },
    {
     "rank": 7,
     "material": "Cu3Au",
-    "descriptor_eV": 1.073,
+    "descriptor_eV": 1.074,
     "shift_eV": 0.505,
-    "rate_ratio": 2.41e-06,
+    "rate_ratio": 2.43e-06,
     "range_low": 5.2e-08,
     "range_high": 0.00011,
     "metric_at_design": 0.0
@@ -1321,7 +1346,7 @@
     "material": "Cu",
     "descriptor_eV": 1.031,
     "shift_eV": 0.548,
-    "rate_ratio": 8.13e-07,
+    "rate_ratio": 8.07e-07,
     "range_low": 1.7e-08,
     "range_high": 3.8e-05,
     "metric_at_design": 0.0
@@ -1329,21 +1354,21 @@
    {
     "rank": 9,
     "material": "Ir",
-    "descriptor_eV": 0.987,
+    "descriptor_eV": 0.986,
     "shift_eV": 0.592,
-    "rate_ratio": 2.63e-07,
-    "range_low": 5.6e-09,
+    "rate_ratio": 2.58e-07,
+    "range_low": 5.5e-09,
     "range_high": 1.2e-05,
     "metric_at_design": 0.0
    },
    {
     "rank": 10,
     "material": "Au",
-    "descriptor_eV": 2.789,
-    "shift_eV": 0.71,
-    "rate_ratio": 1.27e-08,
-    "range_low": 4e-10,
-    "range_high": 4e-07,
+    "descriptor_eV": 2.793,
+    "shift_eV": 0.713,
+    "rate_ratio": 1.18e-08,
+    "range_low": 3.7e-10,
+    "range_high": 3.8e-07,
     "metric_at_design": 0.0
    },
    {
@@ -1359,31 +1384,31 @@
    {
     "rank": 12,
     "material": "Ni",
-    "descriptor_eV": 0.078,
-    "shift_eV": 1.5,
-    "rate_ratio": 2.07e-17,
-    "range_low": 4.4e-19,
-    "range_high": 9.7e-16,
+    "descriptor_eV": 0.089,
+    "shift_eV": 1.49,
+    "rate_ratio": 2.67e-17,
+    "range_low": 5.7e-19,
+    "range_high": 1.2e-15,
     "metric_at_design": 0.0
    },
    {
     "rank": 13,
     "material": "Ru",
     "descriptor_eV": -0.202,
-    "shift_eV": 1.78,
-    "rate_ratio": 1.59e-20,
+    "shift_eV": 1.781,
+    "rate_ratio": 1.57e-20,
     "range_low": 3.4e-22,
-    "range_high": 7.4e-19,
+    "range_high": 7.3e-19,
     "metric_at_design": 0.0
    },
    {
     "rank": 14,
     "material": "Co",
-    "descriptor_eV": -0.516,
-    "shift_eV": 2.094,
-    "rate_ratio": 5.11e-24,
-    "range_low": 1.1e-25,
-    "range_high": 2.4e-22,
+    "descriptor_eV": -0.513,
+    "shift_eV": 2.092,
+    "rate_ratio": 5.45e-24,
+    "range_low": 1.2e-25,
+    "range_high": 2.5e-22,
     "metric_at_design": 0.0
    }
   ],
@@ -1686,6 +1711,280 @@
     "reference_metric": 0.493,
     "best_metric": 0.986,
     "share_of_best": 0.5
+   }
+  ],
+  "film_exact": [
+   {
+    "T_C": 106.9,
+    "k_wall": 232.0,
+    "X_powder": 0.0083,
+    "X_engine": 0.0083,
+    "X_exact": 0.0083
+   },
+   {
+    "T_C": 121.9,
+    "k_wall": 248.0,
+    "X_powder": 0.0233,
+    "X_engine": 0.0233,
+    "X_exact": 0.0233
+   },
+   {
+    "T_C": 136.9,
+    "k_wall": 264.0,
+    "X_powder": 0.0601,
+    "X_engine": 0.0599,
+    "X_exact": 0.0599
+   },
+   {
+    "T_C": 151.9,
+    "k_wall": 281.0,
+    "X_powder": 0.1408,
+    "X_engine": 0.1399,
+    "X_exact": 0.1399
+   },
+   {
+    "T_C": 166.9,
+    "k_wall": 298.0,
+    "X_powder": 0.295,
+    "X_engine": 0.2912,
+    "X_exact": 0.2912
+   },
+   {
+    "T_C": 181.9,
+    "k_wall": 316.0,
+    "X_powder": 0.5329,
+    "X_engine": 0.5212,
+    "X_exact": 0.5212
+   },
+   {
+    "T_C": 196.9,
+    "k_wall": 334.0,
+    "X_powder": 0.7932,
+    "X_engine": 0.7715,
+    "X_exact": 0.7715
+   },
+   {
+    "T_C": 211.8,
+    "k_wall": 353.0,
+    "X_powder": 0.9557,
+    "X_engine": 0.9365,
+    "X_exact": 0.9365
+   },
+   {
+    "T_C": 226.8,
+    "k_wall": 371.0,
+    "X_powder": 0.9973,
+    "X_engine": 0.9914,
+    "X_exact": 0.9914
+   },
+   {
+    "T_C": 241.8,
+    "k_wall": 391.0,
+    "X_powder": 1.0,
+    "X_engine": 0.9995,
+    "X_exact": 0.9995
+   },
+   {
+    "T_C": 256.8,
+    "k_wall": 410.0,
+    "X_powder": 1.0,
+    "X_engine": 1.0,
+    "X_exact": 1.0
+   },
+   {
+    "T_C": 271.8,
+    "k_wall": 430.0,
+    "X_powder": 1.0,
+    "X_engine": 1.0,
+    "X_exact": 1.0
+   },
+   {
+    "T_C": 286.8,
+    "k_wall": 450.0,
+    "X_powder": 1.0,
+    "X_engine": 1.0,
+    "X_exact": 1.0
+   }
+  ],
+  "form": [
+   {
+    "form": "Powder",
+    "reference": 0.877,
+    "ten_times": 0.982,
+    "gain": 0.105
+   },
+   {
+    "form": "Honeycomb, film (the model)",
+    "reference": 0.851,
+    "ten_times": 0.941,
+    "gain": 0.09
+   },
+   {
+    "form": "Honeycomb, film with the entrance term",
+    "reference": 0.851,
+    "ten_times": 0.941,
+    "gain": 0.09
+   },
+   {
+    "form": "Honeycomb, film and a 50 \u00b5m coat at 0.1 of gas diffusion",
+    "reference": 0.84,
+    "ten_times": 0.928,
+    "gain": 0.087
+   },
+   {
+    "form": "Honeycomb, film and a 50 \u00b5m coat at 0.01 of gas diffusion",
+    "reference": 0.78,
+    "ten_times": 0.889,
+    "gain": 0.108
+   }
+  ],
+  "form_literature": [
+   {
+    "catalyst": "Fe-ZSM-5",
+    "ideal": 47.0,
+    "film": 54.0,
+    "film_coat": 79.0,
+    "published": 72.0
+   },
+   {
+    "catalyst": "Cu-chabazite",
+    "ideal": 50.0,
+    "film": 61.0,
+    "film_coat": 106.0,
+    "published": 89.0
+   }
+  ],
+  "nudge": [
+   {
+    "material": "Pt",
+    "change": -0.0001,
+    "moved_A": 0.18
+   },
+   {
+    "material": "Pd",
+    "change": -0.0001,
+    "moved_A": 0.19
+   },
+   {
+    "material": "Rh",
+    "change": -0.0006,
+    "moved_A": 0.01
+   },
+   {
+    "material": "Ir",
+    "change": 0.0004,
+    "moved_A": 0.02
+   },
+   {
+    "material": "Ru",
+    "change": 0.0003,
+    "moved_A": 0.03
+   },
+   {
+    "material": "Au",
+    "change": -0.0031,
+    "moved_A": 0.19
+   },
+   {
+    "material": "Ag",
+    "change": -0.0038,
+    "moved_A": 0.12
+   },
+   {
+    "material": "Cu",
+    "change": -0.0,
+    "moved_A": 0.08
+   },
+   {
+    "material": "Ni",
+    "change": -0.0082,
+    "moved_A": 0.02
+   },
+   {
+    "material": "Co",
+    "change": -0.0027,
+    "moved_A": 0.18
+   },
+   {
+    "material": "CuPd",
+    "change": 0.0005,
+    "moved_A": 0.15
+   },
+   {
+    "material": "CuPt",
+    "change": -0.0027,
+    "moved_A": 0.17
+   },
+   {
+    "material": "PdPt",
+    "change": 0.0005,
+    "moved_A": 0.21
+   },
+   {
+    "material": "Cu3Au",
+    "change": -0.0009,
+    "moved_A": 0.24
+   }
+  ],
+  "bain": [
+   {
+    "c_over_a": 0.9,
+    "oc20": -0.034,
+    "omat": 0.164
+   },
+   {
+    "c_over_a": 1.0,
+    "oc20": 0.0,
+    "omat": 0.0
+   },
+   {
+    "c_over_a": 1.1,
+    "oc20": -0.064,
+    "omat": 0.065
+   },
+   {
+    "c_over_a": 1.2,
+    "oc20": -0.173,
+    "omat": 0.124
+   },
+   {
+    "c_over_a": 1.41,
+    "oc20": -0.258,
+    "omat": 0.143
+   }
+  ],
+  "zeolite": [
+   {
+    "site": "Acid site (H+, one Al)",
+    "oc20": -1.24,
+    "omat": -1.71,
+    "odac": -2.81,
+    "published": "-1.62",
+    "source": "Nystrom et al. 2018, RPBE-D3"
+   },
+   {
+    "site": "Cu+ over a six-ring (one Al)",
+    "oc20": -1.32,
+    "omat": -1.83,
+    "odac": -2.43,
+    "published": "-1.3 to -1.0",
+    "source": "Isapour et al. 2026, PBE+U+D3"
+   },
+   {
+    "site": "Cu2+ in a six-ring (two Al)",
+    "oc20": -0.83,
+    "omat": -1.45,
+    "odac": -1.66,
+    "published": "-1.5 to -1.2",
+    "source": "Isapour et al. 2026, PBE+U+D3"
+   },
+   {
+    "site": "[CuOH]+ in an eight-ring (one Al)",
+    "oc20": -1.07,
+    "omat": -1.34,
+    "odac": -2.48,
+    "published": "",
+    "source": ""
    }
   ]
  }

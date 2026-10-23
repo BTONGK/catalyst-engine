@@ -7,11 +7,13 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+from ase.calculators.calculator import Calculator, all_changes
 from streamlit.testing.v1 import AppTest
 
-from catalyst_engine.design import builder, elements, materials, screening, uma_worker
+from catalyst_engine.design import builder, elements, materials, screening, uma_worker, zeolites
 from catalyst_engine.design.spec import ReferenceSpec, ScreeningSpec
 from catalyst_engine.packs import PACKS_DIR, list_packs, load_pack
+from catalyst_engine.ui import common
 
 VIEWS = Path(__file__).resolve().parents[1] / "src" / "catalyst_engine" / "ui" / "views"
 SCREENABLE = [pid for pid in list_packs(PACKS_DIR) if load_pack(pid).spec.screening is not None]
@@ -103,6 +105,166 @@ def test_a_placed_atom_that_stays_put_reads_as_bound():
     assert uma_worker.anomaly(adslab, len(slab), "O") == ""
     adslab.positions[-1, 2] += 5.0
     assert uma_worker.anomaly(adslab, len(slab), "O") == "desorbed"
+
+
+class _DoubleWell(Calculator):
+    """Each atom sits in a double well along x around where it started: zero force at the start, which lies
+    0.0625 eV above the two minima 0.5 A to either side. A slab built there balances on a symmetric point."""
+
+    implemented_properties = ["energy", "forces"]
+
+    def __init__(self, x0):
+        super().__init__()
+        self.x0 = x0
+
+    def calculate(self, atoms=None, properties=("energy",), system_changes=all_changes):
+        super().calculate(atoms, properties, system_changes)
+        x = self.atoms.positions[:, 0] - self.x0
+        forces = np.zeros((len(x), 3))
+        forces[:, 0] = -4 * x * (x ** 2 - 0.25)
+        self.results = {"energy": float(np.sum((x ** 2 - 0.25) ** 2)), "forces": forces}
+
+
+def test_the_nudge_moves_only_the_free_atoms_a_little_and_the_same_way_every_time():
+    bulk = uma_worker.bulk_from(materials.element_entry("Pt"))
+    slab = uma_worker.build_slab(bulk, uma_worker.densest_plane(bulk))
+    fixed = slab.constraints[0].get_indices()
+    a, b = uma_worker.nudge(slab.copy()), uma_worker.nudge(slab.copy())
+    move = np.linalg.norm(a.positions - slab.positions, axis=1)
+    assert np.allclose(a.positions, b.positions)
+    assert move[fixed].max() == 0 and 0 < move.max() < 0.2
+    assert uma_worker.largest_move(slab.positions, a) == pytest.approx(move.max())
+
+
+def test_a_surface_balanced_on_a_symmetric_point_settles_once_nudged():
+    from ase.optimize import LBFGS
+
+    bulk = uma_worker.bulk_from(materials.element_entry("Pt"))
+    slab = uma_worker.build_slab(bulk, uma_worker.densest_plane(bulk))
+    n_fixed = len(slab.constraints[0].get_indices())
+    calc = _DoubleWell(slab.positions[:, 0].copy())
+
+    def relaxed(atoms):
+        return uma_worker.relax_with(atoms, calc, fmax=0.01, steps=300)[0]
+
+    assert relaxed(slab.copy()) == pytest.approx(0.0625 * len(slab))  # zero force: it stays on the balance point
+    assert relaxed(uma_worker.nudge(slab.copy())) == pytest.approx(0.0625 * n_fixed, abs=1e-3)  # every free atom settled
+    tipped = uma_worker.nudge(slab.copy())  # LBFGS walks back up onto the balance point; BFGS is why the worker uses it
+    tipped.calc = calc
+    LBFGS(tipped, logfile=None).run(fmax=0.01, steps=300)
+    assert tipped.get_potential_energy() == pytest.approx(0.0625 * len(slab), abs=1e-3)
+
+
+def test_a_binding_energy_is_set_against_the_surface_beneath_when_that_surface_settled_lower():
+    bulk = uma_worker.bulk_from(materials.element_entry("Pt"))
+    slab = uma_worker.build_slab(bulk, uma_worker.densest_plane(bulk))
+    adslab = uma_worker.place(slab, "NH3", uma_worker.choose_sites(uma_worker.surface_sites(slab), "NH3", 1)[0])
+    relaxed = []
+
+    def relax(atoms):
+        relaxed.append((len(atoms), len(atoms.constraints[0].get_indices())))
+        return -104.5
+
+    # the usual case: the molecule strains the surface beneath it, which then holds more energy than the clean slab
+    assert uma_worker.clean_reference(adslab, len(slab), -100.0, lambda a: -99.8, relax) == (-100.0, 0.0)
+    assert relaxed == []
+    # the surface settled 4 eV lower under the molecule: relax it with the molecule lifted off and set against that
+    assert uma_worker.clean_reference(adslab, len(slab), -100.0, lambda a: -104.0, relax) == (-104.5, 4.5)
+    assert relaxed == [(len(slab), len(slab.constraints[0].get_indices()))]
+    rows = [{"material": "m", "adsorbate": "*", "site": "clean"},
+            {"material": "m", "adsorbate": "NH3", "site": "top", "E_bind": -0.7, "slab_drop_eV": 4.5,
+             "structure": "s.cif", "anomaly": ""}]
+    b = screening.binding_summary(rows)["m"]["binding"]["NH3"]
+    assert b["E"] == -0.7 and b["kept"] == 1 and "settled 4.50 eV lower" in b["sites"][0]["note"]
+
+
+def test_a_cubic_metal_read_in_its_cubic_cell_gives_the_textbook_faces():
+    primitive = uma_worker.bulk_from(materials.element_entry("Pt"))
+    cubic = uma_worker.bulk_from({**materials.element_entry("Pt"), "cubic": True})
+    close = uma_worker.plane_layers(primitive, uma_worker.densest_plane(primitive))[0]
+    assert uma_worker.plane_layers(cubic, (1, 1, 1))[0] == pytest.approx(close, rel=1e-3)
+    assert uma_worker.plane_layers(cubic, (1, 0, 0))[0] < close
+    assert common.cubic_metal(materials.element_entry("Pt")) and not common.cubic_metal(materials.element_entry("Ru"))
+
+
+def test_faces_read_from_plain_text():
+    assert common.parse_face("auto") is None and common.parse_face(" ") is None
+    assert common.parse_face("1 1 1") == common.parse_face("(111)") == [1, 1, 1]
+    assert common.parse_face("1,-1,0") == [1, -1, 0]
+    for bad in ("1 1", "0 0 0", "a b c"):
+        with pytest.raises(ValueError):
+            common.parse_face(bad)
+
+
+# ---------------------------------------------------------------- zeolites
+
+CHA = Path(__file__).resolve().parents[1] / "experiments" / "zeolite_check" / "data" / "cha_mp-aaaabamv.json"
+
+
+def _cha():
+    from ase import Atoms
+
+    d = json.loads(CHA.read_text())
+    return Atoms(d["species"], scaled_positions=d["frac"], cell=d["lattice"], pbc=True)
+
+
+def test_chabazite_shows_the_rings_and_cage_of_its_framework_type():
+    z = _cha()
+    assert zeolites.is_framework(z) and zeolites.code("mp-aaaabamv") == "CHA"
+    assert len(zeolites.windows(z, 6)) == 2  # the double six-ring
+    assert zeolites.clearance(z, zeolites.ring_xyz(z, zeolites.windows(z, 8)[0]).mean(axis=0)) > 3.0  # open 8-ring
+    assert zeolites.clearance(z, zeolites.pore_center(z)) == pytest.approx(4.9, abs=0.1)  # the cha cage
+
+
+@pytest.mark.parametrize("form, n_al, cation", [("H", 1, ["H"]), ("M+", 1, ["Cu"]), ("M2+", 2, ["Cu"]),
+                                                ("MOH+", 1, ["Cu", "O", "H"])])
+def test_each_zeolite_site_puts_aluminium_in_the_framework_and_its_cation_beside_it(form, n_al, cation):
+    z = _cha()
+    variants, site = zeolites.build(z, form, "Cu")
+    assert len(variants) == (4 if form == "H" else 1)  # the acid form tries its proton on each O around the Al
+    for v in variants:
+        symbols = v.get_chemical_symbols()
+        assert symbols.count("Al") == n_al and symbols.count("Si") == 12 - n_al
+        assert symbols[len(z):] == cation and v[site].symbol == cation[0]
+        d = v.get_all_distances(mic=True)
+        np.fill_diagonal(d, 9.0)
+        assert d.min() > 0.9
+        al = [i for i, s in enumerate(symbols) if s == "Al"]
+        assert min(v.get_distances(site, al, mic=True)) < 3.6  # the cation sits by the charge it balances
+    if form == "M2+":
+        assert v.get_distance(*al, mic=True) > 5.0  # across the six-ring, two silicons apart either way
+
+
+def test_a_molecule_binds_to_a_zeolite_site_at_its_reach_in_open_space():
+    z = _cha()
+    for form in ("H", "M2+", "MOH+"):
+        variants, site = zeolites.build(z, form, "Cu")
+        s = variants[0]
+        out = zeolites.place_at(s, site, uma_worker.ADSORBATE_ATOMS["NH3"], 2.0)
+        n = len(s)
+        assert out.get_distance(site, n, mic=True) == pytest.approx(2.0)
+        assert zeolites.clearance(s, out.positions[n], skip=site) > 2.4
+        assert all(out.get_distance(site, n + k, mic=True) > 2.0 for k in (1, 2, 3))  # its H atoms point away
+
+
+def test_the_worker_records_a_zeolite_site_the_way_it_records_a_surface(tmp_path):
+    import io
+
+    z = _cha()
+    variants, site = zeolites.build(z, "H", "Cu")
+    entry = {"id": "zeolite:test", "label": "test", "lattice": z.cell.array.tolist(), "site": site,
+             "variants": [{"species": v.get_chemical_symbols(), "frac": v.get_scaled_positions().tolist()}
+                          for v in variants]}
+    (tmp_path / "structures").mkdir()
+    out = io.StringIO()
+    done, total = uma_worker._framework(entry, "t", "test", ["NH3"], {"NH3": -5.0}, lambda a: (-1.0 * len(a), 3, True),
+                                        lambda a: -1.0 * len(a), out, tmp_path, 0, 0)
+    rows = [json.loads(line) for line in out.getvalue().splitlines()]
+    assert (done, total) == (8, 8)
+    assert rows[0]["site"] == "clean" and rows[0]["kind"] == "framework" and rows[0]["energy"] == -37.0
+    assert [r["site"] for r in rows[1:]] == ["H 1", "H 2", "H 3", "H 4"]
+    assert all(r["E_bind"] == pytest.approx(-41.0 + 37.0 + 5.0) and r["slab_drop_eV"] == 0 for r in rows[1:])
+    assert screening.binding_summary(rows)["zeolite:test"]["binding"]["NH3"]["kept"] == 4
 
 
 # ---------------------------------------------------------------- materials and elements
@@ -324,3 +486,102 @@ def test_design_page_adds_metals_to_the_list():
     next(b for b in at.button if b.label == "Add these metals").click().run()
     assert not at.exception, at.exception
     assert len(at.session_state["design_candidates"]) > 0
+
+
+def test_a_honeycomb_caps_each_rate_at_the_gas_reaching_the_walls():
+    """On a coated honeycomb a first-order reaction runs at k km / (k + km): the reactor matches the exact plug-flow
+    answer with that rate, and a faster catalyst gains less than it would as powder."""
+    import math
+
+    pack = load_pack("co_oxidation")
+    step = screening.design_step(pack)
+    assert screening.wall_transfer(pack, step, None) is None
+    assert screening.wall_transfer(pack, step, {"form": "powder"}) is None
+    km = screening.wall_transfer(pack, step, screening.MONOLITH)
+    assert km.shape == (len(step.kelvin()), len(pack.network.pathways)) and (km > 0).all()
+    params = pack.network.parameters()
+    powder, mono = screening.metric_curves(pack, step, [params], "co_conversion"), \
+        screening.metric_curves(pack, step, [params], "co_conversion", screening.MONOLITH)
+    assert (mono <= powder + 1e-9).all() and (mono < powder - 1e-3).any()
+    fast = screening.fast_params(pack)
+    assert screening.metric_curves(pack, step, [fast], "co_conversion", screening.MONOLITH).min() \
+        <= screening.metric_curves(pack, step, [fast], "co_conversion").min()
+    # the exact answer for CO + 1/2 O2 -> CO2, first order in CO, with the film in series and the gas shrinking
+    pw = pack.spec.screening.pathways[0]
+    t = np.array(step.kelvin())
+    y = step.feed_fractions(pack.network.species, pack.spec.water)
+    eps = -0.5 * y[pack.network.index("CO")]
+    k = np.exp(params[f"{pw}.ln_k_ref"] - params[f"{pw}.Ea_kJ"] * 1000 / 8.314462618 * (1 / t - 1 / pack.network.t_ref))
+    k_wall = km[:, [p.id for p in pack.network.pathways].index(pw)]
+    q = step.ghsv_per_h / 3600 * t / 273.15 * 101325 / (step.pressure_kPa * 1000)
+    for kt, x in zip(k * k_wall / (k + k_wall) / q, mono[0]):
+        lo, hi = 0.0, 1.0 - 1e-15
+        for _ in range(200):
+            mid = 0.5 * (lo + hi)
+            lo, hi = (mid, hi) if -(1 + eps) * math.log(1 - mid) - eps * mid < kt else (lo, mid)
+        assert x == pytest.approx(0.5 * (lo + hi), abs=1e-3)
+
+
+def test_design_page_advanced_mode_sets_the_catalyst_form():
+    at = AppTest.from_file(str(VIEWS / "design.py"), default_timeout=120).run()
+    assert not any(r.label == "Catalyst form" for r in at.radio)
+    at.toggle(key="design_advanced").set_value(True).run()
+    form = next(r for r in at.radio if r.label == "Catalyst form")
+    assert form.value == "powder"
+    form.set_value("monolith").run()
+    assert not at.exception, at.exception
+    assert any("Open channel 1.10 mm across" in c.value for c in at.caption)
+    assert any("channel walls sets the limit" in c.value for c in at.caption)
+    next(n for n in at.number_input if n.label == "Wall and coat (mm)").set_value(1.4).run()
+    assert any("fill the whole cell" in e.value for e in at.error)
+
+
+def test_design_page_advanced_mode_adds_faces_and_model_choices():
+    """Advanced adds faces, the UMA mode and the catalyst to beat; zeolites stay out of the app until a UMA mode
+    matches published DFT for them (experiments/zeolite_check/)."""
+    at = AppTest.from_file(str(VIEWS / "design.py"), default_timeout=120).run()
+    at.toggle(key="design_advanced").set_value(True).run()
+    assert not at.exception, at.exception
+    assert "Zeolites" not in [t.label for t in at.tabs]
+    assert list(at.selectbox(key="design_task_adv").options) == ["Catalysis (trained on surfaces with molecules)",
+                                                                 "Materials (trained on bulk crystals)"]
+    next(b for b in at.button if b.label == "Add these metals").click().run()
+    assert not at.exception, at.exception
+    assert any("Face" in d.value.columns for d in at.dataframe)  # the list now takes a face for each crystal
+
+
+def test_results_page_names_a_chosen_catalyst_to_beat_and_shows_its_zeolite_site():
+    pack = load_pack(CO)
+    z = _cha()
+    variants, site = zeolites.build(z, "M2+", "Cu")
+    zeo = {"id": "zeolite:mp-aaaabamv:M2+:Cu", "label": "Cu2+ Chabazite (CHA), Si/Al 5", "formula": "Cu2+-CHA",
+           "kind": "framework", "elements": ["Al", "Cu", "O", "Si"], "source": "test", "e_hull": 0.02,
+           "lattice": z.cell.array.tolist(), "site": site, "is_reference": True, "ref_name": "Cu2+-CHA",
+           "variants": [{"species": variants[0].get_chemical_symbols(),
+                         "frac": variants[0].get_scaled_positions().tolist()}]}
+    step = screening.design_step(pack)
+    cond = {"temperatures_C": [t - 273.15 for t in step.kelvin()], "pressure_bar": step.pressure_kPa / 100,
+            "ghsv_per_h": step.ghsv_per_h, "feed": dict(step.feed), "shape": screening.MONOLITH}
+    folder = screening.create_screen(pack, "zeolite screen", cond, [zeo, materials.element_entry("Pt")], "quick",
+                                     "odac", 200.0)
+    assert "variants" not in screening.read_job(folder)["request"]["materials"][0]
+    lines = [{"material": zeo["id"], "adsorbate": "*", "site": "clean", "kind": "framework", "n_atoms": 37,
+              "energy": -300.0, "structure": "structures/z.cif"},
+             {"material": zeo["id"], "adsorbate": "O", "site": "Cu", "E_bind": 1.2, "anomaly": "", "n_ads": 1,
+              "converged": True, "structure": "structures/z.cif"},
+             {"material": "element:Pt", "adsorbate": "*", "site": "clean", "facet": [0, 0, 1], "n_atoms": 36,
+              "energy": -100.0, "structure": "structures/z.cif"},
+             {"material": "element:Pt", "adsorbate": "O", "site": "hollow 1", "E_bind": 1.5, "anomaly": "",
+              "n_ads": 1, "converged": True, "structure": "structures/z.cif"}]
+    (folder / "results.jsonl").write_text("\n".join(json.dumps(r) for r in lines) + "\n")
+    (folder / "structures").mkdir()
+    (folder / "structures" / "z.cif").write_text(materials.cif_text(variants[0]))
+    (folder / "status.json").write_text(json.dumps({"state": "finished", "done": 1, "total": 1, "started": 0,
+                                                    "finished": 60}))
+    at = AppTest.from_file(str(VIEWS / "results.py"), default_timeout=120).run()
+    assert not at.exception, at.exception
+    assert "Cu2+-CHA (to beat)" in list(at.dataframe[0].value["Material"])
+    next(b for b in at.selectbox if b.label == "Material").set_value(zeo["id"]).run()
+    assert not at.exception, at.exception
+    assert any("Zeolite site" in c.value for c in at.caption)
+    assert any("coated honeycomb, 400 cells per square inch" in m.value for m in at.markdown)

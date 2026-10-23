@@ -10,13 +10,20 @@ import streamlit as st
 from catalyst_engine.design import elements, materials, screening
 from catalyst_engine.design.spec import ADSORBATES
 from catalyst_engine.ui import common, viewer
+from catalyst_engine.value.monolith import Monolith
 
 METALS = elements.METALS
 LEVELS = {"Quick": "quick", "Standard": "standard", "Thorough": "thorough"}
+TASKS = {"oc20": "Catalysis (trained on surfaces with molecules)", "omat": "Materials (trained on bulk crystals)"}
+
 
 st.title("Design a catalyst")
 st.markdown("Pick a reaction, set the conditions, choose materials to try, and the app predicts which ones "
             "work best. Each step below takes a minute; the computer does the rest.")
+advanced = st.toggle("Advanced", key="design_advanced",
+                     help="Adds the catalyst's form (powder or coated honeycomb), a choice of crystal face for each "
+                          "material, the UMA mode, the slab size and the catalyst to beat. The steps stay the same. "
+                          "The Manual's Methodology tab lists what stays outside the model, and why.")
 
 status = common.engine_status()
 if not status["uma"]["ready"]:
@@ -85,17 +92,43 @@ with st.container(border=True):
     feed = {r["Gas"]: r["Amount"] for r in feed_df.to_dict("records") if r.get("Gas") and r.get("Amount")}
     conditions = {"temperatures_C": [float(t) for t in np.linspace(t_lo, t_hi, 9)], "pressure_bar": float(pressure),
                   "ghsv_per_h": float(ghsv), "feed": feed}
+    shape_ok = True
+    if advanced:
+        c = st.columns(3)
+        form = c[0].radio("Catalyst form", ["powder", "monolith"], key=f"design_form_{pid}",
+                          format_func={"powder": "Powder (fine grains)", "monolith": "Coated honeycomb (monolith)"}.get,
+                          help="Powder runs at the reaction's own rates. A coated honeycomb, as in exhaust systems, "
+                               "adds the time gas takes to reach the channel walls; diffusion inside the coat itself "
+                               "sits outside the model (Manual, Methodology tab, section on limits).")
+        if form == "monolith":
+            cpsi = c[1].number_input("Cells per square inch", 25, 1200, int(screening.MONOLITH["cpsi"]), step=25,
+                                     key=f"design_cpsi_{pid}",
+                                     help="More cells make narrower channels, so gas reaches the walls faster.")
+            wall = c[2].number_input("Wall and coat (mm)", 0.05, 1.5, float(screening.MONOLITH["wall_mm"]), step=0.01,
+                                     key=f"design_wall_{pid}",
+                                     help="The share of each cell's width the wall and coat take; the rest is open "
+                                          "channel. 0.17 mm at 400 cells gives a 1.1 mm channel.")
+            conditions["shape"] = {"form": "monolith", "cpsi": float(cpsi), "wall_mm": float(wall)}
+            try:
+                st.caption(f"Open channel {Monolith(cpsi, wall).hydraulic_diameter_m * 1000:.2f} mm across. The space "
+                           "velocity counts per volume of the whole honeycomb block, channels included.")
+            except ValueError:
+                st.error("The wall and coat fill the whole cell at this cell count; make the wall thinner.")
+                shape_ok = False
     try:
         grid = screening.step_for({**conditions, "temperatures_C": list(np.linspace(t_lo, t_hi, 25))})
         grid.feed_fractions(pack.network.species, pack.spec.water)
-        feed_ok = True
+        feed_ok = shape_ok
     except ValueError as exc:
         st.error(f"Check the gas list: {exc}")
         feed_ok = False
     if feed_ok:
         metric = pack.spec.metrics[spec.metric]
-        curves = screening.metric_curves(pack, grid, [pack.network.parameters(), screening.fast_params(pack)], spec.metric)
-        names_ = [f"{spec.reference.name or spec.reference.formula} (catalyst to beat)", "Best possible (equilibrium)"]
+        shape = conditions.get("shape")
+        curves = screening.metric_curves(pack, grid, [pack.network.parameters(), screening.fast_params(pack)], spec.metric,
+                                         shape)
+        names_ = [f"{spec.reference.name or spec.reference.formula} (catalyst to beat)",
+                  "Best possible (honeycomb)" if screening.is_monolith(shape) else "Best possible (equilibrium)"]
         df = pd.DataFrame({"Temperature (°C)": np.tile(np.linspace(t_lo, t_hi, 25), 2), "Value": curves.ravel(),
                            "Curve": np.repeat(names_, 25)})
         chart = alt.Chart(df).mark_line(strokeWidth=3).encode(
@@ -108,7 +141,9 @@ with st.container(border=True):
         st.altair_chart(chart.properties(height=300), width="stretch")
         st.caption(f"{metric.kind.capitalize()}: {metric.description}" if metric.description else "")
         st.caption("Before any screening: how the catalyst to beat performs under these conditions, and the most any "
-                   "catalyst could reach. A better catalyst moves the gray curve toward the green one.")
+                   "catalyst could reach" + (", where gas reaching the channel walls sets the limit" if
+                                             screening.is_monolith(shape) else "") +
+                   ". A better catalyst moves the gray curve toward the green one.")
         common.range_notes(pack, metric.kind, metric.species, t_lo, t_hi, float(np.nanmin(curves)))
 
 # ---------------------------------------------------------------- 3. candidates
@@ -178,19 +213,45 @@ with st.container(border=True):
                             st.caption(f"{chosen[0]['formula']}: {materials.lattice_summary(atoms)}")
                 else:
                     st.caption("Pick elements to see the stable materials made of them.")
-
     st.markdown(f"**Your list** ({len(cands)} material{'s' * (len(cands) != 1)} plus the catalyst to beat)")
     if cands:
         listing = pd.DataFrame([{"Remove": False, "Material": m["label"], "Source": m["source"],
-                                 "Supply": elements.supply_label(m["elements"]), "_id": i} for i, m in cands.items()])
-        edited = st.data_editor(listing, hide_index=True, width="stretch", key="design_list",
-                                column_config={"_id": None, "Remove": st.column_config.CheckboxColumn(width="small")},
+                                 "Supply": elements.supply_label(m["elements"]),
+                                 **({"Face": common.face_text(m)} if advanced else {}), "_id": i} for i, m in cands.items()])
+        edited = st.data_editor(listing, hide_index=True, width="stretch", key=f"design_list_{advanced}",
+                                column_config={"_id": None, "Remove": st.column_config.CheckboxColumn(width="small"),
+                                               "Face": st.column_config.TextColumn(
+                                                   help="auto: the close-packed face. Or three Miller indices such "
+                                                        "as 1 1 0: in the cubic cell for a cubic metal, otherwise in "
+                                                        "the crystal's own cell.")},
                                 disabled=["Material", "Source", "Supply"])
-        gone = [r["_id"] for r in edited.to_dict("records") if r["Remove"]]
+        records = edited.to_dict("records")
+        gone = [r["_id"] for r in records if r["Remove"]]
         if gone:
             for i in gone:
                 cands.pop(i, None)
             st.rerun()
+        if advanced:
+            changed = False
+            for r in records:
+                m = cands.get(r["_id"])
+                if m is None or m.get("kind") == "framework" or r["Face"] == common.face_text(m):
+                    continue
+                try:
+                    hkl = common.parse_face(r["Face"])
+                except ValueError:
+                    st.warning(f"{m['label']}: write the face as three whole numbers, such as 1 1 1, or auto.")
+                    continue
+                if hkl is None:
+                    m.pop("facet", None)
+                    m.pop("cubic", None)
+                else:
+                    m["facet"] = hkl
+                    if common.cubic_metal(m):
+                        m["cubic"] = True
+                changed = True
+            if changed:
+                st.rerun()
     else:
         st.caption("Empty so far. Add pure metals or Materials Project crystals above.")
 
@@ -202,11 +263,29 @@ with st.container(border=True):
                                    help="Quick tries 2 spots per molecule on each surface, Standard 3, Thorough 5 "
                                         "with tighter settling.")
     name = c[1].text_input("Name this screen", f"{pack.spec.name} screen", key=f"design_name_{pid}")
-    with st.expander("Model settings"):
-        task = st.radio("UMA mode", ["oc20", "omat"], horizontal=True, key="design_task",
-                        format_func={"oc20": "Catalysis (trained on surfaces with molecules)",
-                                     "omat": "Materials (trained on bulk crystals)"}.get,
-                        help="Catalysis mode is the default; the Model accuracy page compares the two.")
+    ref_choice, slab = "", None
+    if advanced:
+        c = st.columns(2)
+        task = c[0].selectbox("UMA mode", list(TASKS), format_func=TASKS.get, key="design_task_adv",
+                              help="Catalysis mode suits metal surfaces; materials mode bulk-like oxides. For "
+                                   "oxides, run both: they differ by 0.3 to 0.5 eV (Model accuracy page).")
+        ref_choice = c[1].selectbox(
+            "Catalyst to beat", [""] + list(cands), key=f"design_ref_{pid}",
+            format_func=lambda k: f"{spec.reference.name or reference_formula} (this reaction's)" if not k
+            else cands[k]["label"],
+            help="Every material is ranked against this one, and it takes the reaction's calibrated rates. Pick a "
+                 "material of the same family as your candidates, such as an oxide when screening oxides.")
+        c = st.columns(2)
+        thickness = c[0].slider("Slab thickness (Å)", 7, 14, 7, key="design_slab_t",
+                                help="Thicker slabs hold the bulk's character deeper; each extra layer adds time.")
+        width = c[1].slider("Slab width (Å)", 7, 12, 7, key="design_slab_w",
+                            help="Wider slabs keep each molecule farther from its copies in the next cells.")
+        slab = {"thickness": float(thickness), "width": float(width)} if (thickness, width) != (7, 7) else None
+    else:
+        with st.expander("Model settings"):
+            task = st.radio("UMA mode", ["oc20", "omat"], horizontal=True, key="design_task",
+                            format_func=TASKS.get,
+                            help="Catalysis mode is the default; the Model accuracy page compares the two.")
     level = level or "Standard"
     ref_elements = [reference_formula] if reference_formula in METALS else ["O"]  # a compound reference costs more
     secs = screening.seconds_estimate([{"elements": ref_elements}, *cands.values()], len(spec.descriptor),
@@ -224,13 +303,24 @@ with st.container(border=True):
                     ref = materials.element_entry(reference_formula)
                 else:
                     ref = materials.job_entry(materials.most_stable(reference_formula))
-                ref = {**ref, "is_reference": True, "label": f"{spec.reference.name or reference_formula} (catalyst to beat)"}
-                entries = [ref]
+                ref_label = spec.reference.name or reference_formula
+
+                def full(m: dict) -> dict:
+                    return m if m.get("ase_bulk") or m.get("kind") == "framework" else {**m, **common.mp_structure(m["id"])}
+
+                if ref_choice in cands:
+                    chosen = cands[ref_choice]
+                    entries = [{**full(chosen), "is_reference": True, "ref_name": chosen["formula"],
+                                "label": f"{chosen['label']} (catalyst to beat)"},
+                               {**ref, "label": ref_label}]
+                else:
+                    entries = [{**ref, "is_reference": True, "label": f"{ref_label} (catalyst to beat)"}]
                 for i, m in cands.items():
-                    if i == ref["id"]:
+                    if i in {e["id"] for e in entries}:
                         continue
-                    entries.append(m if m.get("ase_bulk") else {**m, **common.mp_structure(i)})
-                folder = screening.create_screen(pack, name, conditions, entries, LEVELS[level], task, float(t_design))
+                    entries.append(full(m))
+                folder = screening.create_screen(pack, name, conditions, entries, LEVELS[level], task, float(t_design),
+                                                 slab=slab)
                 screening.launch(folder)
             except (materials.MaterialsProjectError, ValueError) as exc:
                 st.error(str(exc))

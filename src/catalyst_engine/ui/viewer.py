@@ -22,11 +22,12 @@ def _repeats(atoms: Atoms, surface: bool, target: float = 9.0, max_atoms: int = 
     return tuple(reps)
 
 
-def show(atoms: Atoms, n_highlight: int = 0, height: int = 380, surface: bool = False, spin: bool = False) -> None:
-    """Draw `atoms` repeated a few times so the crystal or surface reads as a material, with the cell outlined.
-    The last `n_highlight` atoms (the adsorbed molecule) draw larger in every copy."""
+def show(atoms: Atoms, n_highlight: int = 0, height: int = 380, surface: bool = False, spin: bool = False,
+         span: float = 9.0) -> None:
+    """Draw `atoms` repeated a few times (to about `span` A each way) so the crystal or surface reads as a material,
+    with the cell outlined. The last `n_highlight` atoms (the adsorbed molecule) draw larger in every copy."""
     n = len(atoms)
-    reps = _repeats(atoms, surface)
+    reps = _repeats(atoms, surface, target=span)
     big = atoms.repeat(reps)
     marked = [k * n + i for k in range(int(np.prod(reps))) for i in range(n - n_highlight, n)] if n_highlight else []
     xyz = f"{len(big)}\n\n" + "\n".join(f"{s} {x:.4f} {y:.4f} {z:.4f}"

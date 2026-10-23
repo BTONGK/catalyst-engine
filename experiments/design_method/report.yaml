@@ -23,7 +23,9 @@ abstract: >
   temperature and gas mix, following the free energy of the gas its key molecule comes from, so the leader can change
   across a temperature range; an exact two-step solution moves the peak {peak_follow_min:.2f} to {peak_follow_max:.2f}
   times as far as that rule, and the likely range carries the difference. Read the ranking as a guide to the
-  materials worth a closer look, and speed ratios beyond about tenfold as qualitative.
+  materials worth a closer look, and speed ratios beyond about tenfold as qualitative. A closing section lists the
+  parts of a real catalyst the method leaves out (the support, promoters, zeolite sites, diffusion inside a coat),
+  why each stays out, and how large each is.
 
 how_to_read: >
   Every step follows the same pattern: what the app does in plain words, the equation with its meaning in words,
@@ -141,7 +143,8 @@ steps:
           lattice planes. For a pure metal that is the close-packed face, but an ordered alloy's cell holds several
           atoms, and the rule picked open square faces for Cu3Au and CuPd, and faces with a single element on top for
           PdPt and CuPt. The rule now measures the packing of the outer atomic layer itself. All {metals_unchanged} pure
-          metals keep the same face and the same binding energies; all four alloys now show a close-packed face with
+          metals keep the same face, and their binding moves by {metals_max_shift:.3f} eV at most (the nudge of step 4,
+          added since); all four alloys now show a close-packed face with
           the bulk's composition on top. Their binding moved by up to {face_fix_max_shift:.2f} eV ({face_fix_max_material},
           whose top layer went from pure platinum to mixed).
         see: Each material's face, before and after the fix
@@ -199,12 +202,14 @@ steps:
   - title: Relaxing the atoms with UMA
     takes: Each starting structure
     gives: The relaxed structure and its energy
-    tool: UMA-S 1.1 and the LBFGS method
+    tool: UMA-S 1.1 and the BFGS method
     status: published
     does: >
-      Each starting structure moves to its nearest stable arrangement: the atoms shift downhill in energy step by
-      step (the LBFGS method) until the largest force on any free atom falls below 0.05 eV/Å, or 250 steps pass
-      (standard setting). Energies and forces come from UMA, Meta FAIR Chemistry's machine-learned model, trained on
+      Each starting structure first takes a nudge: every free atom moves about 0.03 Å in a random direction (a fixed
+      seed, so a rerun gives the same answer). A perfectly symmetric start can sit balanced on an energy ridge, where
+      every force is zero yet the arrangement is unstable; the nudge tips it off. Then the structure moves to its
+      nearest stable arrangement: the atoms shift downhill in energy step by step (the BFGS method) until the largest
+      force on any free atom falls below 0.05 eV/Å, or 250 steps pass (standard setting). Energies and forces come from UMA, Meta FAIR Chemistry's machine-learned model, trained on
       {uma_structures_million} million structures computed with DFT. Its catalysis mode (oc20) reproduces the OC20
       dataset's DFT setup, the RPBE functional, built for molecules on metal and alloy surfaces; its materials mode
       (omat) reproduces bulk-crystal DFT (PBE, plus a +U correction for some oxides).
@@ -214,8 +219,12 @@ steps:
     assumptions:
       - id: A7
         short: UMA reproduces DFT
-        text: UMA's energies match what DFT with the same setup would give, within its published error.
-        effect: An error larger than the error bar reorders materials that sit close together.
+        text: >
+          UMA's energies match what DFT with the same setup would give, within its published error. The catalysis
+          mode reproduces spin-free DFT, so iron, cobalt and nickel count as spin-free metals there.
+        effect: >
+          An error larger than the error bar reorders materials that sit close together. For the magnetic metals the
+          catalysis mode describes a different metal from the real one (the iron check below).
       - id: A8
         short: Absolute zero, the nearest minimum
         text: The relaxation finds the nearest stable arrangement at absolute zero; vibrations and arrangements farther away stay out.
@@ -237,9 +246,31 @@ steps:
       - text: >
           The same code on the same structure gives the same answer: rerun from scratch, every material's binding
           matches the example screen within {repro_max_gap} eV.
+      - text: >
+          The nudge leaves settled surfaces where they were: on all {nudge_n} example materials it changes the clean
+          slab's energy by {nudge_max_change:.3f} eV at most.
+        see: Each clean slab, nudged and exact
+        table:
+          table: nudge
+          columns: {material: Material, change: "Energy change (eV)", moved_A: "Largest move while settling (Å)"}
+      - text: >
+          This check caught a fault, now fixed. In the catalysis mode the clean iron surface sat balanced on a ridge:
+          an exactly symmetric slab feels zero force, so the earlier procedure (LBFGS from the exact start) stopped there. Ammonia
+          on that slab let it fall, and its binding read {iron_before:.2f} eV, an artifact. Nudged, the clean slab
+          settles {iron_slab_drop:.2f} eV lower and ammonia binds at {iron_after:.2f} eV. The cause is magnetism (A7):
+          stretched from its bcc cell toward fcc, iron in the catalysis mode drops {iron_fcc_oc20:.2f} eV per atom,
+          while the materials mode, which includes spin, keeps bcc the most stable (fcc {iron_fcc_omat:.2f} eV per
+          atom higher), as for real iron. The catalysis mode's iron therefore rearranges toward a spin-free packing.
+          LBFGS returns to the ridge even after the nudge; BFGS settles, so the app now uses BFGS. Each binding energy
+          is also set against the lower of the clean slab and the bare surface left once the molecule is lifted off
+          (step 5).
+        see: Iron stretched from bcc to fcc in both UMA modes
+        table:
+          table: bain
+          columns: {c_over_a: "Cell height over width (1 is bcc, 1.41 is fcc)", oc20: "Catalysis mode (eV per atom)", omat: "Materials mode (eV per atom)"}
     verdict: >
       The relaxation settings add {tolerance_max_gap:.2f} eV at most. UMA's own error, {uma_mae_ood:.2f} eV on average against DFT,
-      is the larger part and goes into the error bar.
+      is the larger part and goes into the error bar. Read iron, cobalt and nickel from the catalysis mode with care.
 
   - title: Binding energy
     takes: The relaxed energies
@@ -251,7 +282,9 @@ steps:
       in the gas. The app takes each atom from a stable gas: oxygen from water minus hydrogen, nitrogen from half an
       N2, hydrogen from half an H2, carbon from CO minus oxygen. Molecules such as CO, NO and NH3 are their own
       reference. Negative means held; more negative means held more tightly. All gas energies come from the same
-      model in the same run.
+      model in the same run. The bare surface is the lower of two: the clean slab, and the surface left when the
+      molecule is lifted off and the rest relaxes again. A surface that rearranges under the molecule then counts
+      only the bond, and the Results page notes it.
     equations:
       - tex: 'E_\text{bind}(\mathrm{O}) = E(\text{slab}+\mathrm{O}) - E(\text{slab}) - \left[E(\mathrm{H_2O}) - E(\mathrm{H_2})\right]'
         words: the energy of the surface holding an oxygen atom, minus the bare surface, minus an oxygen atom taken from water.
@@ -397,7 +430,7 @@ steps:
   - title: Performance in a reactor
     takes: Each material's speed ratio
     gives: Conversion or yield against temperature
-    tool: The engine's plug-flow reactor; Cantera thermodynamics
+    tool: The engine's plug-flow reactor; Cantera thermodynamics and transport
     status: checked
     does: >
       Each reaction pack writes the chemistry as balanced pathways with rate laws: the wanted reaction and its side
@@ -405,17 +438,29 @@ steps:
       model computes the gas leaving the catalyst bed at each temperature, at your pressure, gas mix and space
       velocity: the gas flows through the bed and reacts as it goes. Reversible reactions stop at chemical
       equilibrium, computed from GRI-Mech 3.0 thermodynamic data with Cantera. A stiff solver (the ROS2 Rosenbrock
-      method with error control) integrates along the bed.
+      method with error control) integrates along the bed. The catalyst's form (Advanced) sets how gas meets it: as
+      fine powder every molecule reaches the surface at once; in a coated honeycomb (monolith), as in exhaust
+      systems, gas has to cross each channel to its wall, and each reaction runs at most as fast as its key gas arrives.
+      That rate comes from the channel's size and each gas's diffusion coefficient (Cantera, mixture-averaged), with
+      the Sherwood number of fully developed laminar flow in a square channel, 2.98 (Shah and London).
     equations:
       - tex: 'k(T) = k_\text{ref}\exp\!\left[-\frac{E_a}{R}\left(\frac{1}{T} - \frac{1}{T_\text{ref}}\right)\right], \qquad k_\text{material}(T) = k(T)\,\exp\!\left(-\frac{\Delta E^\ddagger}{k_B T}\right)'
         words: the rate constant rises with temperature (Arrhenius), and each material's extra barrier scales it at every temperature.
       - tex: '\frac{dF_i}{dV} = \sum_j \nu_{ij}\, r_j, \qquad r_j = k_j \prod_i C_i^{\,n_{ij}} \left(1 - \frac{Q_j}{K_j}\right)'
         words: along the bed, each gas changes by what the reactions make or use; a reversible reaction slows to a stop as it nears equilibrium (Q reaches K).
+      - tex: 'r_j^\text{honeycomb} = \frac{r_j\, k_m a\, C_\text{key}}{r_j + k_m a\, C_\text{key}}, \qquad k_m a = \frac{\mathrm{Sh}\, D_\text{key}}{d_h}\cdot\frac{4 d_h}{p^2}, \quad \mathrm{Sh} = 2.98'
+        words: "in a honeycomb each reaction runs at the slower of two rates, the surface's own and the rate its key gas crosses the channel (d_h the channel width, p the cell pitch); for a first-order reaction this gives k k_m a / (k + k_m a), exactly."
     assumptions:
       - id: A15
-        short: Ideal plug flow at one temperature
-        text: The bed holds one temperature, the gas moves as a plug, and molecules reach the surface at once (design runs leave mass transfer out).
-        effect: Hot spots, back-mixing and slow diffusion lower real conversion, most of all near full conversion.
+        short: Ideal plug flow at one temperature; for a honeycomb, the trip to the wall
+        text: >
+          The bed holds one temperature and the gas moves as a plug. As powder, molecules reach the surface at once; in
+          a honeycomb they cross the channel at the fully developed laminar rate, and the coat counts as thin, so
+          diffusion inside it stays out. The rate constants count per volume of the catalyst as shaped.
+        effect: >
+          Hot spots, back-mixing and diffusion inside a coat or pellet lower real conversion, most of all near full
+          conversion. Rate constants measured on one form carry over to another only after scaling by the active
+          material each holds per volume.
       - id: A16
         short: The pack's rate laws and parameters
         text: Rate-law forms and the catalyst to beat's parameters come from the reaction pack; most packs mark them illustrative until measured.
@@ -449,7 +494,39 @@ steps:
       - text: >
           Fitted to published measurements, the same reactor and rate laws reproduce eight SCR catalysts from four
           sources, with NO conversion within 0.011 to 0.025 on average for three zeolites (Literature check page).
-    verdict: The reactor solves its equations accurately, conserves atoms and respects equilibrium.
+      - text: >
+          In a honeycomb ({form_cpsi:.0f} cells per square inch, {form_channel_mm:.2f} mm channels), the reactor matches
+          the exact plug-flow answer for a first-order reaction with the wall rate in series within
+          {film_exact_pct:.3f} percentage points.
+        see: Honeycomb against the exact solution
+        table:
+          table: film_exact
+          columns: {T_C: "Temperature (°C)", k_wall: "Wall rate k_m a (1/s)", X_powder: "Powder", X_engine: "Honeycomb, engine", X_exact: "Honeycomb, exact"}
+      - text: >
+          Sizes on hot SCR at {form_T_F:,.0f} °F ({form_T_C:.0f} °C), the reaction's reference temperature: the honeycomb
+          lowers the catalyst to beat's NOx conversion by {form_film_drop_pts:.1f} points, and a catalyst ten times
+          faster gains {form_gain_film_pts:.1f} points on it against {form_gain_powder_pts:.1f} as powder, since the
+          wall caps the gain. Near the channel entrance the gas crosses faster than the fully developed rate; Hawthorn's
+          correlation puts that at {form_entrance_factor:.2f} times the rate here, worth {form_entrance_pts:.1f} points,
+          so A15's choice holds. Diffusion into a 50 µm coat would take a further {form_coat_drop_lo_pts:.1f} to
+          {form_coat_drop_hi_pts:.1f} points, for coats that pass gas at a tenth to a hundredth of its free rate: the
+          size of what A15 leaves out.
+        see: Each form at the reference temperature
+        table:
+          table: form
+          columns: {form: Form, reference: "Catalyst to beat", ten_times: "Ten times faster", gain: "Gain"}
+          percent: [reference, ten_times, gain]
+      - text: >
+          On published monoliths (Metkar's 400 cpsi cores, Literature check page), the apparent activation energy of
+          SCR on Fe-ZSM-5 reads {form_lit_fe}; on Cu-chabazite {form_lit_cu}. The film is a real part of the
+          transport, and the coat often the larger part.
+        see: Activation energies on the published monoliths
+        table:
+          table: form_literature
+          columns: {catalyst: Catalyst, ideal: "Ideal reactor (kJ/mol)", film: "With the film", film_coat: "With film and coat", published: "Thesis, diffusion resolved"}
+    verdict: >
+      The reactor solves its equations accurately, conserves atoms and respects equilibrium. A honeycomb's channels are
+      modeled exactly; its coat is the open part, so read honeycomb curves as the best a thin coat can do.
 
   - title: Calibration and light-off
     takes: The catalyst to beat
@@ -568,10 +645,74 @@ trust:
           each is.
     - heading: Outside this method
       points:
-        - Particle size, the support, promoters, and poisons such as sulfur.
-        - Surfaces that oxidize, rebuild or segregate under reaction gas.
-        - Aging over hours to years.
-        - Heat and mass transfer in a full-size reactor.
+        - The parts listed in the next section, each with its size.
+
+limits:
+  title: What the app leaves out, and why
+  text: >
+    A real catalyst is a recipe: an active ingredient on a support, often with a promoter, shaped as powder, pellets
+    or a coated honeycomb. The app computes the active ingredient and, in Advanced, the honeycomb's channels. Each
+    part below stays out for a measured reason: the app could compute it, yet the checks put its error at or above
+    the size of the effect, and a ranking built on it would mislead. Each row gives that size and what to do
+    meanwhile.
+  rows:
+    - part: The support (alumina, titania, a zeolite carrier)
+      why: >
+        A cluster or layer on a support has a shape found only by a structure search (one published benchmark relaxed
+        150 structures per cluster and surface), and machine-learned models' accuracy at the metal–oxide boundary
+        varies from one support to the next (Xu et al. 2026).
+      size: Untested for UMA; uneven across three alumina surfaces for the models benchmarked.
+      meanwhile: Rank active ingredients here; compare supports on the bench.
+    - part: Promoters (a few percent of a second element)
+      why: >
+        A promoter's shift in binding is often as small as UMA's error on oxide surfaces, and many promoters act on
+        structure: tungsten in V2O5–WO3/TiO2 keeps the titania stable and spreads the vanadia, effects a binding
+        energy leaves out.
+      size: "UMA's materials-trained mode sits within 0.3 eV of DFT on IrO2 (2026 benchmark): as large as many promoter effects."
+      meanwhile: Treat a promoter as a bench variable.
+    - part: Zeolite sites (copper or iron ions in a silica framework)
+      why: >
+        For ammonia in copper chabazite, UMA's three modes miss published DFT by {zeolite_misses}, at the worst site
+        each: every mode sits beyond the app's error bar.
+      size: "{zeolite_best_miss:.2f} eV in the best mode ({zeolite_best_mode}), against the app's error bar of {sigma_assumed:.2f} eV."
+      meanwhile: >
+        The site builder and the check stay in experiments/zeolite_check/, ready for a model that passes; compare
+        zeolites with published or bench data.
+    - part: Diffusion inside a coat or a pellet
+      why: >
+        It depends on how fast gas moves through the coat's own pores, a property that varies about tenfold from coat
+        to coat and comes from measurement.
+      size: "{form_coat_drop_lo_pts:.1f} to {form_coat_drop_hi_pts:.1f} points of NOx conversion for a 50 µm coat on hot SCR's catalyst to beat (step 7)."
+      meanwhile: Read honeycomb curves as the best a thin coat can do; powder means fine grains.
+    - part: Molecules on oxide surfaces in the catalysis mode
+      why: >
+        UMA learned surfaces with molecules from OC20, whose surfaces are metals and intermetallics; molecules on
+        oxide surfaces came later, in OC22 (Tran et al. 2023), outside UMA's training. Oxide candidates, and an oxide
+        catalyst to beat such as hot SCR's vanadium oxide, rest on the model reaching past its data.
+      size: The two UMA modes differ by 0.3 to 0.5 eV on oxides (Model accuracy page).
+      meanwhile: Run oxides in both modes, and rank oxides against an oxide catalyst to beat.
+    - part: Magnetism in the catalysis mode
+      why: The catalysis mode reproduces spin-free DFT (A7).
+      size: "Iron's fcc packing sits {iron_fcc_oc20:.2f} eV per atom below bcc there; real iron keeps bcc (step 4)."
+      meanwhile: Run iron, cobalt and nickel in the materials mode as well.
+    - part: Which element an alloy shows on top
+      why: The surface keeps the bulk's composition (A4); real alloys often gather one element on top under gas.
+      size: "Up to {seg_max:.2f} eV of oxygen binding (step 2)."
+      meanwhile: Check a promising alloy with each element on top before making it.
+    - part: Particle size, poisons, aging, surfaces that rebuild under gas, heat in a full-size reactor
+      why: Each needs its own model and its own data.
+      size: Specific to each catalyst and plant.
+      meanwhile: Bench tests and the Lab data page.
+  checks:
+    - text: >
+        Ammonia in copper chabazite (Materials Project mp-aaaabamv, the 12-site cell, Si/Al 5 or 11), built by the
+        app's site builder and relaxed in each UMA mode, against two published DFT studies. The catalysis and
+        materials modes leave out the dispersion attraction both studies include; the porous-frameworks mode
+        includes it and binds far too tightly.
+      see: Ammonia binding in copper chabazite, three UMA modes against published DFT
+      table:
+        table: zeolite
+        columns: {site: Site, oc20: "Catalysis (eV)", omat: "Materials (eV)", odac: "Porous frameworks (eV)", published: "Published DFT (eV)", source: Source}
 
 reproduce:
   text: >
@@ -604,5 +745,13 @@ references:
   - {cite: "Falsig, H. et al. Trends in the catalytic CO oxidation activity of nanoparticles. Angew. Chem. Int. Ed. 47, 4835 (2008).", url: "https://doi.org/10.1002/anie.200801479"}
   - {cite: "Liu, D. C. & Nocedal, J. On the limited memory BFGS method for large scale optimization. Math. Program. 45, 503 (1989).", url: "https://doi.org/10.1007/BF01589116"}
   - {cite: "Verwer, J. G., Spee, E. J., Blom, J. G. & Hundsdorfer, W. A second-order Rosenbrock method applied to photochemical dispersion problems. SIAM J. Sci. Comput. 20, 1456 (1999).", url: "https://doi.org/10.1137/S1064827597326651"}
+  - {cite: "Shah, R. K. & London, A. L. Laminar Flow Forced Convection in Ducts. Academic Press (1978)."}
+  - {cite: "Hawthorn, R. D. Afterburner catalysis: effects of heat and mass transfer between gas and catalyst surface. AIChE Symp. Ser. 70, 428 (1974)."}
+  - {cite: "Metkar, P. S. Experimental and kinetic modeling study of NO oxidation and NOx reduction with NH3 on Fe-ZSM-5 and Cu-chabazite catalysts. PhD thesis, University of Houston (2012).", url: "https://uh-ir.tdl.org/bitstreams/0eb40ebd-8eff-4cab-bd04-abde0cc53c00/download"}
+  - {cite: "Xu, J., Patra, A., Pathak, A. D., Shetty, S., Hohl, D. & Car, R. Benchmarking universal machine learning interatomic potentials for supported nanoparticles. npj Comput. Mater. (2026); arXiv:2512.05221.", url: "https://arxiv.org/abs/2512.05221"}
+  - {cite: "Benchmarking machine-learned potentials for adsorption on Pt and IrO2 surfaces using OC20 and OMat24 (2026).", url: "https://doi.org/10.1007/s44371-026-00865-5"}
+  - {cite: "Tran, R. et al. The Open Catalyst 2022 (OC22) Dataset and Challenges for Oxide Electrocatalysts. ACS Catal. 13, 3066 (2023).", url: "https://arxiv.org/abs/2206.08917"}
+  - {cite: "Nystrom, S., Hoffman, A. & Hibbitts, D. Tuning Brønsted Acid Strength by Altering Site Proximity in CHA Framework Zeolites. ACS Catal. 8, 7842 (2018).", url: "https://doi.org/10.1021/acscatal.8b02049"}
+  - {cite: "Isapour et al., with Feng, Y., Grönbeck, H., Skoglundh, M. & Härelind, H. Ammonia in H- and Cu-SSZ-13 by DRIFTS, NH3-TPD and DFT (PBE+U+D3). RSC Adv. 16, 28182 (2026).", url: "https://doi.org/10.1039/d6ra03025d"}
   - {cite: "Goodwin, D. G. et al. Cantera: an object-oriented software toolkit for chemical kinetics, thermodynamics and transport processes (version 3.2).", url: "https://cantera.org"}
   - {cite: "Smith, G. P. et al. GRI-Mech 3.0.", url: "http://combustion.berkeley.edu/gri-mech/"}

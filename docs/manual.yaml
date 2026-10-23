@@ -244,6 +244,18 @@ steps:
       - The structures are also saved as CIF files in the screen's folder, ready for other chemistry software.
     get: The full record behind the ranking.
   - phase: Go further
+    title: Use the Advanced options
+    page: Design a catalyst → Advanced
+    image: step-advanced.png
+    do:
+      - Switch on "Advanced" at the top of Design a catalyst. The four steps stay the same; extra controls join them.
+      - "\"Catalyst form\" in step 2: powder (fine grains) or a coated honeycomb (monolith), as in exhaust systems. For a honeycomb, set its cells per square inch and the wall and coat thickness. The app then counts the time gas takes to reach the channel walls, which caps how much a faster catalyst can gain. The space velocity counts per volume of the whole honeycomb block."
+      - "\"Face\" column in your list: auto keeps each crystal's close-packed face. Type three Miller indices, such as 1 0 0, to compute another face. A cubic metal reads them in its cubic cell, as textbooks write them."
+      - "Step 4: the UMA mode (catalysis or materials), the catalyst to beat (any material on your list) and the slab's thickness and width."
+      - "Rank like with like. Metals and oxides hold the key molecule through different chemistry, so pick a catalyst to beat from the same family as your candidates: an oxide when you screen oxides."
+      - "The Manual's Methodology tab lists what stays outside the model, such as the support, promoters and zeolite sites, with the size of each."
+    get: A chosen catalyst form, faces and model settings, read on the same Results pages.
+  - phase: Go further
     title: Add your own reaction
     page: Reactions → Add a reaction
     image: step-add-reaction.png
@@ -308,7 +320,10 @@ glossary:
       - {term: Alloy, means: "A solid mix of two or more metals, such as copper with palladium."}
       - {term: Oxide, means: "A compound of a metal with oxygen, such as vanadium oxide (V2O5)."}
       - {term: Crystal structure, means: "The repeating 3D pattern of atoms in a solid."}
-      - {term: Surface (facet), means: "One flat face of a crystal. The app uses each crystal's most tightly packed face, the most common one on real particles."}
+      - {term: Surface (facet), means: "One flat face of a crystal. The app uses each crystal's most tightly packed face, the most common one on real particles; Advanced lets you choose another."}
+      - {term: Miller indices, means: "Three whole numbers that name a crystal face, such as (111), the close-packed face of platinum."}
+      - {term: Zeolite, means: "A crystal of silicon and oxygen full of molecule-sized pores. Aluminium in place of some silicon lets it hold a proton or a metal ion, where molecules react."}
+      - {term: Monolith (honeycomb), means: "A ceramic block of thin parallel channels whose walls carry a coat of catalyst; gas flows straight through."}
       - {term: Support, means: "The porous material that carries the active ingredient."}
       - {term: Conversion, means: "The share of a gas the catalyst turns into something else. 0.92 means 92%."}
       - {term: Yield, means: "How much wanted product comes out per unit of a gas going in."}

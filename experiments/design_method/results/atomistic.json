@@ -7,138 +7,138 @@
   {
    "material": "Pt",
    "source": "Reference crystal",
-   "oc20_pct": 1.7694177499090191,
-   "omat_pct": 1.038199504098003
+   "oc20_pct": 1.7694172180990675,
+   "omat_pct": 1.0382007542699023
   },
   {
    "material": "Pd",
    "source": "Reference crystal",
-   "oc20_pct": 2.3137506286802667,
-   "omat_pct": 1.2478314993014772
+   "oc20_pct": 2.3137510023164554,
+   "omat_pct": 1.247832302737928
   },
   {
    "material": "Rh",
    "source": "Reference crystal",
-   "oc20_pct": 1.1465871212563261,
-   "omat_pct": 0.781943541942165
+   "oc20_pct": 1.1465870946262724,
+   "omat_pct": 0.781943012715014
   },
   {
    "material": "Ir",
    "source": "Reference crystal",
-   "oc20_pct": 1.0965159326685958,
-   "omat_pct": 0.76453693005889
+   "oc20_pct": 1.0965152472522055,
+   "omat_pct": 0.7645368416487441
   },
   {
    "material": "Ru",
    "source": "Reference crystal",
-   "oc20_pct": 0.7989605766760777,
-   "omat_pct": 0.6932960454723913
+   "oc20_pct": 0.7989596260734588,
+   "omat_pct": 0.6932949382645326
   },
   {
    "material": "Au",
    "source": "Reference crystal",
-   "oc20_pct": 2.9488296153159954,
-   "omat_pct": 1.9163690394392363
+   "oc20_pct": 2.9488293100444984,
+   "omat_pct": 1.9163586061711868
   },
   {
    "material": "Ag",
    "source": "Reference crystal",
-   "oc20_pct": 2.9793026024635294,
-   "omat_pct": 1.245280798015358
+   "oc20_pct": 2.9793055007492963,
+   "omat_pct": 1.2452803562706727
   },
   {
    "material": "Cu",
    "source": "Reference crystal",
-   "oc20_pct": 1.9091338020087223,
-   "omat_pct": 0.15000073428697025
+   "oc20_pct": 1.909133665657059,
+   "omat_pct": 0.15000046680004875
   },
   {
    "material": "Ni",
    "source": "Reference crystal",
-   "oc20_pct": 0.6744980164355097,
-   "omat_pct": -0.14740701007288637
+   "oc20_pct": 0.6744974179601737,
+   "omat_pct": -0.14740577510402586
   },
   {
    "material": "Co",
    "source": "Reference crystal",
-   "oc20_pct": -1.7286800141173564,
-   "omat_pct": -0.6608904664969439
+   "oc20_pct": -1.7286813602363282,
+   "omat_pct": -0.6608357536873832
   },
   {
    "material": "CuPd",
    "source": "Materials Project",
-   "oc20_pct": 2.2002260323801037,
-   "omat_pct": 0.9786874479191576
+   "oc20_pct": 2.2002279410345604,
+   "omat_pct": 0.9786876800091937
   },
   {
    "material": "CuPt",
    "source": "Materials Project",
-   "oc20_pct": 1.6135158310527586,
-   "omat_pct": 0.7669429043513531
+   "oc20_pct": 1.6135169629220014,
+   "omat_pct": 0.7669436970555221
   },
   {
    "material": "PdPt",
    "source": "Materials Project",
-   "oc20_pct": 1.3175838142398089,
-   "omat_pct": 0.5997370378020728
+   "oc20_pct": 1.3175830091326057,
+   "omat_pct": 0.5997367432470702
   },
   {
    "material": "Cu3Au",
    "source": "Materials Project",
-   "oc20_pct": 2.421480504847451,
-   "omat_pct": 0.8784521661309608
+   "oc20_pct": 2.4214725619519095,
+   "omat_pct": 0.8784488864205242
   }
  ],
  "strain": [
   {
    "material": "Pt",
    "strain_pct": -2,
-   "E": 1.7603333991028611
+   "E": 1.7599456139125342
   },
   {
    "material": "Pt",
    "strain_pct": -1,
-   "E": 1.668340459364841
+   "E": 1.6676247276656815
   },
   {
    "material": "Pt",
    "strain_pct": 0,
-   "E": 1.57779980569883
+   "E": 1.5780364038590298
   },
   {
    "material": "Pt",
    "strain_pct": 1,
-   "E": 1.4930394796065647
+   "E": 1.4926862151013855
   },
   {
    "material": "Pt",
    "strain_pct": 2,
-   "E": 1.4108430989470397
+   "E": 1.4104725316905862
   },
   {
    "material": "Cu",
    "strain_pct": -2,
-   "E": 1.165609802996797
+   "E": 1.1656743225390036
   },
   {
    "material": "Cu",
    "strain_pct": -1,
-   "E": 1.0937289870881974
+   "E": 1.096816433515996
   },
   {
    "material": "Cu",
    "strain_pct": 0,
-   "E": 1.0309520317863266
+   "E": 1.0310593496626117
   },
   {
    "material": "Cu",
    "strain_pct": 1,
-   "E": 0.9712178930522972
+   "E": 0.971847124247815
   },
   {
    "material": "Cu",
    "strain_pct": 2,
-   "E": 0.912961689704658
+   "E": 0.9135144182485098
   }
  ],
  "slab_size": [
@@ -148,7 +148,7 @@
    "width_A": 7,
    "n_atoms": 36,
    "layers": 4,
-   "E": 1.5778000601510618,
+   "E": 1.5780366795156189,
    "site": "hollow 2"
   },
   {
@@ -157,7 +157,7 @@
    "width_A": 7,
    "n_atoms": 45,
    "layers": 5,
-   "E": 1.5658443043118515,
+   "E": 1.5649261134592924,
    "site": "hollow 2"
   },
   {
@@ -166,7 +166,7 @@
    "width_A": 7,
    "n_atoms": 54,
    "layers": 6,
-   "E": 1.5687974768308512,
+   "E": 1.5679042859093633,
    "site": "hollow 1"
   },
   {
@@ -175,7 +175,7 @@
    "width_A": 10,
    "n_atoms": 100,
    "layers": 4,
-   "E": 1.5215519540019917,
+   "E": 1.5235846880071753,
    "site": "hollow 1"
   },
   {
@@ -184,7 +184,7 @@
    "width_A": 10,
    "n_atoms": 125,
    "layers": 5,
-   "E": 1.520040041292062,
+   "E": 1.5176414473965982,
    "site": "hollow 1"
   },
   {
@@ -193,7 +193,7 @@
    "width_A": 7,
    "n_atoms": 36,
    "layers": 4,
-   "E": -0.201673245890178,
+   "E": -0.20179390925547214,
    "site": "hollow 2"
   },
   {
@@ -202,7 +202,7 @@
    "width_A": 7,
    "n_atoms": 45,
    "layers": 5,
-   "E": -0.21849875081297032,
+   "E": -0.21622671509278835,
    "site": "hollow 1"
   },
   {
@@ -211,7 +211,7 @@
    "width_A": 7,
    "n_atoms": 63,
    "layers": 7,
-   "E": -0.19446681961916656,
+   "E": -0.19466988309660938,
    "site": "hollow 1"
   },
   {
@@ -220,7 +220,7 @@
    "width_A": 10,
    "n_atoms": 100,
    "layers": 4,
-   "E": -0.24608223073848112,
+   "E": -0.24634579023224124,
    "site": "hollow 1"
   },
   {
@@ -229,7 +229,7 @@
    "width_A": 10,
    "n_atoms": 125,
    "layers": 5,
-   "E": -0.2665004526424051,
+   "E": -0.25895039924434204,
    "site": "hollow 1"
   }
  ],
@@ -237,32 +237,32 @@
   {
    "material": "Pt",
    "n_sites": 4,
-   "E_standard": 1.5777988727073327,
+   "E_standard": 1.5780371248070102,
    "site_standard": "hollow 2",
-   "E_all": 1.5777988727073327,
+   "E_all": 1.5780371248070102,
    "site_all": "hollow 2",
    "sites": [
     {
      "site": "hollow 1",
-     "E": 1.9146149393611571,
+     "E": 1.9147764529107425,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "hollow 2",
-     "E": 1.5777988727073327,
+     "E": 1.5780371248070102,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "bridge",
-     "E": 1.5804440520127647,
+     "E": 1.5807516847523422,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "top Pt",
-     "E": 2.7714484229254444,
+     "E": 2.769212763271198,
      "anomaly": "",
      "converged": true
     }
@@ -271,32 +271,32 @@
   {
    "material": "Pd",
    "n_sites": 4,
-   "E_standard": 1.3843020249684477,
+   "E_standard": 1.3844385385869336,
    "site_standard": "hollow 2",
-   "E_all": 1.3843020249684477,
+   "E_all": 1.3844385385869336,
    "site_all": "hollow 2",
    "sites": [
     {
      "site": "hollow 1",
-     "E": 1.5753199991350604,
+     "E": 1.5749358610932935,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "hollow 2",
-     "E": 1.3843020249684477,
+     "E": 1.3844385385869336,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "bridge",
-     "E": 1.865869102602928,
+     "E": 1.3874563419709736,
      "anomaly": "",
-     "converged": false
+     "converged": true
     },
     {
      "site": "top Pd",
-     "E": 2.832912895098885,
+     "E": 2.8330926443912423,
      "anomaly": "",
      "converged": true
     }
@@ -305,32 +305,32 @@
   {
    "material": "Rh",
    "n_sites": 4,
-   "E_standard": 0.5246445457978401,
+   "E_standard": 0.525137059282982,
    "site_standard": "hollow 1",
-   "E_all": 0.5246445457978401,
+   "E_all": 0.525137059282982,
    "site_all": "hollow 1",
    "sites": [
     {
      "site": "hollow 1",
-     "E": 0.5246445457978401,
+     "E": 0.525137059282982,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "hollow 2",
-     "E": 0.609021348774589,
+     "E": 0.610498401529795,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "bridge",
-     "E": 0.5262966828880016,
+     "E": 0.5270064561642434,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "top Rh",
-     "E": 1.880540998111754,
+     "E": 1.8811948343072649,
      "anomaly": "",
      "converged": true
     }
@@ -339,32 +339,32 @@
   {
    "material": "Ir",
    "n_sites": 4,
-   "E_standard": 0.9868484452690458,
+   "E_standard": 0.986476075642698,
    "site_standard": "hollow 2",
-   "E_all": 0.9868484452690458,
+   "E_all": 0.986476075642698,
    "site_all": "hollow 2",
    "sites": [
     {
      "site": "hollow 1",
-     "E": 1.1129955635246764,
+     "E": 1.1126088173476054,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "hollow 2",
-     "E": 0.9868484452690458,
+     "E": 0.986476075642698,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "bridge",
-     "E": 0.9875691493887606,
+     "E": 0.987165386719183,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "top Ir",
-     "E": 1.9134766791408842,
+     "E": 1.9129580206896852,
      "anomaly": "",
      "converged": true
     }
@@ -373,32 +373,32 @@
   {
    "material": "Ru",
    "n_sites": 4,
-   "E_standard": -0.20167316107269162,
+   "E_standard": -0.201794821042669,
    "site_standard": "hollow 2",
-   "E_all": -0.20167316107269162,
+   "E_all": -0.201794821042669,
    "site_all": "hollow 2",
    "sites": [
     {
      "site": "hollow 1",
-     "E": 0.07267961300639936,
+     "E": 0.07262713223506889,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "hollow 2",
-     "E": -0.20167316107269162,
+     "E": -0.201794821042669,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "bridge",
-     "E": -0.19977265740699668,
+     "E": -0.2000722112884583,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "top Ru",
-     "E": 0.9947112734621859,
+     "E": 0.9938303916670028,
      "anomaly": "",
      "converged": true
     }
@@ -407,32 +407,32 @@
   {
    "material": "Au",
    "n_sites": 4,
-   "E_standard": 2.7900432719943487,
+   "E_standard": 2.794013309818154,
    "site_standard": "hollow 1",
-   "E_all": 2.7900432719943487,
+   "E_all": 2.794013309818154,
    "site_all": "hollow 1",
    "sites": [
     {
      "site": "hollow 1",
-     "E": 2.7900432719943487,
+     "E": 2.794013309818154,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "hollow 2",
-     "E": 2.898740512578839,
+     "E": 2.90173425962547,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "bridge",
-     "E": 2.791209150883218,
+     "E": 2.8008836789156524,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "top Au",
-     "E": 3.8362689390425677,
+     "E": 3.8393646154095213,
      "anomaly": "",
      "converged": true
     }
@@ -441,32 +441,32 @@
   {
    "material": "Ag",
    "n_sites": 4,
-   "E_standard": 2.2356779111972207,
+   "E_standard": 2.2392329533459323,
    "site_standard": "hollow 2",
-   "E_all": 2.2356779111972207,
+   "E_all": 2.2392329533459323,
    "site_all": "hollow 2",
    "sites": [
     {
      "site": "hollow 1",
-     "E": 2.2968487852616013,
+     "E": 2.30061399964677,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "hollow 2",
-     "E": 2.2356779111972207,
+     "E": 2.2392329533459323,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "bridge",
-     "E": 2.2368800124204844,
+     "E": 2.241356532096325,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "top Ag",
-     "E": 3.5025295178497364,
+     "E": 3.506246887265042,
      "anomaly": "",
      "converged": true
     }
@@ -475,32 +475,32 @@
   {
    "material": "Cu",
    "n_sites": 4,
-   "E_standard": 1.0309521007004738,
+   "E_standard": 1.0310586684727943,
    "site_standard": "hollow 1",
-   "E_all": 1.0309521007004738,
+   "E_all": 1.0310586684727943,
    "site_all": "hollow 1",
    "sites": [
     {
      "site": "hollow 1",
-     "E": 1.0309521007004738,
+     "E": 1.0310586684727943,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "hollow 2",
-     "E": 1.101733608783447,
+     "E": 1.1018312362708533,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "bridge",
-     "E": 1.0325065970504985,
+     "E": 1.0334292885267606,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "top Cu",
-     "E": 2.5931577700066972,
+     "E": 2.5932060629184965,
      "anomaly": "",
      "converged": true
     }
@@ -509,32 +509,32 @@
   {
    "material": "Ni",
    "n_sites": 4,
-   "E_standard": 0.07833959528004097,
+   "E_standard": 0.08651959287008903,
    "site_standard": "hollow 1",
-   "E_all": 0.07833959528004097,
+   "E_all": 0.08651959287008903,
    "site_all": "hollow 1",
    "sites": [
     {
      "site": "hollow 1",
-     "E": 0.07833959528004097,
+     "E": 0.08651959287008903,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "hollow 2",
-     "E": 0.186143318926141,
+     "E": 0.19426000562201207,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "bridge",
-     "E": 0.08015547767779108,
+     "E": 0.0882155487537224,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "top Ni",
-     "E": 2.044478464884647,
+     "E": 2.051248309450144,
      "anomaly": "",
      "converged": true
     }
@@ -543,32 +543,32 @@
   {
    "material": "Co",
    "n_sites": 4,
-   "E_standard": -0.5159332360595537,
+   "E_standard": -0.5133374363889667,
    "site_standard": "hollow 2",
-   "E_all": -0.5159332360595537,
+   "E_all": -0.5133374363889667,
    "site_all": "hollow 2",
    "sites": [
     {
      "site": "hollow 1",
-     "E": -0.4994303288477946,
+     "E": -0.4975532241845295,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "hollow 2",
-     "E": -0.5159332360595537,
+     "E": -0.5133374363889667,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "bridge",
-     "E": -0.4994349779019709,
+     "E": -0.4972896964972202,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "top Co",
-     "E": 1.3225346141688723,
+     "E": 1.325183843505541,
      "anomaly": "",
      "converged": true
     }
@@ -577,38 +577,38 @@
   {
    "material": "CuPd",
    "n_sites": 5,
-   "E_standard": 1.3769647121838622,
+   "E_standard": 1.376508670184264,
    "site_standard": "hollow 2",
-   "E_all": 1.3769647121838622,
+   "E_all": 1.376508670184264,
    "site_all": "hollow 2",
    "sites": [
     {
      "site": "hollow 1",
-     "E": 1.5325105407289206,
+     "E": 1.5316278671660504,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "hollow 2",
-     "E": 1.3769647121838622,
+     "E": 1.376508670184264,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "bridge",
-     "E": 1.8954906653313364,
+     "E": 1.8945343066450695,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "top Cu",
-     "E": 2.8238060870872195,
+     "E": 1.5315291874126862,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "top Pd",
-     "E": 2.893202412920785,
+     "E": 2.8926895644620307,
      "anomaly": "",
      "converged": true
     }
@@ -617,38 +617,38 @@
   {
    "material": "CuPt",
    "n_sites": 5,
-   "E_standard": 1.2625913104050843,
+   "E_standard": 1.2650558524859283,
    "site_standard": "hollow 1",
-   "E_all": 1.2625913104050843,
+   "E_all": 1.2650558524859283,
    "site_all": "hollow 1",
    "sites": [
     {
      "site": "hollow 1",
-     "E": 1.2625913104050843,
+     "E": 1.2650558524859283,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "hollow 2",
-     "E": 1.6062155325874832,
+     "E": 1.6088584377261403,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "bridge",
-     "E": 1.2660562340575856,
+     "E": 1.2672369559928844,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "top Cu",
-     "E": 1.2643775080352517,
+     "E": 1.3586238753492657,
      "anomaly": "",
-     "converged": true
+     "converged": false
     },
     {
      "site": "top Pt",
-     "E": 1.6067600682998053,
+     "E": 1.6099336335529264,
      "anomaly": "",
      "converged": true
     }
@@ -657,38 +657,38 @@
   {
    "material": "PdPt",
    "n_sites": 5,
-   "E_standard": 1.5011147011920078,
+   "E_standard": 1.5003572287258597,
    "site_standard": "bridge",
-   "E_all": 1.5011147011920078,
+   "E_all": 1.5003572287258597,
    "site_all": "bridge",
    "sites": [
     {
      "site": "hollow 1",
-     "E": 1.5110262832782118,
+     "E": 1.511430618465325,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "hollow 2",
-     "E": 1.643316577979859,
+     "E": 1.6436636084055598,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "bridge",
-     "E": 1.5011147011920078,
+     "E": 1.5003572287258597,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "top Pd",
-     "E": 3.1083530495556166,
+     "E": 3.108730317387354,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "top Pt",
-     "E": 2.4246477039882697,
+     "E": 2.42506182498387,
      "anomaly": "",
      "converged": true
     }
@@ -697,38 +697,38 @@
   {
    "material": "Cu3Au",
    "n_sites": 5,
-   "E_standard": 1.0714304083034412,
+   "E_standard": 1.072414390959337,
    "site_standard": "hollow 1",
-   "E_all": 1.0714304083034412,
+   "E_all": 1.072414390959337,
    "site_all": "hollow 1",
    "sites": [
     {
      "site": "hollow 1",
-     "E": 1.0714304083034412,
+     "E": 1.072414390959337,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "hollow 2",
-     "E": 1.6221280708799517,
+     "E": 1.6231354949470491,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "bridge",
-     "E": 1.0740930228873387,
+     "E": 1.0743702273817481,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "top Au",
-     "E": 3.381573964478192,
+     "E": 3.382555232977025,
      "anomaly": "",
      "converged": true
     },
     {
      "site": "top Cu",
-     "E": 1.076131439658794,
+     "E": 1.0791962000804878,
      "anomaly": "",
      "converged": true
     }
@@ -738,97 +738,89 @@
  "tolerance": [
   {
    "material": "Pt",
-   "E_standard": 1.5777988727073327,
-   "E_tight": 1.578346920390472,
+   "E_standard": 1.5780371248070102,
+   "E_tight": 1.5785294262486067,
    "converged": true
   },
   {
    "material": "Pd",
-   "E_standard": 1.3843020249684477,
-   "E_tight": 1.384771319688027,
+   "E_standard": 1.3844385385869336,
+   "E_tight": 1.3849774896030302,
    "converged": true
   },
   {
    "material": "Rh",
-   "E_standard": 0.5246445457978401,
-   "E_tight": 0.5252874617520851,
+   "E_standard": 0.525137059282982,
+   "E_tight": 0.5252170845076725,
    "converged": true
   },
   {
    "material": "Ir",
-   "E_standard": 0.9868484452690458,
-   "E_tight": 0.9859667259020588,
+   "E_standard": 0.986476075642698,
+   "E_tight": 0.9859362340437618,
    "converged": true
   },
   {
    "material": "Ru",
-   "E_standard": -0.20167316107269162,
-   "E_tight": -0.20177104036180626,
+   "E_standard": -0.201794821042669,
+   "E_tight": -0.20182104022394842,
    "converged": true
   },
   {
    "material": "Au",
-   "E_standard": 2.7900432719943487,
-   "E_tight": 2.7927051921357124,
+   "E_standard": 2.794013309818154,
+   "E_tight": 2.7926431906103195,
    "converged": true
   },
   {
    "material": "Ag",
-   "E_standard": 2.2356779111972207,
-   "E_tight": 2.23936471718958,
+   "E_standard": 2.2392329533459323,
+   "E_tight": 2.2393078365152013,
    "converged": true
   },
   {
    "material": "Cu",
-   "E_standard": 1.0309521007004738,
-   "E_tight": 1.031638891109636,
+   "E_standard": 1.0310586684727943,
+   "E_tight": 1.0316692424890581,
    "converged": true
   },
   {
    "material": "Ni",
-   "E_standard": 0.07833959528004097,
-   "E_tight": 0.0880617217817834,
+   "E_standard": 0.08651959287008903,
+   "E_tight": 0.08794061312504109,
    "converged": true
   },
   {
    "material": "Co",
-   "E_standard": -0.5159332360595537,
-   "E_tight": -0.5139087187408373,
+   "E_standard": -0.5133374363889667,
+   "E_tight": -0.5135045160809151,
    "converged": true
   },
   {
    "material": "CuPd",
-   "E_standard": 1.3769647121838622,
-   "E_tight": 1.375700824129253,
+   "E_standard": 1.376508670184264,
+   "E_tight": 1.3756748143409103,
    "converged": true
   },
   {
    "material": "CuPt",
-   "E_standard": 1.2625913104050843,
-   "E_tight": 1.270378250872752,
+   "E_standard": 1.2650558524859283,
+   "E_tight": 1.2704175239832827,
    "converged": true
   },
   {
    "material": "PdPt",
-   "E_standard": 1.5011147011920078,
-   "E_tight": 1.5142347880024394,
+   "E_standard": 1.5003572287258597,
+   "E_tight": 1.5144055254451265,
    "converged": true
   },
   {
    "material": "Cu3Au",
-   "E_standard": 1.0714304083034412,
-   "E_tight": 1.073963782361587,
+   "E_standard": 1.072414390959337,
+   "E_tight": 1.074041639441261,
    "converged": true
   }
  ],
- "seconds": 2011,
- "section_seconds": {
-  "lattice": 5,
-  "strain": 273,
-  "slab_size": 174,
-  "sites": 742,
-  "segregation": 817
- },
  "segregation": [
   {
    "material": "CuPd",
@@ -842,7 +834,7 @@
     "Cu": 6,
     "Pd": 6
    },
-   "E": 1.3769647307376678,
+   "E": 1.3765093990838713,
    "site": "hollow 2"
   },
   {
@@ -856,7 +848,7 @@
    "top_layer": {
     "Cu": 12
    },
-   "E": 0.7623191290226847,
+   "E": 0.765185607548303,
    "site": "bridge"
   },
   {
@@ -870,8 +862,8 @@
    "top_layer": {
     "Pd": 12
    },
-   "E": 1.5223285580948263,
-   "site": "hollow 2"
+   "E": 1.5220038028409837,
+   "site": "bridge"
   },
   {
    "material": "CuPt",
@@ -885,7 +877,7 @@
     "Cu": 6,
     "Pt": 6
    },
-   "E": 1.2625860517257896,
+   "E": 1.2650555026141168,
    "site": "hollow 1"
   },
   {
@@ -899,7 +891,7 @@
    "top_layer": {
     "Cu": 12
    },
-   "E": 0.6715408434843502,
+   "E": 0.6805262671826844,
    "site": "hollow 1"
   },
   {
@@ -913,8 +905,8 @@
    "top_layer": {
     "Pt": 12
    },
-   "E": 1.942996786996317,
-   "site": "bridge"
+   "E": 1.9513223869202383,
+   "site": "hollow 1"
   },
   {
    "material": "PdPt",
@@ -928,7 +920,7 @@
     "Pd": 6,
     "Pt": 6
    },
-   "E": 1.5011135667591722,
+   "E": 1.5003599216785366,
    "site": "bridge"
   },
   {
@@ -942,7 +934,7 @@
    "top_layer": {
     "Pd": 12
    },
-   "E": 1.359020107823354,
+   "E": 1.3581212765442237,
    "site": "bridge"
   },
   {
@@ -956,7 +948,7 @@
    "top_layer": {
     "Pt": 12
    },
-   "E": 1.559193326042858,
+   "E": 1.5598213353375874,
    "site": "bridge"
   },
   {
@@ -971,7 +963,7 @@
     "Au": 4,
     "Cu": 12
    },
-   "E": 1.0714297615707116,
+   "E": 1.0724147885409385,
    "site": "hollow 1"
   },
   {
@@ -985,8 +977,8 @@
    "top_layer": {
     "Au": 16
    },
-   "E": 1.6878119016486286,
-   "site": "bridge"
+   "E": 2.6589528547095105,
+   "site": "hollow 1"
   },
   {
    "material": "Cu3Au",
@@ -999,8 +991,138 @@
    "top_layer": {
     "Cu": 16
    },
-   "E": 0.7615148081911647,
+   "E": 0.7620463959960224,
    "site": "hollow 1"
   }
- ]
+ ],
+ "nudge": [
+  {
+   "material": "Pt",
+   "E_unnudged": -187.28822102405329,
+   "E_nudged": -187.28832844530078,
+   "moved_A": 0.18170559858192858
+  },
+  {
+   "material": "Pd",
+   "E_unnudged": -157.90005695120544,
+   "E_nudged": -157.90019460985894,
+   "moved_A": 0.19251696417592434
+  },
+  {
+   "material": "Rh",
+   "E_unnudged": -401.40580227895384,
+   "E_nudged": -401.4064308183574,
+   "moved_A": 0.011628980697751673
+  },
+  {
+   "material": "Ir",
+   "E_unnudged": -280.30915318040604,
+   "E_nudged": -280.30870784660425,
+   "moved_A": 0.016160443476391898
+  },
+  {
+   "material": "Ru",
+   "E_unnudged": -292.43782330966235,
+   "E_nudged": -292.43751613281637,
+   "moved_A": 0.03277908854341087
+  },
+  {
+   "material": "Au",
+   "E_unnudged": -67.00733437499548,
+   "E_nudged": -67.01045251737342,
+   "moved_A": 0.18707626484487427
+  },
+  {
+   "material": "Ag",
+   "E_unnudged": -54.54542516069709,
+   "E_nudged": -54.549205822452734,
+   "moved_A": 0.11998399800356337
+  },
+  {
+   "material": "Cu",
+   "E_unnudged": -195.99573727522528,
+   "E_nudged": -195.9957419401827,
+   "moved_A": 0.07949442301474513
+  },
+  {
+   "material": "Ni",
+   "E_unnudged": -294.4769872371077,
+   "E_nudged": -294.4851524605655,
+   "moved_A": 0.019916778487901115
+  },
+  {
+   "material": "Co",
+   "E_unnudged": -375.65308118284565,
+   "E_nudged": -375.65578596228363,
+   "moved_A": 0.18177041249443088
+  },
+  {
+   "material": "CuPd",
+   "E_unnudged": -183.76027735900868,
+   "E_nudged": -183.75981793491496,
+   "moved_A": 0.14578992171788108
+  },
+  {
+   "material": "CuPt",
+   "E_unnudged": -205.41655846415202,
+   "E_nudged": -205.41926700736246,
+   "moved_A": 0.16795487326119293
+  },
+  {
+   "material": "PdPt",
+   "E_unnudged": -231.43099595962647,
+   "E_nudged": -231.4305116098169,
+   "moved_A": 0.2084190391822812
+  },
+  {
+   "material": "Cu3Au",
+   "E_unnudged": -190.22858949364883,
+   "E_nudged": -190.2295277544206,
+   "moved_A": 0.2447565236419149
+  }
+ ],
+ "iron": {
+  "bain_eV_per_atom": [
+   {
+    "c_over_a": 0.9,
+    "oc20": -0.03424761416965083,
+    "omat": 0.16354522336756006
+   },
+   {
+    "c_over_a": 1.0,
+    "oc20": 0.0,
+    "omat": 0.0
+   },
+   {
+    "c_over_a": 1.1,
+    "oc20": -0.06377213253035219,
+    "omat": 0.06457522483469802
+   },
+   {
+    "c_over_a": 1.2,
+    "oc20": -0.17285003894396844,
+    "omat": 0.1236034335812981
+   },
+   {
+    "c_over_a": 1.4142135623730951,
+    "oc20": -0.25757167769590783,
+    "omat": 0.14256584949083617
+   }
+  ],
+  "E_NH3_before": -4.7032384077002405,
+  "E_NH3_after": -0.6463675827401971,
+  "slab_before": -242.16402332520505,
+  "slab_after": -246.77799302229718,
+  "site": "top Fe",
+  "drop_after": 0.0
+ },
+ "section_seconds": {
+  "lattice": 11,
+  "strain": 762,
+  "slab_size": 519,
+  "sites": 1744,
+  "segregation": 1115,
+  "stability": 399
+ },
+ "seconds": 4550
 }

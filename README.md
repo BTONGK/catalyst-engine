@@ -18,6 +18,19 @@ reaction's Sabatier volcano, runs each one through the reactor model across the 
 the surfaces in 3D. The Manual page (from `docs/manual.yaml`, with screenshots in `docs/manual/`) walks through
 every step, has a plain-language primer on catalysis, and a Methodology tab: a method paper that states every assumption and the check behind each step (`experiments/design_method/`).
 
+The Design page opens in its simple form. Its **Advanced** switch adds:
+
+- **Catalyst form:** powder, or a coated honeycomb (monolith) with its cells per square inch and wall; the reactor
+  then caps each rate at the gas reaching the channel walls (`screening.wall_transfer`).
+- **Faces:** a crystal face per pure metal, in Miller indices.
+- **UMA mode:** catalysis (oc20) or materials (omat).
+- **Catalyst to beat:** any material on the list.
+- **Slab size:** thickness and width.
+
+The Methodology tab's closing section lists what the app leaves out and why: the support, promoters, zeolite sites
+and diffusion inside a coat, each with its measured size. Zeolite sites have a builder (`design/zeolites.py`) and a
+check against published DFT (`experiments/zeolite_check/`); they join the app once a UMA mode passes it.
+
 Pages, as grouped in the sidebar:
 
 - **Start:** Home, Manual.

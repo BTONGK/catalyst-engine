@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import yaml
+from ase.data import atomic_numbers, reference_states
 
 from catalyst_engine.packs import PACKS_DIR, Pack, list_packs, load_pack, pack_path, read_yaml
 from catalyst_engine.units import k_to_f
@@ -266,6 +267,37 @@ def mp_structure(material_id: str) -> dict:
     from catalyst_engine.design import materials
 
     return materials.structure(material_id)
+
+
+def face_text(entry: dict) -> str:
+    return " ".join(map(str, entry["facet"])) if entry.get("facet") else "auto"
+
+
+def parse_face(text: str) -> list[int] | None:
+    """Three Miller indices from text such as '1 1 0', '(110)' or '1,-1,0'; None for auto."""
+    t = text.strip().lower().replace("(", " ").replace(")", " ").replace(",", " ")
+    if t in ("", "auto"):
+        return None
+    parts = t.split()
+    if len(parts) == 1 and len(parts[0]) == 3 and parts[0].isdigit():
+        parts = list(parts[0])
+    hkl = [int(x) for x in parts]
+    if len(hkl) != 3 or not any(hkl):
+        raise ValueError
+    return hkl
+
+
+def cubic_metal(entry: dict) -> bool:
+    """A pure metal whose reference crystal is cubic: its face reads in the cubic cell, as textbooks write it."""
+    sym = entry.get("ase_bulk")
+    return bool(sym) and (reference_states[atomic_numbers[sym]] or {}).get("symmetry") in ("fcc", "bcc")
+
+
+def form_text(shape: dict | None) -> str:
+    """The catalyst's form in words: powder, or a coated honeycomb with its cells and wall."""
+    if shape and shape.get("form") == "monolith":
+        return f"coated honeycomb, {shape['cpsi']:.0f} cells per square inch, {shape['wall_mm']:g} mm wall and coat"
+    return "powder"
 
 
 def category_order(category: str) -> tuple[int, str]:

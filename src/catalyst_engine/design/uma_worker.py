@@ -11,12 +11,21 @@ main), so the app and the tests can use its geometry functions.
 
 For each material: take the bulk crystal, cut its close-packed face (the most tightly packed outer atomic layer
 among Miller indices up to 1, preferring a layer with the bulk's composition), pick the termination whose
-composition matches the bulk, relax the
-slab, place each adsorbate on the surface's top, bridge and hollow sites, relax, and keep the binding energy
+composition matches the bulk, nudge
+its free atoms a few hundredths of an Angstrom and relax it with BFGS, so it settles in a true minimum rather than
+balancing on a symmetric point, place each adsorbate on the surface's top, bridge and hollow sites, relax, and keep the binding
+energy
 
     E_bind = E(slab + adsorbate) - E(slab) - E_ref(adsorbate)
 
-with gas references from the same model: H = 1/2 H2, O = H2O - H2, N = 1/2 N2, C = CO - O, OH = O + H, and the
+E(slab) is the relaxed clean surface, or, when the surface under the adsorbate settled lower on its own, that surface
+relaxed with the adsorbate lifted off; the binding energy then counts only the bond.
+
+A zeolite entry (kind "framework", built by zeolites.py) skips the slab: each starting arrangement of its active
+site relaxes whole in its fixed cell, the most stable is E(slab), and each adsorbate binds to the site atom (the
+metal ion, or the proton) along the most open direction.
+
+Gas references come from the same model: H = 1/2 H2, O = H2O - H2, N = 1/2 N2, C = CO - O, OH = O + H, and the
 molecules themselves for CO, NO and NH3. Negative is bound; more negative binds more strongly.
 """
 
@@ -35,7 +44,15 @@ from ase import Atoms
 from ase.build import bulk as ase_bulk
 from ase.build import surface
 from ase.constraints import FixAtoms
+from ase.geometry import find_mic
 from ase.io import write
+from ase.optimize import BFGS
+
+try:
+    from catalyst_engine.design import zeolites
+except ImportError:  # run as a script by the UMA Python, which holds numpy, ASE and fairchem only
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import zeolites
 
 # Binding atom first, at the origin; molecules point away from the surface (+z).
 _NH3_H = [(0.94 * np.cos(t), 0.94 * np.sin(t), 0.38) for t in np.radians([0, 120, 240])]
@@ -100,8 +117,8 @@ SETTINGS = {  # sites per adsorbate, force tolerance (eV/A), step cap
 
 def bulk_from(material: dict) -> Atoms:
     """A bulk crystal from a job entry: a Materials Project structure or an element's reference crystal."""
-    if material.get("ase_bulk"):
-        return ase_bulk(material["ase_bulk"])
+    if material.get("ase_bulk"):  # the cubic cell when a face is chosen in cubic indices
+        return ase_bulk(material["ase_bulk"], cubic=bool(material.get("cubic")))
     return Atoms(material["species"], scaled_positions=material["frac"], cell=material["lattice"], pbc=True)
 
 
@@ -192,6 +209,39 @@ def build_slab(bulk: Atoms, hkl, thickness: float = 7.0, width: float = 7.0, max
     return slab
 
 
+def relax_with(atoms: Atoms, calc, fmax: float, steps: int) -> tuple[float, int, bool]:
+    """Relax with BFGS: energy, steps taken, converged. BFGS steps downhill along every direction that curves down,
+    so it leaves a balance point once the nudge tips it; LBFGS takes the same steps elsewhere but can walk back."""
+    atoms.calc = calc
+    opt = BFGS(atoms, logfile=None)
+    converged = bool(opt.run(fmax=fmax, steps=steps))
+    return float(atoms.get_potential_energy()), opt.get_number_of_steps(), converged
+
+
+def nudge(slab: Atoms, stdev: float = 0.03, seed: int = 0) -> Atoms:
+    """Shift the free atoms by about `stdev` Angstrom, the same way every run, so a relaxation can leave a symmetric
+    balance point (zero force, higher energy) for the minimum beside it. The fixed bottom half stays put."""
+    slab.rattle(stdev=stdev, seed=seed)
+    return slab
+
+
+def largest_move(before: np.ndarray, after: Atoms) -> float:
+    """How far the atom that moved most travelled from `before`, in Angstrom, across the periodic boundaries."""
+    return float(find_mic(after.positions - before, after.cell, after.pbc)[1].max())
+
+
+def clean_reference(adslab: Atoms, n_slab: int, e_slab: float, energy, relax, tol: float = 0.05) -> tuple[float, float]:
+    """The clean-surface energy to set a binding energy against, and how far it lies below the relaxed clean slab.
+    Usually the relaxed clean slab itself; when the surface under the adsorbate holds less energy than that (by more
+    than `tol` eV), the surface settled lower on its own, and its relaxation with the adsorbate lifted off is the
+    reference. `energy` and `relax` take Atoms and return eV."""
+    bare = adslab[:n_slab]
+    if energy(bare) >= e_slab - tol:
+        return e_slab, 0.0
+    e_bare = relax(bare)
+    return min(e_slab, e_bare), max(0.0, e_slab - e_bare)
+
+
 def _neighbors_2d(points: np.ndarray, cell: np.ndarray) -> np.ndarray:
     """Copies of the 2D points shifted by every in-plane lattice vector combination in -1..1."""
     shifts = [i * cell[0, :2] + j * cell[1, :2] for i in (-1, 0, 1) for j in (-1, 0, 1)]
@@ -277,6 +327,50 @@ def _save_status(folder: Path, **fields) -> None:
     os.replace(tmp, path)
 
 
+def _framework(m: dict, tag: str, label: str, adsorbates: list[str], refs: dict, relax, energy, out, folder: Path,
+               done: int, total: int) -> tuple[int, int]:
+    """One zeolite site: relax each starting arrangement, then each adsorbate on the site atom of each. Writes
+    the same rows as a surface; returns the updated (done, total) counts."""
+    site = m["site"]
+    total += len(m["variants"]) * (1 + len(adsorbates))
+    _save_status(folder, total=total)
+    relaxed = []
+    for k, v in enumerate(m["variants"]):
+        _save_status(folder, message=f"{label}: relaxing the site ({k + 1} of {len(m['variants'])})", done=done)
+        t0 = time.time()
+        s = nudge(Atoms(v["species"], scaled_positions=v["frac"], cell=m["lattice"], pbc=True))
+        e, steps, conv = relax(s)
+        write(folder / "structures" / f"{tag}__site{k}.cif", s)
+        relaxed.append({"energy": e, "atoms": s, "steps": steps, "converged": conv, "seconds": time.time() - t0,
+                        "structure": f"structures/{tag}__site{k}.cif"})
+        done += 1
+    best = min(relaxed, key=lambda r: r["energy"])
+    out.write(json.dumps({"material": m["id"], "adsorbate": "*", "site": "clean", "kind": "framework",
+                          "n_atoms": len(best["atoms"]), "energy": best["energy"], "steps": best["steps"],
+                          "converged": best["converged"], "seconds": round(sum(r["seconds"] for r in relaxed), 1),
+                          "structure": best["structure"]}) + "\n")
+    out.flush()
+    for a in adsorbates:
+        for k, r in enumerate(relaxed):
+            s = r["atoms"]
+            name = s[site].symbol + (f" {k + 1}" if len(relaxed) > 1 else "")
+            _save_status(folder, message=f"{label}: {a} on the {name} site", done=done)
+            t0 = time.time()
+            reach = 1.6 if s[site].symbol == "H" else HEIGHTS[a]["top"]
+            adslab = zeolites.place_at(s, site, ADSORBATE_ATOMS[a], reach)
+            e, steps, conv = relax(adslab)
+            e_ref, drop = clean_reference(adslab, len(s), best["energy"], energy, lambda x: relax(x)[0])
+            path = f"{tag}__{a}__{name.replace(' ', '-')}.cif"
+            write(folder / "structures" / path, adslab)
+            out.write(json.dumps({"material": m["id"], "adsorbate": a, "site": name, "E_bind": e - e_ref - refs[a],
+                                  "slab_drop_eV": round(drop, 3), "steps": steps, "converged": conv,
+                                  "anomaly": anomaly(adslab, len(s), a), "n_ads": len(adslab) - len(s),
+                                  "seconds": round(time.time() - t0, 1), "structure": f"structures/{path}"}) + "\n")
+            out.flush()
+            done += 1
+    return done, total
+
+
 def main(folder: Path) -> None:
     job = json.loads((folder / "job.json").read_text())
     setting = SETTINGS[job.get("thoroughness", "standard")]
@@ -288,17 +382,18 @@ def main(folder: Path) -> None:
                  started=time.time())
 
     import torch
-    from ase.optimize import LBFGS
     from fairchem.core import FAIRChemCalculator, pretrained_mlip
 
     torch.set_num_threads(max(1, min(8, (os.cpu_count() or 4) - 2)))
-    calc = FAIRChemCalculator(pretrained_mlip.load_predict_unit(job["checkpoint"], device="cpu"), task_name=job["task"])
+    unit = pretrained_mlip.load_predict_unit(os.path.expanduser(job["checkpoint"]), device="cpu")
+    calc = FAIRChemCalculator(unit, task_name=job["task"])
 
     def relax(atoms: Atoms) -> tuple[float, int, bool]:
+        return relax_with(atoms, calc, setting["fmax"], setting["steps"])
+
+    def energy(atoms: Atoms) -> float:
         atoms.calc = calc
-        opt = LBFGS(atoms, logfile=None)
-        converged = bool(opt.run(fmax=setting["fmax"], steps=setting["steps"]))
-        return float(atoms.get_potential_energy()), opt.get_number_of_steps(), converged
+        return float(atoms.get_potential_energy())
 
     _save_status(folder, state="running", message="Gas-phase references")
     gas: dict[str, float] = {}
@@ -318,15 +413,21 @@ def main(folder: Path) -> None:
         label = m["label"]
         tag = m["id"].replace(":", "_").replace("/", "_")
         try:
+            if m.get("kind") == "framework":
+                done, total = _framework(m, tag, label, adsorbates, refs, relax, energy, out, folder, done,
+                                         total - per_material)
+                continue
             _save_status(folder, message=f"{label}: building and relaxing the surface", done=done)
             t0 = time.time()
             bulk = bulk_from(m)
             hkl = tuple(m.get("facet") or densest_plane(bulk))
-            slab = build_slab(bulk, hkl)
-            e_slab, steps, conv = relax(slab)
+            slab = build_slab(bulk, hkl, **job.get("slab", {}))
+            built = slab.positions.copy()
+            e_slab, steps, conv = relax(nudge(slab))
             write(folder / "structures" / f"{tag}__slab.cif", slab)
             out.write(json.dumps({"material": m["id"], "adsorbate": "*", "site": "clean", "facet": list(hkl),
                                   "n_atoms": len(slab), "energy": e_slab, "steps": steps, "converged": conv,
+                                  "moved_A": round(largest_move(built, slab), 3),
                                   "seconds": round(time.time() - t0, 1), "structure": f"structures/{tag}__slab.cif"}) + "\n")
             out.flush()
             done += 1
@@ -339,10 +440,12 @@ def main(folder: Path) -> None:
                     t0 = time.time()
                     adslab = place(slab, a, site)
                     e, steps, conv = relax(adslab)
+                    e_ref, drop = clean_reference(adslab, len(slab), e_slab, energy, lambda s: relax(s)[0])
                     name = f"{tag}__{a}__{site['label'].replace(' ', '-')}.cif"
                     write(folder / "structures" / name, adslab)
                     out.write(json.dumps({"material": m["id"], "adsorbate": a, "site": site["label"],
-                                          "E_bind": e - e_slab - refs[a], "steps": steps, "converged": conv,
+                                          "E_bind": e - e_ref - refs[a], "slab_drop_eV": round(drop, 3),
+                                          "steps": steps, "converged": conv,
                                           "anomaly": anomaly(adslab, len(slab), a), "n_ads": len(adslab) - len(slab),
                                           "seconds": round(time.time() - t0, 1), "structure": f"structures/{name}"}) + "\n")
                     out.flush()

@@ -260,7 +260,18 @@ def methodology(paper: dict) -> None:
         st.markdown(f"**{group['heading']}**")
         st.markdown("\n".join(f"- {fill(p)}" for p in group["points"]))
 
-    st.markdown(f"#### {n_intro + 6}. Reproduce this page")
+    lim = paper["limits"]
+    st.markdown(f"#### {n_intro + 6}. {lim['title']}")
+    st.write(fill(lim["text"]))
+    st.markdown("| Left out | Why | How large | Meanwhile |\n|---|---|---|---|\n" + "\n".join(
+        f"| **{row['part']}** | {fill(row['why'])} | {fill(row['size'])} | {fill(row['meanwhile'])} |"
+        for row in lim["rows"]))
+    for c in lim.get("checks", []):
+        st.markdown(f"- {fill(c['text'])}")
+        with st.expander(c.get("see", "See the numbers")):
+            method_table(c["table"], tables)
+
+    st.markdown(f"#### {n_intro + 7}. Reproduce this page")
     st.write(fill(paper["reproduce"]["text"]))
     st.code(paper["reproduce"]["code"].strip(), language="bash")
     st.markdown("\n".join(f"- {fill(v)}" for v in paper["reproduce"]["versions"]))

@@ -50,7 +50,9 @@ if req["pack"] not in list_packs():
 pack = common.pack(req["pack"])
 spec = pack.spec.screening
 metric = pack.spec.metrics[spec.metric]
-ref_name = spec.reference.name or spec.reference.formula
+ref_entry = next((m for m in req["materials"] if m.get("is_reference")), {})
+ref_name = ref_entry.get("ref_name") or spec.reference.name or spec.reference.formula
+chosen_face = {m["id"] for m in req["materials"] if m.get("facet")}
 t_cmp = req["design_temperature_C"]
 
 
@@ -227,8 +229,10 @@ def body() -> None:
             # separate color scales (same colors) so only the lines draw the legend
             st.altair_chart((band + line + rule).resolve_scale(color="independent").properties(height=380),
                             width="stretch")
+            limit = ("on this honeycomb, where gas reaching the channel walls sets the limit"
+                     if screening.is_monolith(req["conditions"].get("shape")) else "(equilibrium)")
             st.caption("Each line is the predicted performance in a reactor under your conditions; the shaded band is "
-                       "the likely range. The dashed green line is the most any catalyst could reach (equilibrium). "
+                       f"the likely range. The dashed green line is the most any catalyst could reach {limit}. "
                        "The dotted line marks the comparison temperature.")
     with tabs[2]:
         if ref is None or ref.descriptor is None:
@@ -314,20 +318,28 @@ def body() -> None:
                 pick = st.selectbox("Material", [p.material for p in done],
                                     format_func={p.material: p.label for p in done}.get, key=f"res_3d_{choice}")
                 p = next(q for q in done if q.material == pick)
-                views = {"Clean surface": (p.slab["structure"], 0)}
-                best_view = "Clean surface"
+                zeolite = p.slab.get("kind") == "framework"
+                bare = "Empty site" if zeolite else "Clean surface"
+                views = {bare: (p.slab["structure"], 0)}
+                best_view = bare
                 for ads, bnd in p.binding.items():
                     for site in bnd["sites"]:
                         tag = f"{ads} on the {site['site']} site ({site['E']:+.2f} eV)" + (f", {site['note']}" if site["note"] else "")
                         views[tag] = (site["structure"], site["n_ads"])
-                        if best_view == "Clean surface" and site["structure"] == bnd["structure"]:
+                        if best_view == bare and site["structure"] == bnd["structure"]:
                             best_view = tag
                 view = st.radio("Show", list(views), index=list(views).index(best_view), key=f"res_view_{choice}_{pick}")
-                facet = p.slab.get("facet")
-                st.caption(f"Surface: the close-packed face, Miller indices {tuple(facet)} in the crystal's own cell, "
-                           f"{p.slab['n_atoms']} atoms, bottom half held fixed. Larger spheres are the molecule. The view "
-                           "repeats the computed patch 2 × 2, so each molecule shows up four times. Drag to rotate, "
-                           "scroll to zoom.")
+                if zeolite:
+                    st.caption(f"Zeolite site: the framework's whole cell, {p.slab['n_atoms']} atoms, every atom free to "
+                               "move. Larger spheres are the molecule. The view shows eight copies of the cell, so each "
+                               "molecule shows up in every copy. Drag to rotate, scroll to zoom.")
+                else:
+                    facet = tuple(p.slab.get("facet"))
+                    face = (f"the face you chose, Miller indices {facet}" if p.material in chosen_face
+                            else f"the close-packed face, Miller indices {facet}")
+                    st.caption(f"Surface: {face} in the crystal's own cell, {p.slab['n_atoms']} atoms, bottom half "
+                               "held fixed. Larger spheres are the molecule. The view repeats the computed patch 2 × 2, "
+                               "so each molecule shows up four times. Drag to rotate, scroll to zoom.")
                 for ads, bnd in p.binding.items():
                     if bnd["E"] is not None:
                         st.markdown(f"**{ADSORBATES[ads].capitalize()} ({ads})**: binds at {bnd['E']:+.2f} eV on the "
@@ -335,7 +347,7 @@ def body() -> None:
             with b:
                 path, n_ads = views[view]
                 atoms = read(folder / path)
-                viewer.show(atoms, n_highlight=n_ads, height=440, surface=True)
+                viewer.show(atoms, n_highlight=n_ads, height=440, surface=not zeolite, span=18.0 if zeolite else 9.0)
                 st.html(f"<div style='font-size:0.85rem'>{viewer.element_colors(atoms.get_chemical_symbols())}</div>")
     with tabs[4]:
         site_rows = []
@@ -349,7 +361,9 @@ def body() -> None:
             st.markdown("**Every site tried**")
             st.dataframe(pd.DataFrame(site_rows), hide_index=True, width="stretch")
             st.caption("Desorbed: the molecule drifted off the surface. Dissociated: it broke apart. Both are left out "
-                       "of the lowest binding energy.")
+                       "of the lowest binding energy. The surface beneath settled lower: the surface relaxed further "
+                       "under the molecule, so its binding energy is set against that surface with the molecule lifted "
+                       "off, and counts only the bond.")
             c = st.columns(2)
             c[0].download_button("Download the ranking (CSV)", pd.DataFrame(rows).to_csv(index=False),
                                  file_name=f"{choice}-ranking.csv", icon=":material/download:")
@@ -362,6 +376,7 @@ def body() -> None:
             f"- Gas in: {', '.join(f'{k} {v}' for k, v in cond['feed'].items())}\n"
             f"- {min(cond['temperatures_C']):.0f}–{max(cond['temperatures_C']):.0f} °C, {cond['pressure_bar']:g} bar, "
             f"space velocity {cond['ghsv_per_h']:,.0f} 1/h\n"
+            f"- Catalyst form: {common.form_text(cond.get('shape'))}\n"
             f"- Care level: {req['thoroughness']}; UMA mode: {req['task']}\n"
             f"- Folder: `{folder}`")
         with st.expander("How the predictions are made"):

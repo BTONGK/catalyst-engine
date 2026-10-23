@@ -7,7 +7,8 @@ Run with the Python that has fairchem (see report.yaml, rerun):
 With section names, only those run and the rest of results/atomistic.json stays as it is.
 
 Materials: the fourteen of the shipped example screen (examples/screens/), oxygen as the adsorbate, the catalysis
-(oc20) mode, the standard setting (LBFGS to 0.05 eV/A, up to 250 steps). Writes results/atomistic.json:
+(oc20) mode, the standard setting (BFGS to 0.05 eV/A, up to 250 steps), each clean slab nudged and each binding
+energy set against the surface beneath, as the worker does. Writes results/atomistic.json:
 
   lattice      each crystal's own UMA lattice (catalysis and materials modes) against the input crystal
   strain       oxygen binding on Pt and Cu with the lattice stretched or squeezed by up to 2%
@@ -15,6 +16,7 @@ Materials: the fourteen of the shipped example screen (examples/screens/), oxyge
   sites        every surface site on every material, against the standard setting's first three
   tolerance    the best structure re-relaxed to 0.01 eV/A
   segregation  each alloy with its bulk-terminated top layer, and with the top layer made of one element
+  stability    the nudge on every example surface, and iron, whose bcc crystal the catalysis mode holds unstable
 """
 
 from __future__ import annotations
@@ -44,17 +46,20 @@ from ase.optimize import LBFGS  # noqa: E402
 from fairchem.core import FAIRChemCalculator, pretrained_mlip  # noqa: E402
 
 CHECKPOINT = os.environ.get("CE_UMA_CHECKPOINT", str(Path.home() / "uma" / "checkpoints" / "uma-s-1p1.pt"))
-torch.set_num_threads(max(1, min(8, (os.cpu_count() or 4) - 2)))
+torch.set_num_threads(int(os.environ.get("CE_THREADS", max(1, min(8, (os.cpu_count() or 4) - 2)))))
 unit = pretrained_mlip.load_predict_unit(CHECKPOINT, device="cpu")
 CALC = {task: FAIRChemCalculator(unit, task_name=task) for task in ("oc20", "omat")}
 STANDARD = w.SETTINGS["standard"]
 
 
 def relax(atoms, fmax=STANDARD["fmax"], steps=STANDARD["steps"], task="oc20"):
+    e, _, converged = w.relax_with(atoms, CALC[task], fmax, steps)
+    return e, converged
+
+
+def energy(atoms, task="oc20"):
     atoms.calc = CALC[task]
-    opt = LBFGS(atoms, logfile=None)
-    converged = bool(opt.run(fmax=fmax, steps=steps))
-    return float(atoms.get_potential_energy()), converged
+    return float(atoms.get_potential_energy())
 
 
 def gas_reference() -> float:
@@ -72,18 +77,21 @@ def gas_reference() -> float:
 E_O = gas_reference()
 
 
-def binding(slab, sites, fmax=STANDARD["fmax"]):
-    """Relaxed clean slab, then oxygen on each site: [{site, E, anomaly, converged, atoms}]."""
+def binding(slab, sites, fmax=STANDARD["fmax"], adsorbate="O", e_gas=None):
+    """Nudged, relaxed clean slab, then the adsorbate on each site, set against the surface beneath:
+    [{site, E, anomaly, converged, atoms}]."""
     slab = slab.copy()
     slab.set_constraint(FixAtoms(mask=slab.positions[:, 2] < slab.positions[:, 2].min()
                                  + 0.5 * np.ptp(slab.positions[:, 2])))
-    e_slab, _ = relax(slab, fmax=fmax)
+    e_slab, _ = relax(w.nudge(slab), fmax=fmax)
     out = []
     for site in sites:
-        ads = w.place(slab, "O", site)
+        ads = w.place(slab, adsorbate, site)
         e, conv = relax(ads, fmax=fmax)
-        out.append({"site": site["label"], "E": e - e_slab - E_O, "anomaly": w.anomaly(ads, len(slab), "O"),
-                    "converged": conv, "atoms": ads, "e_slab": e_slab, "slab": slab})
+        e_ref, drop = w.clean_reference(ads, len(slab), e_slab, energy, lambda a: relax(a, fmax=fmax)[0])
+        out.append({"site": site["label"], "E": e - e_ref - (E_O if e_gas is None else e_gas),
+                    "anomaly": w.anomaly(ads, len(slab), adsorbate), "converged": conv, "atoms": ads,
+                    "e_slab": e_slab, "slab": slab, "drop": drop})
     return out
 
 
@@ -110,7 +118,7 @@ def top_layer(slab, depth=0.6):
 job = json.loads((EXAMPLE / "job.json").read_text())
 materials = job["materials"]
 OUT = HERE / "results" / "atomistic.json"
-SECTIONS = ("lattice", "strain", "slab_size", "sites", "segregation")
+SECTIONS = ("lattice", "strain", "slab_size", "sites", "segregation", "stability")
 wanted = sys.argv[1:] or list(SECTIONS)
 results: dict = json.loads(OUT.read_text()) if OUT.exists() and sys.argv[1:] else {}
 results.update(generated=time.strftime("%Y-%m-%d"), checkpoint=Path(CHECKPOINT).name, example=EXAMPLE.name,
@@ -232,6 +240,69 @@ if "segregation" in wanted:
     results["segregation"] = rows
     results.pop("alloy_faces", None)
     seconds["segregation"] = round(time.time() - t_section)
+    t_section = time.time()
+
+# ---------------------------------------------------------------- stability: the nudge, and iron
+if "stability" in wanted:
+    def plain_relax(atoms):
+        """The worker before the fix: the slab as built, LBFGS."""
+        atoms.calc = CALC["oc20"]
+        LBFGS(atoms, logfile=None).run(fmax=STANDARD["fmax"], steps=STANDARD["steps"])
+        return float(atoms.get_potential_energy())
+
+    nudge_rows = []
+    for m in materials:
+        bulk = w.bulk_from(m)
+        slab = w.build_slab(bulk, w.densest_plane(bulk))
+        before = slab.copy()
+        before.set_constraint(slab.constraints)
+        e_before = plain_relax(before)
+        after = w.nudge(slab.copy())
+        e_after = relax(after)[0]
+        nudge_rows.append({"material": m["formula"], "E_unnudged": e_before, "E_nudged": e_after,
+                           "moved_A": w.largest_move(slab.positions, after)})
+        log(f"nudge {m['formula']}: {e_after - e_before:+.4f} eV, moved {nudge_rows[-1]['moved_A']:.2f} A")
+    results["nudge"] = nudge_rows
+
+    from ase import Atoms as _Atoms
+
+    bain = []
+    a0 = 2.866  # bcc iron; along the Bain path c/a = 1 is bcc and sqrt(2) is fcc, at bcc's volume
+    for ratio in (0.9, 1.0, 1.1, 1.2, 2 ** 0.5):
+        a = (a0 ** 3 / ratio) ** (1 / 3)
+        row = {"c_over_a": ratio}
+        for task in ("oc20", "omat"):
+            fe = _Atoms("Fe2", scaled_positions=[(0, 0, 0), (0.5, 0.5, 0.5)], cell=[a, a, ratio * a], pbc=True)
+            row[task] = energy(fe, task) / 2
+        bain.append(row)
+    for task in ("oc20", "omat"):
+        e_bcc = next(r[task] for r in bain if r["c_over_a"] == 1.0)
+        for r in bain:
+            r[task] -= e_bcc
+    log("bain " + "; ".join(f"c/a {r['c_over_a']:.2f}: oc20 {r['oc20']:+.3f}, omat {r['omat']:+.3f}" for r in bain))
+
+    nh3 = w.GAS["NH3"].copy()
+    nh3.cell = [15.0, 15.1, 15.2]
+    nh3.center()
+    nh3.pbc = True
+    e_nh3 = relax(nh3)[0]
+    entry = {"id": "element:Fe", "ase_bulk": "Fe"}
+    bulk = w.bulk_from(entry)
+    slab = w.build_slab(bulk, w.densest_plane(bulk))
+    site = w.choose_sites(w.surface_sites(slab), "NH3", 1)[0]
+    old = slab.copy()
+    old.set_constraint(slab.constraints)
+    e_old_slab = plain_relax(old)
+    ads = w.place(old, "NH3", site)
+    e_old = plain_relax(ads) - e_old_slab - e_nh3
+    new = best(binding(slab, [site], adsorbate="NH3", e_gas=e_nh3))
+    results["iron"] = {"bain_eV_per_atom": bain, "E_NH3_before": e_old, "E_NH3_after": new["E"],
+                       "slab_before": e_old_slab, "slab_after": new["e_slab"], "site": site["label"],
+                       "drop_after": new["drop"]}
+    log(f"iron NH3: before {e_old:.3f} eV (clean slab {e_old_slab:.3f}), after {new['E']:.3f} eV "
+        f"(clean slab {new['e_slab']:.3f})")
+    seconds["stability"] = round(time.time() - t_section)
+    t_section = time.time()
 
 results["section_seconds"] = seconds
 results["seconds"] = sum(seconds.values())

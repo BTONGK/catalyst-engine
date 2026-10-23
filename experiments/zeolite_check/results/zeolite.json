@@ -1,0 +1,241 @@
+{
+ "oc20": {
+  "E_NH3_gas": -19.38854465401114,
+  "sites": {
+   "H-CHA": {
+    "E_bind": -1.2382912422279873,
+    "E_site_variants": [
+     0.12111883483390784,
+     0.0640229998941777,
+     0.056645274265122225,
+     0.0
+    ],
+    "E_bound_variants": [
+     -1.0833731579232193,
+     -1.119596531329293,
+     -1.1915881267246817,
+     -1.2382912422279873
+    ],
+    "N_partner": "H",
+    "N_partner_A": 1.0805086166389337,
+    "N_H_count": 4,
+    "converged": true,
+    "steps": [
+     80,
+     26
+    ]
+   },
+   "ZCu": {
+    "E_bind": -1.321600268250549,
+    "E_site_variants": [
+     0.0
+    ],
+    "E_bound_variants": [
+     -1.321600268250549
+    ],
+    "N_partner": "Cu",
+    "N_partner_A": 1.9576313297437382,
+    "N_H_count": 3,
+    "converged": true,
+    "steps": [
+     49,
+     69
+    ]
+   },
+   "Z2Cu": {
+    "E_bind": -0.8337513695141041,
+    "E_site_variants": [
+     0.0
+    ],
+    "E_bound_variants": [
+     -0.8337513695141041
+    ],
+    "N_partner": "Cu",
+    "N_partner_A": 2.1782612641710415,
+    "N_H_count": 3,
+    "converged": true,
+    "steps": [
+     88,
+     26
+    ]
+   },
+   "ZCuOH": {
+    "E_bind": -1.072195432169437,
+    "E_site_variants": [
+     0.0
+    ],
+    "E_bound_variants": [
+     -1.072195432169437
+    ],
+    "N_partner": "Cu",
+    "N_partner_A": 1.9802851624890911,
+    "N_H_count": 3,
+    "converged": true,
+    "steps": [
+     51,
+     55
+    ]
+   }
+  }
+ },
+ "omat": {
+  "E_NH3_gas": -19.177824747228716,
+  "sites": {
+   "H-CHA": {
+    "E_bind": -1.7143859855022576,
+    "E_site_variants": [
+     0.11700406670524899,
+     0.11205224617702925,
+     0.07320904326843447,
+     0.0
+    ],
+    "E_bound_variants": [
+     -1.4611533503909406,
+     -1.6430490744765045,
+     -1.6619019487033704,
+     -1.7143859855022576
+    ],
+    "N_partner": "H",
+    "N_partner_A": 1.0861474218385658,
+    "N_H_count": 4,
+    "converged": true,
+    "steps": [
+     74,
+     20
+    ]
+   },
+   "ZCu": {
+    "E_bind": -1.830845747092507,
+    "E_site_variants": [
+     0.0
+    ],
+    "E_bound_variants": [
+     -1.830845747092507
+    ],
+    "N_partner": "Cu",
+    "N_partner_A": 1.8848307984737878,
+    "N_H_count": 3,
+    "converged": true,
+    "steps": [
+     70,
+     77
+    ]
+   },
+   "Z2Cu": {
+    "E_bind": -1.4477962174784231,
+    "E_site_variants": [
+     0.0
+    ],
+    "E_bound_variants": [
+     -1.4477962174784231
+    ],
+    "N_partner": "Cu",
+    "N_partner_A": 1.9972563177488276,
+    "N_H_count": 3,
+    "converged": true,
+    "steps": [
+     83,
+     72
+    ]
+   },
+   "ZCuOH": {
+    "E_bind": -1.3387837662491613,
+    "E_site_variants": [
+     0.0
+    ],
+    "E_bound_variants": [
+     -1.3387837662491613
+    ],
+    "N_partner": "Cu",
+    "N_partner_A": 1.9828370395823054,
+    "N_H_count": 3,
+    "converged": true,
+    "steps": [
+     48,
+     50
+    ]
+   }
+  }
+ },
+ "odac": {
+  "E_NH3_gas": -19.587639068821765,
+  "sites": {
+   "H-CHA": {
+    "E_bind": -2.806662286286276,
+    "E_site_variants": [
+     0.11741941490265617,
+     0.08647269149383874,
+     0.0,
+     0.010211851614542411
+    ],
+    "E_bound_variants": [
+     -2.5157820662589714,
+     -2.806662286286276,
+     -2.687706311264897,
+     -2.7267232599837214
+    ],
+    "N_partner": "H",
+    "N_partner_A": 1.0371060083632355,
+    "N_H_count": 4,
+    "converged": true,
+    "steps": [
+     94,
+     122
+    ]
+   },
+   "ZCu": {
+    "E_bind": -2.42863664549197,
+    "E_site_variants": [
+     0.0
+    ],
+    "E_bound_variants": [
+     -2.42863664549197
+    ],
+    "N_partner": "Cu",
+    "N_partner_A": 1.9402736338725317,
+    "N_H_count": 3,
+    "converged": true,
+    "steps": [
+     104,
+     103
+    ]
+   },
+   "Z2Cu": {
+    "E_bind": -1.6626133176071747,
+    "E_site_variants": [
+     0.0
+    ],
+    "E_bound_variants": [
+     -1.6626133176071747
+    ],
+    "N_partner": "Cu",
+    "N_partner_A": 1.9519224284814645,
+    "N_H_count": 3,
+    "converged": true,
+    "steps": [
+     68,
+     40
+    ]
+   },
+   "ZCuOH": {
+    "E_bind": -2.4750326000525504,
+    "E_site_variants": [
+     0.0
+    ],
+    "E_bound_variants": [
+     -2.4750326000525504
+    ],
+    "N_partner": "Cu",
+    "N_partner_A": 1.9239450850707662,
+    "N_H_count": 3,
+    "converged": true,
+    "steps": [
+     133,
+     180
+    ]
+   }
+  }
+ },
+ "generated": "2026-10-23",
+ "seconds": 2080
+}

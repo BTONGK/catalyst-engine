@@ -9,7 +9,9 @@ Prediction, per material:
      at each temperature: the volcano's top follows the free energy of the gas the adsorbates exchange with
      (peak_moves), so the shift, and with it the order of the materials, can change with temperature
   3. the pack's screened pathways run with that extra barrier: Ea + shift, and k(T_ref) x exp(-shift / kT_ref)
-  4. the reactor model turns those rates into the pack's metric across the user's temperatures
+  4. the reactor model turns those rates into the pack's metric across the user's temperatures, for the catalyst
+     form the user picks: fine powder at the pack's rates, or a coated honeycomb (monolith) whose channels cap how
+     fast gas reaches the walls (wall_transfer)
 The descriptor's uncertainty, and a top that follows the gas only halfway, give each prediction a low and a high case.
 """
 
@@ -33,6 +35,7 @@ from catalyst_engine.chem import thermo
 from catalyst_engine.design import elements
 from catalyst_engine.packs import Pack, StepSpec
 from catalyst_engine.units import P_ATM, R
+from catalyst_engine.value.monolith import Monolith
 
 WORKER = Path(__file__).with_name("uma_worker.py")
 EXAMPLES = Path(__file__).resolve().parents[3] / "examples" / "screens"  # finished screens shipped with the app
@@ -43,6 +46,9 @@ RUNNING = ("queued", "loading", "running")
 # the top), and the low case for adsorption slow enough to set the rate (experiments/design_method/model_checks.py)
 PEAK_FOLLOW = (1.0, 0.5)
 NONMETALS = {"H", "B", "C", "N", "O", "F", "Si", "P", "S", "Cl", "Se", "Br", "I", "Te"}
+# the honeycomb the design page starts from: 400 cells per square inch with 0.17 mm of wall and coat, a 1.1 mm square
+# channel (Metkar 2012, Table 9-1)
+MONOLITH = {"form": "monolith", "cpsi": 400.0, "wall_mm": 0.17}
 
 
 # ---------------------------------------------------------------- setup and storage
@@ -63,9 +69,9 @@ def _slug(text: str) -> str:
 
 
 def create_screen(pack: Pack, name: str, conditions: dict, materials: list[dict], thoroughness: str = "standard",
-                  task: str = "oc20", design_temperature_C: float | None = None) -> Path:
-    """Write a screen folder. `materials` are job entries (materials.job_entry / element_entry); the pack's
-    reference catalyst must be one of them, flagged is_reference."""
+                  task: str = "oc20", design_temperature_C: float | None = None, slab: dict | None = None) -> Path:
+    """Write a screen folder. `materials` are job entries (materials.job_entry / element_entry / a zeolite entry);
+    one of them, flagged is_reference, is the catalyst to beat. `slab` sets the slab's thickness and width (A)."""
     spec = pack.spec.screening
     if spec is None:
         raise ValueError(f"{pack.spec.name} has no screening descriptor")
@@ -79,9 +85,10 @@ def create_screen(pack: Pack, name: str, conditions: dict, materials: list[dict]
                "conditions": conditions, "thoroughness": thoroughness, "task": task,
                "design_temperature_C": design_temperature_C if design_temperature_C is not None
                else float(np.median(temps)),
-               "materials": [{k: v for k, v in m.items() if k not in ("species", "frac", "lattice")} for m in materials]}
+               "materials": [{k: v for k, v in m.items() if k not in ("species", "frac", "lattice", "variants")}
+                             for m in materials], **({"slab": slab} if slab else {})}
     job = {"checkpoint": uma_setup()["checkpoint"], "task": task, "thoroughness": thoroughness,
-           "adsorbates": list(spec.descriptor), "materials": materials, "request": request}
+           "adsorbates": list(spec.descriptor), "materials": materials, "request": request, **({"slab": slab} if slab else {})}
     (folder / "job.json").write_text(json.dumps(job, indent=1))
     (folder / "status.json").write_text(json.dumps({"state": "queued", "done": 0, "total": 0,
                                                      "message": "Waiting to start", "updated": time.time()}))
@@ -163,10 +170,14 @@ def list_screens() -> list[Path]:
 
 
 def seconds_estimate(materials: list[dict], n_adsorbates: int, thoroughness: str) -> float:
-    """Rough run time on a laptop CPU: about 10 s per relaxation on a metal, 50 s on a compound."""
+    """Rough run time on a laptop CPU: about 10 s per relaxation on a metal, 50 s on a compound, 40 s for each
+    arrangement of a zeolite site."""
     sites = {"quick": 2, "standard": 3, "thorough": 5}[thoroughness]
     total = 20.0
     for m in materials:
+        if m.get("kind") == "framework":
+            total += 40.0 * len(m.get("variants", [0])) * (1 + n_adsorbates)
+            continue
         per = 50.0 if set(m.get("elements", [])) & NONMETALS else 10.0
         total += per * (1 + sites * n_adsorbates)
     return total
@@ -259,14 +270,35 @@ def fast_params(pack: Pack, base: dict[str, float] | None = None, boost: float =
     return p
 
 
-def metric_curves(pack: Pack, step: StepSpec, param_sets: list[dict], metric: str) -> np.ndarray:
+def is_monolith(shape: dict | None) -> bool:
+    return bool(shape) and shape.get("form") == "monolith"
+
+
+def wall_transfer(pack: Pack, step: StepSpec, shape: dict | None) -> np.ndarray | None:
+    """For a coated honeycomb, how fast gas reaches the channel walls: the volumetric film mass-transfer coefficient
+    (1/s) of each pathway's key species at each of the step's temperatures, (temperatures, pathways). None for
+    powder, whose rates are the pack's own."""
+    if not is_monolith(shape):
+        return None
+    mono = Monolith(float(shape["cpsi"]), float(shape["wall_mm"]))
+    net, species = pack.network, pack.spec.species
+    y = step.feed_fractions(net.species, pack.spec.water)
+    gas = {species[s].thermo_id: float(v) for s, v in zip(net.species, y) if v > 0}
+    keys = [species[net.species[pw.key]].thermo_id for pw in net.pathways]
+    p_pa = step.pressure_kPa * 1000.0
+    return np.array([[mono.km_a(k, float(t), p_pa, gas) for k in keys] for t in step.kelvin()])
+
+
+def metric_curves(pack: Pack, step: StepSpec, param_sets: list[dict], metric: str,
+                  shape: dict | None = None) -> np.ndarray:
     """The metric for each parameter set at each of the step's temperatures: (sets, temperatures). A parameter
-    may hold one value or one per temperature."""
+    may hold one value or one per temperature. `shape` picks the catalyst's form (wall_transfer)."""
     y = step.feed_fractions(pack.network.species, pack.spec.water)
     t = np.array(step.kelvin())
     m, b = len(param_sets), len(t)
+    km = wall_transfer(pack, step, shape)
     cond = Conditions(np.tile(t, m), np.full(m * b, step.pressure_kPa * 1000.0), np.full(m * b, step.ghsv_per_h),
-                      np.tile(y, (m * b, 1)))
+                      np.tile(y, (m * b, 1)), km_a=None if km is None else np.tile(km, (m, 1)))
     params = {k: np.concatenate([np.broadcast_to(np.asarray(ps[k], dtype=float), (b,)) for ps in param_sets])
               for k in param_sets[0]}
     with np.errstate(over="ignore", invalid="ignore", divide="ignore"):
@@ -276,7 +308,7 @@ def metric_curves(pack: Pack, step: StepSpec, param_sets: list[dict], metric: st
             if m == 1:
                 return np.full((1, b), np.nan)
             # one stiff case stops a whole batch; run the sets one at a time so only that one is lost
-            return np.vstack([metric_curves(pack, step, [ps], metric) for ps in param_sets])
+            return np.vstack([metric_curves(pack, step, [ps], metric, shape) for ps in param_sets])
         values = pack.metrics(cond.feed, out)[metric]
     return np.asarray(values, dtype=float).reshape(m, b)
 
@@ -354,7 +386,9 @@ def binding_summary(results: list[dict]) -> dict[str, dict]:
             b = m["binding"].setdefault(r["adsorbate"], {"E": None, "site": "", "structure": "", "tried": 0, "kept": 0,
                                                          "sites": []})
             b["tried"] += 1
-            b["sites"].append({"site": r["site"], "E": r["E_bind"], "note": r.get("anomaly", ""),
+            drop = r.get("slab_drop_eV", 0.0)
+            note = r.get("anomaly", "") or (f"kept; the surface beneath settled {drop:.2f} eV lower" if drop else "")
+            b["sites"].append({"site": r["site"], "E": r["E_bind"], "note": note,
                                "structure": r["structure"], "converged": r.get("converged", True),
                                "n_ads": r.get("n_ads", 1)})
             if not r.get("anomaly"):
@@ -410,10 +444,11 @@ def predict(pack: Pack, job: dict, results: list[dict], n_temperatures: int = 31
                         float(np.exp(-p.shift_range[0] / (K_B * t_design))))
 
     design_cases = {p.material: (p.shift, *p.shift_range) for p in done}
+    shape = req["conditions"].get("shape")
     sets = [fast_params(pack)] + [shifted_params(pack, by_t[p.material][k]) for p in done for k in range(3)]
-    values = metric_curves(pack, step, sets, spec.metric)
+    values = metric_curves(pack, step, sets, spec.metric, shape)
     at_design = metric_curves(pack, design_step_, [fast_params(pack)] + [
-        shifted_params(pack, design_cases[p.material][k]) for p in done for k in range(3)], spec.metric)[:, 0]
+        shifted_params(pack, design_cases[p.material][k]) for p in done for k in range(3)], spec.metric, shape)[:, 0]
     best = values[0]
     curves["best_possible"] = best.tolist()
     for i, p in enumerate(done):

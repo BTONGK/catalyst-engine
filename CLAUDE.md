@@ -26,5 +26,17 @@
   in `data/screens/`. Reactions added in the app go to `data/reactions/`, and Materials Project structures are cached
   in `data/materials/`. A finished example screen ships in `examples/screens/` and is copied into an empty
   `data/screens/` on app start.
+- The worker relaxes with ASE's BFGS after a 0.03 Å nudge (`nudge`). Plain LBFGS stays balanced on a symmetric
+  saddle, as the oc20 mode's clean bcc Fe slab showed. Each binding energy is set against the lower of the clean
+  slab and the bare surface left under the molecule (`clean_reference`).
+- The Design page's Advanced switch (`design_advanced`) exposes the catalyst form (powder or coated honeycomb, as
+  `conditions["shape"]`; `screening.wall_transfer` feeds the reactor's film mass transfer), faces, the UMA mode
+  (oc20 or omat), the catalyst to beat and the slab size; the simple form stays the default.
+- The user ranks accuracy above features: a model option joins the app only after a check shows it reproduces
+  published DFT or measurements within the error bar. What stays out, and why, goes in the Methodology tab's
+  `limits` section (supports, promoters, zeolites, coat diffusion so far).
+- Zeolites stay out of the app: `experiments/zeolite_check/` shows UMA's three modes miss published DFT for NH3 in
+  Cu-chabazite by 0.38 eV or more. `design/zeolites.py` (numpy and ASE only, so the UMA Python loads it) and the
+  worker's `framework` branch remain for that check and for a later model.
 - The Manual page reads `docs/manual.yaml`; its step screenshots are `docs/manual/step-*.png`. Retake them when a
   page they show changes.

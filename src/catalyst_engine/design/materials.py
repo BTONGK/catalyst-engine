@@ -21,6 +21,8 @@ from ase import Atoms
 from ase.build import bulk as ase_bulk
 from ase.io import write
 
+from catalyst_engine.design import zeolites
+
 API = "https://api.materialsproject.org/materials/summary/"
 FIELDS = ("material_id,formula_pretty,energy_above_hull,formation_energy_per_atom,band_gap,is_metal,nsites,"
           "density,symmetry,elements,theoretical")
@@ -141,6 +143,41 @@ def atoms_of(entry: dict) -> Atoms:
     if entry.get("ase_bulk"):
         return ase_bulk(entry["ase_bulk"])
     return Atoms(entry["species"], scaled_positions=entry["frac"], cell=entry["lattice"], pbc=True)
+
+
+def frameworks(max_atoms: int = 72) -> list[dict]:
+    """Silica frameworks (zeolites) in the Materials Project: SiO2 crystals lighter than 2.1 g/cm3 (quartz and the
+    other dense forms weigh 2.2 and up) with at most `max_atoms` in the cell. Named ones first, then measured
+    structures, then the smallest cells."""
+    data = _get({"formula": "SiO2", "_fields": "material_id,nsites,density,energy_above_hull,theoretical,symmetry",
+                 "_limit": 1000})
+    rows = [{"material_id": d["material_id"], "nsites": d["nsites"], "density": d["density"],
+             "e_hull": d["energy_above_hull"], "experimental": not d["theoretical"],
+             "space_group": d["symmetry"]["symbol"], "name": zeolites.KNOWN.get(d["material_id"], "")}
+            for d in data if d["density"] < 2.1 and d["nsites"] <= max_atoms]
+    return sorted(rows, key=lambda r: (not r["name"], not r["experimental"], r["nsites"], r["e_hull"]))
+
+
+def zeolite_entry(framework: dict, form: str, metal: str = "Cu") -> dict:
+    """A job entry for one active site (zeolites.FORMS) on a framework row from frameworks(): every starting
+    arrangement of the site, and the index of the atom molecules bind to."""
+    z = atoms_of(structure(framework["material_id"]))
+    if not zeolites.is_framework(z):
+        raise ValueError(f"{framework['material_id']} holds silicon with other than four oxygen; pick another.")
+    variants, site = zeolites.build(z, form, metal)
+    ion = {"H": "H", "M+": f"{metal}+", "M2+": f"{metal}2+", "MOH+": f"[{metal}OH]+"}[form]
+    code = zeolites.code(framework["material_id"]) or framework["material_id"]
+    first = variants[0]
+    pore = 2 * zeolites.clearance(z, zeolites.pore_center(z)) - 2.7  # less an oxygen's radius on each side
+    return {"id": f"zeolite:{framework['material_id']}:{form}:{metal if form != 'H' else ''}",
+            "label": f"{ion} {framework['name'] or 'SiO2 framework ' + framework['material_id']}, "
+                     f"Si/Al {zeolites.si_al(first):.0f}",
+            "formula": f"{ion}-{code}", "kind": "framework", "framework": framework["material_id"], "form": form,
+            "e_hull": framework["e_hull"], "elements": sorted(set(first.get_chemical_symbols())),
+            "source": "Materials Project framework, sites built here", "nsites": len(first),
+            "lattice": first.cell.array.tolist(), "site": site, "pore_A": round(float(pore), 1),
+            "variants": [{"species": v.get_chemical_symbols(), "frac": v.get_scaled_positions(wrap=False).tolist()}
+                         for v in variants]}
 
 
 def cif_text(atoms: Atoms) -> str:

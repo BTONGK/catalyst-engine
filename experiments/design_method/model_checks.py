@@ -18,11 +18,13 @@ from pathlib import Path
 import cantera as ct
 import numpy as np
 
+from catalyst_engine.chem import thermo
 from catalyst_engine.chem.formula import element_counts
 from catalyst_engine.chem.reactor import Conditions, outlet
 from catalyst_engine.design import screening, uma_worker
 from catalyst_engine.packs import PACKS_DIR, list_packs, load_pack
 from catalyst_engine.units import R
+from catalyst_engine.value.monolith import Monolith
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
@@ -90,9 +92,11 @@ for m in job["materials"]:
     face_rows.append(row)
 tables["faces"] = face_rows
 values["alloys_changed"] = sum(1 for x in face_rows if x["face_before"] != x["face"])
-values["metals_unchanged"] = sum(1 for x in face_rows if x["face_before"] == x["face"]
-                                 and x["E_before"] is not None and x["E_after"] is not None
-                                 and abs(x["E_before"] - x["E_after"]) < 1e-3)
+same_face = [x for x in face_rows if x["face_before"] == x["face"]
+             and x["E_before"] is not None and x["E_after"] is not None]
+values["metals_unchanged"] = len(same_face)
+# since the earlier run, the nudge before each relaxation (step 4) moves these by a hundredth of an eV at most
+values["metals_max_shift"] = r(max(abs(x["E_before"] - x["E_after"]) for x in same_face), 3)
 
 # ---------------------------------------------------------------- automatic pipeline against the hand-built benchmark
 bench = json.loads((REPO / "experiments" / "uma_binding" / "results" / "summary.json").read_text())["metals"]["binding"]
@@ -418,6 +422,133 @@ values["calibration_note"] = (
         + ". These two packs came before the design app: their illustrative rates follow a conventional catalyst across "
         "the whole operating window, and their reference temperature anchors the rate constants in place of a "
         "light-off. The ranking within each reaction stays the same; their curves sit hotter or cooler accordingly."))
+
+# ---------------------------------------------------------------- the catalyst's form
+# (1) a coated honeycomb against the exact answer: first order in CO with the film in series, k km / (k + km)
+mono = screening.MONOLITH
+check_step = step.model_copy(update={"temperatures_C": list(temps - 273.15), "temperatures_F": None,
+                                     "temperatures_K": None})
+k_wall = screening.wall_transfer(co, check_step, mono)[:, [x.id for x in co.network.pathways].index(pw)]
+out = outlet(co.network, params, Conditions(temps, cond.p_pa, cond.ghsv_per_h, cond.feed,
+                                            km_a=screening.wall_transfer(co, check_step, mono)))
+x_film = co.metrics(cond.feed, out)["co_conversion"]
+x_film_exact = []
+for kt in k * k_wall / (k + k_wall) / q:
+    lo, hi = 0.0, 1.0 - 1e-15
+    for _ in range(200):
+        mid = 0.5 * (lo + hi)
+        lo, hi = (mid, hi) if -(1 + eps) * math.log(1 - mid) - eps * mid < kt else (lo, mid)
+    x_film_exact.append(0.5 * (lo + hi))
+values["film_exact_pct"] = 100 * float(f"{np.abs(x_film - np.array(x_film_exact)).max():.1g}")
+tables["film_exact"] = [{"T_C": r(t - 273.15, 1), "k_wall": r(kw, 0), "X_powder": r(a, 4), "X_engine": r(b, 4),
+                         "X_exact": r(c, 4)} for t, kw, a, b, c in zip(temps, k_wall, x_num, x_film, x_film_exact)]
+
+# (2) how much each part of the form moves hot SCR's catalyst to beat, and one ten times faster, at 1,050 °F:
+# the honeycomb's film (the model), Hawthorn's entrance term (left out: the model's film is the fully developed
+# one, the slowest), and diffusion into a 50 um coat at a hundredth and a tenth of the gas value (left out)
+scr = load_pack("scr_hot")
+s_step = screening.design_step(scr)
+s_one = s_step.model_copy(update={"temperatures_C": [scr.network.t_ref - 273.15], "temperatures_F": None,
+                                  "temperatures_K": None})
+t_s = scr.network.t_ref
+p_s = s_one.pressure_kPa * 1000.0
+y_s = s_one.feed_fractions(scr.network.species, scr.spec.water)
+gas_s = {scr.spec.species[s].thermo_id: float(v) for s, v in zip(scr.network.species, y_s) if v > 0}
+keys_s = [scr.spec.species[scr.network.species[x.key]].thermo_id for x in scr.network.pathways]
+km_s = screening.wall_transfer(scr, s_one, mono)
+honeycomb = Monolith(mono["cpsi"], mono["wall_mm"])
+q_act = s_one.ghsv_per_h / 3600 * t_s / 273.15 * 101325 / p_s  # actual gas flow per honeycomb volume, 1/s
+# Hawthorn (1974): Sh = 2.98 (1 + 0.095 Re Sc d/L)^0.45; at a fixed space velocity Re Sc d/L = q d^2 / (OFA D), so the
+# block's length drops out
+graetz = np.array([q_act * honeycomb.hydraulic_diameter_m ** 2 / (honeycomb.open_frontal_area * thermo.diffusivity(
+    sp, t_s, p_s, gas_s)) for sp in keys_s])
+entrance = (1 + 0.095 * graetz) ** 0.45
+base_s = scr.network.parameters()
+faster = dict(base_s)
+for x in scr.spec.screening.pathways:
+    faster[f"{x}.ln_k_ref"] = base_s[f"{x}.ln_k_ref"] + math.log(10.0)
+cases = [("Powder", None, None), ("Honeycomb, film (the model)", km_s, None),
+         ("Honeycomb, film with the entrance term", km_s * entrance, None)]
+for ratio in (0.1, 0.01):
+    coat = Monolith(mono["cpsi"], mono["wall_mm"], washcoat_um=50.0, washcoat_de_ratio=ratio)
+    cases.append((f"Honeycomb, film and a 50 µm coat at {ratio:g} of gas diffusion", km_s,
+                  np.array([[coat.washcoat_phi2(sp, t_s, p_s, gas_s) for sp in keys_s]])))
+form_rows = []
+for label, km_case, wc in cases:
+    cond_s = Conditions([t_s, t_s], [p_s, p_s], [s_one.ghsv_per_h] * 2, np.tile(y_s, (2, 1)),
+                        km_a=None if km_case is None else np.tile(km_case, (2, 1)),
+                        wc_phi2=None if wc is None else np.tile(wc, (2, 1)))
+    o_s = outlet(scr.network, {k_: np.array([base_s[k_], faster[k_]]) for k_ in base_s}, cond_s)
+    ref_x, fast_x = scr.metrics(cond_s.feed, o_s)[scr.spec.screening.metric]
+    form_rows.append({"form": label, "reference": r(ref_x), "ten_times": r(fast_x), "gain": r(fast_x - ref_x)})
+tables["form"] = form_rows
+by_form = {x["form"]: x for x in form_rows}
+powder, film, film_in = (by_form[c[0]] for c in cases[:3])
+coat_fast, coat_slow = by_form[cases[3][0]], by_form[cases[4][0]]
+values["form_T_C"] = r(t_s - 273.15, 0)
+values["form_T_F"] = r((t_s - 273.15) * 9 / 5 + 32, 0)
+values["form_film_drop_pts"] = r(100 * (powder["reference"] - film["reference"]), 1)
+values["form_gain_powder_pts"] = r(100 * powder["gain"], 1)
+values["form_gain_film_pts"] = r(100 * film["gain"], 1)
+values["form_entrance_factor"] = r(float(entrance.max()), 2)
+values["form_entrance_pts"] = r(100 * max(film_in["reference"] - film["reference"], film_in["ten_times"] - film["ten_times"]), 1)
+values["form_coat_drop_lo_pts"] = r(100 * (film["reference"] - coat_fast["reference"]), 1)
+values["form_coat_drop_hi_pts"] = r(100 * (film["reference"] - coat_slow["reference"]), 1)
+values["form_cpsi"] = r(mono["cpsi"], 0)
+values["form_channel_mm"] = r(honeycomb.hydraulic_diameter_m * 1000, 2)
+# (3) published monoliths: the Literature check's apparent activation energies on Metkar's 400 cpsi cores
+lit = json.loads((REPO / "experiments" / "literature_scr" / "results" / "summary.json").read_text())["catalysts"]
+lit_rows = []
+for cid in ("fe_zsm5", "cu_cha"):
+    c = lit[cid]
+    alt = {(a.get("film", False), a.get("washcoat", False)): a for a in c["alternatives"]}
+    lit_rows.append({"catalyst": c.get("name", cid), "ideal": r(c["full"]["params"]["scr.Ea_kJ"], 0),
+                     "film": r(alt[(True, False)]["params"]["scr.Ea_kJ"], 0),
+                     "film_coat": r(alt[(True, True)]["params"]["scr.Ea_kJ"], 0),
+                     "published": r(c["published_Ea_kJ"]["scr"], 0)})
+tables["form_literature"] = lit_rows
+values["form_lit_fe"] = "{ideal:.0f} kJ/mol in the ideal reactor, {film:.0f} with the film and {film_coat:.0f} with film and coat, against the thesis's {published:.0f}".format(**lit_rows[0])
+values["form_lit_cu"] = "{ideal:.0f}, {film:.0f} and {film_coat:.0f} against {published:.0f}".format(**lit_rows[1])
+
+# ---------------------------------------------------------------- relaxation: the nudge, and iron
+tables["nudge"] = [{"material": x["material"], "change": r(x["E_nudged"] - x["E_unnudged"], 4),
+                    "moved_A": r(x["moved_A"], 2)} for x in atom["nudge"]]
+values["nudge_n"] = len(tables["nudge"])
+values["nudge_max_change"] = r(max(abs(x["change"]) for x in tables["nudge"]), 3)
+iron = atom["iron"]
+values["iron_before"] = r(iron["E_NH3_before"], 2)
+values["iron_after"] = r(iron["E_NH3_after"], 2)
+values["iron_slab_drop"] = r(iron["slab_before"] - iron["slab_after"], 2)
+tables["bain"] = [{"c_over_a": r(x["c_over_a"], 2), "oc20": r(x["oc20"], 3), "omat": r(x["omat"], 3)}
+                  for x in iron["bain_eV_per_atom"]]
+fcc = max(iron["bain_eV_per_atom"], key=lambda x: x["c_over_a"])  # c/a = sqrt(2): the bcc cell stretched into fcc
+values["iron_fcc_oc20"] = r(fcc["oc20"], 2)
+values["iron_fcc_omat"] = r(fcc["omat"], 2)
+
+# ---------------------------------------------------------------- zeolites: ammonia in copper chabazite
+zeo = json.loads((REPO / "experiments" / "zeolite_check" / "results" / "zeolite.json").read_text())
+ZEO_SITES = {  # site: (label, published low, published high, source)
+    "H-CHA": ("Acid site (H+, one Al)", -1.62, -1.62, "Nystrom et al. 2018, RPBE-D3"),
+    "ZCu": ("Cu+ over a six-ring (one Al)", -1.3, -1.0, "Isapour et al. 2026, PBE+U+D3"),
+    "Z2Cu": ("Cu2+ in a six-ring (two Al)", -1.5, -1.2, "Isapour et al. 2026, PBE+U+D3"),
+    "ZCuOH": ("[CuOH]+ in an eight-ring (one Al)", None, None, ""),
+}
+modes = [m for m in ("oc20", "omat", "odac") if m in zeo]
+zeo_rows, miss = [], {m: [] for m in modes}
+for site, (label, lo, hi, src) in ZEO_SITES.items():
+    row = {"site": label, **{m: r(zeo[m]["sites"][site]["E_bind"], 2) for m in modes},
+           "published": "" if lo is None else (f"{lo:.2f}" if lo == hi else f"{lo:.1f} to {hi:.1f}"), "source": src}
+    zeo_rows.append(row)
+    if lo is not None:
+        for m in modes:
+            e = zeo[m]["sites"][site]["E_bind"]
+            miss[m].append(max(0.0, lo - e, e - hi))  # distance outside the published range
+tables["zeolite"] = zeo_rows
+worst = {m: max(v) for m, v in miss.items()}
+best_mode = min(worst, key=worst.get)
+values["zeolite_best_mode"] = best_mode
+values["zeolite_best_miss"] = r(worst[best_mode], 2)
+values["zeolite_misses"] = ", ".join(f"{worst[m]:.2f} eV in the {m} mode" for m in modes)
 
 values["generated"] = atom["generated"]
 values["atomistic_minutes"] = r(atom["seconds"] / 60, 0)

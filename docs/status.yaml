@@ -23,6 +23,29 @@ proof_sequence:
 recent:
   - date: 2026-10-23
     item: >
+      Accuracy first: what the app leaves out, measured. The Methodology tab now ends with the parts of a real
+      catalyst the model leaves out and the size of each: the support, promoters, zeolite sites, diffusion inside a
+      coat, molecules on oxide surfaces in the catalysis mode, magnetism, and which element an alloy shows on top.
+      Zeolites came out of the app after their check: for ammonia in copper chabazite, UMA's three modes miss
+      published DFT by 0.38 eV (catalysis), 0.53 eV (materials) and 1.19 eV (porous frameworks) at their worst
+      site, beyond the 0.15 eV error bar. The site builder and the check stay in experiments/zeolite_check/.
+  - date: 2026-10-23
+    item: >
+      Advanced switch on the Design page; the simple form stays the default. It adds the catalyst's form (powder, or
+      a coated honeycomb with its cells and wall, where gas has to reach the channel walls), a crystal face per
+      metal, the UMA mode, the catalyst to beat and the slab size. The honeycomb matches the exact plug-flow answer
+      within 0.004 points; on hot SCR at 1,050 °F it lowers the catalyst to beat by 2.6 points and caps a ten times
+      faster catalyst's gain at 9.0 points (10.5 as powder). Diffusion inside the coat, worth 1.1 to 7.1 points for
+      a 50 µm coat, stays out until a coat's diffusivity is measured.
+  - date: 2026-10-23
+    item: >
+      Fixed: iron's −5.25 eV ammonia binding on hot SCR was an artifact. In the catalysis mode the clean iron slab
+      sat balanced on an energy ridge, and ammonia let it fall. Each relaxation now starts with a 0.03 Å nudge and
+      uses BFGS, and binding is set against the surface beneath the molecule; iron reads −0.65 eV, and every other
+      example metal moves by 0.01 eV at most. The catalysis mode treats iron as spin-free, so the Methodology tab
+      flags iron, cobalt and nickel. The same fix moved a gold-covered Cu3Au surface to gold's own oxygen binding.
+  - date: 2026-10-23
+    item: >
       Each volcano's peak now moves with temperature and gas mix. It follows the free energy of the gas its key
       molecule comes from (ab initio thermodynamics, Reuter and Scheffler 2001, with Cantera's gas data), so heat
       moves it toward stronger binding: 0.13 eV per 100 °C for CO oxidation, 0.34 eV for hot SCR at 20 ppm NH3. An
@@ -104,17 +127,12 @@ next_steps:
     why: >
       The Manual's "How to use the app" tab walks through it. Keep the temperature range near the reaction's
       standard test; the app flags ranges beyond it.
-  - step: Pick the next design-app step, zeolites (Cu-chabazite first) or per-reaction volcano slopes
+  - step: Approve the oxide accuracy check (OC22 download, several GB)
     owner: You
     why: >
-      Zeolites carry their activity on single copper or iron ions inside the pores, so they take a cluster model
-      and their own descriptor; the Materials Project holds 322 silica frameworks, 33 within the app's size limit.
-      Per-reaction slopes bring metals that bind strongly closer to practice. Either one is ready to start.
-  - step: Add zeolite catalysts, starting with Cu-chabazite for SCR
-    owner: Claude
-    why: >
-      Copper and iron zeolites run most diesel SCR today. A framework from the Materials Project, an exchanged
-      copper ion and its own volcano put them on the same ranking as the metals and oxides.
+      Molecules on oxide surfaces sit outside UMA's catalysis training, and hot SCR's catalyst to beat is an oxide.
+      Testing both UMA modes against OC22's DFT and published ammonia-on-V2O5 values sizes that error, and decides
+      whether oxide promoters and supports can ever join the app. The download needs your go-ahead.
   - step: Set each reaction's volcano slopes from published scaling relations
     owner: Claude
     why: >
@@ -196,19 +214,35 @@ phases:
       so far (Literature check page).
 
 findings:
+  - title: UMA misplaces ammonia in copper zeolites by 0.4 eV or more
+    detail: >
+      Ammonia on four sites of copper chabazite, built on the Materials Project framework and relaxed in each UMA
+      mode, against two DFT studies (Nystrom et al. 2018; Isapour et al. 2026). Catalysis mode: −1.24 eV on the acid
+      site against −1.62, −0.83 on Cu2+ against −1.2 to −1.5, about the dispersion attraction it leaves out.
+      Materials mode: within 0.1 eV on the acid site and Cu2+, 0.53 eV too strong on Cu+. Porous-frameworks mode:
+      0.2 to 1.2 eV too strong everywhere. Zeolites stay out of the app until a mode passes.
+    source: experiments/zeolite_check/ (2026-10-23); Manual, Methodology tab, limits.
+  - title: The catalysis mode treats iron as spin-free
+    detail: >
+      Stretched from its bcc cell to fcc, iron in the catalysis mode drops 0.26 eV per atom; the materials mode,
+      with spin, keeps bcc lowest (fcc 0.14 eV per atom higher), as for real iron. A symmetric iron slab therefore
+      balanced on a ridge and read −5.25 eV for ammonia. Nudged and relaxed with BFGS it reads −0.65 eV, and its
+      surface still rearranges toward a spin-free packing. Run iron, cobalt and nickel in the materials mode as well.
+    source: experiments/design_method/atomistic_checks.py, stability section (2026-10-23); Methodology tab, step 4.
   - title: The catalyst to beat changes with temperature
     detail: >
-      With the peak following the gas, the example's CO oxidation screen hands the lead from Ag (50–90 °C) to Pt
-      (100–350 °C). Across that range the peak moves 0.38 eV toward stronger binding; PdPt climbs to 0.45 times
+      With the peak following the gas, the example's CO oxidation screen hands the lead from Ag (50–80 °C) to Pt
+      (90–350 °C). Across that range the peak moves 0.38 eV toward stronger binding; PdPt climbs to 0.45 times
       platinum's speed at 350 °C, and rhodium from 1 in 520 billion to 1 in 170 million. The order at 180 °C stays
       as before. A pair that binds alike stays tied at every temperature: on hot SCR, V2O5's layered face and
       copper metal hold ammonia within 0.01 eV of each other, so V2O5 keeps a hair's lead from 0 to 350 °C. The
-      copper that beats vanadia below 300 °C in practice sits as single ions in a zeolite, the next step.
+      copper that beats vanadia below 300 °C in practice sits as single ions in a zeolite, which UMA describes
+      0.38 eV or more away from published DFT (Methodology tab, limits).
     source: Example screen, examples/screens/; Manual, Methodology tab, step 6 (2026-10-23).
   - title: For CO oxidation the example screen keeps platinum on top, with PdPt inside its error bar
     detail: >
-      Fourteen materials, 56 relaxations, 6 minutes on this Mac (recomputed after the surface fix). PdPt, now with a
-      mixed Pd/Pt surface, runs at 0.14 times platinum's rate (likely range 0.003 to 6.5 times); Pd, CuPd and Ag
+      Fourteen materials, 56 relaxations, 12 minutes on this Mac (recomputed after the surface and relaxation fixes).
+      PdPt, now with a mixed Pd/Pt surface, runs at 0.14 times platinum's rate (likely range 0.003 to 6.3 times); Pd, CuPd and Ag
       follow. Metals that bind oxygen much more strongly (Rh, Ru, Ni, Co) land a billion times slower or more,
       further below platinum than experiments place them: the volcano slopes are generic, and the next step sets
       them per reaction.
