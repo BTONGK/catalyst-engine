@@ -43,6 +43,19 @@ def test_mass_transfer_caps_a_fast_reaction():
     assert conversion == pytest.approx(1.0 - np.exp(-km_a * tau), rel=1e-3)
 
 
+def test_washcoat_diffusion_scales_a_first_order_rate_by_the_slab_effectiveness():
+    net = _first_order_network()
+    t, ghsv, k, phi2_per_k = 800.0, 30000.0, 20.0, 0.2  # phi = 2, eta = tanh(2)/2
+    feed = np.zeros(3)
+    feed[net.index("N2O")], feed[net.index("N2")] = 100e-6, 1 - 100e-6
+    cond = Conditions(t, P_ATM, ghsv, feed[None, :], wc_phi2=np.array([[phi2_per_k]]))
+    out = outlet(net, {}, cond)
+    tau = 3600.0 / ghsv * T_STD / t
+    eta = np.tanh(2.0) / 2.0
+    conversion = 1.0 - out[0, net.index("N2O")] / feed[net.index("N2O")]
+    assert conversion == pytest.approx(1.0 - np.exp(-eta * k * tau), rel=2e-4)
+
+
 @pytest.mark.parametrize("pack_id", ["scr_hot", "oxidation_engine"])
 def test_adaptive_solver_agrees_with_rk4(pack_id):
     p = load_pack(pack_id)

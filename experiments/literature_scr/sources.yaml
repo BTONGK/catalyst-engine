@@ -14,7 +14,9 @@ sources:
       cu_cha: {name: Cu-chabazite, form: "washcoated cordierite monolith, 400 cpsi, 2 cm long, 34 channels"}
     # Channel scale for the film mass-transfer refit: Table 9-1 gives the open channel's transverse length
     # (area over perimeter) as 0.275 mm, a 1.1 mm square channel, so wall plus washcoat take 0.17 mm of the pitch.
-    monolith: {cpsi: 400, wall_mm: 0.17}
+    # Washcoat for the diffusion refit: Table 9-1's effective thickness, 0.05 mm, and the thesis's effective
+    # diffusivity, a hundredth of the gas value (p. 392, from its Weisz-Prater estimates).
+    monolith: {cpsi: 400, wall_mm: 0.17, washcoat_um: 50, washcoat_de_ratio: 0.01}
     conditions: >
       Steady state after about 25 min per point, 1000 sccm total in Ar, GHSV about 57,000 1/h (thesis p. 333
       and ch. 9). Pretreated at 500 C in 5% O2. FTIR analyzer (MKS MultiGas 2030).
@@ -73,6 +75,29 @@ sources:
     published_Ea_kJ:
       v_commercial: {scr: 85, nh3_ox_no: 200, nh3_ox_n2o: 190}
     published_model: paper's 3-D reactor model (heat release resolved)
+
+  us7695703:
+    cite: >
+      A. Sobolevskiy, J. A. Rossin and M. J. Knapke (Siemens Energy), "High temperature catalyst and process for
+      selective catalytic reduction of NOx in exhaust gases of fossil fuel combustion", US Patent 7,695,703 B2,
+      issued 13 April 2010.
+    url: https://patents.google.com/patent/US7695703B2/en
+    pdf: https://patentimages.storage.googleapis.com/b0/15/f2/24bfad609f94c6/US7695703.pdf
+    catalysts:
+      fe06_beta: {name: 0.6Fe-beta, form: "zeolite beta steamed at 525 C, ion-exchanged to 0.6 wt% Fe and calcined at 825 C (Example 4), washcoated with a zirconia binder on a 230 cpsi monolith, 26.2 cm3"}
+      fe06_w5_beta: {name: 0.6Fe-5W-beta, form: "zeolite beta exchanged with tungsten (about 5% WO3), steamed, calcined at 825 C, then slurried with 0.6 wt% Fe (Example 5), washcoated with a zirconia binder on a 230 cpsi monolith, 25.9 cm3"}
+      fe1_la5_beta: {name: 1Fe-5La-beta, form: "lanthanum-exchanged zeolite beta (5% La) ion-exchanged to 1.0 wt% Fe, steamed and calcined at 825 C (Example 7), washcoated with a zirconia binder on a 230 cpsi monolith, 25.9 cm3"}
+      fe1_w25_beta: {name: 1Fe-2.5W-beta, form: "steamed zeolite beta co-exchanged with 1.0 wt% Fe and 2.5% W, calcined at 825 C (Example 8), washcoated with a zirconia binder on a 230 cpsi monolith, 26.2 cm3"}
+    # The patent gives the cell density alone. 0.22 mm of the pitch for wall plus washcoat (a 7 mil wall, the
+    # common one at 230 cpsi, plus a thin coat) is an assumption; the film refit moves little at these rates.
+    monolith: {cpsi: 230, wall_mm: 0.22}
+    conditions: >
+      Gas-turbine concentrations: 50 ppm NO, 60-82 ppm NH3, 10% O2, 6.8% H2O, N2 balance, at 545-605 C and GHSV
+      20,000 1/h (some points at 15,000). The examples tabulate NO conversion and the NH3 left at the outlet for
+      each catalyst after it settles: each sweep's 605 C entry repeats that catalyst's longest time-on-stream
+      reading. Readings are given to 0.1 ppm NH3 and 0.1 points of conversion.
+    ghsv_per_h: 20000
+    published_model: patent tables (conversions only)
 
 figures:
   - id: metkar2012_fig9-3a
@@ -199,6 +224,130 @@ figures:
     series:
       - {name: N2O, color: black, shape: square, open: {diameter: 22, score: 0.58}, quantity: out_N2O_ppm}   # points at 0 ppm show half a square
 
+# Tables read straight from a source's text (no digitizing): one feed and space velocity per table, numbers in
+# data/<source>_tables.csv. US 7,695,703's examples, checked against the patent's full text.
+tables:
+  - id: us7695703_ex4_t60
+    source: us7695703
+    label: "Example 4: 60 ppm NH3 across temperature"
+    where: Example 4
+    catalyst: fe06_beta
+    title: "SCR at 60 ppm NH3"
+    feed: {NO: 50 ppm, NH3: 60 ppm, O2: 10 %, H2O: 6.8 %, N2: balance}
+    ghsv_per_h: 20000
+    t_step_C: 1
+    series: [{name: NO conversion, quantity: no_conversion_pct}, {name: NH3 out, quantity: out_NH3_ppm}]
+  - id: us7695703_ex4_n70
+    source: us7695703
+    label: "Example 4: 70 ppm NH3 at 605 °C"
+    where: Example 4
+    catalyst: fe06_beta
+    title: "SCR at 70 ppm NH3"
+    feed: {NO: 50 ppm, NH3: 70 ppm, O2: 10 %, H2O: 6.8 %, N2: balance}
+    ghsv_per_h: 20000
+    t_step_C: 1
+    series: [{name: NO conversion, quantity: no_conversion_pct}, {name: NH3 out, quantity: out_NH3_ppm}]
+  - id: us7695703_ex5_t60
+    source: us7695703
+    label: "Example 5: 60 ppm NH3 across temperature"
+    where: Example 5
+    catalyst: fe06_w5_beta
+    title: "SCR at 60 ppm NH3"
+    feed: {NO: 50 ppm, NH3: 60 ppm, O2: 10 %, H2O: 6.8 %, N2: balance}
+    ghsv_per_h: 20000
+    t_step_C: 1
+    series: [{name: NO conversion, quantity: no_conversion_pct}, {name: NH3 out, quantity: out_NH3_ppm}]
+  - id: us7695703_ex5_s60
+    source: us7695703
+    label: "Example 5: 60 ppm NH3 at 15,000 1/h, 605 °C"
+    where: Example 5
+    catalyst: fe06_w5_beta
+    title: "SCR at 60 ppm NH3, 15,000 1/h"
+    feed: {NO: 50 ppm, NH3: 60 ppm, O2: 10 %, H2O: 6.8 %, N2: balance}
+    ghsv_per_h: 15000
+    t_step_C: 1
+    series: [{name: NO conversion, quantity: no_conversion_pct}, {name: NH3 out, quantity: out_NH3_ppm}]
+  - id: us7695703_ex5_s70
+    source: us7695703
+    label: "Example 5: 70 ppm NH3 at 15,000 1/h, 605 °C"
+    where: Example 5
+    catalyst: fe06_w5_beta
+    title: "SCR at 70 ppm NH3, 15,000 1/h"
+    feed: {NO: 50 ppm, NH3: 70 ppm, O2: 10 %, H2O: 6.8 %, N2: balance}
+    ghsv_per_h: 15000
+    t_step_C: 1
+    series: [{name: NO conversion, quantity: no_conversion_pct}, {name: NH3 out, quantity: out_NH3_ppm}]
+  - id: us7695703_ex7_n60
+    source: us7695703
+    label: "Example 7: 60 ppm NH3 at 605 °C"
+    where: Example 7
+    catalyst: fe1_la5_beta
+    title: "SCR at 60 ppm NH3"
+    feed: {NO: 50 ppm, NH3: 60 ppm, O2: 10 %, H2O: 6.8 %, N2: balance}
+    ghsv_per_h: 20000
+    t_step_C: 1
+    series: [{name: NO conversion, quantity: no_conversion_pct}, {name: NH3 out, quantity: out_NH3_ppm}]
+  - id: us7695703_ex7_n70
+    source: us7695703
+    label: "Example 7: 70 ppm NH3 at 605 °C"
+    where: Example 7
+    catalyst: fe1_la5_beta
+    title: "SCR at 70 ppm NH3"
+    feed: {NO: 50 ppm, NH3: 70 ppm, O2: 10 %, H2O: 6.8 %, N2: balance}
+    ghsv_per_h: 20000
+    t_step_C: 1
+    series: [{name: NO conversion, quantity: no_conversion_pct}, {name: NH3 out, quantity: out_NH3_ppm}]
+  - id: us7695703_ex7_n82
+    source: us7695703
+    label: "Example 7: 82 ppm NH3 at 605 °C"
+    where: Example 7
+    catalyst: fe1_la5_beta
+    title: "SCR at 82 ppm NH3"
+    feed: {NO: 50 ppm, NH3: 82 ppm, O2: 10 %, H2O: 6.8 %, N2: balance}
+    ghsv_per_h: 20000
+    t_step_C: 1
+    series: [{name: NO conversion, quantity: no_conversion_pct}, {name: NH3 out, quantity: out_NH3_ppm}]
+  - id: us7695703_ex8_t70
+    source: us7695703
+    label: "Example 8: 70 ppm NH3 across temperature"
+    where: Example 8
+    catalyst: fe1_w25_beta
+    title: "SCR at 70 ppm NH3"
+    feed: {NO: 50 ppm, NH3: 70 ppm, O2: 10 %, H2O: 6.8 %, N2: balance}
+    ghsv_per_h: 20000
+    t_step_C: 1
+    series: [{name: NO conversion, quantity: no_conversion_pct}, {name: NH3 out, quantity: out_NH3_ppm}]
+  - id: us7695703_ex8_t60
+    source: us7695703
+    label: "Example 8: 60 ppm NH3 across temperature"
+    where: Example 8
+    catalyst: fe1_w25_beta
+    title: "SCR at 60 ppm NH3"
+    feed: {NO: 50 ppm, NH3: 60 ppm, O2: 10 %, H2O: 6.8 %, N2: balance}
+    ghsv_per_h: 20000
+    t_step_C: 1
+    series: [{name: NO conversion, quantity: no_conversion_pct}, {name: NH3 out, quantity: out_NH3_ppm}]
+  - id: us7695703_ex8_s70
+    source: us7695703
+    label: "Example 8: 70 ppm NH3 at 15,000 1/h, 605 °C"
+    where: Example 8
+    catalyst: fe1_w25_beta
+    title: "SCR at 70 ppm NH3, 15,000 1/h"
+    feed: {NO: 50 ppm, NH3: 70 ppm, O2: 10 %, H2O: 6.8 %, N2: balance}
+    ghsv_per_h: 15000
+    t_step_C: 1
+    series: [{name: NO conversion, quantity: no_conversion_pct}, {name: NH3 out, quantity: out_NH3_ppm}]
+  - id: us7695703_ex8_s60
+    source: us7695703
+    label: "Example 8: 60 ppm NH3 at 15,000 1/h, 605 °C"
+    where: Example 8
+    catalyst: fe1_w25_beta
+    title: "SCR at 60 ppm NH3, 15,000 1/h"
+    feed: {NO: 50 ppm, NH3: 60 ppm, O2: 10 %, H2O: 6.8 %, N2: balance}
+    ghsv_per_h: 15000
+    t_step_C: 1
+    series: [{name: NO conversion, quantity: no_conversion_pct}, {name: NH3 out, quantity: out_NH3_ppm}]
+
 # What replicate.py fits. Each dataset pairs a catalyst's runs (one bench step per run, read from the figures above),
 # the pathways whose rate constant and activation energy are fitted (the rest are switched off), the reading error,
 # and the held-out test: points at or above `from_C` in the listed runs are left out of the second fit and predicted.
@@ -217,8 +366,9 @@ datasets:
     error: {sigma_abs_ppm: 5, sigma_rel: 0.03}
     holdout: {from_C: 500, runs: [nh3_ox, scr], label: "Fit below 500 °C, predict above"}
     alternatives:
-      - {label: "Ammonia coverage fitted", add: [scr.cov.NH3.ln_K_ref, scr.cov.NH3.dH_kJ]}
+      - {label: "Ammonia coverage fitted", add: [scr.cov.NH3.ln_K_ref, scr.cov.NH3.dH_kJ], profile: true}
       - {label: "Film mass transfer included", film: true}
+      - {label: "Film and washcoat diffusion included", film: true, washcoat: true}
     checks: [n2_balance]
   - id: metkar2012_cu_cha
     source: metkar2012
@@ -230,8 +380,9 @@ datasets:
     error: {sigma_abs_ppm: 5, sigma_rel: 0.03}
     holdout: {from_C: 500, runs: [nh3_ox, scr], label: "Fit below 500 °C, predict above"}
     alternatives:
-      - {label: "Ammonia coverage fitted", add: [scr.cov.NH3.ln_K_ref, scr.cov.NH3.dH_kJ]}
+      - {label: "Ammonia coverage fitted", add: [scr.cov.NH3.ln_K_ref, scr.cov.NH3.dH_kJ], profile: true}
       - {label: "Film mass transfer included", film: true}
+      - {label: "Film and washcoat diffusion included", film: true, washcoat: true}
     checks: [n2_balance]
   - id: xie2026_fe01_zsm5
     source: xie2026
@@ -244,7 +395,7 @@ datasets:
     # NOx leaves the ammonia-only run beside unburned ammonia from 600 C up, which needs SCR to slow as ammonia
     # desorbs: the comparison fits the SCR site's ammonia coverage.
     alternatives:
-      - {label: "Ammonia coverage fitted", add: [scr.cov.NH3.ln_K_ref, scr.cov.NH3.dH_kJ]}
+      - {label: "Ammonia coverage fitted", add: [scr.cov.NH3.ln_K_ref, scr.cov.NH3.dH_kJ], profile: true}
     error: {sigma_abs_ppm: 15, sigma_rel: 0.05}   # the error bars run about ±20 ppm NH3 and ±3-5 points of conversion
     # The bench yardstick's logic: the ammonia-only run at every temperature plus SCR below 700 C predicts SCR above.
     holdout: {from_C: 700, runs: [scr], label: "Fit the ammonia run and SCR below 700 °C, predict SCR above"}
@@ -259,8 +410,79 @@ datasets:
     error: {sigma_abs_ppm: 0.5, sigma_rel: 0.04}   # 1 px is about 5 ppm NO and 0.02 ppm N2O on these figures
     holdout: {from_C: 460, runs: [scr], label: "Fit below 460 °C, predict above"}
     alternatives:
-      - {label: "Ammonia coverage fitted", add: [scr.cov.NH3.ln_K_ref, scr.cov.NH3.dH_kJ]}
+      - {label: "Ammonia coverage fitted", add: [scr.cov.NH3.ln_K_ref, scr.cov.NH3.dH_kJ], profile: true}
       # Table 5's adsorption constant, a = 9e-9 m3/mol x exp(139 kJ/mol / RT), at the pack's 1,050 F reference.
       - label: "Paper's ammonia adsorption"
         fixed: {scr.cov.NH3.ln_K_ref: 1.407, scr.cov.NH3.dH_kJ: -139}
         note: "Ammonia coverage held at the paper's fitted adsorption constant (Table 5)."
+  # Gas-turbine concentrations. The 545-605 C span brackets the pack's 1,050 F reference, so the coverage's
+  # adsorption enthalpy stays at the pack's value and the fit sets the coverage at the reference directly.
+  - id: us7695703_fe1_w25_beta
+    source: us7695703
+    catalyst: fe1_w25_beta
+    runs:
+      - {step: scr, id: scr_70, table: us7695703_ex8_t70, series: NO conversion}
+      - {step: scr, id: scr_70, table: us7695703_ex8_t70, series: NH3 out}
+      - {step: scr, id: scr_60, table: us7695703_ex8_t60, series: NO conversion}
+      - {step: scr, id: scr_60, table: us7695703_ex8_t60, series: NH3 out}
+      - {step: scr, id: scr_70_15k, table: us7695703_ex8_s70, series: NO conversion}
+      - {step: scr, id: scr_70_15k, table: us7695703_ex8_s70, series: NH3 out}
+      - {step: scr, id: scr_60_15k, table: us7695703_ex8_s60, series: NO conversion}
+      - {step: scr, id: scr_60_15k, table: us7695703_ex8_s60, series: NH3 out}
+    fit: [scr, nh3_ox_n2]          # NO and the NH3 left close the nitrogen balance with ammonia burned to N2
+    error: {sigma_abs_ppm: 0.5, sigma_rel: 0.03}   # assumed: the patent gives readings to 0.1 ppm and 0.1 points
+    alternatives:
+      - {label: "Ammonia coverage fitted", add: [scr.cov.NH3.ln_K_ref], profile: true}
+      - {label: "Ammonia coverage fitted, film included", add: [scr.cov.NH3.ln_K_ref], film: true}
+      # Ammonia burned to NO would add NO back; the NO and NH3 readings together set how much.
+      - {label: "Ammonia coverage fitted, burn to NO added", add: [scr.cov.NH3.ln_K_ref, nh3_ox_no.ln_k_ref, nh3_ox_no.Ea_kJ]}
+    holdout: {runs: [scr_70_15k, scr_60_15k], label: "Fit at 20,000 1/h, predict 15,000 1/h", short: "at 15,000 1/h"}
+  - id: us7695703_fe06_beta
+    source: us7695703
+    catalyst: fe06_beta
+    runs:
+      - {step: scr, id: scr_60, table: us7695703_ex4_t60, series: NO conversion}
+      - {step: scr, id: scr_60, table: us7695703_ex4_t60, series: NH3 out}
+      - {step: scr, id: scr_70, table: us7695703_ex4_n70, series: NO conversion}
+      - {step: scr, id: scr_70, table: us7695703_ex4_n70, series: NH3 out}
+    fit: [scr, nh3_ox_n2]
+    error: {sigma_abs_ppm: 0.5, sigma_rel: 0.03}   # assumed: the patent gives readings to 0.1 ppm and 0.1 points
+    alternatives:
+      - {label: "Ammonia coverage fitted", add: [scr.cov.NH3.ln_K_ref], profile: true}
+      - {label: "Ammonia coverage fitted, film included", add: [scr.cov.NH3.ln_K_ref], film: true}
+    holdout: {runs: [scr_70], label: "Fit at 60 ppm NH3, predict 70 ppm", short: "at 70 ppm NH3"}
+  - id: us7695703_fe06_w5_beta
+    source: us7695703
+    catalyst: fe06_w5_beta
+    runs:
+      - {step: scr, id: scr_60, table: us7695703_ex5_t60, series: NO conversion}
+      - {step: scr, id: scr_60, table: us7695703_ex5_t60, series: NH3 out}
+      - {step: scr, id: scr_60_15k, table: us7695703_ex5_s60, series: NO conversion}
+      - {step: scr, id: scr_60_15k, table: us7695703_ex5_s60, series: NH3 out}
+      - {step: scr, id: scr_70_15k, table: us7695703_ex5_s70, series: NO conversion}
+      - {step: scr, id: scr_70_15k, table: us7695703_ex5_s70, series: NH3 out}
+    fit: [scr, nh3_ox_n2]
+    error: {sigma_abs_ppm: 0.5, sigma_rel: 0.03}   # assumed: the patent gives readings to 0.1 ppm and 0.1 points
+    alternatives:
+      - {label: "Ammonia coverage fitted", add: [scr.cov.NH3.ln_K_ref], profile: true}
+      - {label: "Ammonia coverage fitted, film included", add: [scr.cov.NH3.ln_K_ref], film: true}
+    holdout: {runs: [scr_60_15k, scr_70_15k], label: "Fit at 20,000 1/h, predict 15,000 1/h", short: "at 15,000 1/h"}
+  # All three readings sit at 605 C, so the activation energies stay at the pack's values; the Gate 1 placement
+  # at 1,050 F (566 C) leans on them.
+  - id: us7695703_fe1_la5_beta
+    source: us7695703
+    catalyst: fe1_la5_beta
+    runs:
+      - {step: scr, id: scr_60, table: us7695703_ex7_n60, series: NO conversion}
+      - {step: scr, id: scr_60, table: us7695703_ex7_n60, series: NH3 out}
+      - {step: scr, id: scr_70, table: us7695703_ex7_n70, series: NO conversion}
+      - {step: scr, id: scr_70, table: us7695703_ex7_n70, series: NH3 out}
+      - {step: scr, id: scr_82, table: us7695703_ex7_n82, series: NO conversion}
+      - {step: scr, id: scr_82, table: us7695703_ex7_n82, series: NH3 out}
+    fit: [scr, nh3_ox_n2]
+    fit_Ea: false
+    error: {sigma_abs_ppm: 0.5, sigma_rel: 0.03}   # assumed: the patent gives readings to 0.1 ppm and 0.1 points
+    alternatives:
+      - {label: "Ammonia coverage fitted", add: [scr.cov.NH3.ln_K_ref], profile: true}
+      - {label: "Ammonia coverage fitted, film included", add: [scr.cov.NH3.ln_K_ref], film: true}
+    holdout: {runs: [scr_70], label: "Fit at 60 and 82 ppm NH3, predict 70 ppm", short: "at 70 ppm NH3"}

@@ -1,5 +1,5 @@
 # Project status shown on the app's Overview page. Updated at the end of every phase.
-updated: 2026-10-21
+updated: 2026-10-23
 focus_pack: scr_hot   # the app opens on this reaction
 
 headline: >
@@ -21,6 +21,17 @@ proof_sequence:
     status: planned
 
 recent:
+  - date: 2026-10-23
+    item: >
+      Catalysis basics and Manual tabs on this page: a plain-language primer on catalysts and how they are tested,
+      then the steps to run an experiment in the app, written for any reaction.
+  - date: 2026-10-23
+    item: >
+      Literature check 3: a Siemens patent's four Fe-beta catalysts, measured at 50 ppm NO, the closest published
+      data to the turbine's 25 ppm. All four place the ammonia coverage below the pack's 89%, and their Gate 1
+      placement at 1,050 °F stays within 0.51–0.66 across every coverage the data allow. Ammonia burned to N2 caps
+      them at 0.67–0.82 with NH3/NO = 1.0; 0.92 takes NH3/NO = 1.4. Washcoat diffusion, now in the reactor, closes
+      most of the activation-energy gap on the thesis monoliths. Two decisions for you.
   - date: 2026-10-21
     item: >
       Literature check 2: two more sources, a high-temperature Fe@ZSM-5 (Xie et al., 2026, 200–850 °C) and a
@@ -67,23 +78,19 @@ next_steps:
     owner: You
     why: >
       As catalysis lead, your review replaces the illustrative parameters and defines what batch 1 explores.
-      The Literature check page gives fitted values for four published catalysts to compare against, and shows
+      The Literature check page gives fitted values for eight published catalysts to compare against, and shows
       the pack's 89% ammonia coverage at 25 ppm as the optimistic case.
-  - step: Review the proposed hot-end concentration step for the bench yardstick
+  - step: Review the NH3/NO bench step and Gate 1's ammonia basis
     owner: You
     why: >
-      Ammonia coverage at 25 ppm moves every published catalyst's Gate 1 placement by 0.3 or more, and the
-      literature sits at 500–5,000 ppm. A step at 950 and 1,150 °F with NO = NH3 at 25, 50 and 200 ppm measures it.
+      An NH3/NO step at 25 ppm NO measures each catalyst's ammonia coverage and maps Gate 1's operating window in
+      one pass. Published Fe-beta tops out at 0.67–0.82 with NH3/NO = 1.0, so where Gate 1 sets the ammonia decides
+      what a winning catalyst looks like. Both are in your decisions.
   - step: Send a sample export from the rig's analyzer or logger
     owner: You
     why: >
       The Lab data page reads one CSV layout (Add data tab, File format). A real export lets the reader match
       the rig before the first run.
-  - step: "Literature check 3: low-concentration SCR kinetics, and washcoat diffusion in the reactor"
-    owner: Claude
-    why: >
-      Published SCR data at 10–100 ppm above 450 °C would test the coverage directly. An effectiveness factor per
-      pathway closes the activation-energy gap the gas film leaves on the thesis monoliths.
   - step: "Build the virtual rig (Phase 3): hidden catalysts across the batch-1 design space"
     owner: Claude
     why: Runs the whole loop, picks to scores, on simulated catalysts before lab money is spent.
@@ -139,14 +146,21 @@ phases:
       so far (Literature check page).
 
 findings:
-  - title: Ammonia coverage at 25 ppm decides Gate 1
+  - title: Measure at the turbine's concentration
     detail: >
-      Every published dataset that lets the SCR site's ammonia coverage float puts it at 0.2–12% at 25 ppm and
-      1,050 °F, three to nine standard deviations below the pack's 89%, and fits as well or better. That one
-      choice moves the Gate 1 placement at 1,050 °F from 0.89 to 0.59 (Fe-ZSM-5), 0.68 to 0.27 (Cu-chabazite),
-      0.87 to 0.24 (0.1Fe@ZSM-5) and 0.87 to below zero (vanadia). The vanadia paper's own adsorption constant
-      gives 0.13%. The data sit at 500–5,000 ppm, so a hot-end concentration step on the bench settles it.
-    source: Literature check 2, experiments/literature_scr (2026-10-21); Metkar 2012, Xie et al. 2026, Odenbrand 2017.
+      Seven of eight published catalysts place the SCR site's ammonia coverage at 25 ppm and 1,050 °F below the
+      pack's 89%. Fitting it moves the Gate 1 placement at 1,050 °F from 0.89 to 0.59 (Fe-ZSM-5), 0.68 to 0.27
+      (Cu-chabazite), 0.87 to 0.24 (0.1Fe@ZSM-5) and to below zero (vanadia). The patent's Fe-beta catalysts,
+      measured at 50 ppm, pin their placement within about 0.07 across every coverage their data allow; the data
+      at 500 ppm or more leave a spread of up to 0.65. The yardstick's 22.5 ppm feed measures where it counts.
+    source: Literature checks 2 and 3, experiments/literature_scr (2026-10-23); Metkar 2012, Xie et al. 2026, Odenbrand 2017, US 7,695,703.
+  - title: Ammonia burned to N2 caps the hot end
+    detail: >
+      On the yardstick's design step at 1,050 °F with NH3/NO = 1.0, the patent's four Fe-beta catalysts reach
+      0.51–0.64 at 30,000 1/h and top out at 0.67–0.82 with six times the catalyst, the ammonia used up. With
+      NH3/NO = 1.4, 1Fe-2.5W-beta reaches 0.93 with three times the catalyst and 0.6Fe-beta 0.94 with six. The
+      patent runs its catalysts at NH3/NO 1.2–1.6 for the same reason.
+    source: Literature check 3, operating map (2026-10-23).
   - title: The engine reproduces published zeolite and vanadia SCR data
     detail: >
       In its ideal reactor, with four to six fitted numbers per catalyst, the engine matches four published
@@ -159,13 +173,14 @@ findings:
       high-temperature sources, cooler data miss the hot end: 0.1Fe@ZSM-5's SCR at 700–850 °C reads 0.12 low
       even with its whole ammonia-only run in the fit, and the vanadia's NO at 460–525 °C reads 95 ppm low.
     source: Literature check, held-out tests (2026-10-21).
-  - title: The gas film is a minor share of the transport gap
+  - title: Washcoat diffusion carries most of the transport gap
     detail: >
-      Adding the thesis monoliths' gas-film mass transfer raises SCR's apparent activation energy about a quarter
-      of the way to the thesis values (47 to 54 kJ/mol against 72; 50 to 61 against 89) and fits less well.
-      Washcoat diffusion carries the rest, so powder or thin-washcoat bench samples give the closest-to-intrinsic
-      rates.
-    source: Literature check 2, film refit (2026-10-21).
+      The gas film alone raises SCR's apparent activation energy on the thesis monoliths a quarter of the way to
+      the thesis values (47 to 54 kJ/mol against 72). Adding washcoat diffusion, with an assumed 50 µm coat at 1%
+      of the gas diffusivity, brings Fe-ZSM-5 to 79 against 72 for SCR and 91 against 91 for ammonia to N2. The
+      fits read worse (reduced chi-square 2.8 to 5.0), so the real coats diffuse faster than assumed. Fine powder,
+      or a coated core at two loadings, gives intrinsic rates on the bench.
+    source: Literature check 3, washcoat refit (2026-10-23).
   - title: UMA tracks metal chemistry and ranks the SCR acid sites
     detail: >
       On nine metals UMA reproduces the textbook scaling of NHx and OH binding and all 14
@@ -225,13 +240,21 @@ decisions:
   - item: Materials Project API key (saved in ~/.config/.pmgrc.yaml, outside the repository)
     owner: You
     status: closed
-  - item: "Hot-end concentration step for the bench yardstick (proposed 2026-10-21)"
+  - item: "NH3/NO step for the bench yardstick (proposed 2026-10-23, replaces the 2026-10-21 concentration step)"
     owner: You
     status: open
     detail: >
-      Proposal from Literature check 2: add 950 and 1,150 °F with NO = NH3 at 25, 50 and 200 ppm. How SCR's rate
-      scales across the step sets the ammonia coverage at 25 ppm, the number that moves Gate 1 the most. Yours to
-      accept, change or drop as catalysis lead.
+      Proposal from Literature check 3: at 950, 1,050 and 1,150 °F with 25 ppm NO, feed NH3/NO at 1.0, 1.2 and 1.4.
+      The patent's ammonia steps at fixed NO pinned its best-measured catalyst's coverage to 43–71%; the same steps
+      at 25 ppm measure our catalysts' coverage and map Gate 1's operating window in one pass. It replaces the
+      earlier NO = NH3 step at 25, 50 and 200 ppm. Yours to accept, change or drop as catalysis lead.
+  - item: "Gate 1's ammonia basis: NH3/NO = 1.0, or the NH3/NO that holds slip under a limit (proposed 2026-10-23)"
+    owner: You
+    status: open
+    detail: >
+      At NH3/NO = 1.0, Gate 1 rewards ammonia selectivity above all else at the hot end: published Fe-beta tops
+      out at 0.67–0.82 at 1,050 °F. Turbine SCR runs above 1.0 under an ammonia slip limit, and the pack's slip
+      metric allows 2 ppm. Gate 1 could be set at the NH3/NO that holds slip under a limit you choose.
   - item: Review pack parameters, protocols and the batch-1 design space before batch 1
     owner: You (catalysis lead)
     status: open

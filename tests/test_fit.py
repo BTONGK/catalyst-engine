@@ -71,6 +71,9 @@ def test_fit_with_film_mass_transfer_recovers_intrinsic_rates():
     assert ideal.params["scr.Ea_kJ"] < res.params["scr.Ea_kJ"]
     with pytest.raises(ValueError, match="every observation"):
         fit_kinetics(p, proto, filmed[:1] + obs[1:], n_starts=1)
+    coated = [dataclasses.replace(filmed[0], wc_phi2=np.full(len(p.network.pathways), 1e-3))] + filmed[1:]
+    with pytest.raises(ValueError, match="washcoat"):
+        fit_kinetics(p, proto, coated, n_starts=1)
 
 
 def test_observations_accept_measured_inlet():

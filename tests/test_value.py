@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pytest
 
+from catalyst_engine.chem import thermo
 from catalyst_engine.units import f_to_k
 from catalyst_engine.value.monolith import Monolith
 from catalyst_engine.value.permits import lb_per_mmbtu, max_mw_under_cap
@@ -43,6 +44,19 @@ def test_monolith_geometry_and_pressure_drop():
     gas = {"N2": 0.75, "O2": 0.14, "H2O": 0.08, "CO2": 0.03}
     dp1 = m.pressure_drop_pa(0.2, 6.0, 800.0, 101325.0, gas)
     assert m.pressure_drop_pa(0.4, 6.0, 800.0, 101325.0, gas) == pytest.approx(2 * dp1)
+
+
+def test_washcoat_thiele_modulus_follows_the_coat():
+    # phi^2 per unit rate constant = thickness / (effective diffusivity x surface per volume): doubling the coat doubles it
+    gas = {"N2": 0.75, "O2": 0.14, "H2O": 0.08, "CO2": 0.03}
+    thin = Monolith(cpsi=400, wall_mm=0.17, washcoat_um=50)
+    thick = Monolith(cpsi=400, wall_mm=0.17, washcoat_um=100)
+    phi2 = thin.washcoat_phi2("NO", 700.0, 101325.0, gas)
+    d_eff = 0.01 * thermo.diffusivity("NO", 700.0, 101325.0, gas)
+    assert phi2 == pytest.approx(50e-6 / (d_eff * thin.surface_per_volume))
+    assert thick.washcoat_phi2("NO", 700.0, 101325.0, gas) == pytest.approx(2 * phi2)
+    with pytest.raises(ValueError, match="thickness"):
+        Monolith(cpsi=400, wall_mm=0.17).washcoat_phi2("NO", 700.0, 101325.0, gas)
 
 
 def test_example_scenario_story():

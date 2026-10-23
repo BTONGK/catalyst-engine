@@ -3,7 +3,10 @@
 Space velocity (GHSV) is normal m3 of gas per m3 of catalyst per hour at 0 C and 1 atm.
 Optionally, an external mass-transfer coefficient caps each pathway's rate at the
 flux of its key species to the wall (series resistance, exact for first-order
-pathways), which is how a bench rate constant becomes a monolith design.
+pathways), which is how a bench rate constant becomes a monolith design. Washcoat
+diffusion scales each pathway's rate by the slab effectiveness factor tanh(phi)/phi,
+with the Thiele modulus taken from the pathway's local first-order rate constant
+(its rate over its key species' concentration; exact for first-order pathways).
 
 Integration runs along the normalized bed coordinate z in [0, 1] with the ROS2
 Rosenbrock method (second order, L-stable, so stiff kinetics cost accuracy steps,
@@ -36,6 +39,9 @@ class Conditions:
     ghsv_per_h: np.ndarray  # (B,)
     feed: np.ndarray  # (B, n_species) wet mole fractions
     km_a: np.ndarray | None = None  # (B, n_pathways) 1/s, external mass transfer for each key species
+    # (B, n_pathways) s, washcoat diffusion for each key species: Thiele modulus squared per unit of the pathway's
+    # first-order rate constant (1/s per m3 of catalyst), thickness^2 / (effective diffusivity x washcoat fraction)
+    wc_phi2: np.ndarray | None = None
 
     def __post_init__(self) -> None:
         self.feed = np.atleast_2d(np.asarray(self.feed, dtype=float))
@@ -69,6 +75,7 @@ class _System:
         self.consts = network.constants(p, cond.t_k)
         self.c_scale = (cond.p_pa / (R * cond.t_k))[:, None]
         self.km_a = cond.km_a
+        self.wc_phi2 = cond.wc_phi2
         self.keys = np.array([pw.key for pw in network.pathways])
         self.f_tot0 = cond.ghsv_per_h / 3600.0 * P_ATM / (R * T_STD)  # mol/s per m3 of catalyst
         self.f0 = cond.feed * self.f_tot0[:, None]
@@ -79,6 +86,11 @@ class _System:
         total = f.sum(axis=1, keepdims=True)
         conc = np.maximum(f, 0.0) / total * self.c_scale[idx]
         r = consts.key_rates(conc)
+        if self.wc_phi2 is not None:
+            key = conc[:, self.keys]
+            k1 = np.where((r > 0.0) & (key > 0.0), r / np.maximum(key, 1e-300), 0.0)
+            phi = np.sqrt(self.wc_phi2[idx] * k1)
+            r = r * np.where(phi > 1e-4, np.tanh(phi) / np.maximum(phi, 1e-4), 1.0 - phi**2 / 3.0)
         if self.km_a is not None:
             flux = self.km_a[idx] * conc[:, self.keys]
             capped = r * flux / np.maximum(r + flux, 1e-300)

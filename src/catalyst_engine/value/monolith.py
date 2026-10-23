@@ -1,7 +1,9 @@
 """Honeycomb monolith geometry, external mass transfer and pressure drop (square channels).
 
 Fully developed laminar flow in square channels: Sherwood number 2.98 (constant
-wall concentration) and Darcy friction f*Re = 56.9 (Shah and London).
+wall concentration) and Darcy friction f*Re = 56.9 (Shah and London). Washcoat
+diffusion treats the coat as a slab of its effective thickness (coat cross-section
+over channel perimeter) with an effective diffusivity a set fraction of the gas value.
 """
 
 from __future__ import annotations
@@ -20,7 +22,9 @@ DARCY_FRE_SQUARE = 56.9
 @dataclass(frozen=True)
 class Monolith:
     cpsi: float  # cells per square inch
-    wall_mm: float
+    wall_mm: float  # wall plus washcoat, so the open channel is the pitch less this
+    washcoat_um: float = 0.0  # effective washcoat thickness: coat cross-section over channel perimeter
+    washcoat_de_ratio: float = 0.01  # effective diffusivity in the washcoat over the gas value
 
     @property
     def pitch_m(self) -> float:
@@ -46,6 +50,14 @@ class Monolith:
         """Volumetric external mass-transfer coefficient (1/s) for a species (Cantera id)."""
         d = thermo.diffusivity(species, t_k, p_pa, gas)
         return SHERWOOD_SQUARE * d / self.hydraulic_diameter_m * self.surface_per_volume
+
+    def washcoat_phi2(self, species: str, t_k: float, p_pa: float, gas: Mapping[str, float]) -> float:
+        """Thiele modulus squared per unit first-order rate constant (1/s per m3 of monolith), in s."""
+        thickness = self.washcoat_um * 1e-6
+        if thickness <= 0:
+            raise ValueError("washcoat diffusion needs a washcoat thickness")
+        de = self.washcoat_de_ratio * thermo.diffusivity(species, t_k, p_pa, gas)
+        return thickness**2 / (de * self.surface_per_volume * thickness)
 
     def pressure_drop_pa(
         self, length_m: float, face_velocity_m_s: float, t_k: float, p_pa: float, gas: Mapping[str, float]

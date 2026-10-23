@@ -92,7 +92,7 @@ reactions/
 | 3 | Virtual rig: hidden "true" catalysts whose properties carry across reactions, producing FTIR-style files with noise, drift and failed runs | Started: simulated analyzer logs (bypass, settling holds, noise, failed and short runs) feed the demo store |
 | 4 | Multi-task models (shared catalyst representation, a head per pathway), conformal calibration, batch planner scored through the reactor model, gate scorecards, transfer scorecard | |
 | 5 | Atomistic descriptors (binding energies of N, O, NH3, CO and others on catalyst site types via UMA), Materials Project stability, OCx24 retrospective | Started: UMA test run done (see the app's Atomistic check page) |
-| 6 | MCP server and agents, literature extraction into a low-trust tier, reports | Started: figure digitizer (filled and open markers) and the literature check, four catalysts from three sources (`experiments/literature_scr/`, the app's Literature check page) |
+| 6 | MCP server and agents, literature extraction into a low-trust tier, reports | Started: figure digitizer (filled and open markers) and the literature check, eight catalysts from four sources (`experiments/literature_scr/`, the app's Literature check page) |
 
 ## Findings so far (from simulation with illustrative parameters)
 
@@ -126,6 +126,15 @@ reactions/
   The data sit at 500-5,000 ppm, so a hot-end concentration step on the bench (proposed, for the catalysis
   lead's review) settles it. Cooler data miss the hot end on both high-temperature sources, and the gas film
   carries about a quarter of the activation-energy gap on the thesis monoliths.
+- **Measured at 50 ppm, Fe-beta sits near 60% coverage, and ammonia burn caps the hot end (literature
+  check 3).** A Siemens patent (US 7,695,703) gives four Fe-beta catalysts at 50 ppm NO, 545-605 C. All four
+  place the coverage below the pack's 89% (the best-measured at 62%, 90% range 43-71%), and each one's Gate 1
+  placement at 1,050 F stays within 0.51-0.66 across every coverage its data allow. With NH3/NO = 1.0 they top
+  out at 0.67-0.82 for any catalyst volume because they burn ammonia to N2; 0.92 takes NH3/NO = 1.4 and three
+  to six times the catalyst. The reactor now carries washcoat diffusion (slab effectiveness factor per
+  pathway): with an assumed coat it brings Fe-ZSM-5's activation energies to the thesis values (79 vs 72 kJ/mol
+  for SCR, 91 vs 91 for NH3 to N2) at a worse fit. Proposed for review: an NH3/NO step at 25 ppm NO in place of
+  the concentration step, and Gate 1 at an NH3/NO set by a slip limit.
 - **Example scenario (all example inputs):** tempered design 58 m3 of catalyst, 34% tempering
   air, 623 kW of fans; hot target design 36 m3, no fans, more ammonia (ratio 1.30 vs 1.05).
 

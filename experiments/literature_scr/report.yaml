@@ -2,46 +2,55 @@
 kind: literature
 title: Published SCR data, reproduced
 question: Does the engine, run as an ideal reactor, reproduce published SCR bench measurements?
-run_date: 2026-10-21
+run_date: 2026-10-23
 model: The hot-SCR pack's own rate laws in the engine's isothermal plug-flow reactor
 summary: results/summary.json
 
 verdict: >
-  Yes, across four catalysts from three sources. With four to six fitted numbers each, the engine reproduces a
-  Fe-ZSM-5, a Cu-chabazite, a high-temperature Fe@ZSM-5 and a commercial vanadia over 100–850 °C at 500–5,000 ppm.
-  The fits leave one number open, and it decides Gate 1: ammonia coverage on the SCR site at the gas turbine's
-  25 ppm. Every dataset that lets coverage float puts it at 0.2–12%, against the pack's 89%, and that one choice moves
-  every catalyst's Gate 1 placement at 1,050 °F from 0.68–0.89 to 0.59 or lower. A hot-end bench step that varies
-  ammonia and NO concentration settles it.
+  Yes, across eight catalysts from four sources. With two to six fitted numbers each, the engine reproduces two
+  Fe-ZSM-5s, a Cu-chabazite, a commercial vanadia and four Fe-beta catalysts over 100–850 °C at 50–5,000 ppm. The
+  open number from the earlier checks, ammonia coverage on the SCR site at the turbine's 25 ppm, now has a direct
+  test: a Siemens patent's Fe-beta catalysts measured at 50 ppm NO and 60–82 ppm NH3 at 545–605 °C. All four place
+  it below the pack's 89% (the best-measured at 62%, 90% range 43–71%), and at that concentration each one's Gate 1
+  placement at 1,050 °F stays within 0.51–0.66 across every coverage its data allow. What holds them under 0.92 is
+  the ammonia they burn to N2: at NH3/NO = 1.0 they top out at 0.67–0.82 with any amount of catalyst, and 0.92
+  takes NH3/NO = 1.4 and three to six times the yardstick's catalyst.
 
 findings:
-  - "Fitted to every point, the model matches NO conversion within 0.011–0.025 on average for the three zeolites (largest gap 0.060), and the vanadia's NO out within 48 ppm of 5,000 fed (largest 195 ppm). Ammonia left in the ammonia-only runs matches within 9–18 ppm of 500 fed; the vanadia's N2O matches within 0.15 ppm."
-  - "Fitted below 500 °C, the Metkar zeolites' 500–600 °C points land inside the 90% band for 10 of 11, with NO conversion reading 0.03–0.05 high."
+  - "Fitted to every point, the model matches NO conversion within 0.011–0.025 on average for the three high-concentration zeolites (largest gap 0.060), the vanadia's NO out within 48 ppm of 5,000 fed (largest 195 ppm), and ammonia left in the ammonia-only runs within 9–18 ppm of 500. On the patent's Fe-beta catalysts, with the coverage fitted, NO conversion matches within 0.002–0.010 on average and the NH3 left within 0.03–0.9 ppm."
+  - "At gas-turbine concentrations the pack's 89% coverage strains every Fe-beta fit: SCR's activation energy runs to the fitter's floor of 5 kJ/mol on all three catalysts with a temperature sweep, the sign of a rate law that has SCR slowing too little as ammonia runs down. Fitting the coverage lifts it to 27–80 kJ/mol and cuts the reduced chi-square from 0.8–7.8 to 0.06–2.2."
+  - "The coverage at 25 ppm and 1,050 °F, mapped by refitting with it held at each value from 0.1% to 98% (90% ranges): 62% (43–71%) on 1Fe-2.5W-beta, the best-measured patent catalyst with two ammonia levels, two space velocities and four temperatures; 66% (5–85%) on 0.6Fe-beta; up to 51% and 56% on 0.6Fe-5W-beta and 1Fe-5La-beta, whose best fits sit at the first-order limit. From the high-concentration sources: 9.6% (2.7–33%) on Fe-ZSM-5, 12% (2.2–98%) on Cu-chabazite, 3% (up to 81%) on 0.1Fe@ZSM-5 and 0.21% (0.18–0.58%) on the vanadia. Seven of the eight place it below the pack's 89%; Cu-chabazite's data allow the pack's value too."
+  - "Measured at the turbine's concentration, the Gate 1 placement holds steady across the coverage: 0.51–0.66 at 1,050 °F for the four Fe-beta catalysts over every coverage their data allow. Fitted at 500–1,000 ppm, the same range spans 0.52–0.66 for Fe-ZSM-5, 0.19–0.72 for Cu-chabazite and 0.19–0.84 for 0.1Fe@ZSM-5. Data at the right concentration pin Gate 1; data at 20 to 200 times it leave it open."
+  - "Ammonia burned to N2 sets the ceiling. On the yardstick's design step at 1,050 °F with NH3/NO = 1.0, the four Fe-beta catalysts reach 0.51–0.64 at 30,000 1/h and top out at 0.67–0.82 even with six times the catalyst, the ammonia used up. With NH3/NO = 1.4, 1Fe-2.5W-beta reaches 0.93 with three times the catalyst (3.0 ppm NH3 left, wet) and 0.6Fe-beta 0.94 with six times. The patent runs its catalysts at NH3/NO 1.2–1.6 for the same reason."
+  - "Fitted below 500 °C, the Metkar zeolites' 500–600 °C points land inside the 90% band for 10 of 11, with NO conversion reading 0.03–0.05 high. On the patent, with the pack's coverage, 7 of 12 held-out readings land inside the band (15,000 1/h predicted from 20,000, and 70 ppm NH3 from 60 or from 60 and 82), NO conversion within 0.05."
   - "SCR has to be measured in the hot range. With 0.1Fe@ZSM-5's whole ammonia-only run plus its SCR below 700 °C in the fit, the predicted SCR at 700–850 °C reads 0.12 low on average (0 of 4 points in the band). Fitted below 460 °C, the vanadia's NO at 460–525 °C reads 95 ppm low (0 of 12 in the band): the burn of ammonia to NO that lifts NO from 150 to 210 ppm shows only in the hot points."
   - "In 0.1Fe@ZSM-5's ammonia-only run, NOx leaves beside unburned ammonia from 600 °C up (about 20 ppm NOx with 140 ppm NH3 at 700 °C). With the pack's coverage, SCR would consume that NOx on the way out; the data call for SCR to slow as ammonia leaves the surface. Fitting the coverage cuts the gap in the NOx share from 0.074 to 0.031."
-  - "Letting the ammonia coverage float improves or matches every fit (reduced chi-square 2.8 to 2.1 for Fe-ZSM-5, 2.0 to 2.1 for Cu-chabazite, 4.0 to 2.7 for 0.1Fe@ZSM-5, 1.9 to 0.5 for the vanadia). At 25 ppm and 1,050 °F it puts the coverage at 9.6%, 12%, 3.2% and 0.2%, three to nine standard deviations below the pack's 89%. The vanadia paper's own adsorption constant, fitted in a 3-D reactor model with heat release, gives 0.13%."
-  - "That one choice moves the Gate 1 placement at 1,050 °F from 0.89 to 0.59 for Fe-ZSM-5, 0.68 to 0.27 for Cu-chabazite, 0.87 to 0.24 for 0.1Fe@ZSM-5, and 0.87 to below zero for the vanadia, where the fitted burn of ammonia to NO outruns SCR at 25 ppm and adds NOx. Held at the paper's own adsorption constant, the vanadia sits at 0.04."
-  - "Adding the monolith's gas-film mass transfer (fully developed laminar flow, Sherwood number 2.98, 1.1 mm channels) raises SCR's activation energy about a quarter of the way to the thesis values (47 to 54 kJ/mol against 72 for Fe-ZSM-5; 50 to 61 against 89 for Cu-chabazite) and fits less well (reduced chi-square 2.8 to 3.3 and 2.0 to 6.6). The film carries a minor share of the gap; washcoat diffusion, which the thesis resolves, carries the rest."
-  - "The sources check out against themselves. In Metkar's ammonia-only runs, N2 made equals half the ammonia used within 2 ppm at every temperature. In Xie's, NOx read directly (20.0, 75.5 and 118.5 ppm at 700, 750 and 800 °C) matches the NOx share times the ammonia used (18.0, 69.1, 108.9 ppm), which confirms the 500 ppm feed inferred for that run."
+  - "With the coverage fitted, the Gate 1 placement at 1,050 °F moves from 0.89 to 0.59 for Fe-ZSM-5, 0.68 to 0.27 for Cu-chabazite, 0.87 to 0.24 for 0.1Fe@ZSM-5 and 0.87 to below zero for the vanadia, where the fitted burn of ammonia to NO outruns SCR at 25 ppm and adds NOx. Held at the paper's own adsorption constant, the vanadia sits at 0.04."
+  - "Washcoat diffusion accounts for most of the activation-energy gap on the Metkar monoliths. With an assumed 50 µm coat whose effective diffusivity is 1% of the gas value, Fe-ZSM-5 fits at 79 kJ/mol for SCR and 91 for ammonia to N2, against the thesis's diffusion-resolved 72 and 91 (47 and 76 in the ideal reactor, 54 and 78 with the gas film alone). Cu-chabazite moves past the thesis on SCR (106 against 89) and short of it on ammonia oxidation (114 against 179). Both fits read worse (reduced chi-square 2.8 to 5.0 and 2.0 to 9.1), so the real coats diffuse faster than the assumed 1%."
+  - "The sources check out against themselves. In Metkar's ammonia-only runs, N2 made equals half the ammonia used within 2 ppm at every temperature. In Xie's, NOx read directly (20.0, 75.5 and 118.5 ppm at 700, 750 and 800 °C) matches the NOx share times the ammonia used (18.0, 69.1, 108.9 ppm), which confirms the 500 ppm feed inferred for that run. In the patent, each sweep's 605 °C entry repeats that catalyst's settled time-on-stream reading."
   - "Apparent activation energies sit below the published models' values: 56–84% of the thesis values on the Metkar monoliths, and on the vanadia 66 against 85 kJ/mol for SCR and 165 against 190 for ammonia to N2O. The vanadia paper puts the ammonia coverage term in every rate; that term falls steeply with temperature, so its activation energies sit above the apparent first-order values a fit with the pack's rate laws gives (63 against 200 for ammonia to NO)."
 
 implications:
-  - "The engine's rate laws and reactor reproduce zeolite and vanadia SCR catalysts from three independent sources, so bench data fitted with them give usable rate constants."
-  - "For your review: the deciding unknown for Gate 1 is the ammonia coverage at 25 ppm on the hot end, and every published dataset sits at 500 ppm or more. A concentration step on the bench yardstick would measure it directly: for example 950 and 1,150 °F with NO = NH3 at 25, 50 and 200 ppm. How SCR's rate scales with concentration across that step sets the coverage, and the fit then pins the Gate 1 placement within a narrow band."
+  - "The engine's rate laws and reactor reproduce zeolite and vanadia SCR catalysts from four independent sources, at 50 to 5,000 ppm, so bench data fitted with them give usable rate constants."
+  - "Measure at the turbine's concentration. Data at 50 ppm pin each catalyst's Gate 1 placement within about 0.07 whatever the coverage; data at 500 ppm or more leave a spread of up to 0.65. The yardstick's 22.5 ppm feed already does this."
+  - "For your review, a sharper bench step: at 950, 1,050 and 1,150 °F with 25 ppm NO, feed NH3/NO at 1.0, 1.2 and 1.4. The patent's ammonia steps at fixed NO pinned its best-measured catalyst's coverage to 43–71%; the same steps at 25 ppm measure the coverage of ours and map Gate 1's operating window in one pass. This replaces the earlier proposal of NO = NH3 at 25, 50 and 200 ppm."
+  - "For your review: Gate 1 at NH3/NO = 1.0 rewards ammonia selectivity above all else at the hot end. Published Fe-beta tops out at 0.67–0.82 at 1,050 °F with stoichiometric ammonia; turbine SCR runs above 1.0 under an ammonia slip limit. Gate 1 could be set at the NH3/NO that holds slip under a limit you choose."
+  - "Read the pack's illustrative defaults as the optimistic case. Seven of eight datasets place the coverage below its 89%; the patent's Fe-beta catalysts point to about 60%, with first-order behavior also within range for two of them. The pack's ammonia burn is also far slower than these catalysts': with the defaults, NH3/NO = 1.0 reaches 0.88."
   - "Measure SCR and the ammonia burn inside the operating window. Low-temperature SCR, even with a full ammonia-only run beside it, misses the hot end on both high-temperature sources."
-  - "Read the pack's illustrative defaults as the optimistic case: they hold 89% coverage at 25 ppm. The earlier reading here that published Fe-ZSM-5 lands near the gate (0.89 at 1,050 °F) holds under that coverage; with the coverage its own data prefer, it lands at 0.59."
-  - "Fit monolith-core bench data with the film switched on, since the design scenarios add the film themselves and want intrinsic rates. Washcoat diffusion carries more of the gap than the film, so a powder or thin-washcoat bench sample keeps the measured rates closest to intrinsic."
+  - "Fix the bench sample's form in the protocol. On a coated monolith the fitted activation energy reads up to half the intrinsic value, and Gate 1 placements from transport-resolved fits use intrinsic rates in the ideal reactor (0.98 at 1,050 °F for Fe-ZSM-5 with the washcoat). Fine powder gives intrinsic rates directly; a coated core tested at two coat loadings lets the fit separate diffusion from kinetics."
 
 next_test: >
-  Run the concentration step on the bench once you approve it, or find published SCR kinetics at 10–100 ppm NOx above
-  450 °C to test the coverage directly. Then add washcoat diffusion to the reactor as an effectiveness factor per
-  pathway and refit the Metkar monoliths, to close the remaining activation-energy gap.
+  Run the NH3/NO step on the bench once you approve it. On the engine side, the next step is Phase 3's virtual rig:
+  hidden catalysts spread around these eight fitted ones, so the whole loop, picks to scores, runs before lab money
+  is spent.
 
 limits:
-  - "Points come from the published figures. The digitizer locates each marker center within about one pixel. On the vanadia figures it finds 35 of the 37 NO markers (the other two overlap a neighbour within 1 K) and 35 N2O markers, where points at 0 ppm show as half markers on the axis, below detection either way. Overlays in cache/ show every detected point."
-  - "Every source's feed differs from our yardstick's 22.5 ppm, 13.5% O2 and 10% H2O: Metkar 500 ppm with 5% O2 and 2% H2O; Xie 1,000 ppm (500 ppm NH3 in the ammonia-only run) with 6% O2, dry; Odenbrand 5,000 ppm with 13% O2 and 5% H2O at 2.2 bar. The pack's rate laws carry O2 and H2O as constant, so the Gate 1 numbers are rough placements."
-  - "The coverage at 25 ppm comes from fits at 500–5,000 ppm through the pack's Langmuir form, an extrapolation of twenty- to two-hundredfold in concentration."
-  - "Ideal reactor: the fitted rate constants are apparent values for each sample as tested: a 400 cpsi monolith at 57,000 1/h (Metkar), a powder bed at 30,000 1/h (Xie), and 0.71–0.80 mm particles at 120,000 1/h (Odenbrand, where the paper estimates an internal effectiveness of 0.7 at 760 K)."
+  - "Points from the Metkar, Xie and Odenbrand figures come from the digitizer, which locates each marker center within about one pixel. On the vanadia figures it finds 35 of the 37 NO markers (the other two overlap a neighbour within 1 K) and 35 N2O markers, where points at 0 ppm show as half markers on the axis, below detection either way. Overlays in cache/ show every detected point. The patent's numbers come straight from its tables."
+  - "Every source's feed differs from our yardstick's 22.5 ppm, 13.5% O2 and 10% H2O: Metkar 500 ppm with 5% O2 and 2% H2O; Xie 1,000 ppm (500 ppm NH3 in the ammonia-only run) with 6% O2, dry; Odenbrand 5,000 ppm with 13% O2 and 5% H2O at 2.2 bar; the patent 50 ppm NO with 10% O2 and 6.8% H2O. The pack's rate laws carry O2 and H2O as constant, so the Gate 1 numbers and the operating map are rough placements."
+  - "The coverage from the high-concentration sources comes from fits at 500–5,000 ppm through the pack's Langmuir form, an extrapolation of twenty- to two-hundredfold in concentration. The patent's 50–82 ppm sits two to four times above the yardstick's."
+  - "Ideal reactor: the fitted rate constants are apparent values for each sample as tested: a 400 cpsi monolith at 57,000 1/h (Metkar), a powder bed at 30,000 1/h (Xie), 0.71–0.80 mm particles at 120,000 1/h (Odenbrand, where the paper estimates an internal effectiveness of 0.7 at 760 K), and 230 cpsi washcoated monoliths at 15,000–20,000 1/h (the patent)."
+  - "The patent states its space velocity without a reference temperature; read at 20–25 °C in place of the engine's 0 °C, its rate constants rise 7–9%. It gives readings to 0.1 ppm and 0.1 points of conversion and names the cell density alone, so the film refit assumes a 0.22 mm wall plus coat. The 1Fe-5La-beta readings all sit at 605 °C, so its activation energies stay at the pack's values and its Gate 1 placement at 1,050 °F leans on them."
+  - "For the patent catalysts the coverage's temperature dependence stays at the pack's −100 kJ/mol, since 545–605 °C brackets 1,050 °F; the other sources fit it."
   - "The vanadia runs release heat at 5,000 ppm; each point sits at the bed-exit temperature, the hottest spot in an adiabatic bed. The paper gives the catalyst as about 0.4 wt% vanadia on titania, likened to commercial V2O5-WO3/TiO2. Its ammonia went to a scrubber before the analyzers, and N2O from NO + NH3 is folded into ammonia oxidation to N2O here."
   - "Xie et al. is open access under CC BY-NC 4.0; the 500 ppm feed of its ammonia-only run is inferred from three figures, and its NOx counts as NO here."
 
@@ -49,14 +58,18 @@ method: >
   digitize.py reads each figure from the source PDF in cache/ (outside git) at its native resolution, finds the plot
   frame from the axis lines, and maps pixels to values through the major tick marks. Filled markers come out by
   color and shape after a morphological opening removes thin curves and text; open markers (rings and squares) come
-  out by matching their outline, which a crossing curve touches at two spots only. replicate.py builds a bench
-  protocol from each figure's feed, fits the pack's rate constants and activation energies to all of a catalyst's runs
-  at once with the engine's own fitter, and draws 300 parameter sets from the fit's covariance for the 90% bands. Each
-  model choice refits every point: ammonia coverage fitted, held at a published value, or gas-film mass transfer added
-  from the monolith's channel size.
+  out by matching their outline, which a crossing curve touches at two spots only. The patent's tables go in by hand
+  from its text, one feed and space velocity per table. replicate.py builds a bench protocol from each figure's or
+  table's feed, fits the pack's rate constants and activation energies to all of a catalyst's runs at once with the
+  engine's own fitter, and draws 300 parameter sets from the fit's covariance for the 90% bands. Each model choice
+  refits every point: ammonia coverage fitted, held at a published value, gas-film mass transfer added from the
+  monolith's channel size, or washcoat diffusion added from its effective thickness. The coverage profile refits with
+  the coverage held at each of thirteen values from 0.1% to 98% (the other numbers free); coverages whose chi-square
+  stays within 2.71 of the lowest, scaled by the reduced chi-square above 1, form the 90% range. The operating map
+  runs the yardstick's design step at 1,050 °F at NH3/NO of 1.0, 1.2 and 1.4 and five space velocities.
 
 error_model: >
-  Each digitized reading carries an absolute plus a relative error: 5 ppm plus 3% for Metkar, 15 ppm plus 5% for Xie
-  (its error bars), 0.5 ppm plus 4% for Odenbrand (one pixel is about 5 ppm NO and 0.02 ppm N2O there). Readings under
-  1 ppm count as below detection. The main fits land at reduced chi-square 1.9–4.0 on these models, so the bands
-  include that extra spread.
+  Each reading carries an absolute plus a relative error: 5 ppm plus 3% for Metkar, 15 ppm plus 5% for Xie (its error
+  bars), 0.5 ppm plus 4% for Odenbrand (one pixel is about 5 ppm NO and 0.02 ppm N2O there), and 0.5 ppm plus 3% for
+  the patent (assumed; its tables give 0.1 ppm steps). Readings under 1 ppm count as below detection. The main fits
+  land at reduced chi-square 0.8–7.8 on these models, so the bands include that extra spread.
