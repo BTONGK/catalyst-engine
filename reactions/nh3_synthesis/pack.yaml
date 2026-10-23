@@ -42,6 +42,7 @@ screening:
   metric: n2_conversion
   reference: {formula: Ru, name: Ruthenium}
   optimum_shift_eV: 0.0
+  peak_gas: {N2: 0.5}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Ru, Fe, Co, Mo, Os, Ni, Re, W, Rh]
   basis: >
     Nitrogen binding sets ammonia synthesis rates (Logadottir et al., J. Catal. 2001; Jacobsen et al., JACS

@@ -50,6 +50,7 @@ screening:
   metric: ch4_conversion
   reference: {formula: Ni, name: Nickel}
   optimum_shift_eV: 0.0
+  peak_gas: {CH4: 0.5, H2: -1.5, H2O: 0.5}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Ni, Ru, Rh, Co, Ir, Pt, Pd, Fe, Cu]
   basis: >
     Carbon and oxygen binding place reforming catalysts on a volcano (Jones et al., J. Catal. 2008): ruthenium,

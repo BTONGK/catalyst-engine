@@ -44,6 +44,7 @@ screening:
   metric: nh3_conversion
   reference: {formula: Ru, name: Ruthenium}
   optimum_shift_eV: 0.0
+  peak_gas: {NH3: 1, H2: -1.5}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Ru, Ni, Rh, Co, Ir, Fe, Mo, Pt, Cu]
   basis: >
     Nitrogen binding sets the rate: the N atoms left on the surface have to pair up and leave as N2. Measured

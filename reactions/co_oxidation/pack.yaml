@@ -46,6 +46,7 @@ screening:
   metric: co_conversion
   reference: {formula: Pt, name: Platinum}
   optimum_shift_eV: 0.2
+  peak_gas: {O2: 0.5}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Pt, Pd, Rh, Ir, Ru, Au, Ag, Cu, Ni, Co]
   basis: >
     Oxygen binding sets CO oxidation activity on metals (Falsig et al., Angew. Chem. 2008): metals that hold

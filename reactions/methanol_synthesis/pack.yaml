@@ -54,6 +54,7 @@ screening:
   metric: methanol_yield
   reference: {formula: Cu, name: Copper}
   optimum_shift_eV: 0.0
+  peak_gas: {CO2: 1, CO: -1}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Cu, Zn, Ni, Ga, Pd, In, Co, Ag, Au]
   basis: >
     Oxygen binding is one of the two descriptors that place methanol catalysts on a volcano (Studt et al., Nature

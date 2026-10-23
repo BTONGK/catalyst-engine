@@ -19,7 +19,10 @@ abstract: >
   Cantera computes on its own. One check caught a fault, now fixed: the rule that picks the surface chose open faces
   on two ordered alloys. Two steps carry most of the uncertainty: the atoms an alloy shows on its surface (binding
   moves by up to {seg_max:.1f} eV when one element gathers on top) and the volcano, whose generic
-  slopes place metals that bind strongly far below where experiments find them. Read the ranking as a guide to the
+  slopes place metals that bind strongly far below where experiments find them. The volcano's peak moves with
+  temperature and gas mix, following the free energy of the gas its key molecule comes from, so the leader can change
+  across a temperature range; an exact two-step solution moves the peak {peak_follow_min:.2f} to {peak_follow_max:.2f}
+  times as far as that rule, and the likely range carries the difference. Read the ranking as a guide to the
   materials worth a closer look, and speed ratios beyond about tenfold as qualitative.
 
 how_to_read: >
@@ -285,7 +288,7 @@ steps:
     scale: performance
     takes: Each material's binding energy
     gives: A speed ratio against the catalyst to beat
-    tool: The Sabatier volcano from the reaction pack
+    tool: The reaction pack's Sabatier volcano; Cantera's gas data move its peak
     status: open
     does: >
       The Sabatier principle: a good catalyst holds the key molecule firmly enough to activate it and lightly enough
@@ -293,15 +296,24 @@ steps:
       strengthens, peaks, then falls as the surface clogs. Each reaction pack names its key molecule (the
       descriptor), where the peak sits relative to the catalyst to beat, and how steeply each side falls. The app
       places every material on that volcano by its computed descriptor.
+
+      The peak moves with temperature and gas mix. Near the top, the key molecule comes and goes between the gas and
+      the surface, so the best catalyst is the one whose grip balances how readily the gas sticks under those
+      conditions. Heat lowers the gas's free energy (its entropy counts for more), the surface empties more easily,
+      and the peak slides toward materials that bind more strongly; a richer feed slides it the other way. Each pack
+      names the gas its key molecule comes from (oxygen gas for CO oxidation, nitrogen for ammonia synthesis,
+      ammonia for SCR) and sets δ at its anchor temperature and standard feed; Cantera's GRI-Mech 3.0 data give the
+      gas's free energy everywhere else. The extra barrier, and with it the order of the materials, is computed
+      separately at every temperature.
     equations:
       - tex: 'd = \sum_a w_a \, E_\text{bind}(a)'
         words: the descriptor is the binding energy of the key molecule, or a weighted average of two.
-      - tex: 'd^* = d_\text{ref} + \delta'
-        words: the peak sits a distance δ from the catalyst to beat's own descriptor, computed in the same run; δ comes from published work (0.2 eV weaker than platinum for CO oxidation).
+      - tex: 'd^*(T, p) = d_\text{ref} + \delta + \sum_g n_g \left[\mu_g(T, p_g) - \mu_g(T_0, p_g^0)\right], \qquad \mu_g = g^\circ_g(T) + k_B T \ln\frac{p_g}{p^\circ}'
+        words: "the peak sits a distance δ from the catalyst to beat's own descriptor at the pack's anchor temperature T₀ and standard feed (δ from published work: 0.2 eV weaker than platinum for CO oxidation), and elsewhere moves with the free energy μ of the gas the key molecule comes from, n_g molecules per molecule bound (½ O₂ per oxygen atom); for CO oxidation it moves {peak_move_co:.2f} eV toward stronger binding per 100 °C of heat."
       - tex: 'h(d) = s_w \max(d - d^*, 0) + s_s \max(d^* - d, 0)'
         words: how far below the peak a material sits, falling by s_w per eV on the weak side and s_s on the strong side (0.9 and 1.0 for every reaction today).
-      - tex: '\Delta E^\ddagger = h(d) - h(d_\text{ref}), \qquad \frac{r}{r_\text{ref}} = \exp\!\left(-\frac{\Delta E^\ddagger}{k_B T}\right)'
-        words: "the extra energy barrier against the catalyst to beat sets the speed ratio; at {design_T:.0f} °C each 0.1 eV of extra barrier slows the reaction {factor_01:.0f} times."
+      - tex: '\Delta E^\ddagger(T) = h(d) - h(d_\text{ref}), \qquad \frac{r}{r_\text{ref}} = \exp\!\left(-\frac{\Delta E^\ddagger(T)}{k_B T}\right)'
+        words: "the extra energy barrier against the catalyst to beat, at each temperature, sets the speed ratio; at {design_T:.0f} °C each 0.1 eV of extra barrier slows the reaction {factor_01:.0f} times, at 400 °C {factor_01_400:.1f} times."
     assumptions:
       - id: A10
         short: One descriptor captures the mechanism
@@ -320,16 +332,16 @@ steps:
         text: Every material runs the reaction by the same route with the same attempt frequency; only the barrier changes.
         effect: A material that takes a different route falls outside the model.
       - id: A13
-        short: One peak position, from published work, at every temperature
+        short: The peak follows the free energy of the gas that feeds it
         text: >
-          Each pack cites the source of δ, found at one set of conditions, and the app keeps the peak there at every
-          temperature and gas mix. Every material shares one activation-energy shape, so the order of the materials is
-          the same at every temperature and heat only narrows the gaps: each 0.1 eV of extra barrier is a factor of
-          {factor_01:.0f} at {design_T:.0f} °C and a factor of {factor_01_400:.1f} at 400 °C.
+          Each pack cites the source of δ and holds it at its anchor temperature with its standard feed. Away from
+          there, the peak keeps one adsorption free energy for the key molecule against its gas, so it moves by that
+          gas's change in free energy (the chemical potential of ab initio thermodynamics, Reuter and Scheffler 2001).
+          The bound molecule's own heat and entropy stay out, and a gas missing from the inlet counts at standard
+          pressure. The likely range also covers a peak that moves only half as far.
         effect: >
-          Heat clears molecules off the surface, which moves the real peak toward stronger binders as temperature rises.
-          Far from the pack's source conditions strong binders rank too low, and a catalyst whose best window differs
-          from the catalyst to beat's keeps the same place in the order everywhere.
+          Where adsorption itself is slow enough to set the rate, the real peak moves less, down to about half as far;
+          products building up along the bed shift it further. Far from the anchor, the move is an extrapolation.
       - id: A14
         short: Errors shared by every material cancel
         text: The catalyst to beat runs in the same screen with the same settings, so constant offsets of the model and of DFT drop out of every comparison.
@@ -353,9 +365,34 @@ steps:
           causes are known: on platinum-group metals CO oxidation also depends on how strongly CO binds (Falsig et al.
           2008), and the strong side's slope compounds far from the peak. The next version fits each reaction's
           descriptor and slopes to published volcano data and checks them against measured activities.
+      - text: >
+          The moving peak against an exact solution. A two-step cycle (the gas sticks, the bound molecule reacts away),
+          solved at steady state with collision-rate sticking and detailed balance against the gas, for oxygen at the
+          CO oxidation feed: from {peak_check_T} °C to 200 °C hotter the gas's free energy falls {peak_gas_change_200:.2f}
+          eV, and the cycle's peak moves {peak_follow_min:.2f} to {peak_follow_max:.2f} times as far depending on the
+          mechanism. Where sticking is free of a barrier the peak follows the gas fully, as the app assumes; with the
+          app's generic slopes read as a barrier to sticking it moves {peak_follow_app:.2f} times as far, which the likely
+          range covers with its half-move case.
+        see: The exact cycle's peak against the gas
+        table:
+          table: peak_cycle
+          columns: {case: Mechanism, peak_moved_eV: "Peak moved (eV)", gas_change_eV: "Gas free energy moved (eV)", follow: Share followed}
+      - text: >
+          How far each reaction's peak moves per 100 °C above its anchor, with its standard feed: from a few meV
+          where the gases taken up and given off balance (reforming, methanol) to {peak_move_largest:.2f} eV for
+          high-temperature SCR, where ammonia at 20 ppm gives up a great deal of entropy when it sticks.
+        see: Each reaction's peak gas and move
+        table:
+          table: peak_moves
+          columns: {reaction: Reaction, gas: "Peak gas (molecules per molecule bound)", anchor_C: "Anchor (°C)", move_per_100K: "Move per 100 °C hotter (eV)"}
+      - text: >
+          The tests (tests/test_design.py) confirm the move equals the gas's free-energy change computed straight from
+          Cantera, that the anchor reproduces the fixed volcano exactly, and that the lead passes from a weak binder to
+          the catalyst to beat to a strong binder as a screen heats up.
     verdict: >
-      The order near the peak holds across volcano settings. Read ratios beyond about tenfold as "clearly slower" and
-      the far side of the volcano as qualitative.
+      The order near the peak holds across volcano settings, and the peak now moves with temperature and gas mix by a
+      rule an exact two-step solution brackets. Read ratios beyond about tenfold as "clearly slower" and the far side
+      of the volcano as qualitative.
 
   - title: Performance in a reactor
     takes: Each material's speed ratio
@@ -452,11 +489,12 @@ steps:
     does: >
       Each binding energy carries an error bar of σ = {sigma_assumed:.2f} eV; a descriptor that averages several binding
       energies carries σ times the square root of the summed squared weights. The app moves each descriptor up and
-      down by its error bar, runs the volcano and the reactor at both edges, and shows the spread as the likely
-      range.
+      down by its error bar, and at every temperature also lets the volcano's peak move fully or halfway with its
+      gas (step 6); it runs the volcano and the reactor for each case and shows the spread as the likely range. At
+      the anchor temperature the peak's two cases agree, so the range there comes from the binding energy alone.
     equations:
       - tex: '\sigma_d = \sigma \sqrt{\textstyle\sum_a w_a^2}, \qquad \frac{r}{r_\text{ref}} \in \left[\, e^{-\Delta E^\ddagger(d + \sigma_d)/k_BT},\ e^{-\Delta E^\ddagger(d - \sigma_d)/k_BT} \,\right]'
-        words: "the range runs from the descriptor's error bar on one side to the other (and includes the peak when it lies in between); at {design_T:.0f} °C, ±{sigma_assumed:.2f} eV spans a factor of {sigma_factor:.0f} either way."
+        words: "the range runs from the descriptor's error bar on one side to the other, over both cases of the peak's move (and includes the peak when it lies in between); at {design_T:.0f} °C, ±{sigma_assumed:.2f} eV spans a factor of {sigma_factor:.0f} either way."
     assumptions:
       - id: A19
         short: One error bar for every material
@@ -485,6 +523,12 @@ example:
     - "Order: {example_ranking}."
     - "Within the error bar of platinum: {example_within_error}."
     - "Rh, Ru, Ni and Co sit far out on the strong-binding side, where step 6 flags the volcano as qualitative."
+    - >
+      Across the screen's {example_t_lo:.0f} to {example_t_hi:.0f} °C the peak moves {example_peak_hot:.2f} eV toward stronger binding, and the
+      lead passes along: {example_leader_spans}. PdPt climbs to {example_pdpt_hot:.2g} times platinum's speed at
+      {example_t_hi:.0f} °C, and rhodium rises from {example_rh_design} of platinum's speed at {design_T:.0f} °C to
+      {example_rh_hot}: the direction practice shows for metals that bind strongly, at a size step 6's slopes keep
+      qualitative.
 
 budget:
   title: The error budget
@@ -518,7 +562,10 @@ trust:
         - Alloys, whose surface atoms may differ from the bulk (step 2).
         - Oxides, where UMA's two modes differ by 0.3 to 0.5 eV (Model accuracy page); run both modes.
         - Absolute temperatures and conversions, which rest on each pack's illustrative parameters (step 7).
-        - Temperatures beyond the reaction's standard test range; the app flags them.
+        - Temperatures beyond the reaction's standard test range, where the peak's move and the rates are
+          extrapolated; the app flags them.
+        - Changes of leader across temperature, which rest on the peak's move (step 6); the likely ranges show how firm
+          each is.
     - heading: Outside this method
       points:
         - Particle size, the support, promoters, and poisons such as sulfur.
@@ -552,6 +599,7 @@ references:
   - {cite: "Hammer, B., Hansen, L. B. & Nørskov, J. K. Improved adsorption energetics within density-functional theory using revised Perdew-Burke-Ernzerhof functionals (RPBE). Phys. Rev. B 59, 7413 (1999).", url: "https://doi.org/10.1103/PhysRevB.59.7413"}
   - {cite: "Abild-Pedersen, F. et al. Scaling properties of adsorption energies for hydrogen-containing molecules on transition-metal surfaces. Phys. Rev. Lett. 99, 016105 (2007).", url: "https://doi.org/10.1103/PhysRevLett.99.016105"}
   - {cite: "Bligaard, T. et al. The Brønsted–Evans–Polanyi relation and the volcano curve in heterogeneous catalysis. J. Catal. 224, 206 (2004).", url: "https://doi.org/10.1016/j.jcat.2004.02.034"}
+  - {cite: "Reuter, K. & Scheffler, M. Composition, structure, and stability of RuO2(110) as a function of oxygen pressure. Phys. Rev. B 65, 035406 (2001).", url: "https://doi.org/10.1103/PhysRevB.65.035406"}
   - {cite: "Medford, A. J. et al. From the Sabatier principle to a predictive theory of transition-metal heterogeneous catalysis. J. Catal. 328, 36 (2015).", url: "https://doi.org/10.1016/j.jcat.2014.12.033"}
   - {cite: "Falsig, H. et al. Trends in the catalytic CO oxidation activity of nanoparticles. Angew. Chem. Int. Ed. 47, 4835 (2008).", url: "https://doi.org/10.1002/anie.200801479"}
   - {cite: "Liu, D. C. & Nocedal, J. On the limited memory BFGS method for large scale optimization. Math. Program. 45, 503 (1989).", url: "https://doi.org/10.1007/BF01589116"}

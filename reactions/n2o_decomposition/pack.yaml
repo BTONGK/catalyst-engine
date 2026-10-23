@@ -44,6 +44,7 @@ screening:
   metric: n2o_conversion
   reference: {formula: Rh, name: Rhodium}
   optimum_shift_eV: 0.0
+  peak_gas: {O2: 0.5}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Rh, Ru, Ir, Pd, Pt, Co, Ni, Cu, Fe, Mn]
   basis: >
     Each N2O leaves an oxygen atom behind, so oxygen binding sets the balance: tight binders split N2O easily but

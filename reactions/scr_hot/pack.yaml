@@ -91,6 +91,7 @@ screening:
   metric: nox_conversion
   reference: {formula: V2O5, name: Vanadium oxide}
   optimum_shift_eV: 0.0
+  peak_gas: {NH3: 1}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [V, W, Mo, Ti, Fe, Cu, Ce, Mn, Nb, Zr]
   basis: >
     Ammonia has to sit on the surface's acid sites to react with NO, so ammonia binding tracks SCR activity on

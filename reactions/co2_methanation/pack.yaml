@@ -45,6 +45,7 @@ screening:
   metric: co2_conversion
   reference: {formula: Ni, name: Nickel}
   optimum_shift_eV: 0.0
+  peak_gas: {CO2: 0.5, H2O: -0.5, H2: 0.5}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Ni, Ru, Co, Fe, Rh, Pd, Pt, Cu, Mo]
   basis: >
     How strongly a metal holds carbon and oxygen, the two halves of a split CO, sets methanation rates (Bligaard

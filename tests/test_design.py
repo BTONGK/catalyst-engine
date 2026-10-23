@@ -129,12 +129,12 @@ def test_supply_labels_follow_the_scarcest_element():
 
 # ---------------------------------------------------------------- predictions
 
-def _screen(pack, bindings: dict[str, float], t_design: float) -> Path:
+def _screen(pack, bindings: dict[str, float], t_design: float, temps: list[float] | None = None) -> Path:
     """A finished screen with given O binding energies; the first material is the reference."""
     entries = [{**materials.element_entry(sym), **({"is_reference": True} if i == 0 else {})}
                for i, sym in enumerate(bindings)]
     step = screening.design_step(pack)
-    temps = [t - 273.15 for t in step.kelvin()]
+    temps = temps or [t - 273.15 for t in step.kelvin()]
     cond = {"temperatures_C": temps, "pressure_bar": step.pressure_kPa / 100, "ghsv_per_h": step.ghsv_per_h,
             "feed": dict(step.feed)}
     folder = screening.create_screen(pack, "test screen", cond, entries, "quick", "oc20", t_design)
@@ -177,6 +177,62 @@ def test_predictions_rank_by_distance_from_the_volcano_top():
     assert all(m <= b + 1e-6 for m, b in zip(curves["materials"][best.material]["mid"], curves["best_possible"]))
 
 
+def test_the_volcano_top_follows_the_free_energy_of_its_gas():
+    import cantera as ct
+
+    pack = load_pack(CO)
+    assert pack.spec.screening.peak_gas == {"O2": 0.5}
+    step = screening.design_step(pack)
+    t0 = pack.network.t_ref
+    moves = screening.peak_moves(pack, step, [t0 - 100, t0, t0 + 100])
+    assert moves[1] == pytest.approx(0.0, abs=1e-12)  # where the pack sets it: its reference temperature and feed
+    gas = ct.Solution("gri30.yaml")
+    p_o2 = step.feed_fractions(pack.network.species, pack.spec.water)[pack.network.species.index("O2")]
+    p_o2 *= step.pressure_kPa * 1000 / ct.one_atm
+
+    def mu_half_o2(t):  # eV per O atom
+        gas.TP = t, ct.one_atm
+        return 0.5 * screening.K_B * t * (gas.standard_gibbs_RT[gas.species_index("O2")] + np.log(p_o2))
+
+    assert moves[2] == pytest.approx(mu_half_o2(t0 + 100) - mu_half_o2(t0), rel=1e-6)
+    assert moves[2] < -0.05 < 0.05 < moves[0]  # heat moves the top toward stronger binding, cooling toward weaker
+    leaner = step.model_copy(update={"feed": {**step.feed, "O2": "0.5 %"}})
+    assert screening.peak_moves(pack, leaner, [t0])[0] < 0  # less oxygen: the surface empties more easily
+
+
+def test_the_leader_can_change_with_temperature_and_the_anchor_keeps_the_fixed_volcano():
+    pack = load_pack(CO)
+    spec = pack.spec.screening
+    ref = 1.5
+    top = ref + spec.optimum_shift_eV
+    anchor = pack.network.t_ref - 273.15
+    folder = _screen(pack, {"Pt": ref, "Ag": top, "Pd": top - 0.4}, t_design=anchor,
+                     temps=list(np.linspace(100.0, 500.0, 9)))
+    preds, curves = screening.predict(pack, screening.read_job(folder), screening.read_results(folder))
+    by = {p.formula: p for p in preds}
+    # at the anchor the top sits where the pack puts it, so the ranking matches the fixed volcano
+    assert by["Pd"].shift == pytest.approx(spec.barrier_shift(top - 0.4, ref))
+    assert [p.formula for p in preds][0] == "Ag"
+    # the stronger binder takes over as the top moves toward it with heat
+    assert curves["leaders"][0] == by["Ag"].material and curves["leaders"][-1] == by["Pd"].material
+    spans = screening.leader_spans(curves, {p.material: p.formula for p in preds})
+    # the top sweeps from Ag past Pt to Pd, so the lead passes in order of binding strength
+    assert [s[0] for s in spans] == ["Ag", "Pt", "Pd"] and spans[0][1] == 100.0 and spans[-1][2] == 500.0
+    assert curves["peak"][0] > top > curves["peak"][-1]
+    # the likely range holds the model and widens away from the anchor
+    hot = curves["materials"][by["Pd"].material]
+    assert all(lo <= mid <= hi for lo, mid, hi in zip(hot["lo"], hot["mid"], hot["hi"]))
+
+
+def test_a_barrier_shift_per_temperature_matches_one_shift_for_all():
+    pack = load_pack(CO)
+    step = screening.design_step(pack)
+    n = len(step.kelvin())
+    one, each = (screening.metric_curves(pack, step, [screening.shifted_params(pack, s)], pack.spec.screening.metric)
+                 for s in (0.1, np.full(n, 0.1)))
+    assert np.allclose(one, each)
+
+
 def test_screens_list_newest_first_and_report_their_state():
     pack = load_pack(SCREENABLE[0])
     folder = _screen(pack, {"Pt": 1.5, "Pd": 1.4}, t_design=300.0)
@@ -214,6 +270,8 @@ def test_builder_writes_a_calibrated_pack_that_loads(tmp_path):
     pid = _new_reaction(tmp_path)
     pack = load_pack(tmp_path / pid)
     assert pack.spec.screening.descriptor == {"C": 0.5, "O": 0.5}
+    # carbon from the methane it feeds (leaving hydrogen), oxygen from its CO2 (leaving CO)
+    assert pack.spec.screening.peak_gas == {"CH4": 0.5, "H2": -1.0, "CO2": 0.5, "CO": -0.5}
     assert set(pack.spec.species) == {"CH4", "CO2", "CO", "H2", "H2O", "N2"}
     step = pack.protocols["design-v1"].steps[0]
     one = step.model_copy(update={"temperatures_C": [650.0], "temperatures_F": None, "temperatures_K": None})

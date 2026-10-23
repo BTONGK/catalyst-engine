@@ -62,6 +62,21 @@
   "example_leader": "Pt",
   "example_ranking": "Pt, PdPt, Pd, CuPd, Ag, CuPt, Cu3Au, Cu, Ir, Au, Rh, Ni, Ru, Co",
   "example_within_error": "PdPt",
+  "peak_follow_min": 0.55,
+  "peak_follow_max": 1.06,
+  "peak_follow_app": 0.55,
+  "peak_follow_low": 0.5,
+  "peak_gas_change_200": 0.26,
+  "peak_check_T": 180,
+  "peak_move_largest": 0.34,
+  "peak_move_co": 0.13,
+  "example_leader_spans": "Ag from 50 to 90 \u00b0C; Pt from 100 to 350 \u00b0C",
+  "example_t_lo": 50.0,
+  "example_t_hi": 350.0,
+  "example_pdpt_hot": 0.45,
+  "example_rh_hot": "1 in 170 million",
+  "example_rh_design": "1 in 520 billion",
+  "example_peak_hot": 0.38,
   "reactor_exact_max_gap": 4e-05,
   "reactor_exact_pct": 0.004,
   "balance_worst": 9e-09,
@@ -1370,6 +1385,94 @@
     "range_low": 1.1e-25,
     "range_high": 2.4e-22,
     "metric_at_design": 0.0
+   }
+  ],
+  "peak_cycle": [
+   {
+    "case": "Adsorption free of barrier, removal slope 0.5",
+    "peak_moved_eV": -0.258,
+    "gas_change_eV": -0.258,
+    "follow": 1.0
+   },
+   {
+    "case": "Adsorption free of barrier, removal slope 0.9",
+    "peak_moved_eV": -0.22,
+    "gas_change_eV": -0.258,
+    "follow": 0.85
+   },
+   {
+    "case": "Adsorption with a barrier, slopes 0.5 and 0.5",
+    "peak_moved_eV": -0.273,
+    "gas_change_eV": -0.258,
+    "follow": 1.06
+   },
+   {
+    "case": "Adsorption with a barrier, slopes 0.9 and 1.0 (the app's)",
+    "peak_moved_eV": -0.143,
+    "gas_change_eV": -0.258,
+    "follow": 0.55
+   }
+  ],
+  "peak_moves": [
+   {
+    "reaction": "High-temperature SCR of NOx with NH3",
+    "gas": "+1 NH3",
+    "anchor_C": 566,
+    "move_per_100K": -0.341
+   },
+   {
+    "reaction": "N2O removal",
+    "gas": "+0.5 O2",
+    "anchor_C": 400,
+    "move_per_100K": -0.137
+   },
+   {
+    "reaction": "Gas-engine oxidation catalyst (CO, HCHO, CH4, NO)",
+    "gas": "+0.5 O2",
+    "anchor_C": 427,
+    "move_per_100K": -0.131
+   },
+   {
+    "reaction": "CO oxidation",
+    "gas": "+0.5 O2",
+    "anchor_C": 180,
+    "move_per_100K": -0.127
+   },
+   {
+    "reaction": "CO2 methanation",
+    "gas": "+0.5 CO2 -0.5 H2O +0.5 H2",
+    "anchor_C": 330,
+    "move_per_100K": -0.11
+   },
+   {
+    "reaction": "Ammonia synthesis",
+    "gas": "+0.5 N2",
+    "anchor_C": 400,
+    "move_per_100K": -0.099
+   },
+   {
+    "reaction": "Water-gas shift",
+    "gas": "+1 H2O -1 H2",
+    "anchor_C": 220,
+    "move_per_100K": -0.06
+   },
+   {
+    "reaction": "Ammonia cracking",
+    "gas": "+1 NH3 -1.5 H2",
+    "anchor_C": 400,
+    "move_per_100K": -0.014
+   },
+   {
+    "reaction": "Steam methane reforming",
+    "gas": "+0.5 CH4 -1.5 H2 +0.5 H2O",
+    "anchor_C": 600,
+    "move_per_100K": -0.005
+   },
+   {
+    "reaction": "Methanol from CO2",
+    "gas": "+1 CO2 -1 CO",
+    "anchor_C": 240,
+    "move_per_100K": -0.003
    }
   ],
   "reactor_exact": [

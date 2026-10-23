@@ -246,6 +246,86 @@ tables["example_ranking"] = [{"rank": p.rank, "material": p.formula, "descriptor
                               "range_low": float(f"{p.rate_range[0]:.2g}"), "range_high": float(f"{p.rate_range[1]:.2g}"),
                               "metric_at_design": r(p.metric_at_design)} for p in preds if p.rank]
 
+# ---------------------------------------------------------------- the volcano's top across temperature
+# (1) the rule against an exact two-step cycle, G <-> X* (adsorption), X* -> product (removal), solved at steady
+# state for several mechanisms: how far its peak moves from the anchor to 200 K hotter, over the gas's own change
+KB_J, H_EV, AMU = 1.380649e-23, 4.135668e-15, 1.660539e-27
+co_pack = load_pack(job["request"]["pack"])
+gas_id, n_gas = next(iter(co_pack.spec.screening.peak_gas.items()))
+std = screening.design_step(co_pack)
+x_gas = std.feed_fractions(co_pack.network.species, co_pack.spec.water)[co_pack.network.species.index(gas_id)]
+p_gas = x_gas * std.pressure_kPa * 1000.0
+mass = sum(n * {"O": 15.999, "N": 14.007, "C": 12.011, "H": 1.008}[el] for el, n in element_counts(gas_id).items())
+
+
+def cycle_peak(t_k: float, alpha: float, beta: float, e1: float, offset: float) -> float:
+    d = np.linspace(-3.0, 3.0, 60001)
+    mu_gas = float(screening.gas_potential(co_pack, std, [t_k])[0])
+    flux = p_gas * 6.7e-20 / math.sqrt(2 * math.pi * mass * AMU * KB_J * t_k)  # Hertz-Knudsen, per site
+    ln_a = math.log(flux) - np.maximum(0.0, e1 + alpha * d) / (screening.K_B * t_k)
+    ln_b = ln_a + (d + offset - mu_gas) / (screening.K_B * t_k)  # detailed balance with the gas
+    ln_c = math.log(screening.K_B * t_k / H_EV) - np.maximum(0.0, 0.8 - beta * d) / (screening.K_B * t_k)
+    ln_r = ln_a + ln_c - np.logaddexp(np.logaddexp(ln_a, ln_b), ln_c)
+    return float(d[int(np.argmax(ln_r))])
+
+
+t0 = co_pack.network.t_ref
+gas_change = float(np.diff(screening.gas_potential(co_pack, std, [t0, t0 + 200.0]))[0])
+cycle_rows = []
+for case, alpha, beta, e1 in (("Adsorption free of barrier, removal slope 0.5", 0.0, 0.5, 0.0),
+                              ("Adsorption free of barrier, removal slope 0.9", 0.0, 0.9, 0.0),
+                              ("Adsorption with a barrier, slopes 0.5 and 0.5", 0.5, 0.5, 0.3),
+                              ("Adsorption with a barrier, slopes 0.9 and 1.0 (the app's)", 0.9, 1.0, 0.6)):
+    moved = cycle_peak(t0 + 200.0, alpha, beta, e1, -1.0) - cycle_peak(t0, alpha, beta, e1, -1.0)
+    cycle_rows.append({"case": case, "peak_moved_eV": r(moved, 3), "gas_change_eV": r(gas_change, 3),
+                       "follow": r(moved / gas_change, 2)})
+tables["peak_cycle"] = cycle_rows
+values["peak_follow_min"] = min(x["follow"] for x in cycle_rows)
+values["peak_follow_max"] = max(x["follow"] for x in cycle_rows)
+values["peak_follow_app"] = cycle_rows[-1]["follow"]
+values["peak_follow_low"] = screening.PEAK_FOLLOW[1]
+values["peak_gas_change_200"] = r(-gas_change, 2)
+values["peak_check_T"] = round(t0 - 273.15)
+
+# (2) every pack: the gas its top follows, and how far the top moves 100 K above its anchor, with its standard feed
+move_rows = []
+for pid in list_packs():
+    pk = load_pack(pid)
+    if pk.spec.screening is None:
+        continue
+    st_ = screening.design_step(pk)
+    ta = pk.network.t_ref
+    m = screening.peak_moves(pk, st_, [ta + 100.0])[0]
+    move_rows.append({"reaction": pk.spec.name, "gas": " ".join(f"{n:+g} {g}" for g, n in pk.spec.screening.peak_gas.items()),
+                      "anchor_C": round(ta - 273.15), "move_per_100K": r(m, 3)})
+tables["peak_moves"] = sorted(move_rows, key=lambda x: x["move_per_100K"])
+values["peak_move_largest"] = r(-min(x["move_per_100K"] for x in move_rows), 2)
+values["peak_move_co"] = r(-screening.peak_moves(co_pack, std, [t0 + 100.0])[0], 2)
+
+# (3) the example across its temperatures
+_, ex_curves = screening.predict(pack, job, results)
+labels = {p.material: p.formula for p in preds}
+spans = screening.leader_spans(ex_curves, labels)
+values["example_leader_spans"] = "; ".join(f"{n} from {a:.0f} to {b:.0f} °C" for n, a, b in spans)
+ex_t = ex_curves["T_C"]
+ratio_at = {p.formula: ex_curves["materials"][p.material]["ratio"] for p in done}
+values["example_t_lo"], values["example_t_hi"] = ex_t[0], ex_t[-1]
+values["example_pdpt_hot"] = float(f"{ratio_at['PdPt'][-1]:.2g}")
+
+
+def one_in(v: float) -> str:
+    """A small speed ratio in words: 1.9e-12 reads "1 in 520 billion"."""
+    n = 1 / v
+    for size, word in ((1e12, "trillion"), (1e9, "billion"), (1e6, "million"), (1.0, "")):
+        if n >= size:
+            return f"1 in {float(f'{n / size:.2g}'):,g} {word}".strip()
+    return f"{v:.2g}"
+
+
+values["example_rh_hot"] = one_in(ratio_at["Rh"][-1])
+values["example_rh_design"] = one_in(next(p for p in done if p.formula == "Rh").rate_ratio)
+values["example_peak_hot"] = r(ex_curves["peak"][0] - ex_curves["peak"][-1], 2)  # toward stronger binding
+
 # ---------------------------------------------------------------- the reactor
 # (1) the integrator against the exact plug-flow answer for one first-order reaction with volume change
 co = load_pack(job["request"]["pack"])

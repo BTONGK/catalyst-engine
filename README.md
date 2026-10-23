@@ -116,6 +116,7 @@ screening:
   metric: co_conversion
   reference: {formula: Pt, name: Platinum}
   optimum_shift_eV: 0.2       # the top binds 0.2 eV more weakly than the reference
+  peak_gas: {O2: 0.5}         # the gas each O comes from; the top follows its free energy with temperature
   suggested_elements: [Pt, Pd, Rh, Ir, Ru, Au, Ag, Cu, Ni, Co]
 ```
 

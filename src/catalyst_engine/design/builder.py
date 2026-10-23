@@ -14,6 +14,7 @@ import yaml
 from catalyst_engine.chem import thermo
 from catalyst_engine.chem.network import parse_equation
 from catalyst_engine.design import screening
+from catalyst_engine.design.spec import suggest_peak_gas
 from catalyst_engine.packs import PACKS_DIR, load_pack, user_packs_dir
 
 # Common names for gases whose thermo id differs from the formula people type
@@ -104,6 +105,8 @@ def create_reaction(*, name: str, category: str, summary: str, wanted: str, side
         r = reactants(eq)
         pathways[f"side_{i}"] = {"equation": eq, "role": "side",
                                  "rate": {"key": r[0], "orders": {r[0]: 1}, "ln_k_ref": -4.0, "Ea_kJ": float(Ea_kJ) + 30}}
+    weights = {a: round(1.0 / len(descriptor), 3) for a in descriptor}
+    peak_gas = suggest_peak_gas(weights, set(species), {s for s, v in feed.items() if v})
     metric_spec = {"kind": metric["kind"], "species": metric["species"],
                    **({"denominator": metric["denominator"]} if metric["kind"] == "yield" else {}),
                    "description": metric.get("description") or (
@@ -117,8 +120,9 @@ def create_reaction(*, name: str, category: str, summary: str, wanted: str, side
         "reference_temperature_K": round(half_C + 273.15, 2),
         **({"water": "H2O"} if "H2O" in species else {}),
         "species": species, "pathways": pathways, "metrics": {"main": metric_spec},
-        "screening": {"descriptor": {a: round(1.0 / len(descriptor), 3) for a in descriptor}, "pathways": ["main"],
+        "screening": {"descriptor": weights, "pathways": ["main"],
                       "metric": "main", "reference": {"formula": reference_formula.strip(), "name": reference_name.strip()},
+                      **({"peak_gas": peak_gas} if peak_gas else {}),
                       "suggested_elements": suggested, "basis": basis.strip() or
                       f"The surface's grip on {', '.join(descriptor)} sets the rate; the top of the volcano sits at "
                       f"the catalyst to beat."},

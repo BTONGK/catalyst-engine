@@ -5,10 +5,12 @@ reaction, conditions, materials), and what the worker writes: status.json, resul
 
 Prediction, per material:
   1. descriptor  = weighted sum of its lowest binding energies (the pack's screening descriptor)
-  2. barrier shift = the volcano's height difference from the reference catalyst (ScreeningSpec.barrier_shift)
+  2. barrier shift = the volcano's height difference from the reference catalyst (ScreeningSpec.barrier_shift),
+     at each temperature: the volcano's top follows the free energy of the gas the adsorbates exchange with
+     (peak_moves), so the shift, and with it the order of the materials, can change with temperature
   3. the pack's screened pathways run with that extra barrier: Ea + shift, and k(T_ref) x exp(-shift / kT_ref)
   4. the reactor model turns those rates into the pack's metric across the user's temperatures
-The descriptor's uncertainty gives each prediction a low and a high case.
+The descriptor's uncertainty, and a top that follows the gas only halfway, give each prediction a low and a high case.
 """
 
 from __future__ import annotations
@@ -27,15 +29,19 @@ from pathlib import Path
 import numpy as np
 
 from catalyst_engine.chem.reactor import Conditions, outlet
+from catalyst_engine.chem import thermo
 from catalyst_engine.design import elements
 from catalyst_engine.packs import Pack, StepSpec
-from catalyst_engine.units import R
+from catalyst_engine.units import P_ATM, R
 
 WORKER = Path(__file__).with_name("uma_worker.py")
 EXAMPLES = Path(__file__).resolve().parents[3] / "examples" / "screens"  # finished screens shipped with the app
 EV_KJ = 96.485  # kJ/mol per eV
 K_B = 8.617333e-5  # eV/K
 RUNNING = ("queued", "loading", "running")
+# share of the peak gas's free-energy change the volcano's top follows: the model (adsorption near equilibrium at
+# the top), and the low case for adsorption slow enough to set the rate (experiments/design_method/model_checks.py)
+PEAK_FOLLOW = (1.0, 0.5)
 NONMETALS = {"H", "B", "C", "N", "O", "F", "Si", "P", "S", "Cl", "Se", "Br", "I", "Te"}
 
 
@@ -179,15 +185,67 @@ def step_for(conditions: dict) -> StepSpec:
                     pressure_kPa=conditions["pressure_bar"] * 100.0, temperatures_C=conditions["temperatures_C"])
 
 
-def shifted_params(pack: Pack, shift_eV: float, base: dict[str, float] | None = None) -> dict[str, float]:
-    """The pack's parameters with the screened pathways' barrier raised by `shift_eV` (negative lowers it)."""
+def gas_potential(pack: Pack, step: StepSpec, temperatures_K, fallback: StepSpec | None = None) -> np.ndarray:
+    """Free energy (eV per unit of descriptor) of the pack's peak gas at each temperature, sum of n x mu with
+    mu = g°(T) + kT ln(p / p°) at the step's inlet partial pressures. A gas missing from the inlet takes its
+    pressure from `fallback`, or counts at p° when that lacks it too."""
+    spec = pack.spec.screening
+    t = np.atleast_1d(np.asarray(temperatures_K, dtype=float))
+    if not spec.peak_gas:
+        return np.zeros(len(t))
+    names = pack.network.species
+    y = step.feed_fractions(names, pack.spec.water)
+    y_back = fallback.feed_fractions(names, pack.spec.water) if fallback is not None else np.zeros(len(names))
+    gases = list(spec.peak_gas)
+    ids = [pack.spec.species[g].thermo_id for g in gases]
+    ln_p = []
+    for g in gases:
+        i = names.index(g)
+        if y[i] > 0:
+            p_pa = y[i] * step.pressure_kPa * 1000.0
+        elif y_back[i] > 0:
+            p_pa = y_back[i] * fallback.pressure_kPa * 1000.0
+        else:
+            p_pa = P_ATM  # the standard pressure of the thermo data
+        ln_p.append(np.log(p_pa / P_ATM))
+    n = np.array([spec.peak_gas[g] for g in gases])
+    return np.array([K_B * tk * float(n @ (thermo.standard_gibbs_rt(ids, tk) + np.array(ln_p))) for tk in t])
+
+
+def peak_moves(pack: Pack, step: StepSpec, temperatures_K) -> np.ndarray:
+    """How far the volcano's top sits from where the pack sets it (eV, negative = toward stronger binding), at each
+    temperature with the step's feed. The pack sets it at its reference temperature with its standard feed; the top
+    sits where the key adsorbate's free energy against its gas holds one value, so it moves with that gas's."""
+    standard = design_step(pack)
+    here = gas_potential(pack, step, temperatures_K, fallback=standard)
+    return here - gas_potential(pack, standard, [pack.network.t_ref])[0]
+
+
+def shift_cases(pack: Pack, descriptor: float, reference: float, move: float) -> tuple[float, float, float]:
+    """Extra barrier over the reference with the top moved by `move`: the model, and the lowest and highest over
+    the descriptor's error bar and a top that follows its gas fully or halfway."""
+    spec = pack.spec.screening
+    sigma = spec.sigma_descriptor
+    cases = [spec.barrier_shift(d, reference, f * move) for d in (descriptor - sigma, descriptor, descriptor + sigma)
+             for f in PEAK_FOLLOW]
+    for f in PEAK_FOLLOW:
+        top = reference + spec.optimum_shift_eV + f * move
+        if descriptor - sigma < top < descriptor + sigma:
+            cases.append(spec.barrier_shift(top, reference, f * move))
+    return spec.barrier_shift(descriptor, reference, move), min(cases), max(cases)
+
+
+def shifted_params(pack: Pack, shift_eV, base: dict[str, float] | None = None) -> dict:
+    """The pack's parameters with the screened pathways' barrier raised by `shift_eV` (negative lowers it): one
+    number, or one per temperature of the step the parameters will run (an array)."""
     p = dict(base or pack.network.parameters())
     t_ref = pack.network.t_ref
+    one = np.ndim(shift_eV) == 0
     for pw in pack.spec.screening.pathways:
         ea = p[f"{pw}.Ea_kJ"]
-        new = float(np.clip(ea + shift_eV * EV_KJ, 5.0, 300.0))
-        p[f"{pw}.Ea_kJ"] = new
-        p[f"{pw}.ln_k_ref"] = float(np.clip(p[f"{pw}.ln_k_ref"] - (new - ea) * 1000.0 / (R * t_ref), -30.0, 30.0))
+        new = np.clip(ea + np.asarray(shift_eV, dtype=float) * EV_KJ, 5.0, 300.0)
+        ln_k = np.clip(p[f"{pw}.ln_k_ref"] - (new - ea) * 1000.0 / (R * t_ref), -30.0, 30.0)
+        p[f"{pw}.Ea_kJ"], p[f"{pw}.ln_k_ref"] = (float(new), float(ln_k)) if one else (new, ln_k)
     return p
 
 
@@ -201,14 +259,16 @@ def fast_params(pack: Pack, base: dict[str, float] | None = None, boost: float =
     return p
 
 
-def metric_curves(pack: Pack, step: StepSpec, param_sets: list[dict[str, float]], metric: str) -> np.ndarray:
-    """The metric for each parameter set at each of the step's temperatures: (sets, temperatures)."""
+def metric_curves(pack: Pack, step: StepSpec, param_sets: list[dict], metric: str) -> np.ndarray:
+    """The metric for each parameter set at each of the step's temperatures: (sets, temperatures). A parameter
+    may hold one value or one per temperature."""
     y = step.feed_fractions(pack.network.species, pack.spec.water)
     t = np.array(step.kelvin())
     m, b = len(param_sets), len(t)
     cond = Conditions(np.tile(t, m), np.full(m * b, step.pressure_kPa * 1000.0), np.full(m * b, step.ghsv_per_h),
                       np.tile(y, (m * b, 1)))
-    params = {k: np.repeat([ps[k] for ps in param_sets], b) for k in param_sets[0]}
+    params = {k: np.concatenate([np.broadcast_to(np.asarray(ps[k], dtype=float), (b,)) for ps in param_sets])
+              for k in param_sets[0]}
     with np.errstate(over="ignore", invalid="ignore", divide="ignore"):
         try:
             out = outlet(pack.network, params, cond)
@@ -328,39 +388,47 @@ def predict(pack: Pack, job: dict, results: list[dict], n_temperatures: int = 31
         return preds, curves
 
     t_design = req["design_temperature_C"] + 273.15
-    sigma = spec.sigma_descriptor
-    for p in preds:
-        if p.descriptor is None:
+    step = step_for({**req["conditions"], "temperatures_C": grid})
+    design_step_ = step_for({**req["conditions"], "temperatures_C": [req["design_temperature_C"]]})
+    temps = np.array(step.kelvin())
+    moves = peak_moves(pack, step, temps)
+    move_design = float(peak_moves(pack, design_step_, [t_design])[0])
+    curves["peak"] = (ref.descriptor + spec.optimum_shift_eV + moves).tolist()
+    done = [p for p in preds if p.descriptor is not None]
+    by_t: dict[str, np.ndarray] = {}  # material -> (3, temperatures): extra barrier, model / low / high
+    for p in done:
+        if p.is_reference:
+            p.shift, p.shift_range = 0.0, (0.0, 0.0)
+            by_t[p.material] = np.zeros((3, len(temps)))
             continue
-        cases = [spec.barrier_shift(d, ref.descriptor) for d in (p.descriptor - sigma, p.descriptor, p.descriptor + sigma)]
-        top = ref.descriptor + spec.optimum_shift_eV
-        if p.descriptor - sigma < top < p.descriptor + sigma:
-            cases.append(spec.barrier_shift(top, ref.descriptor))
-        p.shift = 0.0 if p.is_reference else cases[1]
-        p.shift_range = (0.0, 0.0) if p.is_reference else (min(cases), max(cases))
+        p.shift, lo, hi = shift_cases(pack, p.descriptor, ref.descriptor, move_design)
+        p.shift_range = (lo, hi)
+        by_t[p.material] = np.array([shift_cases(pack, p.descriptor, ref.descriptor, m) for m in moves]).T
+    for p in done:
         p.rate_ratio = float(np.exp(-p.shift / (K_B * t_design)))
         p.rate_range = (float(np.exp(-p.shift_range[1] / (K_B * t_design))),
                         float(np.exp(-p.shift_range[0] / (K_B * t_design))))
 
-    step = step_for({**req["conditions"], "temperatures_C": grid})
-    design_step_ = step_for({**req["conditions"], "temperatures_C": [req["design_temperature_C"]]})
-    done = [p for p in preds if p.shift is not None]
-    sets = [fast_params(pack)] + [shifted_params(pack, s) for p in done
-                                  for s in (p.shift, p.shift_range[0], p.shift_range[1])]
+    design_cases = {p.material: (p.shift, *p.shift_range) for p in done}
+    sets = [fast_params(pack)] + [shifted_params(pack, by_t[p.material][k]) for p in done for k in range(3)]
     values = metric_curves(pack, step, sets, spec.metric)
-    at_design = metric_curves(pack, design_step_, sets, spec.metric)[:, 0]
+    at_design = metric_curves(pack, design_step_, [fast_params(pack)] + [
+        shifted_params(pack, design_cases[p.material][k]) for p in done for k in range(3)], spec.metric)[:, 0]
     best = values[0]
     curves["best_possible"] = best.tolist()
     for i, p in enumerate(done):
         mid, lo, hi = values[1 + 3 * i: 4 + 3 * i]
         curves["materials"][p.material] = {"mid": mid.tolist(), "lo": np.minimum(lo, hi).tolist(),
-                                           "hi": np.maximum(lo, hi).tolist()}
+                                           "hi": np.maximum(lo, hi).tolist(),
+                                           "ratio": np.exp(-by_t[p.material][0] / (K_B * temps)).tolist()}
         d_mid, d_a, d_b = at_design[1 + 3 * i: 4 + 3 * i]
         p.metric_at_design = float(d_mid)
         p.metric_range = (float(min(d_a, d_b)), float(max(d_a, d_b)))
         reached = [t for t, v, b in zip(grid, mid, best) if b > 0 and v >= 0.5 * b]
         p.t_half_C = float(reached[0]) if reached else None
     curves["reference"] = ref.material
+    # the fastest material at each temperature: the order can change as the volcano's top moves
+    curves["leaders"] = [min(done, key=lambda p: by_t[p.material][0][j]).material for j in range(len(temps))]
     ranked = sorted(done, key=lambda p: p.shift)
     for n, p in enumerate(ranked, start=1):
         p.rank = n
@@ -368,11 +436,24 @@ def predict(pack: Pack, job: dict, results: list[dict], n_temperatures: int = 31
     return preds, curves
 
 
+def leader_spans(curves: dict, labels: dict[str, str]) -> list[tuple[str, float, float]]:
+    """The fastest material across the screen's temperatures as (label, from °C, to °C) runs, coolest first."""
+    spans: list[tuple[str, float, float]] = []
+    for t, m in zip(curves.get("T_C", []), curves.get("leaders", [])):
+        if spans and spans[-1][0] == labels.get(m, m):
+            spans[-1] = (spans[-1][0], spans[-1][1], t)
+        else:
+            spans.append((labels.get(m, m), t, t))
+    return spans
+
+
 def volcano_line(pack: Pack, reference_descriptor: float, span: float = 1.5, n: int = 61,
-                 t_design_C: float = 300.0) -> tuple[np.ndarray, np.ndarray]:
-    """The volcano itself: rate over the reference's against the descriptor, for the chart."""
+                 t_design_C: float = 300.0, move: float = 0.0) -> tuple[np.ndarray, np.ndarray]:
+    """The volcano itself at one temperature: rate over the reference's against the descriptor, with the top moved
+    by `move` (peak_moves at that temperature), for the chart."""
     spec = pack.spec.screening
-    top = reference_descriptor + spec.optimum_shift_eV
+    top = reference_descriptor + spec.optimum_shift_eV + move
     x = np.linspace(top - span, top + span, n)
-    y = np.array([np.exp(-spec.barrier_shift(v, reference_descriptor) / (K_B * (t_design_C + 273.15))) for v in x])
+    y = np.array([np.exp(-spec.barrier_shift(v, reference_descriptor, move) / (K_B * (t_design_C + 273.15)))
+                  for v in x])
     return x, y

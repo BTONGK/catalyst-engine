@@ -93,6 +93,9 @@ class PackSpec(_Strict):
                 raise ValueError(f"screening names unknown pathways {sorted(unknown)}")
             if self.screening.metric not in self.metrics:
                 raise ValueError(f"screening metric {self.screening.metric!r} is not a pack metric")
+            unknown = set(self.screening.peak_gas) - set(self.species)
+            if unknown:
+                raise ValueError(f"screening peak_gas names undeclared species {sorted(unknown)}")
         return self
 
     def network_spec(self) -> NetworkSpec:

@@ -44,6 +44,7 @@ screening:
   metric: co_conversion
   reference: {formula: Cu, name: Copper}
   optimum_shift_eV: 0.0
+  peak_gas: {H2O: 1, H2: -1}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Cu, Au, Ag, Ni, Co, Fe, Pt, Pd, Zn]
   basis: >
     Oxygen binding sets low-temperature shift activity (Schumacher et al., J. Catal. 2005): water has to split on

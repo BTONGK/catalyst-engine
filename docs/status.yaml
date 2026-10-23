@@ -23,6 +23,15 @@ proof_sequence:
 recent:
   - date: 2026-10-23
     item: >
+      Each volcano's peak now moves with temperature and gas mix. It follows the free energy of the gas its key
+      molecule comes from (ab initio thermodynamics, Reuter and Scheffler 2001, with Cantera's gas data), so heat
+      moves it toward stronger binding: 0.13 eV per 100 °C for CO oxidation, 0.34 eV for hot SCR at 20 ppm NH3. An
+      exact two-step check moves the peak 0.55 to 1.06 times that far, and the likely range carries the half move.
+      Results names the leader in each part of your temperature range, and the Volcano tab has a slider to draw
+      the volcano at any temperature. Each reaction declares its gas in `peak_gas`; reactions added in the app get
+      one automatically.
+  - date: 2026-10-23
+    item: >
       The Manual's Methodology tab: a method paper for the design app. Nine steps, each with its equations in
       symbols and in words, the assumptions it rests on (A1–A19, collected in one table), how it was checked and a
       verdict; an error budget (0.11 eV combined against the 0.15 eV error bar), when to trust a result, the
@@ -95,12 +104,17 @@ next_steps:
     why: >
       The Manual's "How to use the app" tab walks through it. Keep the temperature range near the reaction's
       standard test; the app flags ranges beyond it.
-  - step: Move each volcano's peak with temperature and gas mix
+  - step: Pick the next design-app step, zeolites (Cu-chabazite first) or per-reaction volcano slopes
+    owner: You
+    why: >
+      Zeolites carry their activity on single copper or iron ions inside the pores, so they take a cluster model
+      and their own descriptor; the Materials Project holds 322 silica frameworks, 33 within the app's size limit.
+      Per-reaction slopes bring metals that bind strongly closer to practice. Either one is ready to start.
+  - step: Add zeolite catalysts, starting with Cu-chabazite for SCR
     owner: Claude
     why: >
-      Today every reaction's peak holds still, so the order of the materials is the same at every temperature.
-      Heat clears molecules off the surface and moves the real peak toward stronger binders, which is how a
-      different catalyst can lead in a hotter window. Building now.
+      Copper and iron zeolites run most diesel SCR today. A framework from the Materials Project, an exchanged
+      copper ion and its own volcano put them on the same ranking as the metals and oxides.
   - step: Set each reaction's volcano slopes from published scaling relations
     owner: Claude
     why: >
@@ -171,7 +185,8 @@ phases:
       Binding energies from open atomistic models (UMA), Materials Project stability, OCx24 benchmark.
       First check done: UMA ranks candidates well (Model accuracy page). Built: the catalyst design app, for any
       reaction with a screening block (Design a catalyst, Results, Materials, Reactions pages), and its method
-      paper with a check behind every step (Manual, Methodology tab).
+      paper with a check behind every step (Manual, Methodology tab). Each volcano's peak follows temperature and
+      gas mix, so the leader can change across a temperature range.
   - id: 6
     name: Agents
     status: planned
@@ -181,6 +196,14 @@ phases:
       so far (Literature check page).
 
 findings:
+  - title: The catalyst to beat changes with temperature
+    detail: >
+      With the peak following the gas, the example's CO oxidation screen hands the lead from Ag (50–90 °C) to Pt
+      (100–350 °C). Across that range the peak moves 0.38 eV toward stronger binding; PdPt climbs to 0.45 times
+      platinum's speed at 350 °C, and rhodium from 1 in 520 billion to 1 in 170 million. The order at 180 °C stays
+      as before. Far outside a reaction's test window the ratios grow large and read as direction only: a hot-SCR
+      screen at 0–290 °C puts Cu far ahead of V2O5, well below the pack's 343–621 °C window.
+    source: Example screen, examples/screens/; Manual, Methodology tab, step 6 (2026-10-23).
   - title: For CO oxidation the example screen keeps platinum on top, with PdPt inside its error bar
     detail: >
       Fourteen materials, 56 relaxations, 6 minutes on this Mac (recomputed after the surface fix). PdPt, now with a

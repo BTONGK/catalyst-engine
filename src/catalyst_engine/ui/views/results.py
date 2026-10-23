@@ -155,6 +155,12 @@ def body() -> None:
         values = [v for c in curves["materials"].values() for v in c["mid"]] + list(curves["best_possible"] or [])
         common.range_notes(pack, metric.kind, metric.species, min(req["conditions"]["temperatures_C"]), t_top,
                            float(np.nanmin(values)) if values else 0.0)
+        spans = screening.leader_spans(curves, {p.material: ref_name if p.is_reference else p.formula for p in preds})
+        if len(spans) > 1:
+            st.info("The leader changes with temperature: " + "; ".join(
+                f"{name} from {a:.0f} to {b:.0f} °C" for name, a, b in spans) + ". Heat moves the volcano's top "
+                "toward materials that bind more strongly; the Volcano tab shows it at each temperature.",
+                icon=":material/thermostat:")
 
     tabs = st.tabs(["Ranking", "Performance curves", "Volcano", "3D structures", "Details"])
     with tabs[0]:
@@ -183,7 +189,8 @@ def body() -> None:
                                     "Likely range": st.column_config.TextColumn(width="medium"),
                                     "Speed ratio": None})
         st.caption(f"Speed: the predicted reaction rate at {t_cmp:.0f} °C relative to {ref_name}. Likely range: from "
-                   f"the model's typical error in binding energy (±{spec.sigma_eV:.2f} eV). Binding: how strongly the "
+                   f"the model's typical error in binding energy (±{spec.sigma_eV:.2f} eV) and from how far the "
+                   "volcano's top moves with temperature. Binding: how strongly the "
                    "surface holds the molecules that decide this reaction (more negative is stronger). Stability: "
                    "0 is the most stable form of that composition.")
     with tabs[1]:
@@ -227,14 +234,22 @@ def body() -> None:
         if ref is None or ref.descriptor is None:
             st.caption("The volcano appears once the catalyst to beat is done.")
         else:
-            pts = pd.DataFrame([{"Binding (eV)": p.descriptor, "Speed": p.rate_ratio, "Material": p.formula,
+            temps = sorted({round(t) for t in curves["T_C"]} | {round(t_cmp)})
+            t_v = st.select_slider("Draw the volcano at", temps, value=round(t_cmp), format_func=lambda t: f"{t} °C",
+                                   key=f"res_volcano_t_{choice}",
+                                   help="The volcano's top moves with temperature; the dots move with it.")
+            at_t = screening.step_for({**req["conditions"], "temperatures_C": [float(t_v)]})
+            move = float(screening.peak_moves(pack, at_t, [t_v + 273.15])[0])
+            kt = screening.K_B * (t_v + 273.15)
+            pts = pd.DataFrame([{"Binding (eV)": p.descriptor, "Material": p.formula,
+                                 "Speed": float(np.exp(-spec.barrier_shift(p.descriptor, ref.descriptor, move) / kt)),
                                  "lo": p.descriptor - spec.sigma_descriptor, "hi": p.descriptor + spec.sigma_descriptor,
                                  "Kind": "Catalyst to beat" if p.is_reference else "Candidate"}
                                 for p in preds if p.rate_ratio is not None]).sort_values("Binding (eV)")
-            top = ref.descriptor + spec.optimum_shift_eV
+            top = ref.descriptor + spec.optimum_shift_eV + move
             x_lo, x_hi = min(pts["lo"].min(), top) - 0.25, max(pts["hi"].max(), top) + 0.25
             x, y = screening.volcano_line(pack, ref.descriptor, span=max(top - x_lo, x_hi - top), n=161,
-                                          t_design_C=t_cmp)
+                                          t_design_C=t_v, move=move)
             # decades shown: from just above the peak down to the slowest material, floored at a trillionth
             hi_dec = int(np.ceil(np.log10(y.max()))) + 1
             lo_dec = max(-12, int(np.floor(np.log10(max(1e-30, pts["Speed"].min())))) - 1)
@@ -278,9 +293,15 @@ def body() -> None:
                 x="Binding (eV):Q", y="Speed:Q", text="label:N") for i, a in enumerate(("left", "right"))])
             st.altair_chart((line + err + dots + text + sides).properties(height=420), width="stretch")
             held = " + ".join(f"{w:g}×{a}" if w != 1 else a for a, w in spec.descriptor.items())
+            anchor = pack.network.t_ref - 273.15
+            where = (f"At {t_v} °C the top sits {abs(move):.2f} eV toward "
+                     f"{'stronger' if move < 0 else 'weaker'} binding than at {anchor:.0f} °C, where the reaction sets it: "
+                     f"{'heat' if move < 0 else 'cooling'} changes how readily the gas sticks. " if abs(move) >= 0.005
+                     else f"The top sits where the reaction sets it at {anchor:.0f} °C; heat moves it toward stronger "
+                          "binding, cooling toward weaker. ") if spec.peak_gas else ""
             st.caption(f"The volcano: materials that hold {held} too weakly (right) react slowly because the molecules "
                        f"leave before reacting; those that hold it too strongly (left) clog up. The best sit near the "
-                       f"peak. Bars show the binding energy's likely range"
+                       f"peak. {where}Bars show the binding energy's likely range"
                        + (", and triangles on the bottom edge mark materials slower still (hover for the number). "
                           if pts["Off the scale"].any() else ". ") + " ".join(spec.basis.split()))
     with tabs[3]:
