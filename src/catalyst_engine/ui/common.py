@@ -284,7 +284,7 @@ def range_notes(pack: Pack, metric_kind: str, metric_species: list[str], t_lo: f
         st.info(f"This reaction's standard test runs from {min(std):.0f} to {max(std):.0f} °C, and its rates are set "
                 "for that window. Results beyond it are an extrapolation, so treat them as rough.",
                 icon=":material/thermostat:")
-    if metric_kind == "conversion" and lowest_value < 0:
+    if metric_kind == "conversion" and lowest_value < -0.005:  # half a point: below rounding noise in the solver
         gases = " and ".join(metric_species)
         leave, come = ("leave", "come") if len(metric_species) > 1 else ("leaves", "comes")
         st.warning(f"Conversion below zero means more {gases} {leave} the reactor than {come} in: at these "

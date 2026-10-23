@@ -200,7 +200,8 @@ steps:
     page: Results → Ranking
     image: step-ranking.png
     do:
-      - The best candidate sits at the top, with its key numbers in the boxes above the table.
+      - The headline names the leader, and the boxes above the table give its key numbers. When the catalyst to beat
+        stays on top, as in this example, the headline and the boxes turn to the closest challenger.
       - "\"Speed vs\" the catalyst to beat: 3× faster means three times the reaction rate at the comparison temperature. \"Likely range\" next to it is the spread."
       - "\"At … °C\": the predicted result (conversion or yield) at your comparison temperature."
       - "\"Light-off\": the temperature where the material reaches half of the best possible result. Lower is better."

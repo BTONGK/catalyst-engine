@@ -9,8 +9,9 @@ It reads <id>/job.json, writes progress to status.json, one JSON line per relaxa
 relaxed structure to structures/*.cif. It imports only numpy and ASE at module level (fairchem and torch load in
 main), so the app and the tests can use its geometry functions.
 
-For each material: take the bulk crystal, cut its densest plane (the largest interplanar spacing among Miller
-indices up to 1, the usual most stable face), pick the termination whose composition matches the bulk, relax the
+For each material: take the bulk crystal, cut its close-packed face (the most tightly packed outer atomic layer
+among Miller indices up to 1, preferring a layer with the bulk's composition), pick the termination whose
+composition matches the bulk, relax the
 slab, place each adsorbate on the surface's top, bridge and hollow sites, relax, and keep the binding energy
 
     E_bind = E(slab + adsorbate) - E(slab) - E_ref(adsorbate)
@@ -104,22 +105,49 @@ def bulk_from(material: dict) -> Atoms:
     return Atoms(material["species"], scaled_positions=material["frac"], cell=material["lattice"], pbc=True)
 
 
-def densest_plane(bulk: Atoms) -> tuple[int, int, int]:
-    """Miller indices (up to 1) of the plane with the largest interplanar spacing, in the cell's own basis."""
-    recip = np.linalg.inv(bulk.cell.array).T  # rows are reciprocal vectors without the 2 pi
-    best, best_d = (0, 0, 1), -1.0
-    for hkl in itertools.product((-1, 0, 1), repeat=3):
-        if hkl == (0, 0, 0) or next(h for h in hkl if h) < 0:
-            continue
-        d = 1.0 / np.linalg.norm(np.dot(hkl, recip))
-        if d > best_d + 1e-6 or (abs(d - best_d) <= 1e-6 and sum(map(abs, hkl)) < sum(map(abs, best))):
-            best, best_d = hkl, d
-    return best
-
-
 def _composition(symbols: list[str]) -> dict[str, float]:
     u, n = np.unique(symbols, return_counts=True)
     return dict(zip(u, n / n.sum()))
+
+
+def _mismatch(comp: dict[str, float], target: dict[str, float]) -> float:
+    return sum(abs(comp.get(el, 0.0) - f) for el, f in target.items()) + sum(comp[el] for el in comp if el not in target)
+
+
+def plane_layers(bulk: Atoms, hkl, tol: float = 0.5) -> tuple[float, float]:
+    """For one repeat of the plane `hkl`: atoms per square Angstrom in its fullest atomic layer (atoms within `tol`
+    of each other in height form one layer), and how far that layer's composition sits from the bulk's (0 = same)."""
+    s = surface(bulk, hkl, 1, vacuum=None, periodic=True)
+    period = s.cell.array[2, 2]
+    order = np.argsort(np.mod(s.positions[:, 2], period))
+    z = np.mod(s.positions[:, 2], period)[order]
+    symbols = np.array(s.get_chemical_symbols())[order]
+    gaps = np.diff(np.append(z, z[0] + period))  # the gap above each atom, wrapping around the repeat
+    cuts = np.where(gaps > tol)[0]
+    if len(cuts) == 0:
+        layers = [symbols]
+    else:
+        layers = [np.roll(symbols, -(a + 1))[: b - a] for a, b in zip(cuts, np.append(cuts[1:], cuts[0] + len(z)))]
+    fullest = max(layers, key=len)
+    area = np.linalg.norm(np.cross(s.cell.array[0], s.cell.array[1]))
+    return len(fullest) / area, _mismatch(_composition(list(fullest)), _composition(bulk.get_chemical_symbols()))
+
+
+def densest_plane(bulk: Atoms) -> tuple[int, int, int]:
+    """Miller indices (up to 1, in the cell's own basis) of the face whose outer atomic layer is most tightly packed:
+    the close-packed face of a metal or ordered alloy. Among faces within 3% of the densest, the one whose layer
+    matches the bulk composition wins, then the widest interplanar spacing, then the simplest indices."""
+    recip = np.linalg.inv(bulk.cell.array).T  # rows are reciprocal vectors without the 2 pi
+    rows = []
+    for hkl in itertools.product((-1, 0, 1), repeat=3):
+        if hkl == (0, 0, 0) or next(h for h in hkl if h) < 0:
+            continue
+        density, mismatch = plane_layers(bulk, hkl)
+        spacing = 1.0 / np.linalg.norm(np.dot(hkl, recip))
+        rows.append((hkl, density, mismatch, spacing))
+    top = max(r[1] for r in rows)
+    close = [r for r in rows if r[1] >= 0.97 * top]
+    return min(close, key=lambda r: (round(r[2], 2), -round(r[3], 2), sum(map(abs, r[0]))))[0]
 
 
 def build_slab(bulk: Atoms, hkl, thickness: float = 7.0, width: float = 7.0, max_atoms: int = 90) -> Atoms:
@@ -138,9 +166,7 @@ def build_slab(bulk: Atoms, hkl, thickness: float = 7.0, width: float = 7.0, max
         window = big[(z >= z0 - 0.05) & (z <= z0 + thickness + 0.05)]
         if len(window) == 0:
             continue
-        comp = _composition(window.get_chemical_symbols())
-        score = sum(abs(comp.get(el, 0.0) - f) for el, f in target.items()) + sum(
-            comp[el] for el in comp if el not in target)
+        score = _mismatch(_composition(window.get_chemical_symbols()), target)
         if score < best_score - 1e-9:
             best, best_score = window, score
     slab = best if best is not None else big

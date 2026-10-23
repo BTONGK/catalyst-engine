@@ -67,6 +67,20 @@ def test_densest_plane_of_a_primitive_fcc_cell_is_its_close_packed_face():
     assert d == pytest.approx(3.92 / np.sqrt(3), abs=0.02)  # the (111) spacing of fcc Pt, a = 3.92 A
 
 
+def test_ordered_alloys_show_their_close_packed_face_with_the_bulk_composition():
+    from ase import Atoms
+
+    a = 3.75  # L1_2 Cu3Au: the close-packed {111} layers hold one Au for every three Cu
+    l12 = Atoms("AuCu3", scaled_positions=[(0, 0, 0), (0, .5, .5), (.5, 0, .5), (.5, .5, 0)], cell=[a, a, a], pbc=True)
+    density, mismatch = uma_worker.plane_layers(l12, uma_worker.densest_plane(l12))
+    assert density == pytest.approx(4 / (np.sqrt(3) * a * a), rel=1e-3) and mismatch == pytest.approx(0)
+    b = 2.99  # B2 CuPd: the densest {110} layers hold both elements
+    b2 = Atoms("CuPd", scaled_positions=[(0, 0, 0), (.5, .5, .5)], cell=[b, b, b], pbc=True)
+    hkl = uma_worker.densest_plane(b2)
+    assert sorted(map(abs, hkl)) == [0, 1, 1]
+    assert uma_worker.plane_layers(b2, hkl)[0] == pytest.approx(np.sqrt(2) / b ** 2, rel=1e-3)
+
+
 @pytest.mark.parametrize("symbol", ["Pt", "Ru", "Fe"])
 def test_slab_has_vacuum_a_fixed_bottom_and_every_site_kind(symbol):
     bulk = uma_worker.bulk_from(materials.element_entry(symbol))
@@ -179,7 +193,7 @@ def test_the_shipped_example_lands_in_an_empty_screens_folder_and_ranks_like_the
     preds, _ = screening.predict(load_pack(job["request"]["pack"]), job, screening.read_results(folder))
     assert all(p.complete for p in preds)
     assert next(p for p in preds if p.is_reference).rate_ratio == pytest.approx(1.0)
-    assert {p.formula for p in preds[:2]} == {"PdPt", "Pt"}  # the alloy runs neck and neck with platinum
+    assert [p.formula for p in preds[:2]] == ["Pt", "PdPt"]  # platinum leads; the alloy sits within its error bar
     screening.add_examples()  # a folder that already holds screens stays as it is
     assert screening.list_screens() == screens
 
@@ -236,6 +250,14 @@ def test_results_page_shows_a_finished_screen():
     assert not at.exception, at.exception
     assert any("Best candidate" in m.value for m in at.markdown)
     assert len(at.dataframe) >= 1
+
+
+def test_results_page_shows_the_example_with_its_reference_leading_and_no_rounding_alarm():
+    screening.add_examples()
+    at = AppTest.from_file(str(VIEWS / "results.py"), default_timeout=120).run()
+    assert not at.exception, at.exception
+    assert any("the catalyst to beat, leads" in m.value for m in at.markdown)
+    assert len(at.warning) == 0  # its slowest curves touch zero to within 1e-16
 
 
 def test_design_page_adds_metals_to_the_list():

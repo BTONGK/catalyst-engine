@@ -1,0 +1,560 @@
+# The Manual's Methodology tab: how the design app works, every assumption, and the check behind each step.
+# {name} fills in from results/summary.json (values), written by model_checks.py from atomistic_checks.py's run.
+kind: methodology
+summary: results/summary.json
+title: "How the app designs a catalyst: method and checks"
+byline: >
+  Method paper for the catalyst design app. Checks run {generated} with UMA-S 1.1 (fairchem-core 2.23) on this
+  Mac's CPU. Every number on this page comes from experiments/design_method/results/summary.json.
+
+abstract: >
+  The app ranks candidate materials for a chosen reaction by how fast each would run it compared with a catalyst
+  already in use, the catalyst to beat. It gets there in nine steps: a crystal, a surface cut from it, the spots
+  where molecules sit, a relaxation with Meta's UMA model, a binding energy, a place on the reaction's activity
+  volcano, a simulated reactor, a calibration against the catalyst to beat, and an error bar. This page states every
+  assumption and tests each step on its own. The atom-scale steps hold up: more sites, tighter convergence and
+  thicker slabs move a binding energy by {sites_max_gain:.2f}, {tolerance_max_gap:.3f} and {slab_thickness_max_gap:.3f} eV
+  at most, and the automatic pipeline reproduces an independent hand-built benchmark within {benchmark_max:.2f} eV. The
+  reactor reproduces an exact solution within {reactor_exact_pct:.3f} percentage points of conversion, balances every atom and reaches the equilibrium
+  Cantera computes on its own. One check caught a fault, now fixed: the rule that picks the surface chose open faces
+  on two ordered alloys. Two steps carry most of the uncertainty: the atoms an alloy shows on its surface (binding
+  moves by up to {seg_max:.1f} eV when one element gathers on top) and the volcano, whose generic
+  slopes place metals that bind strongly far below where experiments find them. Read the ranking as a guide to the
+  materials worth a closer look, and speed ratios beyond about tenfold as qualitative.
+
+how_to_read: >
+  Every step follows the same pattern: what the app does in plain words, the equation with its meaning in words,
+  the assumptions it rests on (A1, A2 and so on), and the checks, with the measured numbers in the boxes that open.
+  A colored tag on each step gives the outcome.
+
+intro:
+  - title: The question the app answers
+    text: >
+      For a reaction you pick, which materials would run it fastest, compared with a catalyst already in use? The
+      app answers with a ranking and a predicted speed ratio for each material, then turns each ratio into a
+      performance curve at your conditions. It is a screening tool: it narrows many possible materials down to the
+      few worth making and testing in a lab. It predicts ratios between materials more reliably than absolute rates,
+      because the absolute rates come from the reaction pack, whose parameters stay illustrative until a lab measures
+      them.
+    points:
+      - "From you: the reaction, the temperatures, pressure, gas mix and flow, and the materials to try."
+      - "From published data: crystal structures (the Materials Project), each reaction's chemistry and the position of its volcano peak, cited in the reaction pack."
+      - "Computed here: every binding energy (UMA), every speed ratio, every performance curve and every error bar."
+  - title: The method at a glance
+    flow: true
+    text: >
+      Nine steps turn a crystal into a ranking. Steps 1 to 5 work at the scale of atoms; steps 6 to 9 turn energies
+      into rates, curves and error bars.
+
+steps:
+  - title: Candidate crystals
+    takes: Material names, or elements to search
+    gives: A bulk crystal (cell and atom positions)
+    tool: ASE reference crystals; Materials Project
+    status: checked
+    does: >
+      Pure metals start from ASE's reference crystal for each element: its usual structure (fcc, bcc or hcp) at the
+      measured lattice constant. Alloys and oxides start from the Materials Project, a public database of about
+      150,000 crystals computed with density functional theory (DFT), the standard quantum-mechanical method for
+      materials. A search returns materials made only of the elements you name, most stable first. Stability is the
+      energy above the convex hull: zero for the most stable arrangement of those elements, positive for less stable
+      ones. The defaults keep materials within 0.05 eV per atom of the hull and at most 40 atoms per cell.
+    equations:
+      - tex: 'E_\text{hull}(\text{material}) = E_\text{material} - E_\text{most stable mix of the same elements} \;\le\; 0.05\ \text{eV/atom}'
+        words: a material passes when its energy sits within 0.05 eV per atom of the most stable way to arrange the same elements.
+    assumptions:
+      - id: A1
+        short: The input lattice stands for the real one
+        text: >
+          The app keeps each crystal's input lattice (measured for pure metals, DFT for Materials Project entries).
+          UMA relaxes the atoms of the surface it cuts; the cell keeps its input size.
+        effect: A lattice that is too large or too small stretches or squeezes the surface and shifts every binding energy on it.
+      - id: A2
+        short: Stability at absolute zero stands for stability in use
+        text: >
+          The energy above hull compares materials at absolute zero in vacuum. Under reaction gas at high temperature
+          a metal can oxidize, an alloy can separate and a surface can rebuild.
+        effect: A material that changes in use works through a different surface from the one computed.
+    checks:
+      - text: >
+          UMA's own lattice for each of the 14 example crystals, relaxed cell and all, sits within
+          {lattice_omat_max_pct:.1f}% of the input in the materials mode (average {lattice_omat_mean_pct:.1f}%). The catalysis
+          mode, trained on surfaces, strays up to {lattice_oc20_max_pct:.1f}% on bulk crystals, which is why the app keeps
+          the input lattice.
+        see: The lattice of each crystal
+        table:
+          table: lattice
+          columns: {material: Material, source: Input crystal, omat_pct: "Materials mode (% change)", oc20_pct: "Catalysis mode (% change)"}
+      - text: >
+          Stretching or squeezing the platinum and copper lattices by up to 2% moves oxygen's binding by
+          {strain_slopes} per 1% of stretch: a stretched surface holds oxygen more tightly. Every input sits about
+          {lattice_omat_mean_pct:.1f}% below UMA's own lattice, so most of that shift is shared and cancels against the
+          catalyst to beat. What stays is each material's gap minus the catalyst to beat's: {lattice_gap_rms:.2f}% on
+          average (at most {lattice_gap_max_rel:.1f}%), worth about {strain_error_est:.3f} eV (at most {strain_error_max:.3f} eV).
+        see: Oxygen binding against strain
+        chart: {kind: lines, table: strain, x: strain_pct, y: E, color: material, x_title: "Lattice stretched (%)", y_title: "Oxygen binding (eV)"}
+    verdict: >
+      Keeping the input lattice shifts every material by a similar amount; the part that differs from material to
+      material, about {strain_error_est:.2f} eV, goes into the error budget. Stability under reaction gas lies beyond
+      this method; read the hull value as a first filter.
+
+  - title: The surface
+    takes: The bulk crystal
+    gives: A slab a few atomic layers thick, with vacuum above
+    tool: ASE and the app's face rule
+    status: gap
+    does: >
+      A catalyst works at its surface, so the app cuts the crystal along one face and keeps a slab a few atoms
+      thick. It picks the close-packed face: among all faces with Miller indices up to 1, the one whose outer atomic
+      layer packs the most atoms per square ångström, which on metals is also the most stable face. Among faces within
+      3% of the densest it prefers one whose top layer has the bulk's composition. The slab repeats sideways to at least
+      7 Å wide, keeps at least 7 Å of thickness (90 atoms at most), holds its bottom half at bulk positions, and gets
+      20 Å of empty space above, so it feels only itself.
+    equations:
+      - tex: '(hkl)^* = \arg\max_{(hkl) \in \{-1,0,1\}^3} \frac{N_\text{outer layer}(hkl)}{A(hkl)}'
+        words: pick the face whose outer layer holds the most atoms per unit area.
+      - tex: '\theta = \frac{1\ \text{molecule}}{N_\text{surface atoms in the cell}} \approx \tfrac{1}{9}\ \text{to}\ \tfrac{1}{16}'
+        words: each calculation places one molecule on a cell of 9 to 16 surface atoms, a lightly covered surface.
+    assumptions:
+      - id: A3
+        short: One face stands for the whole particle
+        text: >
+          Real catalyst particles expose several faces plus steps, edges and corners, and steps run some reactions
+          much faster than flat faces.
+        effect: Activity that comes from steps or edges stays outside the ranking; it holds best where the close-packed face dominates.
+      - id: A4
+        short: The surface keeps the bulk's arrangement
+        text: >
+          The top layer keeps the bulk's composition and order. Real alloys often enrich one element at the surface
+          (segregation), especially under oxygen or CO, and some surfaces rebuild.
+        effect: For alloys, the computed surface can differ from the working one by the termination spread measured below.
+      - id: A5
+        short: A lightly covered surface
+        text: One molecule per cell, about a ninth to a sixteenth of a full layer.
+        effect: Crowded surfaces under reaction gas hold each molecule more weakly; comparisons hold best between materials at similar coverage.
+    checks:
+      - text: >
+          This check caught a fault, now fixed. The first version picked the face with the widest spacing between
+          lattice planes. For a pure metal that is the close-packed face, but an ordered alloy's cell holds several
+          atoms, and the rule picked open square faces for Cu3Au and CuPd, and faces with a single element on top for
+          PdPt and CuPt. The rule now measures the packing of the outer atomic layer itself. All {metals_unchanged} pure
+          metals keep the same face and the same binding energies; all four alloys now show a close-packed face with
+          the bulk's composition on top. Their binding moved by up to {face_fix_max_shift:.2f} eV ({face_fix_max_material},
+          whose top layer went from pure platinum to mixed).
+        see: Each material's face, before and after the fix
+        table:
+          table: faces
+          columns: {material: Material, face_before: Face before, face: Face now, top_layer: Top layer now, packing_per_A2: "Atoms per Å²", E_before: "O binding before (eV)", E_after: "O binding now (eV)"}
+      - text: >
+          Thicker slabs, up to 13 Å, move oxygen's binding on platinum and ruthenium by at most
+          {slab_thickness_max_gap:.3f} eV. Wider slabs, one oxygen per 25 surface atoms in place of 9, hold it
+          {slab_width_gap_min:.2f} to {slab_width_gap_max:.2f} eV more tightly on both metals: the coverage effect of A5,
+          shared by both metals to within {slab_width_spread:.3f} eV.
+        see: Binding against slab size
+        table:
+          table: slab_size
+          columns: {material: Material, thickness_A: "Thickness (Å)", width_A: "Width (Å)", n_atoms: Atoms, layers: Layers, E: "O binding (eV)", site: Site}
+      - text: >
+          Real alloys often gather one element at the surface. Making each alloy's top layer entirely of one element,
+          then the other, moves oxygen's binding by {seg_min:.2f} to {seg_max:.2f} eV per alloy, more than the error bar.
+        see: Each alloy as cut, and with one element on top
+        table:
+          table: segregation
+          columns: {material: Material, face: Face, surface: Surface, top_layer: Top layer, E: "O binding (eV)", site: Best spot}
+    verdict: >
+      Pure metals: settled. Alloys: their binding depends on which atoms end up on top, by up to {seg_max:.1f} eV.
+      Until the app computes segregation, read alloy results with that extra spread, and check a promising alloy with
+      each element on top before making it.
+
+  - title: Where molecules sit
+    takes: The slab
+    gives: Starting positions for each molecule
+    tool: The app's site finder
+    status: checked
+    does: >
+      Molecules prefer particular spots: on top of one atom (top), between two (bridge), or in the dip between three
+      or four (hollow). The app finds these spots from the top layer's geometry: a top site over the highest atom of
+      each element, a bridge between the first atom and its nearest neighbor, and up to two distinct hollows. Each
+      molecule starts at a typical height above its preferred kinds of spot first (oxygen: hollow, then bridge, then
+      top). The quick setting tries 2 spots, standard 3 and thorough 5.
+    assumptions:
+      - id: A6
+        short: The best of the tried spots is the best spot
+        text: The lowest energy among the tried spots stands for the molecule's preferred spot on that surface.
+        effect: A better spot left untried makes the surface look like it holds the molecule more weakly than it does.
+    checks:
+      - text: >
+          Every spot on all {sites_n} example surfaces was tried. The standard setting's three spots found the same
+          lowest energy, within 0.01 eV, on {sites_same_minimum} of {sites_n}; the largest gain from trying every spot was
+          {sites_max_gain:.3f} eV.
+        see: Standard spots against every spot
+        table:
+          table: sites
+          columns: {material: Material, sites_tried: Spots on the surface, site_standard: "Best of the standard 3", E_standard: "Its O binding (eV)", site_all: Best of every spot, E_all: "Its O binding (eV) over every spot", gain: "Gain (eV)"}
+    verdict: Three spots find the best spot on these surfaces; the thorough setting covers surfaces with many distinct spots.
+
+  - title: Relaxing the atoms with UMA
+    takes: Each starting structure
+    gives: The relaxed structure and its energy
+    tool: UMA-S 1.1 and the LBFGS method
+    status: published
+    does: >
+      Each starting structure moves to its nearest stable arrangement: the atoms shift downhill in energy step by
+      step (the LBFGS method) until the largest force on any free atom falls below 0.05 eV/Å, or 250 steps pass
+      (standard setting). Energies and forces come from UMA, Meta FAIR Chemistry's machine-learned model, trained on
+      {uma_structures_million} million structures computed with DFT. Its catalysis mode (oc20) reproduces the OC20
+      dataset's DFT setup, the RPBE functional, built for molecules on metal and alloy surfaces; its materials mode
+      (omat) reproduces bulk-crystal DFT (PBE, plus a +U correction for some oxides).
+    equations:
+      - tex: '\mathbf{F}_i = -\frac{\partial E}{\partial \mathbf{r}_i}, \qquad \text{stop when } \max_i \lVert \mathbf{F}_i \rVert < 0.05\ \text{eV/Å}'
+        words: the force on each atom is how steeply the energy falls as it moves; the relaxation stops when every force is small.
+    assumptions:
+      - id: A7
+        short: UMA reproduces DFT
+        text: UMA's energies match what DFT with the same setup would give, within its published error.
+        effect: An error larger than the error bar reorders materials that sit close together.
+      - id: A8
+        short: Absolute zero, the nearest minimum
+        text: The relaxation finds the nearest stable arrangement at absolute zero; vibrations and arrangements farther away stay out.
+        effect: A molecule that would move into the surface or rearrange at working temperature looks stable where it started.
+    checks:
+      - text: >
+          Published: on the OC20 test set, UMA-S's adsorption energies sit {uma_mae_id:.3f} eV from DFT on average for
+          familiar surfaces and {uma_mae_ood:.3f} eV for new combinations of molecule and surface. In AdsorbML, which asks
+          for the best spot over many starts, UMA-S 1.1 lands within 0.1 eV of DFT's answer for {uma_adsorbml:.1f}% of
+          systems (Wood et al. 2025, Tables 4 and 17).
+      - text: >
+          Re-relaxing each best structure to 0.01 eV/Å, five times tighter, moves its binding by at most
+          {tolerance_max_gap:.3f} eV.
+        see: Standard against tight convergence
+        table:
+          table: tolerance
+          columns: {material: Material, E_standard: "O binding at 0.05 eV/Å", E_tight: "O binding at 0.01 eV/Å", difference: "Difference (eV)"}
+      - text: "{convergence_note}"
+      - text: >
+          The same code on the same structure gives the same answer: rerun from scratch, every material's binding
+          matches the example screen within {repro_max_gap} eV.
+    verdict: >
+      The relaxation settings add {tolerance_max_gap:.2f} eV at most. UMA's own error, {uma_mae_ood:.2f} eV on average against DFT,
+      is the larger part and goes into the error bar.
+
+  - title: Binding energy
+    takes: The relaxed energies
+    gives: How strongly the surface holds each molecule (eV)
+    tool: Gas references computed with the same model
+    status: checked
+    does: >
+      The binding energy compares the surface holding the molecule with the bare surface and the molecule's source
+      in the gas. The app takes each atom from a stable gas: oxygen from water minus hydrogen, nitrogen from half an
+      N2, hydrogen from half an H2, carbon from CO minus oxygen. Molecules such as CO, NO and NH3 are their own
+      reference. Negative means held; more negative means held more tightly. All gas energies come from the same
+      model in the same run.
+    equations:
+      - tex: 'E_\text{bind}(\mathrm{O}) = E(\text{slab}+\mathrm{O}) - E(\text{slab}) - \left[E(\mathrm{H_2O}) - E(\mathrm{H_2})\right]'
+        words: the energy of the surface holding an oxygen atom, minus the bare surface, minus an oxygen atom taken from water.
+    assumptions:
+      - id: A9
+        short: Energies stand for free energies
+        text: >
+          Binding energies are electronic energies; zero-point vibration, heat and entropy stay out. These corrections
+          are similar from one metal to the next, so they largely cancel against the catalyst to beat.
+        effect: Materials with different corrections, such as an oxide against a metal, shift relative to each other.
+    checks:
+      - text: >
+          UMA's own energies of H2, N2 and H2O match the OC20 reference energies, and its formation energies of NH3 and
+          NO match experiment, all within {gas_max_gap:.2f} eV.
+        see: Gas molecules
+        table:
+          table: gas
+          columns: {quantity: Quantity, uma_eV: "UMA (eV)", reference_eV: "Reference (eV)", reference: Reference, difference: "Difference (eV)"}
+      - text: >
+          An independent benchmark (the Model accuracy page) set up oxygen on {benchmark_n} metals by hand: 3×3 cells,
+          four layers, sites placed one by one. The app's automatic pipeline matches it within {benchmark_max:.2f} eV
+          (average {benchmark_mae:.2f} eV, R² {benchmark_r2:.4f}).
+        see: The app against the hand-built benchmark
+        chart: {kind: parity, table: benchmark, x: E_benchmark, y: E_app, label: material, x_title: "Hand-built benchmark (eV)", y_title: "The app (eV)", caption: "Each dot is one metal; the dashed line marks perfect agreement."}
+        table:
+          table: benchmark
+          columns: {material: Metal, E_benchmark: "Benchmark (eV)", E_app: "The app (eV)", difference: "Difference (eV)"}
+      - text: >
+          On those metals UMA reproduces all 14 textbook orderings of binding strength across the periodic table and
+          the scaling slopes linking O to OH and N to NH and NH2 (Abild-Pedersen et al. 2007; Model accuracy page).
+    verdict: Binding energies come out consistent, reproducible and in line with known chemistry.
+
+  - title: Activity from the volcano
+    scale: performance
+    takes: Each material's binding energy
+    gives: A speed ratio against the catalyst to beat
+    tool: The Sabatier volcano from the reaction pack
+    status: open
+    does: >
+      The Sabatier principle: a good catalyst holds the key molecule firmly enough to activate it and lightly enough
+      to let the products go. Activity plotted against binding strength forms a volcano: it rises as binding
+      strengthens, peaks, then falls as the surface clogs. Each reaction pack names its key molecule (the
+      descriptor), where the peak sits relative to the catalyst to beat, and how steeply each side falls. The app
+      places every material on that volcano by its computed descriptor.
+    equations:
+      - tex: 'd = \sum_a w_a \, E_\text{bind}(a)'
+        words: the descriptor is the binding energy of the key molecule, or a weighted average of two.
+      - tex: 'd^* = d_\text{ref} + \delta'
+        words: the peak sits a distance δ from the catalyst to beat's own descriptor, computed in the same run; δ comes from published work (0.2 eV weaker than platinum for CO oxidation).
+      - tex: 'h(d) = s_w \max(d - d^*, 0) + s_s \max(d^* - d, 0)'
+        words: how far below the peak a material sits, falling by s_w per eV on the weak side and s_s on the strong side (0.9 and 1.0 for every reaction today).
+      - tex: '\Delta E^\ddagger = h(d) - h(d_\text{ref}), \qquad \frac{r}{r_\text{ref}} = \exp\!\left(-\frac{\Delta E^\ddagger}{k_B T}\right)'
+        words: "the extra energy barrier against the catalyst to beat sets the speed ratio; at {design_T:.0f} °C each 0.1 eV of extra barrier slows the reaction {factor_01:.0f} times."
+    assumptions:
+      - id: A10
+        short: One descriptor captures the mechanism
+        text: >
+          Scaling relations tie the binding of related molecules together, so one binding energy (or two) tracks the
+          whole mechanism (Abild-Pedersen et al. 2007; Medford et al. 2015).
+        effect: A reaction whose rate also depends on a second, independent property, such as CO crowding the surface in CO oxidation, ranks poorly.
+      - id: A11
+        short: Barriers move in step with binding
+        text: >
+          The Brønsted–Evans–Polanyi relation: a change in binding changes the barrier in proportion (Bligaard et al.
+          2004). Every reaction uses the same generic slopes, 0.9 and 1.0 eV per eV.
+        effect: Wrong slopes stretch or squeeze the speed ratios, and far from the peak the error compounds into huge factors.
+      - id: A12
+        short: One mechanism and prefactor for every material
+        text: Every material runs the reaction by the same route with the same attempt frequency; only the barrier changes.
+        effect: A material that takes a different route falls outside the model.
+      - id: A13
+        short: One peak position, from published work, at every temperature
+        text: >
+          Each pack cites the source of δ, found at one set of conditions, and the app keeps the peak there at every
+          temperature and gas mix. Every material shares one activation-energy shape, so the order of the materials is
+          the same at every temperature and heat only narrows the gaps: each 0.1 eV of extra barrier is a factor of
+          {factor_01:.0f} at {design_T:.0f} °C and a factor of {factor_01_400:.1f} at 400 °C.
+        effect: >
+          Heat clears molecules off the surface, which moves the real peak toward stronger binders as temperature rises.
+          Far from the pack's source conditions strong binders rank too low, and a catalyst whose best window differs
+          from the catalyst to beat's keeps the same place in the order everywhere.
+      - id: A14
+        short: Errors shared by every material cancel
+        text: The catalyst to beat runs in the same screen with the same settings, so constant offsets of the model and of DFT drop out of every comparison.
+        effect: Errors that differ from material to material stay.
+    checks:
+      - text: >
+          The arithmetic is tested (tests/test_design.py): the catalyst to beat sits at exactly 1×, a material at the
+          peak gains exactly h(d_ref), and each side rises at its slope.
+      - text: >
+          Moving the peak anywhere from 0 to 0.4 eV and the slopes anywhere from 0.5 to 1.0 keeps the ranking's rank
+          correlation at {volcano_spearman_all_min:.2f} or higher (1 means the same order); the leader is always one of
+          {volcano_leaders}.
+        see: The ranking under 25 volcano settings
+        table:
+          table: volcano_sensitivity
+          columns: {optimum_shift_eV: "Peak δ (eV)", slope_weak: Weak-side slope, slope_strong: Strong-side slope, leader: Leader, top3: Top three, spearman: Rank correlation}
+      - text: >
+          Against experiment, this step carries the largest uncertainty in the app. With the generic slopes, the
+          example puts metals that bind oxygen strongly (Rh, Ru, Ni, Co) a trillion times or more below platinum for CO
+          oxidation, while supported rhodium, ruthenium and palladium are well-known, active CO oxidation catalysts. Two
+          causes are known: on platinum-group metals CO oxidation also depends on how strongly CO binds (Falsig et al.
+          2008), and the strong side's slope compounds far from the peak. The next version fits each reaction's
+          descriptor and slopes to published volcano data and checks them against measured activities.
+    verdict: >
+      The order near the peak holds across volcano settings. Read ratios beyond about tenfold as "clearly slower" and
+      the far side of the volcano as qualitative.
+
+  - title: Performance in a reactor
+    takes: Each material's speed ratio
+    gives: Conversion or yield against temperature
+    tool: The engine's plug-flow reactor; Cantera thermodynamics
+    status: checked
+    does: >
+      Each reaction pack writes the chemistry as balanced pathways with rate laws: the wanted reaction and its side
+      reactions. For each material the screened pathways take the extra barrier from step 6, and a plug-flow reactor
+      model computes the gas leaving the catalyst bed at each temperature, at your pressure, gas mix and space
+      velocity: the gas flows through the bed and reacts as it goes. Reversible reactions stop at chemical
+      equilibrium, computed from GRI-Mech 3.0 thermodynamic data with Cantera. A stiff solver (the ROS2 Rosenbrock
+      method with error control) integrates along the bed.
+    equations:
+      - tex: 'k(T) = k_\text{ref}\exp\!\left[-\frac{E_a}{R}\left(\frac{1}{T} - \frac{1}{T_\text{ref}}\right)\right], \qquad k_\text{material}(T) = k(T)\,\exp\!\left(-\frac{\Delta E^\ddagger}{k_B T}\right)'
+        words: the rate constant rises with temperature (Arrhenius), and each material's extra barrier scales it at every temperature.
+      - tex: '\frac{dF_i}{dV} = \sum_j \nu_{ij}\, r_j, \qquad r_j = k_j \prod_i C_i^{\,n_{ij}} \left(1 - \frac{Q_j}{K_j}\right)'
+        words: along the bed, each gas changes by what the reactions make or use; a reversible reaction slows to a stop as it nears equilibrium (Q reaches K).
+    assumptions:
+      - id: A15
+        short: Ideal plug flow at one temperature
+        text: The bed holds one temperature, the gas moves as a plug, and molecules reach the surface at once (design runs leave mass transfer out).
+        effect: Hot spots, back-mixing and slow diffusion lower real conversion, most of all near full conversion.
+      - id: A16
+        short: The pack's rate laws and parameters
+        text: Rate-law forms and the catalyst to beat's parameters come from the reaction pack; most packs mark them illustrative until measured.
+        effect: Absolute temperatures and conversions shift; the order of the materials stays.
+      - id: A17
+        short: Fresh catalyst at steady state
+        text: The catalyst works as made, with steady gas flow.
+        effect: Aging, poisoning and sintering lower activity over time.
+    checks:
+      - text: >
+          Against the exact plug-flow solution for a first-order reaction, including the change in gas volume as it
+          reacts, the engine's conversion agrees within {reactor_exact_pct:.3f} percentage points.
+        see: The engine against the exact solution
+        table:
+          table: reactor_exact
+          columns: {T_C: "Temperature (°C)", X_engine: Engine, X_exact: Exact}
+      - text: >
+          Atoms balance: in all {balance_packs} reactions the gas leaving holds every element in the same proportion as
+          the gas entering, to {balance_digits} decimal places.
+        see: Atom balance per reaction
+        table:
+          table: element_balance
+          columns: {reaction: Reaction, worst_element_gap: Largest relative gap}
+      - text: >
+          With a very fast catalyst the outlet matches Cantera's own equilibrium calculation to {equilibrium_digits}
+          decimal places in mole fraction, for the {equilibrium_packs} reactions with a single reversible reaction.
+        see: Equilibrium against Cantera
+        table:
+          table: equilibrium
+          columns: {reaction: Reaction, temperatures_C: "Temperatures (°C)", largest_mole_fraction_gap: Largest gap (mole fraction)}
+      - text: >
+          Fitted to published measurements, the same reactor and rate laws reproduce eight SCR catalysts from four
+          sources, with NO conversion within 0.011 to 0.025 on average for three zeolites (Literature check page).
+    verdict: The reactor solves its equations accurately, conserves atoms and respects equilibrium.
+
+  - title: Calibration and light-off
+    takes: The catalyst to beat
+    gives: Curves anchored to a known catalyst; each material's light-off temperature
+    tool: The pack's anchor temperature
+    status: checked
+    does: >
+      Each pack sets the catalyst to beat's rate constant so it reaches half the best possible result at a stated
+      temperature, a typical light-off for that catalyst (platinum at 180 °C for CO oxidation). The best possible is
+      the same reactor with the screened reactions about 8,000 times faster (e⁹) and nearly independent of
+      temperature: its outlet sits at equilibrium or full conversion. A material's light-off temperature is the
+      lowest temperature where it reaches half the best possible.
+    equations:
+      - tex: 'X_\text{ref}(T_\text{ref}) = \tfrac{1}{2}\, X_\text{best}(T_\text{ref}), \qquad T_{50} = \min\{\, T : X(T) \ge \tfrac{1}{2}\, X_\text{best}(T) \,\}'
+        words: the catalyst to beat gets halfway at its anchor temperature; a material's light-off is where it first gets halfway.
+    assumptions:
+      - id: A18
+        short: The anchor temperature
+        text: Each pack's anchor comes from typical published light-off behavior of its catalyst to beat.
+        effect: A wrong anchor slides every curve along the temperature axis together; the order of the materials stays.
+    checks:
+      - text: "{calibration_note}"
+        see: Each reaction's catalyst to beat at its anchor
+        table:
+          table: calibration
+          columns: {reaction: Reaction, reference: Catalyst to beat, T_ref_C: "Anchor (°C)", reference_metric: "Its result at the anchor", best_metric: Best possible, share_of_best: Share of best}
+      - text: >
+          Reactions built in the app calibrate the same way, and the tests confirm the catalyst to beat lands at half
+          the best possible within 5% (tests/test_design.py).
+    verdict: The anchor holds where the packs state it.
+
+  - title: Error bars
+    takes: Every descriptor
+    gives: A likely range for each speed ratio and curve
+    tool: The volcano and reactor run at the edges of the error bar
+    status: checked
+    does: >
+      Each binding energy carries an error bar of σ = {sigma_assumed:.2f} eV; a descriptor that averages several binding
+      energies carries σ times the square root of the summed squared weights. The app moves each descriptor up and
+      down by its error bar, runs the volcano and the reactor at both edges, and shows the spread as the likely
+      range.
+    equations:
+      - tex: '\sigma_d = \sigma \sqrt{\textstyle\sum_a w_a^2}, \qquad \frac{r}{r_\text{ref}} \in \left[\, e^{-\Delta E^\ddagger(d + \sigma_d)/k_BT},\ e^{-\Delta E^\ddagger(d - \sigma_d)/k_BT} \,\right]'
+        words: "the range runs from the descriptor's error bar on one side to the other (and includes the peak when it lies in between); at {design_T:.0f} °C, ±{sigma_assumed:.2f} eV spans a factor of {sigma_factor:.0f} either way."
+    assumptions:
+      - id: A19
+        short: One error bar for every material
+        text: σ is the same for every material and reaction, and errors differ independently between materials; the range covers about two cases in three.
+        effect: An error shared by a whole family, such as oxides in one UMA mode, can exceed the bar.
+    checks:
+      - text: The error budget below adds up the parts this page measures.
+    verdict: "σ = {sigma_assumed:.2f} eV covers the parts measured here, {sigma_combined:.2f} eV combined, with room for the DFT functional's own error."
+
+example:
+  title: "A worked example: CO oxidation on 14 materials"
+  text: >
+    The example screen that ships with the app, recomputed after the face fix: oxygen binding on nine metals and
+    four alloys against platinum, compared at {design_T:.0f} °C, standard setting, {example_relaxations} relaxations in
+    {example_minutes:.0f} minutes on this Mac's CPU. Rows run from fastest to slowest.
+  table:
+    table: example_ranking
+    columns: {material: Material, descriptor_eV: "O binding (eV)", shift_eV: "Extra barrier (eV)", rate_ratio: Speed vs Pt, range_low: Likely from, range_high: Likely to, metric_at_design: "CO conversion"}
+    ratios: [rate_ratio, range_low, range_high]
+    percent: [metric_at_design]
+  points:
+    - >
+      Speed vs Pt: how fast each material runs CO oxidation compared with platinum at 180 °C; "1 in 140" means 140
+      times slower. Likely from and to: the same speed at the two edges of the error bar (step 9). CO conversion: the
+      share of CO each material converts at 180 °C in the example's reactor.
+    - "Order: {example_ranking}."
+    - "Within the error bar of platinum: {example_within_error}."
+    - "Rh, Ru, Ni and Co sit far out on the strong-binding side, where step 6 flags the volcano as qualitative."
+
+budget:
+  title: The error budget
+  text: >
+    How large is the error on one binding energy? The parts measured or published, combined as independent errors
+    (the square root of the sum of squares):
+  rows:
+    - {source: UMA against DFT, size: "{uma_sigma_est:.3f}", basis: "Published average error {uma_mae_ood:.3f} eV on new molecule-surface combinations, as a standard deviation (× √(π/2))"}
+    - {source: Spots tried, size: "{sites_max_gain:.3f}", basis: Step 3}
+    - {source: Convergence, size: "{tolerance_max_gap:.3f}", basis: Step 4}
+    - {source: Slab thickness and coverage, size: "{slab_size_max_gap:.3f}", basis: "Step 2: thicker slabs, and how much the coverage effect differs between metals"}
+    - {source: Lattice, size: "{strain_error_est:.3f}", basis: "Step 1: each material's lattice gap minus the catalyst to beat's"}
+    - {source: "**Combined**", size: "**{sigma_combined:.3f}**", basis: "**Against the app's σ = {sigma_assumed:.2f} eV**"}
+  after: >
+    The combined {sigma_combined:.2f} eV sits inside the app's σ = {sigma_assumed:.2f} eV, which leaves room for what this
+    page measures only in part: the DFT functional's own error against experiment (shared by similar metals and
+    largely cancelled by the catalyst to beat) and coverage. Two parts exceed the bar and are reported on their own:
+    which element an alloy shows on top (up to {seg_max:.2f} eV, step 2) and the shape of the volcano (step 6).
+
+trust:
+  title: When to trust a result
+  groups:
+    - heading: Firm
+      points:
+        - Binding energies, and their order among metals on their close-packed faces.
+        - Which materials sit near the volcano's peak and which sit far from it.
+        - Equilibrium limits, atom balance and the shape of the performance curves.
+    - heading: Use with care
+      points:
+        - Speed ratios beyond about tenfold, and anything on the far side of the volcano (step 6).
+        - Alloys, whose surface atoms may differ from the bulk (step 2).
+        - Oxides, where UMA's two modes differ by 0.3 to 0.5 eV (Model accuracy page); run both modes.
+        - Absolute temperatures and conversions, which rest on each pack's illustrative parameters (step 7).
+        - Temperatures beyond the reaction's standard test range; the app flags them.
+    - heading: Outside this method
+      points:
+        - Particle size, the support, promoters, and poisons such as sulfur.
+        - Surfaces that oxidize, rebuild or segregate under reaction gas.
+        - Aging over hours to years.
+        - Heat and mass transfer in a full-size reactor.
+
+reproduce:
+  text: >
+    Two scripts produce every number on this page. The first runs UMA ({atomistic_minutes:.0f} minutes on this Mac);
+    the second runs in the app's Python in seconds and writes the summary this page reads.
+  code: |
+    # 1. the UMA checks -> results/atomistic.json
+    export TORCHDYNAMO_DISABLE=1
+    /opt/miniconda3/bin/python3 experiments/design_method/atomistic_checks.py
+    # 2. everything else -> results/summary.json
+    uv run python experiments/design_method/model_checks.py
+    # 3. the unit checks named on this page
+    uv run pytest tests/test_design.py
+  versions:
+    - "UMA-S 1.1 (uma-s-1p1.pt) with fairchem-core 2.23 and PyTorch 2.13, on CPU."
+    - "ASE 3.29; Cantera 3.2 with GRI-Mech 3.0."
+    - "The example screen: examples/screens/. The hand-built benchmark: experiments/uma_binding/. Results before the face fix: experiments/design_method/data/."
+
+references:
+  - {cite: "Wood, B. M. et al. UMA: A Family of Universal Models for Atoms. NeurIPS 2025; arXiv:2506.23971.", url: "https://arxiv.org/abs/2506.23971"}
+  - {cite: "Chanussot, L. et al. Open Catalyst 2020 (OC20) Dataset and Community Challenges. ACS Catal. 11, 6059 (2021).", url: "https://doi.org/10.1021/acscatal.0c04525"}
+  - {cite: "Lan, J. et al. AdsorbML: a leap in efficiency for adsorption energy calculations using generalizable machine learning potentials. npj Comput. Mater. 9, 172 (2023).", url: "https://doi.org/10.1038/s41524-023-01121-5"}
+  - {cite: "Jain, A. et al. Commentary: The Materials Project: A materials genome approach to accelerating materials innovation. APL Mater. 1, 011002 (2013).", url: "https://doi.org/10.1063/1.4812323"}
+  - {cite: "Larsen, A. H. et al. The atomic simulation environment (ASE). J. Phys.: Condens. Matter 29, 273002 (2017).", url: "https://doi.org/10.1088/1361-648X/aa680e"}
+  - {cite: "Hammer, B., Hansen, L. B. & Nørskov, J. K. Improved adsorption energetics within density-functional theory using revised Perdew-Burke-Ernzerhof functionals (RPBE). Phys. Rev. B 59, 7413 (1999).", url: "https://doi.org/10.1103/PhysRevB.59.7413"}
+  - {cite: "Abild-Pedersen, F. et al. Scaling properties of adsorption energies for hydrogen-containing molecules on transition-metal surfaces. Phys. Rev. Lett. 99, 016105 (2007).", url: "https://doi.org/10.1103/PhysRevLett.99.016105"}
+  - {cite: "Bligaard, T. et al. The Brønsted–Evans–Polanyi relation and the volcano curve in heterogeneous catalysis. J. Catal. 224, 206 (2004).", url: "https://doi.org/10.1016/j.jcat.2004.02.034"}
+  - {cite: "Medford, A. J. et al. From the Sabatier principle to a predictive theory of transition-metal heterogeneous catalysis. J. Catal. 328, 36 (2015).", url: "https://doi.org/10.1016/j.jcat.2014.12.033"}
+  - {cite: "Falsig, H. et al. Trends in the catalytic CO oxidation activity of nanoparticles. Angew. Chem. Int. Ed. 47, 4835 (2008).", url: "https://doi.org/10.1002/anie.200801479"}
+  - {cite: "Liu, D. C. & Nocedal, J. On the limited memory BFGS method for large scale optimization. Math. Program. 45, 503 (1989).", url: "https://doi.org/10.1007/BF01589116"}
+  - {cite: "Verwer, J. G., Spee, E. J., Blom, J. G. & Hundsdorfer, W. A second-order Rosenbrock method applied to photochemical dispersion problems. SIAM J. Sci. Comput. 20, 1456 (1999).", url: "https://doi.org/10.1137/S1064827597326651"}
+  - {cite: "Goodwin, D. G. et al. Cantera: an object-oriented software toolkit for chemical kinetics, thermodynamics and transport processes (version 3.2).", url: "https://cantera.org"}
+  - {cite: "Smith, G. P. et al. GRI-Mech 3.0.", url: "http://combustion.berkeley.edu/gri-mech/"}

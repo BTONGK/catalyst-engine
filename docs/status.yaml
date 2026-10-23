@@ -23,6 +23,15 @@ proof_sequence:
 recent:
   - date: 2026-10-23
     item: >
+      The Manual's Methodology tab: a method paper for the design app. Nine steps, each with its equations in
+      symbols and in words, the assumptions it rests on (A1–A19, collected in one table), how it was checked and a
+      verdict; an error budget (0.11 eV combined against the 0.15 eV error bar), when to trust a result, the
+      commands to reproduce every number, and 14 references. The checks caught a fault in the surface rule:
+      ordered alloys were cut on open faces; they now show their close-packed face with both elements on top, and
+      the example was recomputed. Largest open items: which element an alloy shows on top (up to 1.27 eV) and the
+      volcano, whose peak holds still across temperature.
+  - date: 2026-10-23
+    item: >
       The catalyst design app. Pick any of ten reactions (or add your own on the Reactions page), set the
       conditions, choose pure metals or Materials Project crystals, and UMA computes each surface's binding energies
       in the background. Results ranks the materials against the catalyst to beat on the reaction's volcano, with
@@ -86,6 +95,12 @@ next_steps:
     why: >
       The Manual's "How to use the app" tab walks through it. Keep the temperature range near the reaction's
       standard test; the app flags ranges beyond it.
+  - step: Move each volcano's peak with temperature and gas mix
+    owner: Claude
+    why: >
+      Today every reaction's peak holds still, so the order of the materials is the same at every temperature.
+      Heat clears molecules off the surface and moves the real peak toward stronger binders, which is how a
+      different catalyst can lead in a hotter window. Building now.
   - step: Set each reaction's volcano slopes from published scaling relations
     owner: Claude
     why: >
@@ -155,7 +170,8 @@ phases:
     summary: >
       Binding energies from open atomistic models (UMA), Materials Project stability, OCx24 benchmark.
       First check done: UMA ranks candidates well (Model accuracy page). Built: the catalyst design app, for any
-      reaction with a screening block (Design a catalyst, Results, Materials, Reactions pages).
+      reaction with a screening block (Design a catalyst, Results, Materials, Reactions pages), and its method
+      paper with a check behind every step (Manual, Methodology tab).
   - id: 6
     name: Agents
     status: planned
@@ -165,13 +181,14 @@ phases:
       so far (Literature check page).
 
 findings:
-  - title: The design app's first screen puts PdPt level with platinum for CO oxidation
+  - title: For CO oxidation the example screen keeps platinum on top, with PdPt inside its error bar
     detail: >
-      Fourteen materials, 56 relaxations, 11 minutes on this Mac. PdPt binds oxygen within 0.01 eV of platinum and
-      runs at 0.9 times its rate (likely range 0.02 to 43 times); CuPt and Pd follow. Metals that bind oxygen much
-      more strongly (Rh, Ru, Ni, Co) land a billion times slower or more, further below platinum than experiments
-      place them: the volcano slopes are generic, and the next step sets them per reaction.
-    source: Example screen, examples/screens/ (2026-10-23).
+      Fourteen materials, 56 relaxations, 6 minutes on this Mac (recomputed after the surface fix). PdPt, now with a
+      mixed Pd/Pt surface, runs at 0.14 times platinum's rate (likely range 0.003 to 6.5 times); Pd, CuPd and Ag
+      follow. Metals that bind oxygen much more strongly (Rh, Ru, Ni, Co) land a billion times slower or more,
+      further below platinum than experiments place them: the volcano slopes are generic, and the next step sets
+      them per reaction.
+    source: Example screen, examples/screens/; Manual, Methodology tab (2026-10-23).
   - title: Measure at the turbine's concentration
     detail: >
       Seven of eight published catalysts place the SCR site's ammonia coverage at 25 ppm and 1,050 °F below the

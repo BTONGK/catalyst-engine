@@ -16,7 +16,7 @@ or alloys and oxides from the Materials Project), and a background run computes 
 with Meta FAIR Chemistry's UMA model. The app then ranks the materials against the catalyst to beat on the
 reaction's Sabatier volcano, runs each one through the reactor model across the chosen temperatures, and shows
 the surfaces in 3D. The Manual page (from `docs/manual.yaml`, with screenshots in `docs/manual/`) walks through
-every step and has a plain-language primer on catalysis.
+every step, has a plain-language primer on catalysis, and a Methodology tab: a method paper that states every assumption and the check behind each step (`experiments/design_method/`).
 
 Pages, as grouped in the sidebar:
 

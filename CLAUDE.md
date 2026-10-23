@@ -7,7 +7,9 @@
 - App copy is affirmative: state what is true, with no negation words.
 - Model checks live in `experiments/<name>/`: scripts, `results/`, and a `report.yaml` (the write-up) that
   the app renders with `results/summary.json`: the Model accuracy page by default, the Literature check page
-  for `kind: literature`. Put results there, not only in a README.
+  for `kind: literature`, the Manual's Methodology tab for `kind: methodology` (`experiments/design_method/`, whose
+  text fills `{name}` from the summary's `values`). Put results there, not only in a README. Rerun
+  `experiments/design_method/` after changing how the design worker builds surfaces or how screens predict.
 - The repository is public. Published papers, theses and figure overlays stay in `experiments/<name>/cache/`
   (git-ignored); the repository holds the digitized numbers, the scripts and the citations.
 - Materials Project API key: `~/.config/.pmgrc.yaml` (`PMG_MAPI_KEY`, read by pymatgen and mp-api). Keep it out of

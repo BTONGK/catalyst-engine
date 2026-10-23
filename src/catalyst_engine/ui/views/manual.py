@@ -1,5 +1,7 @@
-"""The manual: how to use the app step by step, catalysis basics, the words used, and help. Text in
-docs/manual.yaml; screenshots in docs/manual/."""
+"""The manual: how to use the app step by step, catalysis basics, the methodology, the words used, and help. Text in
+docs/manual.yaml and experiments/design_method/report.yaml; screenshots in docs/manual/."""
+
+import math
 
 import altair as alt
 import numpy as np
@@ -98,8 +100,180 @@ def basics_figure(name: str) -> None:
              ("reactor", "Simulated reactor\nat your conditions"), ("rank", "Ranking, curves\nand 3D views")],
             ["mp -> cut -> uma -> volc -> reactor -> rank;"], "TB"))
 
+def method_flow(steps: list[dict]) -> str:
+    """The method's steps as two columns read top to bottom: the atom-scale steps, then energy to performance."""
+    split = next(i for i, s in enumerate(steps) if s.get("scale") == "performance")
+    groups = [("atoms", "at the scale of atoms", range(split)), ("perf", "from energy to performance",
+                                                                 range(split, len(steps)))]
+    lines = []
+    for gid, title, idx in groups:
+        lines.append(f'subgraph cluster_{gid} {{ label="Steps {idx[0] + 1} to {idx[-1] + 1}: {title}"; '
+                     'fontname="Helvetica"; fontsize=13; '
+                     'fontcolor="#0f766e"; color="#cbd5e1"; style="rounded";')
+        lines += [f's{i + 1} [label="{i + 1}. {steps[i]["title"]}" width=2.6];' for i in idx]
+        lines.append(" -> ".join(f"s{i + 1}" for i in idx) + "; }")
+    return flow_chart([], lines, "TB")
+
+
+STATUS = {
+    "checked": ("Checked", "green", ":material/verified:"),
+    "gap": ("Checked, with a known gap", "orange", ":material/report:"),
+    "published": ("Rests on published work", "blue", ":material/menu_book:"),
+    "open": ("Open: the largest uncertainty", "red", ":material/help:"),
+}
+
+
+SUPERSCRIPT = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
+
+
+def two_figures(x: float) -> str:
+    """Two significant figures in plain digits: 180, 2.5, 14,000."""
+    return f"{float(f'{x:.2g}'):,g}"
+
+
+def ratio_text(v: float) -> str:
+    """A speed ratio a reader can picture: 0.14 stays, 0.00007 reads "1 in 14,000", 1e-17 reads "1 in 10¹⁷"."""
+    if v >= 0.01:
+        return f"{v:.2g}"
+    n = 1 / v
+    if n >= 1e15:
+        return f"1 in 10{str(round(math.log10(n))).translate(SUPERSCRIPT)}"
+    for size, word in ((1e12, "trillion"), (1e9, "billion"), (1e6, "million")):
+        if n >= size:
+            return f"1 in {two_figures(n / size)} {word}"
+    return f"1 in {two_figures(n)}"
+
+
+def method_table(spec: dict, tables: dict) -> None:
+    """A table from the methodology summary: `spec` names the table and the columns to show, with their labels;
+    columns listed under `ratios` read as "1 in N" and those under `percent` as percentages."""
+    df = pd.DataFrame(tables[spec["table"]])
+    cols = spec["columns"]
+    for c in spec.get("ratios", []):
+        df[c] = df[c].map(ratio_text)
+    for c in spec.get("percent", []):
+        df[c] = df[c].map(lambda v: f"{v:.1%}")
+    df = df[list(cols)].rename(columns=cols)
+    for c in df.columns:
+        if df[c].map(lambda v: isinstance(v, list)).any():
+            df[c] = df[c].map(lambda v: "(" + " ".join(str(x) for x in v) + ")" if isinstance(v, list) else v)
+    wide = {cols[c]: st.column_config.TextColumn(width=112) for c in spec.get("ratios", [])}
+    st.dataframe(df, hide_index=True, width="stretch", height="content", column_config=wide)
+
+
+def method_chart(spec: dict, tables: dict) -> None:
+    """A parity plot (two estimates of the same number) or lines against one variable."""
+    df = pd.DataFrame(tables[spec["table"]])
+    x = alt.X(f"{spec['x']}:Q", title=spec["x_title"], scale=alt.Scale(zero=False, nice=True))
+    y = alt.Y(f"{spec['y']}:Q", title=spec["y_title"], scale=alt.Scale(zero=False, nice=True))
+    if spec["kind"] == "parity":
+        lo = float(min(df[spec["x"]].min(), df[spec["y"]].min())) - 0.2
+        hi = float(max(df[spec["x"]].max(), df[spec["y"]].max())) + 0.2
+        diag = alt.Chart(pd.DataFrame({spec["x"]: [lo, hi], spec["y"]: [lo, hi]})).mark_line(
+            color="#94a3b8", strokeDash=[4, 4]).encode(x=x, y=y)
+        pts = alt.Chart(df).mark_circle(size=90, color="#0f766e").encode(x=x, y=y, tooltip=list(df.columns))
+        names = alt.Chart(df).mark_text(dx=10, align="left", fontSize=11, color="#475569").encode(
+            x=x, y=y, text=f"{spec['label']}:N")
+        chart = alt.layer(diag, pts, names)
+    else:
+        color = alt.Color(f"{spec['color']}:N", title=None, legend=alt.Legend(orient="bottom")) if spec.get("color") \
+            else alt.value("#0f766e")
+        chart = alt.Chart(df).mark_line(point=True, strokeWidth=2).encode(x=x, y=y, color=color, tooltip=list(df.columns))
+    st.altair_chart(chart.properties(height=260), width="stretch")
+    if spec.get("caption"):
+        st.caption(spec["caption"])
+
+
+def methodology(paper: dict) -> None:
+    """The Methodology tab: a method paper whose numbers come from the experiment's summary."""
+    values, tables = paper["data"]["values"], paper["data"]["tables"]
+
+    def fill(text: str) -> str:
+        return flat(text).format_map(values)
+
+    st.markdown(f"### {paper['title']}")
+    st.caption(fill(paper["byline"]))
+    with st.container(border=True):
+        st.markdown("**Abstract**")
+        st.write(fill(paper["abstract"]))
+    st.info(fill(paper["how_to_read"]), icon=":material/school:")
+    st.markdown(" ".join(f":{color}-badge[{icon} {label}]" for label, color, icon in STATUS.values()))
+
+    for n, sec in enumerate(paper["intro"], start=1):
+        st.markdown(f"#### {n}. {sec['title']}")
+        st.write(fill(sec["text"]))
+        if sec.get("points"):
+            st.markdown("\n".join(f"- {fill(p)}" for p in sec["points"]))
+        if sec.get("flow"):
+            st.graphviz_chart(method_flow(paper["steps"]))
+            st.markdown("| Step | Takes in | Gives out | Tool |\n|---|---|---|---|\n" + "\n".join(
+                f"| {i}. {s['title']} | {s['takes']} | {s['gives']} | {s['tool']} |"
+                for i, s in enumerate(paper["steps"], start=1)))
+
+    n_intro = len(paper["intro"])
+    st.markdown(f"#### {n_intro + 1}. Methods and checks, step by step")
+    st.caption("Each step: what the app does, the equation with the same idea in words, the assumptions it rests on "
+               "(numbered A1, A2 … and collected in section " + str(n_intro + 4) + "), and how it was checked.")
+    for i, s in enumerate(paper["steps"], start=1):
+        label, color, icon = STATUS[s["status"]]
+        with st.container(border=True):
+            a, b = st.columns([3, 2], vertical_alignment="center")
+            a.markdown(f"##### Step {i} · {s['title']}")
+            b.badge(label, icon=icon, color=color)
+            st.write(fill(s["does"]))
+            for eq in s.get("equations", []):
+                st.latex(eq["tex"])
+                st.caption(f"In words: {fill(eq['words'])}")
+            st.markdown("**Assumptions**")
+            st.markdown("\n".join(f"- **{x['id']}. {fill(x['short'])}.** {fill(x['text'])}" for x in s["assumptions"]))
+            st.markdown("**How it was checked**")
+            for c in s["checks"]:
+                st.markdown(f"- {fill(c['text'])}")
+                if c.get("table") or c.get("chart"):
+                    with st.expander(c.get("see", "See the numbers")):
+                        if c.get("chart"):
+                            method_chart(c["chart"], tables)
+                        if c.get("table"):
+                            method_table(c["table"], tables)
+            if s.get("verdict"):
+                st.markdown(f":{color}[**Verdict.**] {fill(s['verdict'])}")
+
+    ex = paper["example"]
+    st.markdown(f"#### {n_intro + 2}. {ex['title']}")
+    st.write(fill(ex["text"]))
+    method_table(ex["table"], tables)
+    st.markdown("\n".join(f"- {fill(p)}" for p in ex["points"]))
+
+    st.markdown(f"#### {n_intro + 3}. {paper['budget']['title']}")
+    st.write(fill(paper["budget"]["text"]))
+    st.markdown("| Source | Size (eV) | Where it comes from |\n|---|---|---|\n" + "\n".join(
+        f"| {row['source']} | {fill(row['size'])} | {fill(row['basis'])} |" for row in paper["budget"]["rows"]))
+    st.write(fill(paper["budget"]["after"]))
+
+    st.markdown(f"#### {n_intro + 4}. Every assumption in one place")
+    rows = [(x, i) for i, s in enumerate(paper["steps"], start=1) for x in s["assumptions"]]
+    st.markdown("| | Assumption | Step | If it fails |\n|---|---|---|---|\n" + "\n".join(
+        f"| **{x['id']}** | {fill(x['short'])} | {i} | {fill(x['effect'])} |" for x, i in rows))
+
+    st.markdown(f"#### {n_intro + 5}. {paper['trust']['title']}")
+    for group in paper["trust"]["groups"]:
+        st.markdown(f"**{group['heading']}**")
+        st.markdown("\n".join(f"- {fill(p)}" for p in group["points"]))
+
+    st.markdown(f"#### {n_intro + 6}. Reproduce this page")
+    st.write(fill(paper["reproduce"]["text"]))
+    st.code(paper["reproduce"]["code"].strip(), language="bash")
+    st.markdown("\n".join(f"- {fill(v)}" for v in paper["reproduce"]["versions"]))
+
+    st.markdown("#### References")
+    st.markdown("\n".join(f"{n}. {ref['cite']}" + (f" [link]({ref['url']})" if ref.get("url") else "")
+                          for n, ref in enumerate(paper["references"], start=1)))
+    st.caption("Text in experiments/design_method/report.yaml; numbers in its results/summary.json.")
+
+
 st.title("Manual")
-use_tab, basics_tab, words_tab, help_tab = st.tabs(["How to use the app", "Catalysis basics", "Words used", "Help"])
+use_tab, basics_tab, method_tab, words_tab, help_tab = st.tabs(
+    ["How to use the app", "Catalysis basics", "Methodology", "Words used", "Help"])
 
 with use_tab:
     st.markdown(f"### {guide['title']}")
@@ -169,6 +343,14 @@ with basics_tab:
             if fig_col is not None:
                 with fig_col:
                     basics_figure(sec["figure"])
+
+with method_tab:
+    paper = next(iter(common.experiment_reports("methodology").values()))
+    if paper["data"] is None:
+        st.info("The methodology's numbers come from two scripts in experiments/design_method/; run them to fill this "
+                "tab (the commands sit at the end of report.yaml).", icon=":material/science:")
+    else:
+        methodology(paper)
 
 with words_tab:
     cols = st.columns(len(guide["glossary"]), gap="large")

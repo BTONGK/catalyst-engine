@@ -58,6 +58,7 @@ with left:
         "chemistry (DFT) calculations; it runs on this computer |\n"
         "| Activity | The Sabatier volcano: the best catalyst holds the key molecule just right, firmly enough to react and lightly enough to let go |\n"
         "| Performance curves | The app's reactor model, with equilibrium limits from Cantera's thermodynamic data |")
+    st.caption("The Manual's Methodology tab gives every equation and assumption, and the check behind each step.")
 
 with right:
     status = common.engine_status()

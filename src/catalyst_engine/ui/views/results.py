@@ -262,11 +262,16 @@ def body() -> None:
                                                           range=[common.REFERENCE_GRAY, common.ACCENT]),
                                 legend=alt.Legend(orient="bottom", title=None)),
                 tooltip=["Material", alt.Tooltip("Binding (eV):Q", format=".2f"), alt.Tooltip("Speed:Q", format=".3g")])
-            # alternate labels above and below so neighbors stay legible; on the bottom edge they go above
-            pts["above"] = (np.arange(len(pts)) % 2 == 0) | pts["Off the scale"].to_numpy()
-            text = alt.layer(*[alt.Chart(pts[pts["above"] == up]).mark_text(
-                dy=-14 if up else 16, fontSize=12, color="#475569", clip=True).encode(
-                x="Binding (eV):Q", y="Shown:Q", text="Material:N") for up in (True, False)])
+            # labels beside each dot, alternating left and right from the fastest down on each side of the peak, so
+            # close neighbors along a slope read apart; on the bottom edge they sit above
+            pts["place"] = "above"
+            for side in (pts["Binding (eV)"] <= top, pts["Binding (eV)"] > top):
+                order = pts[side & ~pts["Off the scale"]].sort_values("Speed", ascending=False).index
+                pts.loc[order, "place"] = np.where(np.arange(len(order)) % 2 == 0, "left", "right")
+            offsets = {"above": {"dy": -14}, "left": {"dx": -9, "align": "right"}, "right": {"dx": 9, "align": "left"}}
+            text = alt.layer(*[alt.Chart(pts[pts["place"] == place]).mark_text(
+                fontSize=12, color="#475569", clip=True, **kw).encode(
+                x="Binding (eV):Q", y="Shown:Q", text="Material:N") for place, kw in offsets.items()])
             corners = pd.DataFrame({"Binding (eV)": [x_lo + 0.03, x_hi - 0.03], "Speed": [10.0 ** (hi_dec - 0.4)] * 2,
                                     "label": ["← holds too strongly", "holds too weakly →"]})
             sides = alt.layer(*[alt.Chart(corners.iloc[[i]]).mark_text(align=a, fontSize=12, color="#64748b").encode(
@@ -298,7 +303,7 @@ def body() -> None:
                             best_view = tag
                 view = st.radio("Show", list(views), index=list(views).index(best_view), key=f"res_view_{choice}_{pick}")
                 facet = p.slab.get("facet")
-                st.caption(f"Surface: the densest face, Miller indices {tuple(facet)} in the crystal's own cell, "
+                st.caption(f"Surface: the close-packed face, Miller indices {tuple(facet)} in the crystal's own cell, "
                            f"{p.slab['n_atoms']} atoms, bottom half held fixed. Larger spheres are the molecule. The view "
                            "repeats the computed patch 2 × 2, so each molecule shows up four times. Drag to rotate, "
                            "scroll to zoom.")
