@@ -267,8 +267,9 @@ with st.container(border=True):
     if advanced:
         c = st.columns(2)
         task = c[0].selectbox("UMA mode", list(TASKS), format_func=TASKS.get, key="design_task_adv",
-                              help="Catalysis mode suits metal surfaces; materials mode bulk-like oxides. For "
-                                   "oxides, run both: they differ by 0.3 to 0.5 eV (Model accuracy page).")
+                              help="Catalysis mode suits metal surfaces; materials mode suits oxides, where it "
+                                   "tracks oxide DFT about three times closer and matches measured ammonia on "
+                                   "titania (Manual, Methodology).")
         ref_choice = c[1].selectbox(
             "Catalyst to beat", [""] + list(cands), key=f"design_ref_{pid}",
             format_func=lambda k: f"{spec.reference.name or reference_formula} (this reaction's)" if not k
@@ -285,7 +286,8 @@ with st.container(border=True):
         with st.expander("Model settings"):
             task = st.radio("UMA mode", ["oc20", "omat"], horizontal=True, key="design_task",
                             format_func=TASKS.get,
-                            help="Catalysis mode is the default; the Model accuracy page compares the two.")
+                            help="Catalysis mode suits metals and is the default; materials mode suits oxides "
+                                 "(Manual, Methodology).")
     level = level or "Standard"
     ref_elements = [reference_formula] if reference_formula in METALS else ["O"]  # a compound reference costs more
     secs = screening.seconds_estimate([{"elements": ref_elements}, *cands.values()], len(spec.descriptor),

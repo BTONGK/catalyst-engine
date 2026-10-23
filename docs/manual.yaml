@@ -251,7 +251,7 @@ steps:
       - Switch on "Advanced" at the top of Design a catalyst. The four steps stay the same; extra controls join them.
       - "\"Catalyst form\" in step 2: powder (fine grains) or a coated honeycomb (monolith), as in exhaust systems. For a honeycomb, set its cells per square inch and the wall and coat thickness. The app then counts the time gas takes to reach the channel walls, which caps how much a faster catalyst can gain. The space velocity counts per volume of the whole honeycomb block."
       - "\"Face\" column in your list: auto keeps each crystal's close-packed face. Type three Miller indices, such as 1 0 0, to compute another face. A cubic metal reads them in its cubic cell, as textbooks write them."
-      - "Step 4: the UMA mode (catalysis or materials), the catalyst to beat (any material on your list) and the slab's thickness and width."
+      - "Step 4: the UMA mode (catalysis for metals and alloys, materials for oxides), the catalyst to beat (any material on your list) and the slab's thickness and width."
       - "Rank like with like. Metals and oxides hold the key molecule through different chemistry, so pick a catalyst to beat from the same family as your candidates: an oxide when you screen oxides."
       - "The Manual's Methodology tab lists what stays outside the model, such as the support, promoters and zeolite sites, with the size of each."
     get: A chosen catalyst form, faces and model settings, read on the same Results pages.

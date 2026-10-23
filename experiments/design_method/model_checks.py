@@ -550,6 +550,131 @@ values["zeolite_best_mode"] = best_mode
 values["zeolite_best_miss"] = r(worst[best_mode], 2)
 values["zeolite_misses"] = ", ".join(f"{worst[m]:.2f} eV in the {m} mode" for m in modes)
 
+# ---------------------------------------------------------------- oxides: molecules on oxide surfaces
+ox = json.loads((REPO / "experiments" / "oxide_check" / "results" / "oxide.json").read_text())
+OX_MODES = {"uma-s-1p1/oc20": "UMA-S 1.1, catalysis (the app's)", "uma-s-1p1/omat": "UMA-S 1.1, materials",
+            "uma-s-1p2p1/oc22": "UMA-S 1.2.1, oxide catalysis", "uma-s-1p2p1/oc20": "UMA-S 1.2.1, catalysis",
+            "uma-s-1p2p1/omat": "UMA-S 1.2.1, materials"}
+# a model's MAE keeps the app's error bar when, with the setup terms above, it stays inside sigma_assumed
+values["oxide_gate"] = r(math.sqrt(max(0.0, values["sigma_assumed"] ** 2 - values["setup_quadrature"] ** 2))
+                         / math.sqrt(math.pi / 2), 2)
+
+
+def oxide_scores(rows: list[dict]) -> dict:
+    """Errors against OC22's DFT. Each adsorbate's median error is set aside first: it holds the gap between the
+    model's and DFT's reference energies for that molecule, which the app's gas references remove."""
+    by_ads: dict[str, list[dict]] = {}
+    for x in rows:
+        by_ads.setdefault(x["adsorbate"], []).append(x)
+    resid, agree, pairs, ads_mae = [], 0, 0, {}
+    for a, xs in by_ads.items():
+        err = np.array([x["dE"] - x["dE_dft"] for x in xs])
+        res = err - np.median(err)
+        ads_mae[a] = float(np.abs(res).mean())
+        resid += [(x["split"], float(e)) for x, e in zip(xs, res)]
+        dft, mod = np.array([x["dE_dft"] for x in xs]), np.array([x["dE"] for x in xs])
+        i, j = np.triu_indices(len(xs), 1)
+        apart = np.abs(dft[i] - dft[j]) >= values["sigma_assumed"]  # surfaces DFT tells apart beyond the error bar
+        pairs += int(apart.sum())
+        agree += int((np.sign(dft[i] - dft[j]) == np.sign(mod[i] - mod[j]))[apart].sum())
+    split = lambda s: float(np.mean([abs(e) for sp, e in resid if sp == s]))
+    return {"n": len(rows), "mae_id": split("val_id"), "mae_ood": split("val_ood"),
+            "mae": float(np.mean([abs(e) for _, e in resid])), "order": 100.0 * agree / max(pairs, 1),
+            "worst_ads": max(ads_mae, key=ads_mae.get), "worst_ads_mae": max(ads_mae.values()), "ads": ads_mae}
+
+
+ox_scores = {k: oxide_scores(ox["single"][k]) for k in OX_MODES if k in ox.get("single", {})}
+tables["oxide"] = [{"mode": OX_MODES[k], "n": s["n"], "mae_id": r(s["mae_id"], 2), "mae_ood": r(s["mae_ood"], 2),
+                    "order": r(s["order"], 0), "worst": f"{s['worst_ads']} ({s['worst_ads_mae']:.2f})"}
+                   for k, s in ox_scores.items()]
+ADS_ORDER = ["O", "H", "OH", "H2O", "HO2", "O2", "CO", "C", "N"]
+tables["oxide_ads"] = [{"adsorbate": a, **{k.replace("uma-s-", "").replace("/", "_"): r(s["ads"][a], 2)
+                                            for k, s in ox_scores.items() if a in s["ads"]}}
+                       for a in ADS_ORDER if any(a in s["ads"] for s in ox_scores.values())]
+app_mode, cand = "uma-s-1p1/oc20", "uma-s-1p2p1/oc22"
+values["oxide_modes_n"] = ["one", "two", "three", "four", "five"][len(ox_scores) - 1]
+values.update(oxide_n=ox_scores[app_mode]["n"], oxide_app_mae=r(ox_scores[app_mode]["mae"], 2),
+              oxide_app_mae_ood=r(ox_scores[app_mode]["mae_ood"], 2), oxide_app_order=r(ox_scores[app_mode]["order"], 0))
+if cand in ox_scores:
+    values.update(oxide_cand_mae=r(ox_scores[cand]["mae"], 2), oxide_cand_mae_ood=r(ox_scores[cand]["mae_ood"], 2),
+                  oxide_cand_order=r(ox_scores[cand]["order"], 0))
+mat = "uma-s-1p1/omat"
+values.update(oxide_mat_mae_id=r(ox_scores[mat]["mae_id"], 2), oxide_mat_mae_ood=r(ox_scores[mat]["mae_ood"], 2),
+              oxide_mat_order=r(ox_scores[mat]["order"], 0), oxide_cand_mae_id=r(ox_scores[cand]["mae_id"], 2),
+              oxide_app_mae_id=r(ox_scores[app_mode]["mae_id"], 2),
+              oxide_mat_factor=r(ox_scores[app_mode]["mae_ood"] / ox_scores[mat]["mae_ood"], 0))
+best_ox = min(ox_scores, key=lambda k: ox_scores[k]["mae_ood"])
+values["oxide_best_mode"] = OX_MODES[best_ox]
+values["oxide_best_mae_ood"] = r(ox_scores[best_ox]["mae_ood"], 2)
+values["oxide_modes_pass"] = sum(1 for s in ox_scores.values() if s["mae_ood"] <= values["oxide_gate"])
+
+if ox.get("relax"):
+    tables["oxide_relax"] = []
+    for k, rows in ox["relax"].items():
+        s = oxide_scores(rows)
+        tables["oxide_relax"].append({"mode": OX_MODES[k], "n": s["n"], "mae": r(s["mae"], 2),
+                                      "single": r(oxide_scores([{**x, "dE": x["dE_single"]} for x in rows])["mae"], 2),
+                                      "converged": sum(x["converged"] for x in rows)})
+        values[f"oxide_relax_{k.split('/')[1]}_{k.split('/')[0][-3:]}"] = r(s["mae"], 2)
+
+ANATASE_MEASURED = -1.23  # Koust et al. 2018: TPD, one NH3 on five-fold Ti of anatase (101) at zero coverage, +/- 0.1
+NH3_COLS = {"anatase app face": "anatase_001", "anatase (101)": "anatase_101_app",
+            "anatase (101), thicker": "anatase_101_app_thick", "v2o5 app face": "v2o5"}
+nh3_rows, app_found = [], set()
+for k, rows in ox["nh3"].items():
+    best = {}  # the most stable intact NH3 per material and face, as the app keeps
+    for x in rows:
+        key = f"{x['material']} {x['face']}"
+        if x["anomaly"]:
+            continue
+        if x["site_from"] == "app" and x["site"] == "top Ti" and x["site_bonds"] == 5:
+            app_found.add(key)
+        if key not in best or x["E_bind"] < best[key]["E_bind"]:
+            best[key] = x
+    far = [x["E_bind"] for x in rows if x["anomaly"] == "desorbed"]  # NH3 that drifted over 3 A off: near zero
+    nh3_rows.append({"mode": OX_MODES[k], **{NH3_COLS[f]: r(x["E_bind"], 2) for f, x in best.items()},
+                     "far": f"{min(far):.2f} to {max(far):.2f}" if far else ""})
+tables["nh3"] = nh3_rows
+app_row = next(x for x in nh3_rows if x["mode"] == OX_MODES[app_mode])
+# a mode's gas reference agrees with its surfaces when NH3 that drifted off scores within the error bar of zero
+consistent = [k for k, rows in ox["nh3"].items()
+              if all(abs(x["E_bind"]) <= values["sigma_assumed"] for x in rows if x["anomaly"] == "desorbed")]
+values["ref_consistent"] = " and ".join(OX_MODES[k] for k in consistent)
+values["ref_offset_lo"] = r(min(-max(x["E_bind"] for x in ox["nh3"][k] if x["anomaly"] == "desorbed")
+                            for k in ox["nh3"] if k not in consistent), 2)
+values["ref_offset_hi"] = r(max(-min(x["E_bind"] for x in ox["nh3"][k] if x["anomaly"] == "desorbed")
+                            for k in ox["nh3"] if k not in consistent), 2)
+v2o5 = [x["v2o5"] for x in nh3_rows if any(x["mode"] == OX_MODES[k] for k in consistent)]
+values.update(v2o5_nh3_lo=min(v2o5), v2o5_nh3_hi=max(v2o5), v2o5_nh3_app=app_row["v2o5"],
+              v2o5_nh3_spread=r(max(v2o5) - min(v2o5), 2),
+              anatase_builder_found=", ".join(sorted(app_found)) or "none",
+              far_app=r(min(x["E_bind"] for x in ox["nh3"][app_mode] if x["anomaly"] == "desorbed"), 2),
+              far_worst=r(min(x["E_bind"] for k in ox["nh3"] for x in ox["nh3"][k] if x["anomaly"] == "desorbed"), 2))
+ana_rows = []
+for k, rows in ox["anatase101"].items():
+    by = {x["layers"]: x for x in rows}
+    miss = by[4]["E_bind"] - ANATASE_MEASURED
+    ana_rows.append({"mode": OX_MODES[k], "four": r(by[4]["E_bind"], 2), "five": r(by[5]["E_bind"], 2),
+                     "miss": r(miss, 2), "N_Ti": by[4]["N_Ti_A"], "intact": not by[4]["anomaly"],
+                     "match": abs(miss) <= values["sigma_assumed"] and k in consistent,
+                     "far": next(x["far"] for x in nh3_rows if x["mode"] == OX_MODES[k])})
+tables["anatase"] = ana_rows
+best_ana = min(ana_rows, key=lambda x: abs(x["miss"]))
+values.update(anatase_measured=ANATASE_MEASURED,
+              anatase_app=next(x["four"] for x in ana_rows if x["mode"] == OX_MODES[app_mode]),
+              anatase_app_miss=next(x["miss"] for x in ana_rows if x["mode"] == OX_MODES[app_mode]),
+              anatase_misses=", ".join(f"{x['miss']:+.2f} eV ({x['mode']})" for x in ana_rows),
+              anatase_best_mode=best_ana["mode"], anatase_best_miss=best_ana["miss"],
+              anatase_layers_gap=r(max(abs(x["four"] - x["five"]) for x in ana_rows), 2),
+              anatase_match=" and ".join(x["mode"] for x in ana_rows if x["match"]) or "one mode",
+              anatase_mat_miss=next(x["miss"] for x in ana_rows if x["mode"] == OX_MODES[mat]),
+              far_cand=r(-float(np.mean([x["E_bind"] for x in ox["nh3"][cand] if x["anomaly"] == "desorbed"])), 2))
+# the worker's own (101) cut against the true one, where both kept NH3 whole
+cut = [abs(n["anatase_101_app"] - a["four"]) for n, a in zip(nh3_rows, ana_rows) if "anatase_101_app" in n]
+values["cut_gap"] = r(max(cut), 1)
+values["v2o5_nh3_mat"] = next(x["v2o5"] for x in nh3_rows if x["mode"] == OX_MODES[mat])
+values["cut_gap_app"] = r(abs(app_row["anatase_101_app"] - values["anatase_app"]), 2)
+
 values["generated"] = atom["generated"]
 values["atomistic_minutes"] = r(atom["seconds"] / 60, 0)
 (HERE / "results").mkdir(exist_ok=True)

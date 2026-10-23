@@ -23,13 +23,16 @@ The Design page opens in its simple form. Its **Advanced** switch adds:
 - **Catalyst form:** powder, or a coated honeycomb (monolith) with its cells per square inch and wall; the reactor
   then caps each rate at the gas reaching the channel walls (`screening.wall_transfer`).
 - **Faces:** a crystal face per pure metal, in Miller indices.
-- **UMA mode:** catalysis (oc20) or materials (omat).
+- **UMA mode:** catalysis (oc20) for metals and alloys, or materials (omat) for oxides.
 - **Catalyst to beat:** any material on the list.
 - **Slab size:** thickness and width.
 
 The Methodology tab's closing section lists what the app leaves out and why: the support, promoters, zeolite sites
 and diffusion inside a coat, each with its measured size. Zeolite sites have a builder (`design/zeolites.py`) and a
 check against published DFT (`experiments/zeolite_check/`); they join the app once a UMA mode passes it.
+`experiments/oxide_check/` scores UMA-S 1.1's and 1.2.1's modes on molecules on oxide surfaces against OC22's DFT
+and measured ammonia on anatase; of the modes the app offers, the materials mode comes closest, and every mode stays
+beyond the error bar there.
 
 Pages, as grouped in the sidebar:
 

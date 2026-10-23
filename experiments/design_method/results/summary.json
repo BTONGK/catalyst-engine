@@ -113,6 +113,47 @@
   "zeolite_best_mode": "oc20",
   "zeolite_best_miss": 0.38,
   "zeolite_misses": "0.38 eV in the oc20 mode, 0.53 eV in the omat mode, 1.19 eV in the odac mode",
+  "oxide_gate": 0.11,
+  "oxide_modes_n": "four",
+  "oxide_n": 720,
+  "oxide_app_mae": 0.67,
+  "oxide_app_mae_ood": 0.7,
+  "oxide_app_order": 89.0,
+  "oxide_cand_mae": 0.17,
+  "oxide_cand_mae_ood": 0.19,
+  "oxide_cand_order": 98.0,
+  "oxide_mat_mae_id": 0.19,
+  "oxide_mat_mae_ood": 0.21,
+  "oxide_mat_order": 97.0,
+  "oxide_cand_mae_id": 0.14,
+  "oxide_app_mae_id": 0.64,
+  "oxide_mat_factor": 3.0,
+  "oxide_best_mode": "UMA-S 1.2.1, oxide catalysis",
+  "oxide_best_mae_ood": 0.19,
+  "oxide_modes_pass": 0,
+  "ref_consistent": "UMA-S 1.1, catalysis (the app's) and UMA-S 1.1, materials",
+  "ref_offset_lo": 0.19,
+  "ref_offset_hi": 1.55,
+  "v2o5_nh3_lo": -0.52,
+  "v2o5_nh3_hi": -0.26,
+  "v2o5_nh3_app": -0.26,
+  "v2o5_nh3_spread": 0.26,
+  "anatase_builder_found": "anatase app face",
+  "far_app": -0.08,
+  "far_worst": -1.55,
+  "anatase_measured": -1.23,
+  "anatase_app": -0.5,
+  "anatase_app_miss": 0.73,
+  "anatase_misses": "+0.73 eV (UMA-S 1.1, catalysis (the app's)), +0.07 eV (UMA-S 1.1, materials), +0.15 eV (UMA-S 1.2.1, oxide catalysis), +0.15 eV (UMA-S 1.2.1, catalysis), +0.18 eV (UMA-S 1.2.1, materials)",
+  "anatase_best_mode": "UMA-S 1.1, materials",
+  "anatase_best_miss": 0.07,
+  "anatase_layers_gap": 0.02,
+  "anatase_match": "UMA-S 1.1, materials",
+  "anatase_mat_miss": 0.07,
+  "far_cand": 0.33,
+  "cut_gap": 1.2,
+  "v2o5_nh3_mat": -0.52,
+  "cut_gap_app": 0.16,
   "generated": "2026-10-23",
   "atomistic_minutes": 76.0
  },
@@ -1985,6 +2026,197 @@
     "odac": -2.48,
     "published": "",
     "source": ""
+   }
+  ],
+  "oxide": [
+   {
+    "mode": "UMA-S 1.1, catalysis (the app's)",
+    "n": 720,
+    "mae_id": 0.64,
+    "mae_ood": 0.7,
+    "order": 89.0,
+    "worst": "N (0.92)"
+   },
+   {
+    "mode": "UMA-S 1.1, materials",
+    "n": 720,
+    "mae_id": 0.19,
+    "mae_ood": 0.21,
+    "order": 97.0,
+    "worst": "H (0.27)"
+   },
+   {
+    "mode": "UMA-S 1.2.1, oxide catalysis",
+    "n": 720,
+    "mae_id": 0.14,
+    "mae_ood": 0.19,
+    "order": 98.0,
+    "worst": "H (0.21)"
+   },
+   {
+    "mode": "UMA-S 1.2.1, catalysis",
+    "n": 720,
+    "mae_id": 0.6,
+    "mae_ood": 0.68,
+    "order": 89.0,
+    "worst": "N (0.86)"
+   }
+  ],
+  "oxide_ads": [
+   {
+    "adsorbate": "O",
+    "1p1_oc20": 0.7,
+    "1p1_omat": 0.18,
+    "1p2p1_oc22": 0.15,
+    "1p2p1_oc20": 0.7
+   },
+   {
+    "adsorbate": "H",
+    "1p1_oc20": 0.59,
+    "1p1_omat": 0.27,
+    "1p2p1_oc22": 0.21,
+    "1p2p1_oc20": 0.6
+   },
+   {
+    "adsorbate": "OH",
+    "1p1_oc20": 0.57,
+    "1p1_omat": 0.21,
+    "1p2p1_oc22": 0.18,
+    "1p2p1_oc20": 0.55
+   },
+   {
+    "adsorbate": "H2O",
+    "1p1_oc20": 0.4,
+    "1p1_omat": 0.18,
+    "1p2p1_oc22": 0.13,
+    "1p2p1_oc20": 0.36
+   },
+   {
+    "adsorbate": "HO2",
+    "1p1_oc20": 0.61,
+    "1p1_omat": 0.24,
+    "1p2p1_oc22": 0.2,
+    "1p2p1_oc20": 0.56
+   },
+   {
+    "adsorbate": "O2",
+    "1p1_oc20": 0.79,
+    "1p1_omat": 0.16,
+    "1p2p1_oc22": 0.13,
+    "1p2p1_oc20": 0.8
+   },
+   {
+    "adsorbate": "CO",
+    "1p1_oc20": 0.56,
+    "1p1_omat": 0.17,
+    "1p2p1_oc22": 0.12,
+    "1p2p1_oc20": 0.51
+   },
+   {
+    "adsorbate": "C",
+    "1p1_oc20": 0.84,
+    "1p1_omat": 0.22,
+    "1p2p1_oc22": 0.17,
+    "1p2p1_oc20": 0.81
+   },
+   {
+    "adsorbate": "N",
+    "1p1_oc20": 0.92,
+    "1p1_omat": 0.21,
+    "1p2p1_oc22": 0.19,
+    "1p2p1_oc20": 0.86
+   }
+  ],
+  "nh3": [
+   {
+    "mode": "UMA-S 1.1, catalysis (the app's)",
+    "anatase_001": -0.51,
+    "anatase_101_app": -0.66,
+    "anatase_101_app_thick": -0.48,
+    "v2o5": -0.26,
+    "far": "-0.08 to -0.01"
+   },
+   {
+    "mode": "UMA-S 1.1, materials",
+    "anatase_001": -1.04,
+    "anatase_101_app": -2.33,
+    "anatase_101_app_thick": -1.03,
+    "v2o5": -0.52,
+    "far": "-0.12 to -0.12"
+   },
+   {
+    "mode": "UMA-S 1.2.1, oxide catalysis",
+    "anatase_001": -1.04,
+    "anatase_101_app_thick": -1.04,
+    "v2o5": -0.62,
+    "far": "-0.34 to -0.33"
+   },
+   {
+    "mode": "UMA-S 1.2.1, catalysis",
+    "anatase_001": -0.98,
+    "anatase_101_app": -1.36,
+    "anatase_101_app_thick": -0.96,
+    "v2o5": -1.76,
+    "far": "-1.55 to -0.28"
+   },
+   {
+    "mode": "UMA-S 1.2.1, materials",
+    "anatase_001": -0.96,
+    "anatase_101_app_thick": -0.98,
+    "v2o5": -0.56,
+    "far": "-0.24 to -0.19"
+   }
+  ],
+  "anatase": [
+   {
+    "mode": "UMA-S 1.1, catalysis (the app's)",
+    "four": -0.5,
+    "five": -0.49,
+    "miss": 0.73,
+    "N_Ti": 2.416,
+    "intact": true,
+    "match": false,
+    "far": "-0.08 to -0.01"
+   },
+   {
+    "mode": "UMA-S 1.1, materials",
+    "four": -1.16,
+    "five": -1.14,
+    "miss": 0.07,
+    "N_Ti": 2.276,
+    "intact": true,
+    "match": true,
+    "far": "-0.12 to -0.12"
+   },
+   {
+    "mode": "UMA-S 1.2.1, oxide catalysis",
+    "four": -1.08,
+    "five": -1.07,
+    "miss": 0.15,
+    "N_Ti": 2.348,
+    "intact": true,
+    "match": false,
+    "far": "-0.34 to -0.33"
+   },
+   {
+    "mode": "UMA-S 1.2.1, catalysis",
+    "four": -1.08,
+    "five": -1.07,
+    "miss": 0.15,
+    "N_Ti": 2.317,
+    "intact": true,
+    "match": false,
+    "far": "-1.55 to -0.28"
+   },
+   {
+    "mode": "UMA-S 1.2.1, materials",
+    "four": -1.05,
+    "five": -1.04,
+    "miss": 0.18,
+    "N_Ti": 2.288,
+    "intact": true,
+    "match": false,
+    "far": "-0.24 to -0.19"
    }
   ]
  }

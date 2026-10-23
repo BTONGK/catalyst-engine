@@ -25,7 +25,10 @@ abstract: >
   times as far as that rule, and the likely range carries the difference. Read the ranking as a guide to the
   materials worth a closer look, and speed ratios beyond about tenfold as qualitative. A closing section lists the
   parts of a real catalyst the method leaves out (the support, promoters, zeolite sites, diffusion inside a coat),
-  why each stays out, and how large each is.
+  why each stays out, and how large each is. Oxides carry the largest error measured there: against OC22's DFT the
+  catalysis mode misses molecules on oxide surfaces by {oxide_app_mae_ood:.2f} eV and the materials mode by
+  {oxide_mat_mae_ood:.2f} eV, and only the materials mode matches measured ammonia on titania, so oxides belong in
+  the materials mode.
 
 how_to_read: >
   Every step follows the same pattern: what the app does in plain words, the equation with its meaning in words,
@@ -637,7 +640,9 @@ trust:
       points:
         - Speed ratios beyond about tenfold, and anything on the far side of the volcano (step 6).
         - Alloys, whose surface atoms may differ from the bulk (step 2).
-        - Oxides, where UMA's two modes differ by 0.3 to 0.5 eV (Model accuracy page); run both modes.
+        - Oxides. The materials mode tracks oxide DFT about {oxide_mat_factor:.0f} times closer than the catalysis
+          mode and matches measured ammonia on titania; its typical miss, {oxide_mat_mae_ood:.2f} eV, still sits
+          beyond the error bar (next section). Screen oxides in the materials mode.
         - Absolute temperatures and conversions, which rest on each pack's illustrative parameters (step 7).
         - Temperatures beyond the reaction's standard test range, where the peak's move and the rates are
           extrapolated; the app flags them.
@@ -661,14 +666,17 @@ limits:
         A cluster or layer on a support has a shape found only by a structure search (one published benchmark relaxed
         150 structures per cluster and surface), and machine-learned models' accuracy at the metal–oxide boundary
         varies from one support to the next (Xu et al. 2026).
-      size: Untested for UMA; uneven across three alumina surfaces for the models benchmarked.
+      size: >
+        Uneven across three alumina surfaces for the models benchmarked. On bare titania, the usual SCR support, the
+        materials mode matches measured ammonia within {anatase_mat_miss:.2f} eV (below); a metal or vanadia layer on
+        it awaits its own test.
       meanwhile: Rank active ingredients here; compare supports on the bench.
     - part: Promoters (a few percent of a second element)
       why: >
         A promoter's shift in binding is often as small as UMA's error on oxide surfaces, and many promoters act on
         structure: tungsten in V2O5–WO3/TiO2 keeps the titania stable and spreads the vanadia, effects a binding
         energy leaves out.
-      size: "UMA's materials-trained mode sits within 0.3 eV of DFT on IrO2 (2026 benchmark): as large as many promoter effects."
+      size: "UMA's best mode on oxides misses DFT by {oxide_mat_mae_ood:.2f} eV on average (below): as large as many promoter effects."
       meanwhile: Treat a promoter as a bench variable.
     - part: Zeolite sites (copper or iron ions in a silica framework)
       why: >
@@ -684,13 +692,37 @@ limits:
         to coat and comes from measurement.
       size: "{form_coat_drop_lo_pts:.1f} to {form_coat_drop_hi_pts:.1f} points of NOx conversion for a 50 µm coat on hot SCR's catalyst to beat (step 7)."
       meanwhile: Read honeycomb curves as the best a thin coat can do; powder means fine grains.
-    - part: Molecules on oxide surfaces in the catalysis mode
+    - part: Molecules on oxide surfaces, to the app's error bar
       why: >
-        UMA learned surfaces with molecules from OC20, whose surfaces are metals and intermetallics; molecules on
-        oxide surfaces came later, in OC22 (Tran et al. 2023), outside UMA's training. Oxide candidates, and an oxide
-        catalyst to beat such as hot SCR's vanadium oxide, rest on the model reaching past its data.
-      size: The two UMA modes differ by 0.3 to 0.5 eV on oxides (Model accuracy page).
-      meanwhile: Run oxides in both modes, and rank oxides against an oxide catalyst to beat.
+        UMA-S 1.1 learned surfaces with molecules from OC20, whose surfaces are metals and intermetallics. Against
+        OC22's DFT (Tran et al. 2023) for {oxide_n} single molecules on oxide surfaces, the typical miss on oxides
+        new to OC22's training is {oxide_app_mae_ood:.2f} eV in the catalysis mode and {oxide_mat_mae_ood:.2f} eV in
+        the materials mode, once each molecule's reference offset is set aside; the error bar holds up to
+        {oxide_gate:.2f} eV. Against a measurement, ammonia on anatase TiO2 (101), the catalysis mode binds
+        {anatase_app_miss:.2f} eV too weakly and the materials mode lands {anatase_mat_miss:.2f} eV from it.
+      size: >
+        {oxide_mat_mae_ood:.2f} eV in the better mode, the materials mode. Both modes still order most pairs of oxide
+        surfaces that DFT tells apart: {oxide_app_order:.0f}% in the catalysis mode, {oxide_mat_order:.0f}% in the
+        materials mode. Hot SCR's vanadium oxide binds ammonia at {v2o5_nh3_app:.2f} eV in the catalysis mode and
+        {v2o5_nh3_mat:.2f} eV in the materials mode.
+      meanwhile: >
+        Screen oxides in the materials mode, against an oxide catalyst to beat; read the order as a guide and the
+        speed ratios as rough, and confirm a promising oxide on the bench.
+    - part: UMA-S 1.2.1's oxide mode, trained on OC22
+      why: >
+        It tracks OC22's DFT closest, {oxide_cand_mae_id:.2f} eV on familiar materials and {oxide_cand_mae_ood:.2f} eV
+        on new ones, a score that may sit partly inside its own training. Its ammonia in a box sits {far_cand:.2f} eV
+        above ammonia drifted off a surface, so every binding set against a gas molecule carries that shift; of the
+        five modes tested, {ref_consistent} keep the two consistent.
+      size: "{oxide_cand_mae_ood:.2f} eV on new oxides, beyond the {oxide_gate:.2f} eV limit, plus a {far_cand:.2f} eV shift in each binding against gas."
+      meanwhile: The test in experiments/oxide_check/ runs again on each new UMA release.
+    - part: The most stable cut of an oxide face
+      why: >
+        The app cuts the face packed most tightly with the bulk's composition and keeps the cut whose composition
+        matches the bulk. On anatase that face is (001), a minority face; the (101) face that covers most real anatase
+        comes out, when picked in Advanced, with a singly bonded oxygen on top, where ammonia reacts in some modes.
+      size: "Up to {cut_gap:.1f} eV of ammonia binding on titania (101) across the modes; {cut_gap_app:.2f} eV in the catalysis mode."
+      meanwhile: For an oxide face, check in the 3D view that each top metal keeps most of its oxygen neighbors.
     - part: Magnetism in the catalysis mode
       why: The catalysis mode reproduces spin-free DFT (A7).
       size: "Iron's fcc packing sits {iron_fcc_oc20:.2f} eV per atom below bcc there; real iron keeps bcc (step 4)."
@@ -713,6 +745,42 @@ limits:
       table:
         table: zeolite
         columns: {site: Site, oc20: "Catalysis (eV)", omat: "Materials (eV)", odac: "Porous frameworks (eV)", published: "Published DFT (eV)", source: Source}
+    - text: >
+        Molecules on oxide surfaces, {oxide_modes_n} UMA modes against OC22's DFT (PBE+U, spin-polarized): {oxide_n}
+        systems with one molecule each, 40 per molecule from each of OC22's two validation sets, familiar materials
+        and materials new to its training, scored at DFT's own structures. Each molecule's median miss is set aside first: it holds
+        the gap between the model's and DFT's energy for that molecule, which the app's gas references remove. "In
+        order" counts the pairs of surfaces DFT places at least {sigma_assumed:.2f} eV apart that the model places the
+        same way round.
+      see: Typical miss against OC22's DFT, {oxide_modes_n} UMA modes
+      table:
+        table: oxide
+        columns: {mode: Mode, n: Systems, mae_id: "Familiar materials (eV)", mae_ood: "New materials (eV)", order: "In order (%)", worst: "Hardest molecule (eV)"}
+    - text: The same misses, molecule by molecule, on both validation sets together.
+      see: Typical miss by molecule (eV)
+      table:
+        table: oxide_ads
+        columns: {adsorbate: Molecule, 1p1_oc20: "1.1 catalysis", 1p1_omat: "1.1 materials", 1p2p1_oc22: "1.2.1 oxide", 1p2p1_oc20: "1.2.1 catalysis"}
+    - text: >
+        Ammonia on anatase TiO2 (101), against a measurement: {anatase_measured:.2f} ± 0.1 eV to lift one molecule off
+        a five-fold titanium at low coverage (temperature-programmed desorption; optB88-vdW DFT gives 1.20 eV; Koust
+        et al. 2018). The face is the true (101) cut, two-fold oxygen and five-fold titanium on top, one ammonia per
+        four titanium, the bottom half fixed; four and five layers agree within {anatase_layers_gap:.2f} eV. The last
+        column is ammonia that drifted more than 3 Å off a surface in the runs below, which reads near zero when a
+        mode's gas and surface energies agree. A mode matches when it lands within the error bar and keeps that
+        agreement: {anatase_match}.
+      see: Ammonia on anatase (101), five UMA modes against the measurement
+      table:
+        table: anatase
+        columns: {mode: Mode, four: "Four layers (eV)", five: "Five layers (eV)", miss: "Miss (eV)", N_Ti: "N–Ti (Å)", far: "Drifted off (eV)"}
+    - text: >
+        Ammonia on the faces the app cuts itself, built, sited and relaxed exactly as a screen does: anatase's own
+        face (001), the (101) face as picked in Advanced, and hot SCR's catalyst to beat, vanadium oxide. Blank cells
+        are runs where the molecule broke apart or drifted off at every site tried.
+      see: Ammonia on the app's own oxide faces, five UMA modes
+      table:
+        table: nh3
+        columns: {mode: Mode, anatase_001: "Anatase (001) (eV)", anatase_101_app: "Anatase (101), app's cut (eV)", anatase_101_app_thick: "Same, thicker (eV)", v2o5: "V2O5 (eV)", far: "Drifted off (eV)"}
 
 reproduce:
   text: >
@@ -722,12 +790,15 @@ reproduce:
     # 1. the UMA checks -> results/atomistic.json
     export TORCHDYNAMO_DISABLE=1
     /opt/miniconda3/bin/python3 experiments/design_method/atomistic_checks.py
+    # 1b. the oxide check -> experiments/oxide_check/results/oxide.json (OC22 download and extraction in its scripts)
+    for m in single nh3 anatase101; do /opt/miniconda3/bin/python3 experiments/oxide_check/oxide_check.py $m; done
     # 2. everything else -> results/summary.json
     uv run python experiments/design_method/model_checks.py
     # 3. the unit checks named on this page
     uv run pytest tests/test_design.py
   versions:
-    - "UMA-S 1.1 (uma-s-1p1.pt) with fairchem-core 2.23 and PyTorch 2.13, on CPU."
+    - "UMA-S 1.1 (uma-s-1p1.pt) with fairchem-core 2.23 and PyTorch 2.13, on CPU; UMA-S 1.2.1 (uma-s-1p2p1.pt) for the oxide check."
+    - "OC22 validation sets from the IS2RE-Total LMDBs (CC BY 4.0), read with a restricted unpickler (experiments/oxide_check/extract_oc22.py)."
     - "ASE 3.29; Cantera 3.2 with GRI-Mech 3.0."
     - "The example screen: examples/screens/. The hand-built benchmark: experiments/uma_binding/. Results before the face fix: experiments/design_method/data/."
 
@@ -753,5 +824,6 @@ references:
   - {cite: "Tran, R. et al. The Open Catalyst 2022 (OC22) Dataset and Challenges for Oxide Electrocatalysts. ACS Catal. 13, 3066 (2023).", url: "https://arxiv.org/abs/2206.08917"}
   - {cite: "Nystrom, S., Hoffman, A. & Hibbitts, D. Tuning Brønsted Acid Strength by Altering Site Proximity in CHA Framework Zeolites. ACS Catal. 8, 7842 (2018).", url: "https://doi.org/10.1021/acscatal.8b02049"}
   - {cite: "Isapour et al., with Feng, Y., Grönbeck, H., Skoglundh, M. & Härelind, H. Ammonia in H- and Cu-SSZ-13 by DRIFTS, NH3-TPD and DFT (PBE+U+D3). RSC Adv. 16, 28182 (2026).", url: "https://doi.org/10.1039/d6ra03025d"}
+  - {cite: "Koust, S., Adamsen, K. C., Kolsbjerg, E. L., Li, Z., Hammer, B., Wendt, S. & Lauritsen, J. V. NH3 adsorption on anatase-TiO2(101). Preprint, Aarhus University (2018).", url: "https://pure.au.dk/ws/files/181268137/preprint_koust.pdf"}
   - {cite: "Goodwin, D. G. et al. Cantera: an object-oriented software toolkit for chemical kinetics, thermodynamics and transport processes (version 3.2).", url: "https://cantera.org"}
   - {cite: "Smith, G. P. et al. GRI-Mech 3.0.", url: "http://combustion.berkeley.edu/gri-mech/"}

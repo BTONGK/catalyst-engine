@@ -23,6 +23,15 @@ proof_sequence:
 recent:
   - date: 2026-10-23
     item: >
+      Oxide accuracy check. Four UMA modes scored on 720 molecules on oxide surfaces against OC22's DFT, and five
+      on ammonia on anatase titania against a measurement (1.23 ± 0.1 eV). The catalysis mode, the app's default,
+      misses oxides by 0.70 eV and binds ammonia on titania 0.73 eV too weakly; the materials mode misses by
+      0.21 eV and matches titania within 0.07 eV. UMA-S 1.2.1's oxide mode, trained on OC22, scores 0.19 eV, but its
+      gas molecules sit 0.33 eV off its surfaces. Every mode stays beyond the 0.11 eV the error bar allows, so
+      supports and promoters stay out, and the app now points oxides to the materials mode. The check also found
+      the app's surface cut leaves a singly bonded oxygen on top of anatase (101); the Methodology limits list it.
+  - date: 2026-10-23
+    item: >
       Accuracy first: what the app leaves out, measured. The Methodology tab now ends with the parts of a real
       catalyst the model leaves out and the size of each: the support, promoters, zeolite sites, diffusion inside a
       coat, molecules on oxide surfaces in the catalysis mode, magnetism, and which element an alloy shows on top.
@@ -127,12 +136,20 @@ next_steps:
     why: >
       The Manual's "How to use the app" tab walks through it. Keep the temperature range near the reaction's
       standard test; the app flags ranges beyond it.
-  - step: Approve the oxide accuracy check (OC22 download, several GB)
+  - step: Decide how oxide screens run
     owner: You
     why: >
-      Molecules on oxide surfaces sit outside UMA's catalysis training, and hot SCR's catalyst to beat is an oxide.
-      Testing both UMA modes against OC22's DFT and published ammonia-on-V2O5 values sizes that error, and decides
-      whether oxide promoters and supports can ever join the app. The download needs your go-ahead.
+      The oxide check puts the materials mode about three times closer to oxide DFT than the catalysis mode, the
+      default, and only the materials mode matches measured ammonia on titania. Hot SCR's catalyst to beat is an
+      oxide: vanadium oxide binds ammonia at −0.26 eV in the catalysis mode and −0.52 eV in the materials mode.
+      Options: run whole screens of oxides in the materials mode by default, or keep the choice manual with the
+      advice the app now gives. Metals stay best in the catalysis mode, and one screen keeps one mode.
+  - step: Cut oxide faces at their most stable termination
+    owner: Claude
+    why: >
+      The surface cut keeps the termination whose composition matches the bulk; on anatase (101) that leaves a
+      singly bonded oxygen on top, and ammonia binding there swings by up to 1.2 eV between modes. Choosing the cut
+      with the fewest broken metal–oxygen bonds gives the real face, as the check's hand-built slab shows.
   - step: Set each reaction's volcano slopes from published scaling relations
     owner: Claude
     why: >
@@ -214,6 +231,15 @@ phases:
       so far (Literature check page).
 
 findings:
+  - title: Oxides belong in UMA's materials mode, at about 0.2 eV
+    detail: >
+      On 720 molecules on oxide surfaces from OC22, set against its DFT, the typical miss is 0.64–0.70 eV in the
+      catalysis mode, 0.19–0.21 eV in the materials mode and 0.14–0.19 eV in UMA-S 1.2.1's oxide mode, which trained
+      on OC22. On anatase titania the materials mode binds ammonia at 1.16 eV against the measured 1.23 ± 0.1; the
+      catalysis mode at 0.50. All modes sit beyond the 0.11 eV the error bar allows, yet the materials mode orders
+      97% of clearly separated surface pairs as DFT does. 1.2.1's modes give gas molecules energies 0.2–1.6 eV off
+      their surfaces, so binding against gas shifts there.
+    source: Oxide check, experiments/oxide_check (2026-10-23); Methodology tab, limits.
   - title: UMA misplaces ammonia in copper zeolites by 0.4 eV or more
     detail: >
       Ammonia on four sites of copper chabazite, built on the Materials Project framework and relaxed in each UMA

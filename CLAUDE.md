@@ -38,5 +38,10 @@
 - Zeolites stay out of the app: `experiments/zeolite_check/` shows UMA's three modes miss published DFT for NH3 in
   Cu-chabazite by 0.38 eV or more. `design/zeolites.py` (numpy and ASE only, so the UMA Python loads it) and the
   worker's `framework` branch remain for that check and for a later model.
+- Oxides: `experiments/oxide_check/` scores UMA modes against OC22's DFT (data in its git-ignored `cache/`, read by
+  `extract_oc22.py` through a restricted unpickler) and measured NH3 on anatase (101). The materials mode (omat) is the
+  app's advice for oxides; every mode sits beyond the error bar, so supports and promoters stay out. UMA-S 1.2.1
+  (`~/uma/checkpoints/uma-s-1p2p1.pt`) serves that check only: its gas molecules sit 0.2–1.6 eV off its surfaces.
+  The worker's surface cut gives anatase (101) a singly bonded top O; the check builds the true face itself.
 - The Manual page reads `docs/manual.yaml`; its step screenshots are `docs/manual/step-*.png`. Retake them when a
   page they show changes.
