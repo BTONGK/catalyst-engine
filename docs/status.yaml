@@ -201,8 +201,9 @@ findings:
       With the peak following the gas, the example's CO oxidation screen hands the lead from Ag (50–90 °C) to Pt
       (100–350 °C). Across that range the peak moves 0.38 eV toward stronger binding; PdPt climbs to 0.45 times
       platinum's speed at 350 °C, and rhodium from 1 in 520 billion to 1 in 170 million. The order at 180 °C stays
-      as before. Far outside a reaction's test window the ratios grow large and read as direction only: a hot-SCR
-      screen at 0–290 °C puts Cu far ahead of V2O5, well below the pack's 343–621 °C window.
+      as before. A pair that binds alike stays tied at every temperature: on hot SCR, V2O5's layered face and
+      copper metal hold ammonia within 0.01 eV of each other, so V2O5 keeps a hair's lead from 0 to 350 °C. The
+      copper that beats vanadia below 300 °C in practice sits as single ions in a zeolite, the next step.
     source: Example screen, examples/screens/; Manual, Methodology tab, step 6 (2026-10-23).
   - title: For CO oxidation the example screen keeps platinum on top, with PdPt inside its error bar
     detail: >
