@@ -1,0 +1,290 @@
+# The Overview page's "Catalysis basics" and "Manual" tabs. Written for an everyday user: plain words, short
+# sentences, one action per line, the app's own labels in quotes. Every reaction pack uses the same steps, so the
+# text stays general and uses a reaction only as an example. Affirmative phrasing throughout.
+# Figures named under preface.sections[].figure are drawn in ui/views/overview.py.
+
+preface:
+  title: Catalysis in plain words
+  intro: >
+    A ten-minute read before you use the app. It covers what catalysts are, how they work, how people test them,
+    and where this app fits in. Each idea here shows up again on the app's pages.
+  sections:
+    - title: What a catalyst is
+      text: >
+        A catalyst is a material that makes a chemical reaction run faster and comes out of the reaction unchanged.
+        Because it is used again and again, a small amount can treat a huge amount of gas or liquid for years.
+        Catalysts are everywhere:
+      points:
+        - The catalytic converter in a car turns poisonous exhaust gases into harmless ones.
+        - Enzymes in your body are nature's catalysts; they digest a meal in hours.
+        - Most nitrogen fertilizer starts as nitrogen from the air, turned into ammonia on an iron catalyst.
+        - Gasoline, plastics and many medicines meet a catalyst somewhere along the way.
+    - title: How it speeds a reaction up
+      figure: energy
+      text: >
+        Molecules have to climb an energy hill before they can turn into something new. A catalyst offers a lower
+        path over the hill, so far more molecules make it across each second. The catalyst changes how fast the
+        reaction goes. Where the reaction can end up is set by the chemistry itself, so a catalyst speeds the trip and
+        leaves the destination the same.
+    - title: "Where the work happens: the surface"
+      figure: cycle
+      text: >
+        Most industrial catalysts are solids, and the reaction happens on their surface. Gas molecules land on
+        special spots called active sites, meet there, react, and the products drift away. That frees the spot for
+        the next molecules, over and over.
+      points:
+        - More surface means more active sites. That is why catalysts are made as fine, spongy powders full of tiny pores. One gram can hold as much surface as a tennis court.
+        - Molecules have to stick just right. Too weakly and they drift off before reacting; too strongly and they stay put and block the spot. The best catalysts sit in the middle. The Atomistic check page computes this stickiness.
+    - title: What a catalyst is made of
+      text: >
+        A catalyst is a recipe, much like a dish. How it is made matters as much as what goes in: a typical recipe
+        soaks the support in a metal salt solution, dries it and bakes it, and a different baking temperature can
+        give a different catalyst. That is why the app records the preparation along with the ingredients.
+      points:
+        - "Active ingredient: the part that does the chemistry, usually a metal or metal oxide such as platinum, copper, iron or vanadium."
+        - "Support: a porous material that holds the active ingredient spread out thin, such as alumina, titania or a zeolite (a crystal full of molecule-sized channels)."
+        - "Promoter: a small addition that boosts activity or durability, such as tungsten."
+        - "Shape: powder or pellets in the lab. In real equipment, often a thin coat on a ceramic honeycomb block (a monolith), so gas flows through easily."
+    - title: What makes a catalyst good
+      text: >
+        A new catalyst has to win on the measures that matter for its job and hold its own on the rest.
+      points:
+        - "Activity: how much of the incoming gas it converts. Conversion runs from 0 to 1, so 0.92 means 92% converted."
+        - "Selectivity: how much of what it converts becomes the product you want, rather than side products."
+        - "Durability: how long it keeps working. Heat slowly wears catalysts out (aging), and some trace gases, such as sulfur, coat the active sites (poisoning)."
+        - "Cost: how much catalyst the job needs and how much precious metal goes into it."
+    - title: Temperature and the working window
+      figure: window
+      text: >
+        Heat makes reactions faster. A catalyst wakes up around its light-off temperature, then converts more and
+        more as it gets hotter. At the hot end, side reactions start to compete and conversion can fall again. The
+        range in between is the catalyst's working window. Each job needs a window that covers the temperatures of
+        the equipment the catalyst goes in.
+    - title: Contact time and space velocity
+      text: >
+        Gas spends only a moment inside the catalyst. Space velocity measures this: the volume of gas flowing
+        through each hour, divided by the volume of catalyst. A space velocity of 30,000 per hour means the catalyst
+        treats 30,000 times its own volume of gas every hour. A lower space velocity means more catalyst and more
+        contact time, so higher conversion, at a higher cost. Every test in a batch uses the same space velocity, so
+        catalysts compare fairly.
+    - title: How catalysts are tested
+      figure: rig
+      text: >
+        In the lab, a small piece of catalyst sits in a heated tube. Gas bottles and flow controllers mix a feed that
+        copies the real process. The gas flows through the catalyst, and an analyzer measures what comes out. A
+        bypass line sends the same gas around the catalyst, so the analyzer can also read what goes in. Comparing the
+        two gives the conversion: (in − out) ÷ in. The tester steps through a list of temperatures and waits at each
+        one until the readings settle.
+    - title: Speed numbers (kinetics)
+      text: >
+        A rate law is a short formula that predicts how fast a reaction runs from the temperature and the amount of
+        each gas. Each catalyst gets its own numbers in that formula. Two matter most: the rate constant (how fast
+        it runs at a set temperature) and the activation energy (how quickly it speeds up as it gets hotter). The
+        app fits these numbers from your test readings. With them, it predicts how the catalyst would perform in
+        conditions you have yet to test, such as a larger reactor or a different gas flow.
+    - title: Why finding a new catalyst is slow
+      text: >
+        The choices multiply fast: which metals, how much of each, which support, how hot to bake it. That adds up
+        to millions of possible recipes, and each one takes days to make and test. Chemists use experience to choose
+        what to try next. Computer models can help by ranking recipes before anyone makes them.
+    - title: How this app helps
+      text: >
+        The app keeps the whole loop in one place. Models suggest which catalysts to make, the lab tests them, and
+        the app stores every reading, fits the speed numbers and feeds what it learns into the next round.
+      points:
+        - "A fair test: before testing, each pick is logged with who chose it: the model, an expert or a random draw. After the batch, the app scores each group against the same catalyst to beat."
+        - "A sealed record: every entry is dated and chained to the one before it, so anyone can check later that the picks came before the results."
+        - "Value in real equipment: the Design scenarios page turns speed numbers into the size, cost and emissions of a full-scale unit."
+    - title: One app, many reactions
+      packs: true
+      text: >
+        Each reaction lives in the app as a reaction pack: a short file that lists the molecules, the wanted
+        reaction and the side reactions, the targets a catalyst has to hit, and the test recipes. Every page reads
+        from the packs, so the same steps work for any reaction. Making hydrogen, turning CO2 into fuel or cleaning
+        another kind of exhaust each starts with a new pack, and the rest of the app works as is.
+      points:
+        - The app is built around solid catalysts tested in flowing gas, the most common kind in industry.
+        - Other families include catalysts dissolved in a liquid, enzymes, and electrocatalysts, which use electricity to drive reactions such as splitting water into hydrogen.
+
+title: User manual
+intro: >
+  Think of this app as your lab notebook and scorekeeper, for any reaction. You test catalysts on the rig the way
+  you normally do. The app saves every result, checks that each reading was steady, compares each new catalyst
+  with the one you are trying to beat, and keeps a sealed, dated record of which catalysts you chose before you
+  tested them. That record is what makes your results trustworthy to others.
+
+needs:
+  - This Mac, with the app installed (it already is).
+  - "A test rig: a heated reactor with gas feeds and an analyzer that saves its readings as a CSV file (a simple spreadsheet file)."
+  - The catalysts you want to test, plus one catalyst to beat, such as a commercial product or your best so far.
+
+start:
+  - title: Open the app
+    text: >
+      Open the Terminal app: press Command and Space together, type Terminal, then press Return. Copy the two lines
+      below, paste them into Terminal and press Return. The app opens in your web browser.
+    code: |
+      cd ~/catalyst-engine
+      uv run ce ui
+  - title: Take a practice tour
+    text: >
+      Click Lab data on the left, then choose "Simulated demo" at the top. It is filled with made-up catalysts and
+      test results, so click anything you like.
+  - title: Set up your real notebook
+    text: >
+      On Lab data, choose "Lab store" at the top, then press "Create the lab store". You do this once. Your real
+      results are saved there from then on.
+
+steps:
+  - phase: Before you test
+    title: Choose the reaction and its test recipe
+    page: Reactions page
+    do:
+      - Choose the reaction at the top of the page. Each reaction is a reaction pack.
+      - The Pathways tab shows the wanted reaction and the side reactions to watch.
+      - The "Species and metrics" tab shows what gets measured and the targets a catalyst has to hit.
+      - "The \"Test protocols\" tab holds the recipes. Each recipe lists the gases that go in, the temperatures, the space velocity and what the analyzer reads."
+      - Set up the rig to follow the recipe. For a new reaction, add a new pack first; Claude can draft one from a paper or your notes.
+    get: The reaction and the recipe every catalyst in your batch will follow.
+  - phase: Before you test
+    title: Add your catalysts
+    page: Lab data → Add data → Catalyst
+    do:
+      - Choose the reaction at the top of Add data.
+      - Add the catalyst you want to beat. Set "Role" to reference.
+      - Add each new catalyst. Set "Role" to candidate.
+      - List the ingredients one per row, for example platinum, active, 1, wt%. Describe how you made it under "Preparation".
+    get: A short ID for each catalyst, like F-0001. You use it to find the catalyst later.
+  - phase: Before you test
+    title: Add each piece that goes on the rig
+    page: Lab data → Add data → Sample
+    do:
+      - Choose the catalyst.
+      - Under "Form", describe the piece, for example powder, pellets or monolith core. Type its weight and volume.
+    get: A sample ID, like S-0001. Two pieces of the same catalyst each get their own ID.
+  - phase: Before you test
+    title: Start a batch
+    page: Lab data → Add data → Campaign
+    do:
+      - The app calls a batch a "campaign". Give it a name, like Batch 1.
+      - Choose the recipe ("Protocol"), the rig, and the catalyst to beat ("Reference").
+      - "Set the win rule: what to compare (\"Metric\", for example conversion), at which temperatures, and by how much a new catalyst has to beat the catalyst to beat (\"Margin\"). \"Rule\" switches between beating the catalyst to beat and meeting the reaction's target."
+    get: A batch with its recipe and win rule locked, so every catalyst gets the same fair test.
+  - phase: Before you test
+    title: Write down your picks before testing
+    page: Lab data → Add data → Pick, then Prediction
+    do:
+      - "For each new catalyst, record who chose it (\"Arm\"): the computer model, an expert or a random draw."
+      - When you have a guess for how well it will do, record it under Prediction, with a low and a high value.
+    get: A dated, sealed record showing the choices came first. It is what makes a win rate believable.
+  - phase: Testing
+    title: Test on the rig
+    page: Your rig
+    do:
+      - Test the catalyst to beat first, then each new one, all with the same recipe.
+      - At each temperature, send the gas through the bypass to read what goes in, then through the catalyst to read what comes out.
+      - Wait at each temperature until the numbers stop changing. The app uses the last two minutes of each wait.
+      - Save the analyzer's readings as a CSV file.
+    get: One file per test.
+  - phase: Testing
+    title: Upload the results
+    page: Lab data → Add data → Run
+    do:
+      - Choose the file, then the sample, the batch and the recipe.
+      - Look over the preview. Each temperature shows as settled or still settling.
+      - Press "Save run".
+    get: >
+      Your file saved exactly as the analyzer wrote it, with its results ready to score. To see how the file should
+      be laid out, open "File format" on that page.
+  - phase: After testing
+    title: See which catalysts won
+    page: Lab data → Campaigns tab
+    do:
+      - Choose your batch. Each dot is one catalyst; the dashed line is the bar to clear.
+      - The Runs tab shows every reading, with any warnings.
+    get: Which new catalysts beat the one you are trying to beat.
+  - phase: After testing
+    title: Get a catalyst's speed numbers (optional)
+    page: Terminal, then Fit lab
+    do:
+      - Find the test's ID on the Runs tab, like R-0001.
+      - In Terminal, paste the line below with that ID. It saves a file called run.csv in the catalyst-engine folder.
+      - In Fit lab, choose the reaction, then "Upload a CSV", pick the same recipe and press "Fit".
+    code: uv run ce data export-fit R-0001 run.csv
+    get: >
+      The catalyst's rate constants and activation energies, with error bars. Useful for comparing catalysts beyond
+      win or lose, and for predicting how each would do in a full-size unit.
+  - phase: After testing
+    title: Close the batch and see who picked best
+    page: Terminal
+    do:
+      - When every catalyst in the batch has been tested, paste the first line below with your batch ID, like C-0001.
+      - The Campaigns tab then shows how often the model's picks won, next to the expert's and the random ones.
+      - Paste the second line to seal the record with today's date.
+    code: |
+      uv run ce data unblind C-0001
+      uv run ce data anchor
+    get: A fair score for the computer model against human experts and chance.
+
+pages:
+  - {page: Overview, use: "Where the project stands, what comes next, decisions waiting on you, the basics and this manual"}
+  - {page: Lab data, use: "Your catalysts, test pieces, test results, batches and the sealed record"}
+  - {page: Atomistic check, use: "How well the computer predicts how strongly molecules stick to catalyst surfaces"}
+  - {page: Literature check, use: "Published catalyst tests rerun in the app, as a check on its predictions"}
+  - {page: Reactions, use: "Each reaction's chemistry, targets and test recipes"}
+  - {page: Catalyst playground, use: "Change a catalyst's speed numbers and watch how it would do on a test recipe"}
+  - {page: Design scenarios, use: "What a catalyst is worth in real equipment: size, cost and emissions"}
+  - {page: Calculators, use: "Quick sums for exhaust jobs: gas concentration units, cooling air and emission limits"}
+  - {page: Fit lab, use: "Speed numbers from test readings, and how long a catalyst lasts"}
+
+tips:
+  - Test the catalyst to beat at the start of each batch and again later. If its numbers shift, the rig has drifted.
+  - Record your picks before you make the catalysts.
+  - Upload failed tests too. The app keeps them on file and scores each catalyst on its first good test.
+  - Wait for steady readings. The preview flags any temperature that was still changing.
+  - Check whether a target counts wet or dry gas. The Calculators page converts between the two.
+  - Every entry stays exactly as first written, so the history is always complete.
+
+glossary:
+  - group: Chemistry words
+    terms:
+      - {term: Catalyst, means: "A material that speeds up a reaction and comes out unchanged."}
+      - {term: Active site, means: "A spot on the catalyst's surface where molecules land and react."}
+      - {term: Support, means: "The porous material that carries the active ingredient."}
+      - {term: Promoter, means: "A small addition that boosts activity or durability."}
+      - {term: Monolith, means: "A ceramic honeycomb block coated with catalyst, so gas flows straight through."}
+      - {term: Conversion, means: "The share of a gas the catalyst turns into something else. 0.92 means 92%."}
+      - {term: Selectivity, means: "The share of the converted gas that becomes the wanted product."}
+      - {term: Light-off, means: "The temperature where a catalyst reaches 50% conversion."}
+      - {term: Working window, means: "The temperature range where a catalyst meets its target."}
+      - {term: Space velocity, means: "Gas volume per hour divided by catalyst volume. Lower means more contact time."}
+      - {term: Rate law, means: "A formula for how fast a reaction runs at a given temperature and gas mix."}
+      - {term: Activation energy, means: "How quickly a reaction speeds up as it gets hotter."}
+      - {term: Aging, means: "Slow loss of activity from heat over months or years."}
+      - {term: Poisoning, means: "Loss of activity when a trace gas, such as sulfur, coats the active sites."}
+      - {term: ppm, means: "Parts per million: 1 ppm is one molecule in a million."}
+      - {term: wt%, means: "Share of the catalyst's weight. 1 wt% is 1 gram per 100 grams."}
+  - group: App words
+    terms:
+      - {term: Reaction pack, means: "One reaction's file: its molecules, reactions, targets and test recipes."}
+      - {term: Recipe (protocol), means: "The test plan: which gases, which temperatures, the space velocity and what to measure."}
+      - {term: Target, means: "A level a catalyst has to reach, set in the reaction pack. A set of targets is a gate, such as Gate 1."}
+      - {term: Catalyst to beat (reference), means: "The catalyst every new one is compared with."}
+      - {term: Candidate, means: "A new catalyst you are testing."}
+      - {term: Sample, means: "One physical piece of a catalyst that goes on the rig."}
+      - {term: Run, means: "One test of one sample, with its analyzer file."}
+      - {term: Batch (campaign), means: "A group of catalysts tested with one recipe, on one rig, against one catalyst to beat."}
+      - {term: Win rule (hit rule), means: "What a new catalyst has to do to count as a win."}
+      - {term: Who picked it (arm), means: "The computer model, an expert or a random draw."}
+      - {term: Sealed record (prediction log), means: "The dated list of picks, guesses and tests, locked so any later change shows up."}
+      - {term: Fit quality, means: "How closely the app's curve matches your readings. Near 1 is a good match."}
+
+help:
+  - {q: "I typed something wrong.", a: "Add the entry again with the right details and mention the old ID in Notes. Both stay on file, so the history stays complete."}
+  - {q: "The preview says still settling.", a: "That temperature was still changing when the wait ended. Next time, wait longer there, then upload the new file."}
+  - {q: "Fit lab warns that some numbers are tied together.", a: "The recipe moves those numbers together, so the test reads them as a pair. Adding a temperature or gas flow to the recipe separates them."}
+  - {q: "The Lab data page says the record check failed.", a: "Something in the saved record changed after it was written. Stop and ask Claude to look into it before adding more."}
+  - {q: "I want to work on a new reaction.", a: "Ask Claude to draft a reaction pack from a paper or your notes. Once it is in the reactions folder, it appears on every page."}
+  - {q: "A page shows older numbers.", a: "Reload the page in your browser. The app reads fresh results each time."}
+  - {q: "I want to try things out safely.", a: "Use \"Simulated demo\" on Lab data and \"Demo catalyst\" in Fit lab. Both leave your real records as they are."}
+  - {q: "Where are my results saved?", a: "In the data/lab folder inside catalyst-engine on this Mac. Back it up like any important folder."}

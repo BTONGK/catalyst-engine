@@ -11,7 +11,7 @@ uv sync
 uv run ce ui                      # opens http://localhost:8501
 ```
 
-Nine pages: Overview (progress, next steps and decisions from `docs/status.yaml`), Lab data
+Nine pages: Overview (progress, next steps and decisions from `docs/status.yaml`, plus a catalysis primer and the user manual from `docs/manual.yaml`), Lab data
 (catalysts, runs, campaign scores and the prediction log), Atomistic check and Literature check (model
 checks from `experiments/*/report.yaml`, sorted by the report's `kind`), Reactions, Catalyst playground, Design scenarios, Calculators and Fit lab. Every page reads the files on disk, so a new pack, an edited YAML file or a
 new experiment summary shows up on the next page load.

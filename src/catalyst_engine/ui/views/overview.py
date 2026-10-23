@@ -1,5 +1,8 @@
-"""Where the project stands, read from docs/status.yaml and the packs on disk."""
+"""Where the project stands, read from docs/status.yaml and the packs on disk, plus the catalysis basics and the
+user manual from docs/manual.yaml."""
 
+import altair as alt
+import numpy as np
 import pandas as pd
 import streamlit as st
 
@@ -20,7 +23,8 @@ cols[1].metric("Reaction pathways modeled", sum(len(p.spec.pathways) for p in pa
 cols[2].metric("Build phases complete", f"{sum(ph['status'] == 'done' for ph in phases)} of {len(phases)}", border=True)
 cols[3].metric("Decisions waiting on you", sum(d["status"] == "open" for d in status["decisions"]), border=True)
 
-where, loop, code, plan = st.tabs(["Where we are", "How the loop works", "Code map", "Full plan"])
+where, basics, manual, loop, code, plan = st.tabs(
+    ["Where we are", "Catalysis basics", "Manual", "How the loop works", "Code map", "Full plan"])
 
 with where:
     nxt, recent = st.columns([3, 2], gap="large")
@@ -70,6 +74,151 @@ with where:
                     a.caption(" ".join(d["detail"].split()))
                 with b:
                     common.badge(d["status"])
+
+guide = common.manual()
+
+
+def flat(text: str) -> str:
+    return " ".join(text.split())
+
+
+def bullets(items: list[str]) -> str:
+    return "\n".join(f"- {flat(t)}" for t in items)
+
+
+def flow_chart(nodes: list[tuple[str, str]], edges: list[str], rankdir: str) -> str:
+    lines = [f'digraph {{ rankdir={rankdir}; bgcolor="transparent"; nodesep=0.35; ranksep=0.35;',
+             'node [shape=box style="rounded,filled" fontname="Helvetica" fontsize=12 margin="0.15,0.08" '
+             'fillcolor="#ccfbf1" color="#0f766e" fontcolor="#0f172a"];',
+             'edge [color="#64748b" fontname="Helvetica" fontsize=10 fontcolor="#64748b"];']
+    lines += [f'{nid} [label="{label}"];' for nid, label in nodes] + edges + ["}"]
+    return "\n".join(lines)
+
+
+def sketch_labels(xcol: str, ycol: str, notes: list[tuple[float, float, str, str]]) -> alt.LayerChart:
+    """Text labels placed in data units; one layer per label so each keeps its own alignment."""
+    return alt.layer(*[alt.Chart(pd.DataFrame({xcol: [x], ycol: [y], "label": [text]})).mark_text(
+        fontSize=12, color="#64748b", align=align, lineBreak="\n").encode(x=f"{xcol}:Q", y=f"{ycol}:Q", text="label:N")
+        for x, y, text, align in notes])
+
+
+def basics_figure(name: str) -> None:
+    """Sketches for the Catalysis basics tab: shapes only, so they read the same for every reaction."""
+    x = np.linspace(0, 1, 121)
+    if name == "energy":
+        base = 1.0 - 0.7 / (1 + np.exp(-(x - 0.5) / 0.06))
+        paths = {"Reaction alone": base + 2.0 * np.exp(-((x - 0.5) / 0.12) ** 2),
+                 "With a catalyst": base + 0.75 * np.exp(-((x - 0.34) / 0.08) ** 2) + 0.6 * np.exp(-((x - 0.66) / 0.08) ** 2)}
+        df = pd.DataFrame([{"x": xi, "Energy": e, "Path": k} for k, ys in paths.items() for xi, e in zip(x, ys)])
+        lines = alt.Chart(df).mark_line(strokeWidth=3).encode(
+            x=alt.X("x:Q", title="Reaction progress →", axis=alt.Axis(labels=False, ticks=False, grid=False)),
+            y=alt.Y("Energy:Q", title="Energy", axis=alt.Axis(labels=False, ticks=False, grid=False)),
+            color=alt.Color("Path:N", scale=alt.Scale(range=["#94a3b8", "#0f766e"]), legend=alt.Legend(orient="top", title=None)))
+        ends = sketch_labels("x", "Energy", [(0.0, 1.32, "Starting gases", "left"), (1.0, 0.12, "Products", "right")])
+        st.altair_chart(alt.layer(lines, ends).properties(height=260), width="stretch")
+    elif name == "window":
+        t = x
+        conv = 1 / (1 + np.exp(-(t - 0.3) / 0.045)) - 0.55 / (1 + np.exp(-(t - 0.88) / 0.05))
+        df = pd.DataFrame({"t": t, "Conversion": conv})
+        inside = df[df["Conversion"] >= 0.9]
+        band = alt.Chart(pd.DataFrame({"a": [inside["t"].min()], "b": [inside["t"].max()]})).mark_rect(
+            color="#0f766e", opacity=0.12).encode(x="a:Q", x2="b:Q")
+        curve = alt.Chart(df).mark_line(strokeWidth=3, color="#0f766e").encode(
+            x=alt.X("t:Q", title="Temperature →", axis=alt.Axis(labels=False, ticks=False, grid=False)),
+            y=alt.Y("Conversion:Q", title="Conversion", scale=alt.Scale(domain=[0, 1.05]),
+                    axis=alt.Axis(format="%", values=[0, 0.5, 1], grid=False)))
+        notes = sketch_labels("t", "Conversion", [(0.32, 0.45, "← Light-off", "left"),
+                                                  ((inside["t"].min() + inside["t"].max()) / 2, 1.03, "Working window", "center"),
+                                                  (1.0, 0.3, "Side reactions\ntake over", "right")])
+        st.altair_chart(alt.layer(band, curve, notes).properties(height=260), width="stretch")
+        st.caption("A sketch: the shape is typical, the numbers come from each reaction.")
+    elif name == "cycle":
+        st.graphviz_chart(flow_chart(
+            [("arrive", "Gas molecules arrive"), ("stick", "They stick to an active site"),
+             ("react", "They react on the surface"), ("leave", "The products drift away")],
+            ["arrive -> stick; stick -> react; react -> leave;",
+             'leave -> stick [label=" the spot is free again" constraint=false style=dashed];'], "TB"))
+    elif name == "rig":
+        st.graphviz_chart(flow_chart(
+            [("gas", "Gas bottles"), ("mix", "Flow controllers\nmix the feed"),
+             ("tube", "Heated tube\nwith the catalyst"), ("fa", "Analyzer\nreads the gas"), ("csv", "CSV file\ninto the app")],
+            ["gas -> mix -> tube -> fa -> csv;",
+             'mix -> fa [label=" bypass: reads what goes in" constraint=false style=dashed];'], "TB"))
+
+
+with basics:
+    pre = guide["preface"]
+    st.subheader(pre["title"])
+    st.write(flat(pre["intro"]))
+    for i, sec in enumerate(pre["sections"], start=1):
+        with st.container(border=True):
+            if sec.get("figure"):
+                text_col, fig_col = st.columns([3, 2], gap="large", vertical_alignment="center")
+            else:
+                text_col, fig_col = st.container(), None
+            with text_col:
+                st.markdown(f"##### {i}. {sec['title']}")
+                st.write(flat(sec["text"]))
+                if sec.get("points"):
+                    st.markdown(bullets(sec["points"]))
+                if sec.get("packs"):
+                    st.markdown(f"**Reactions in the app today ({len(packs)}):** "
+                                + " · ".join(f":blue-badge[{p.spec.name}]" for p in packs))
+            if fig_col is not None:
+                with fig_col:
+                    basics_figure(sec["figure"])
+    st.caption("Text in docs/manual.yaml. Next: the Manual tab shows how to run an experiment in the app.")
+
+with manual:
+    st.subheader(guide["title"])
+    st.write(flat(guide["intro"]))
+    st.info("New to catalysis? Start with the Catalysis basics tab.", icon=":material/school:")
+
+    st.markdown("#### What you need")
+    st.markdown(bullets(guide["needs"]))
+
+    st.markdown("#### Start here")
+    for i, (col, item) in enumerate(zip(st.columns(len(guide["start"]), gap="medium"), guide["start"]), start=1):
+        with col.container(border=True, height="stretch"):
+            st.markdown(f"**{i}. {item['title']}**")
+            st.write(flat(item["text"]))
+            if item.get("code"):
+                st.code(item["code"].strip(), language="bash")
+
+    st.markdown("#### Run an experiment, step by step")
+    st.caption(f"The same {len(guide['steps'])} steps for every reaction and every batch. "
+               "Each card names where the step happens.")
+    phase = None
+    for i, s in enumerate(guide["steps"], start=1):
+        if s.get("phase") and s["phase"] != phase:
+            phase = s["phase"]
+            st.markdown(f"**:gray[{phase.upper()}]**")
+        with st.container(border=True):
+            a, b = st.columns([3, 2], vertical_alignment="center")
+            a.markdown(f"##### {i}. {s['title']}")
+            b.badge(s["page"], icon=":material/location_on:", color="blue")
+            st.markdown(bullets(s["do"]))
+            if s.get("code"):
+                st.code(s["code"].strip(), language="bash")
+            st.markdown(f":green[**You get:**] {flat(s['get'])}")
+
+    st.markdown("#### What each page is for")
+    st.markdown("| Page | Use it for |\n|---|---|\n" + "\n".join(f"| **{r['page']}** | {r['use']} |" for r in guide["pages"]))
+
+    left, right = st.columns(2, gap="large")
+    with left:
+        st.markdown("#### Good habits")
+        st.markdown(bullets(guide["tips"]))
+        st.markdown("#### When something looks off")
+        for h in guide["help"]:
+            with st.expander(h["q"]):
+                st.write(h["a"])
+    with right:
+        st.markdown("#### Words used here")
+        for g in guide["glossary"]:
+            st.markdown(f"**:gray[{g['group'].upper()}]**")
+            st.markdown("\n".join(f"- **{t['term']}**: {t['means']}" for t in g["terms"]))
+    st.caption("Text in docs/manual.yaml.")
 
 with loop:
     st.subheader("The discovery loop")
@@ -141,6 +290,7 @@ with code:
         ("tests/", "The checks that run on every change", "Terminal: uv run pytest"),
         ("docs/PLAN.md", "The full plan", "Full plan tab"),
         ("docs/status.yaml", "Everything on the Where we are tab", "Where we are tab"),
+        ("docs/manual.yaml", "Catalysis basics and the user manual: setup, the experiment steps, tips and words used", "Catalysis basics and Manual tabs"),
     ]
     st.dataframe(
         pd.DataFrame(rows, columns=["Path", "What it holds", "Shown in"]),

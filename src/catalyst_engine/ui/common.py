@@ -66,6 +66,16 @@ def project_status() -> dict:
 
 
 @st.cache_data(show_spinner=False)
+def _manual(mtime_key: float) -> dict:
+    return yaml.safe_load((REPO / "docs" / "manual.yaml").read_text())
+
+
+def manual() -> dict:
+    """The user manual shown on the Overview page."""
+    return _manual(_mtime(REPO / "docs" / "manual.yaml"))
+
+
+@st.cache_data(show_spinner=False)
 def _report(folder: Path, mtime_key: float) -> dict:
     report = yaml.safe_load((folder / "report.yaml").read_text())
     summary = folder / report.get("summary", "results/summary.json")
