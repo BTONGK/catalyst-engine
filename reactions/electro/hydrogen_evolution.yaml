@@ -1,0 +1,26 @@
+# Hydrogen evolution: the cathode half of water splitting, 2 (H+ + e-) -> H2.
+# The computational hydrogen electrode (Nørskov et al. 2005) with one intermediate, adsorbed hydrogen.
+
+id: hydrogen_evolution
+name: Hydrogen evolution (HER)
+category: Hydrogen and energy
+summary: Makes hydrogen gas from water with electricity, the cathode half of water splitting.
+equation: 2 H+ + 2 e- -> H2
+direction: reduction
+electrons: 2
+equilibrium_V: 0.0          # vs the reversible hydrogen electrode (RHE), at any pH
+compare_V: -0.10            # the operating potential for the headline numbers (vs RHE)
+intermediates:
+  - {name: H, label: "adsorbed hydrogen (H*)", correction_eV: 0.24}
+descriptor: {H: 1}
+# the volcano drawn on the Results page: each step's free energy as a line a x + b in the descriptor x (eV)
+volcano_steps: [[1, 0], [-1, 0]]
+reference: {formula: Pt, name: Platinum}
+task: oc20
+suggested_elements: [Pt, Pd, Ir, Rh, Ni, Co, Cu, Mo, W, Au]
+basis: >
+  Hydrogen binding sets the exchange current for hydrogen evolution on metals (Nørskov et al., J. Electrochem.
+  Soc. 2005): the best catalysts hold hydrogen at a free energy near zero, so each proton and electron lands on
+  the surface and leaves it as H2 at the same potential. Platinum sits near that point. The free energy of H*
+  is its binding energy plus 0.24 eV for zero-point motion and lost entropy (Nørskov 2005), and the limiting
+  potential is minus the size of the H* free energy: a material 0.3 eV off platinum needs about 0.3 V more.

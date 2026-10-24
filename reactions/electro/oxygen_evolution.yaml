@@ -1,0 +1,29 @@
+# Oxygen evolution: the anode of water splitting, 2 H2O -> O2 + 4 (H+ + e-), through OH*, O* and OOH*
+# (Rossmeisl et al. 2007; Man et al., ChemCatChem 2011 for oxides).
+
+id: oxygen_evolution
+name: Oxygen evolution (OER)
+category: Hydrogen and energy
+summary: Splits water into oxygen at the anode of an electrolyzer, the slow half of making green hydrogen.
+equation: 2 H2O -> O2 + 4 H+ + 4 e-
+direction: oxidation
+electrons: 4
+equilibrium_V: 1.23
+compare_V: 1.53
+intermediates:
+  - {name: OH, label: "hydroxyl (OH*)", correction_eV: 0.35, water_eV: 0.0}
+  - {name: O, label: "adsorbed oxygen (O*)", correction_eV: 0.05, water_eV: 0.0}
+  - {name: OOH, label: "hydroperoxyl (OOH*)", correction_eV: 0.40, water_eV: 0.0}
+# Man et al. 2011: on oxide surfaces the intermediates fill the surface, so the water term stays at zero
+descriptor: {O: 1, OH: -1}
+# the two middle steps as lines in x = G(O*) - G(OH*), with OOH* = OH* + 3.2 eV (Man et al. 2011, eq. 9)
+volcano_steps: [[1, 0], [-1, 3.2]]
+reference: {formula: IrO2, name: Iridium oxide}
+task: omat
+suggested_elements: [Ir, Ru, Mn, Co, Ni, Fe, Pt, Rh]
+basis: >
+  Oxygen evolution climbs through OH*, O* and OOH*, one proton and electron at a time. OOH* sits a nearly fixed
+  3.2 eV above OH* on every surface, against the ideal 2.46 eV, so the step that limits the potential is either
+  OH* to O* or O* to OOH*, and the free-energy gap between O* and OH* is the descriptor (Man et al. 2011). The
+  best oxides put that gap near 1.6 eV; iridium oxide, the electrolyzer anode, sits close to it. Oxides run in
+  UMA's materials mode, the mode the oxide check found closest to oxide DFT.

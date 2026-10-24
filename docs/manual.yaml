@@ -244,6 +244,28 @@ steps:
       - The structures are also saved as CIF files in the screen's folder, ready for other chemistry software.
     get: The full record behind the ranking.
   - phase: Go further
+    title: Design an electrocatalyst
+    page: Design a catalyst → Kind of catalysis
+    image: step-electro.png
+    do:
+      - At the top of Design a catalyst, switch "Kind of catalysis" to "Electrocatalysis (at an electrode)". The four steps keep their shape; voltage takes the place of temperature.
+      - "Step 1: pick hydrogen evolution (making hydrogen), oxygen reduction (a fuel-cell cathode) or oxygen evolution (an electrolyzer anode). Each shows its intermediates, the catalyst to beat and the key free energy it ranks by."
+      - "Step 2: set the potential to compare catalysts at, in volts on the reversible hydrogen electrode (RHE) scale, which already accounts for pH. The text under the slider says how far that is from the equilibrium potential."
+      - "Steps 3 and 4 work as before: add metals or Materials Project crystals, pick the care level and start. Oxygen evolution starts in UMA's materials mode, the mode that suits oxides such as its catalyst to beat, iridium oxide."
+      - "Results show each material's overpotential (the extra voltage it needs past equilibrium; smaller is better), its limiting potential, which step limits it, and its speed against the catalyst to beat at your potential. The Free-energy diagram tab draws the path at any potential; the Volcano tab places each material by its key free energy."
+    get: A screen that runs in the background, exactly like a thermal one.
+  - phase: Go further
+    title: Read an electrocatalyst's results
+    page: Results
+    image: step-electro-results.png
+    do:
+      - The headline shows the best candidate's overpotential (the extra voltage it needs past equilibrium; smaller is better), its limiting potential, its speed against the catalyst to beat at your potential, and its supply.
+      - "Ranking: every material with its overpotential, limiting potential and likely range, the step that limits it, its speed, and each intermediate's free energy. The ideal values sit in the caption."
+      - "Activity vs potential: each material's speed against the catalyst to beat across potentials, with the ideal catalyst dashed."
+      - "Free-energy diagram: pick a material and the potentials to draw at; the staircase tilts as the potential changes, and the step that stays uphill longest is the one to fix."
+      - "Volcano: each material's limiting potential against its key free energy, with the line the scaling relations draw and the equilibrium potential as the ceiling or floor."
+      - "3D structures and Details work as for a thermal screen. Materials where an intermediate split or drifted off at every site show as incomplete; the Details tab says which."
+    get: A ranking by overpotential, with the free-energy diagram behind every number.
     title: Use the Advanced options
     page: Design a catalyst → Advanced
     image: step-advanced.png
@@ -286,8 +308,8 @@ steps:
 pages:
   - {page: Home, use: "What the app does, whether it is ready to run, and your latest screens"}
   - {page: Manual, use: "This guide, the catalysis basics, the words used, and help"}
-  - {page: Design a catalyst, use: "Pick a reaction, set conditions, choose materials and start a screen"}
-  - {page: Results, use: "Progress, the ranking, performance curves, the volcano and 3D structures"}
+  - {page: Design a catalyst, use: "Pick a thermal or electrochemical reaction, set conditions, choose materials and start a screen"}
+  - {page: Results, use: "Progress, the ranking, performance curves or free-energy diagrams, the volcano and 3D structures"}
   - {page: Materials, use: "Search crystals, see them in 3D with their properties, add them to your design list"}
   - {page: Reactions, use: "The reaction library, a form to add your own, and each reaction's chemistry in detail"}
   - {page: Catalyst playground, use: "Change a catalyst's speed numbers by hand and watch its curves"}
@@ -332,12 +354,22 @@ glossary:
       - {term: Space velocity, means: "Gas volume per hour divided by catalyst volume. Lower means more contact time."}
       - {term: Activation energy, means: "The height of the energy hill. It sets how quickly a reaction speeds up with heat."}
       - {term: ppm, means: "Parts per million: 1 ppm is one molecule in a million."}
+  - group: Electrochemistry words
+    terms:
+      - {term: Electrocatalyst, means: "A catalyst that drives a reaction with electricity at an electrode in water, such as splitting water into hydrogen and oxygen."}
+      - {term: Potential (V vs RHE), means: "The voltage of the electrode against the reversible hydrogen electrode, a scale on which hydrogen's own reaction sits at 0 V at any pH."}
+      - {term: Equilibrium potential, means: "The voltage where a reaction neither runs forward nor back: 0 V for hydrogen evolution, 1.23 V for the oxygen reactions."}
+      - {term: Overpotential, means: "The extra voltage past the equilibrium potential a catalyst needs before the reaction runs. Smaller is better; it is paid as wasted energy."}
+      - {term: Limiting potential, means: "The potential where the last step of the reaction path turns downhill on a given surface."}
+      - {term: Intermediate, means: "A molecule fragment stuck to the surface part-way along the reaction path, such as OH* in oxygen reduction."}
+      - {term: Free-energy diagram, means: "The staircase of each intermediate's energy along the path; the potential tilts the whole staircase."}
+      - {term: Computational hydrogen electrode, means: "The method that turns computed binding energies into electrode potentials by treating a proton and electron as half a hydrogen molecule (Nørskov 2004)."}
   - group: App and model words
     terms:
       - {term: Screen, means: "One run of the app over a list of materials for one reaction and one set of conditions."}
       - {term: Candidate, means: "A material in a screen."}
       - {term: Catalyst to beat (reference), means: "The known catalyst every candidate is compared with. Its result anchors the volcano, so model errors shared by all materials cancel."}
-      - {term: Key molecule (descriptor), means: "The atom or molecule whose binding energy places a material on the volcano."}
+      - {term: Key molecule (descriptor), means: "The atom or molecule whose binding energy places a material on the volcano; for an electrocatalyst, the intermediate's free energy."}
       - {term: Best possible, means: "The result of an ideal, infinitely fast catalyst: the reaction's equilibrium or full conversion."}
       - {term: Likely range, means: "The spread of a prediction from the uncertainty of the binding energy (about 0.15 eV)."}
       - {term: How careful (care level), means: "How many surface spots the app tries per molecule and how tightly the atoms settle."}

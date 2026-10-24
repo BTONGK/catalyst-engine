@@ -7,12 +7,12 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-from catalyst_engine.design import elements, materials, screening
+from catalyst_engine.design import materials, screening
 from catalyst_engine.design.spec import ADSORBATES
-from catalyst_engine.ui import common, viewer
+from catalyst_engine.ui import common, electro_ui, screen_ui
 from catalyst_engine.value.monolith import Monolith
 
-METALS = elements.METALS
+METALS = screen_ui.METALS
 LEVELS = {"Quick": "quick", "Standard": "standard", "Thorough": "thorough"}
 TASKS = {"oc20": "Catalysis (trained on surfaces with molecules)", "omat": "Materials (trained on bulk crystals)"}
 
@@ -30,6 +30,16 @@ if not status["uma"]["ready"]:
     st.warning(f"The atomistic model (UMA) is set up on another computer. Point CE_UMA_PYTHON at a Python with "
                f"fairchem installed and CE_UMA_CHECKPOINT at the model file. Looked for {status['uma']['python']} "
                f"and {status['uma']['checkpoint']}.", icon=":material/memory:")
+
+KINDS = {"thermal": "Thermal catalysis (gas on a surface)", "electro": "Electrocatalysis (at an electrode)"}
+kind = st.segmented_control("Kind of catalysis", list(KINDS), default="thermal", format_func=KINDS.get,
+                            key="design_kind",
+                            help="Thermal: a reaction driven by heat in a flowing gas, judged by conversion in a "
+                                 "reactor. Electrocatalysis: a reaction driven by voltage at an electrode in water, "
+                                 "judged by the potential it needs. Both compute the same binding energies.") or "thermal"
+if kind == "electro":
+    electro_ui.design_page(advanced, status)
+    st.stop()
 
 ids = common.screening_pack_ids()
 names = {pid: common.pack(pid).spec.name for pid in ids}
@@ -148,112 +158,8 @@ with st.container(border=True):
 
 # ---------------------------------------------------------------- 3. candidates
 reference_formula = spec.reference.formula
-with st.container(border=True):
-    st.markdown("### 3. Which materials should the app try?")
-    st.caption(f"{spec.reference.name or reference_formula} is always included as the catalyst to beat. "
-               "Add pure metals, search the Materials Project's 150,000+ crystals, or both.")
-    metals_tab, mp_tab = st.tabs(["Pure metals", "Search the Materials Project"])
-    with metals_tab:
-        suggested = [e for e in spec.suggested_elements if e in METALS and e != reference_formula][:6]
-        picked = st.multiselect("Metals", METALS, default=suggested, key=f"design_metals_{pid}",
-                                format_func=lambda e: f"{e} · {elements.name(e)}")
-        if st.button("Add these metals", icon=":material/add:", key="design_add_metals"):
-            for e in picked:
-                entry = materials.element_entry(e)
-                cands[entry["id"]] = entry
-            st.rerun()
-    with mp_tab:
-        if not status["mp_key"]:
-            st.info("Add your Materials Project API key (free at materialsproject.org) to ~/.config/.pmgrc.yaml as "
-                    "PMG_MAPI_KEY to search its crystals.", icon=":material/key:")
-        else:
-            c = st.columns([3, 1, 1])
-            els = c[0].multiselect("Elements to combine", sorted(elements.CRUST_MG_PER_KG),
-                                   default=[e for e in spec.suggested_elements if e in elements.CRUST_MG_PER_KG][:4],
-                                   key=f"design_mp_els_{pid}")
-            mix = c[1].selectbox("Mix up to", [1, 2, 3], index=1, format_func=lambda n: f"{n} element{'s' * (n > 1)}",
-                                 key="design_mp_mix")
-            kind = c[2].selectbox("Kind", ["Metals and alloys", "Oxides"], key="design_mp_kind")
-            c = st.columns(2)
-            max_hull = c[0].slider("Stability: energy above the most stable form (eV/atom)", 0.0, 0.10, 0.02, 0.01,
-                                   key="design_mp_hull", help="0 means the most stable form; up to 0.05 can often be made.")
-            max_atoms = c[1].slider("Largest crystal cell (atoms)", 4, 40, 16, key="design_mp_atoms",
-                                    help="Smaller cells compute faster.")
-            if els:
-                try:
-                    rows = common.mp_search(tuple(sorted(els)), mix, kind == "Oxides", max_hull, max_atoms)
-                except materials.MaterialsProjectError as exc:
-                    st.error(str(exc))
-                    rows = []
-                if kind == "Metals and alloys":
-                    rows = [r for r in rows if "O" not in r["elements"]]
-                if rows:
-                    table = pd.DataFrame([{"Material": r["formula"], "ID": r["material_id"],
-                                           "Stability (eV/atom)": round(r["e_hull"], 3),
-                                           "Atoms in cell": r["nsites"], "Crystal": f"{r['crystal_system']} {r['space_group']}",
-                                           "Supply": elements.supply_label(r["elements"])} for r in rows])
-                    sel = st.dataframe(table, hide_index=True, width="stretch", on_select="rerun",
-                                       selection_mode="multi-row", key=f"design_mp_table_{pid}")
-                    chosen = [rows[i] for i in sel.selection.rows]
-                    a, b = st.columns([1, 2])
-                    with a:
-                        st.caption(f"{len(rows)} materials found. Tick rows to add them; the first ticked row shows in 3D.")
-                        if st.button(f"Add {len(chosen)} selected", icon=":material/add:", disabled=not chosen,
-                                     key="design_add_mp"):
-                            for r in chosen:
-                                cands[r["material_id"]] = {"id": r["material_id"], "label": f"{r['formula']} ({r['material_id']})",
-                                                           "formula": r["formula"], "e_hull": r["e_hull"],
-                                                           "elements": r["elements"], "source": "Materials Project",
-                                                           "nsites": r["nsites"]}
-                            st.rerun()
-                    with b:
-                        if chosen:
-                            atoms = materials.atoms_of(common.mp_structure(chosen[0]["material_id"]))
-                            viewer.show(atoms, height=260)
-                            st.caption(f"{chosen[0]['formula']}: {materials.lattice_summary(atoms)}")
-                else:
-                    st.caption("Pick elements to see the stable materials made of them.")
-    st.markdown(f"**Your list** ({len(cands)} material{'s' * (len(cands) != 1)} plus the catalyst to beat)")
-    if cands:
-        listing = pd.DataFrame([{"Remove": False, "Material": m["label"], "Source": m["source"],
-                                 "Supply": elements.supply_label(m["elements"]),
-                                 **({"Face": common.face_text(m)} if advanced else {}), "_id": i} for i, m in cands.items()])
-        edited = st.data_editor(listing, hide_index=True, width="stretch", key=f"design_list_{advanced}",
-                                column_config={"_id": None, "Remove": st.column_config.CheckboxColumn(width="small"),
-                                               "Face": st.column_config.TextColumn(
-                                                   help="auto: the close-packed face. Or three Miller indices such "
-                                                        "as 1 1 0: in the cubic cell for a cubic metal, otherwise in "
-                                                        "the crystal's own cell.")},
-                                disabled=["Material", "Source", "Supply"])
-        records = edited.to_dict("records")
-        gone = [r["_id"] for r in records if r["Remove"]]
-        if gone:
-            for i in gone:
-                cands.pop(i, None)
-            st.rerun()
-        if advanced:
-            changed = False
-            for r in records:
-                m = cands.get(r["_id"])
-                if m is None or m.get("kind") == "framework" or r["Face"] == common.face_text(m):
-                    continue
-                try:
-                    hkl = common.parse_face(r["Face"])
-                except ValueError:
-                    st.warning(f"{m['label']}: write the face as three whole numbers, such as 1 1 1, or auto.")
-                    continue
-                if hkl is None:
-                    m.pop("facet", None)
-                    m.pop("cubic", None)
-                else:
-                    m["facet"] = hkl
-                    if common.cubic_metal(m):
-                        m["cubic"] = True
-                changed = True
-            if changed:
-                st.rerun()
-    else:
-        st.caption("Empty so far. Add pure metals or Materials Project crystals above.")
+screen_ui.candidates_section(pid=pid, reference_formula=reference_formula, reference_name=spec.reference.name,
+                             suggested=spec.suggested_elements, cands=cands, advanced=advanced, status=status)
 
 # ---------------------------------------------------------------- 4. run
 with st.container(border=True):
@@ -301,26 +207,7 @@ with st.container(border=True):
                  key="design_start"):
         with st.spinner("Collecting crystal structures..."):
             try:
-                if reference_formula in METALS:
-                    ref = materials.element_entry(reference_formula)
-                else:
-                    ref = materials.job_entry(materials.most_stable(reference_formula))
-                ref_label = spec.reference.name or reference_formula
-
-                def full(m: dict) -> dict:
-                    return m if m.get("ase_bulk") or m.get("kind") == "framework" else {**m, **common.mp_structure(m["id"])}
-
-                if ref_choice in cands:
-                    chosen = cands[ref_choice]
-                    entries = [{**full(chosen), "is_reference": True, "ref_name": chosen["formula"],
-                                "label": f"{chosen['label']} (catalyst to beat)"},
-                               {**ref, "label": ref_label}]
-                else:
-                    entries = [{**ref, "is_reference": True, "label": f"{ref_label} (catalyst to beat)"}]
-                for i, m in cands.items():
-                    if i in {e["id"] for e in entries}:
-                        continue
-                    entries.append(full(m))
+                entries = screen_ui.reference_entries(reference_formula, spec.reference.name, cands, ref_choice)
                 folder = screening.create_screen(pack, name, conditions, entries, LEVELS[level], task, float(t_design),
                                                  slab=slab)
                 screening.launch(folder)

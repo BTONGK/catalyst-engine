@@ -25,8 +25,9 @@ A zeolite entry (kind "framework", built by zeolites.py) skips the slab: each st
 site relaxes whole in its fixed cell, the most stable is E(slab), and each adsorbate binds to the site atom (the
 metal ion, or the proton) along the most open direction.
 
-Gas references come from the same model: H = 1/2 H2, O = H2O - H2, N = 1/2 N2, C = CO - O, OH = O + H, and the
-molecules themselves for CO, NO and NH3. Negative is bound; more negative binds more strongly.
+Gas references come from the same model: H = 1/2 H2, O = H2O - H2, N = 1/2 N2, C = CO - O, OH = O + H,
+OOH = 2 H2O - 3/2 H2, and the molecules themselves for CO, NO and NH3. Negative is bound; more negative binds more
+strongly. H, O, OH and OOH against H2O and H2 are the computational hydrogen electrode's references (design/electro.py).
 """
 
 from __future__ import annotations
@@ -62,6 +63,8 @@ ADSORBATE_ATOMS = {
     "N": Atoms("N"),
     "O": Atoms("O"),
     "OH": Atoms("OH", positions=[(0, 0, 0), (0, 0, 0.98)]),
+    # hydroperoxyl: the bound O at the origin, the O-O bond (1.40 A) leaning out, the H (0.98 A) beyond it
+    "OOH": Atoms("OOH", positions=[(0, 0, 0), (0.95, 0, 1.03), (1.86, 0, 1.40)]),
     "CO": Atoms("CO", positions=[(0, 0, 0), (0, 0, 1.15)]),
     "NO": Atoms("NO", positions=[(0, 0, 0), (0, 0, 1.17)]),
     "NH3": Atoms("NH3", positions=[(0, 0, 0), *_NH3_H]),
@@ -73,6 +76,7 @@ HEIGHTS = {
     "N": {"top": 1.8, "bridge": 1.4, "hollow": 1.1},
     "O": {"top": 1.9, "bridge": 1.5, "hollow": 1.2},
     "OH": {"top": 2.0, "bridge": 1.6, "hollow": 1.4},
+    "OOH": {"top": 2.0, "bridge": 1.7, "hollow": 1.5},
     "CO": {"top": 1.9, "bridge": 1.5, "hollow": 1.3},
     "NO": {"top": 1.8, "bridge": 1.5, "hollow": 1.3},
     "NH3": {"top": 2.1, "bridge": 2.1, "hollow": 2.1},
@@ -84,6 +88,7 @@ PREFERENCE = {
     "N": ["hollow", "bridge", "top"],
     "O": ["hollow", "bridge", "top"],
     "OH": ["bridge", "top", "hollow"],
+    "OOH": ["top", "bridge", "hollow"],
     "CO": ["top", "hollow", "bridge"],
     "NO": ["hollow", "top", "bridge"],
     "NH3": ["top"],
@@ -103,6 +108,7 @@ REFERENCE = {
     "N": {"N2": 0.5},
     "C": {"CO": 1.0, "H2O": -1.0, "H2": 1.0},
     "OH": {"H2O": 1.0, "H2": -0.5},
+    "OOH": {"H2O": 2.0, "H2": -1.5},
     "CO": {"CO": 1.0},
     "NO": {"NO": 1.0},
     "NH3": {"NH3": 1.0},
@@ -312,7 +318,7 @@ def anomaly(adslab: Atoms, n_slab: int, adsorbate: str) -> str:
     if len(ref) > 1:
         d0 = ref.get_all_distances()
         d1 = ads.get_all_distances(mic=True)
-        bonded = (d0 > 0) & (d0 < 1.3)
+        bonded = (d0 > 0) & (d0 < 1.5)  # bonds up to the O-O of OOH (1.40 A); the H-H of NH3 (1.63 A) stays out
         if np.any(d1[bonded] > 1.5 * d0[bonded]):
             return "dissociated"
     return ""

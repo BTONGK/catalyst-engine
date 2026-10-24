@@ -43,5 +43,11 @@
   app's advice for oxides; every mode sits beyond the error bar, so supports and promoters stay out. UMA-S 1.2.1
   (`~/uma/checkpoints/uma-s-1p2p1.pt`) serves that check only: its gas molecules sit 0.2–1.6 eV off its surfaces.
   The worker's surface cut gives anatase (101) a singly bonded top O; the check builds the true face itself.
+- Electrocatalysis: `design/electro.py` (the computational hydrogen electrode on the worker's H, O, OH and OOH
+  binding energies) with reactions as data in `reactions/electro/<id>.yaml` (intermediates in path order with their
+  corrections, the descriptor, `volcano_steps` as lines in the descriptor, the catalyst to beat, the UMA task). A
+  screen's `request.kind == "electro"` routes it to `ui/electro_ui.py`; `ui/screen_ui.py` holds what both kinds
+  share (candidate list, 3D structures, site table). `experiments/electro_check/` scores UMA against the published
+  tables (Nørskov 2004/2005, Man 2011) and feeds Methodology step 10; rerun it after changing the worker.
 - The Manual page reads `docs/manual.yaml`; its step screenshots are `docs/manual/step-*.png`. Retake them when a
   page they show changes.

@@ -1,0 +1,33 @@
+# Oxygen reduction: the fuel-cell cathode, O2 + 4 (H+ + e-) -> 2 H2O, through OOH*, O* and OH*
+# (the associative path; Nørskov et al., J. Phys. Chem. B 2004).
+
+id: oxygen_reduction
+name: Oxygen reduction (ORR)
+category: Hydrogen and energy
+summary: Turns oxygen and protons into water at a fuel-cell cathode, the reaction that sets a fuel cell's voltage.
+equation: O2 + 4 H+ + 4 e- -> 2 H2O
+direction: reduction
+electrons: 4
+equilibrium_V: 1.23
+compare_V: 0.90
+# in order along the reduction path; correction_eV = zero-point energy minus T x entropy at 298 K (Nørskov 2004,
+# Appendix 1); water_eV = the hydrogen bonds from liquid water, measured on Pt(111) for OH (Nørskov 2004,
+# Table 1) and taken the same for OOH, which binds through one oxygen the same way (Man et al. 2011)
+intermediates:
+  - {name: OOH, label: "hydroperoxyl (OOH*)", correction_eV: 0.40, water_eV: -0.33}
+  - {name: O, label: "adsorbed oxygen (O*)", correction_eV: 0.05, water_eV: 0.0}
+  - {name: OH, label: "hydroxyl (OH*)", correction_eV: 0.35, water_eV: -0.33}
+descriptor: {OH: 1}
+# the four steps as lines in x = OH* free energy, with OOH* = OH* + 3.2 eV and O* = 2 x OH* (the scaling
+# relations for metals and oxides; Man et al. 2011, Kulkarni et al. 2018)
+volcano_steps: [[1, -1.72], [1, -3.2], [-1, 0], [-1, 0]]
+reference: {formula: Pt, name: Platinum}
+task: oc20
+suggested_elements: [Pt, Pd, Ir, Rh, Ru, Ni, Co, Cu, Ag, Au]
+basis: >
+  Oxygen reduction runs through three adsorbed intermediates, OOH*, O* and OH*, each made by one proton and
+  electron. At the equilibrium potential, 1.23 V, an ideal surface would hold each one so that every step is
+  level; a real surface holds oxygen and hydroxyl too tightly or too loosely, and the step that stays uphill
+  longest sets the limiting potential (Nørskov et al. 2004). Hydroxyl binding is the descriptor because the
+  other two scale with it. Platinum, the fuel-cell cathode, sits near the top of the volcano and about 0.4 V
+  short of the ideal.

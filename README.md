@@ -18,6 +18,14 @@ reaction's Sabatier volcano, runs each one through the reactor model across the 
 the surfaces in 3D. The Manual page (from `docs/manual.yaml`, with screenshots in `docs/manual/`) walks through
 every step, has a plain-language primer on catalysis, and a Methodology tab: a method paper that states every assumption and the check behind each step (`experiments/design_method/`).
 
+The Design page's **Kind of catalysis** switch runs thermal screens (a gas on a surface, judged by conversion in a
+reactor) or electrochemical ones (a reaction at an electrode in water, judged by the potential it needs). The
+electrochemical side (`design/electro.py`, reactions in `reactions/electro/`) applies the computational hydrogen
+electrode to the same UMA binding energies: each intermediate's free energy with published corrections, the
+limiting potential, the overpotential, a Sabatier speed at a chosen potential, free-energy diagrams and the
+scaling-relation volcano. Hydrogen evolution, oxygen reduction and oxygen evolution ship; `experiments/electro_check/`
+scores UMA against the published tables behind them.
+
 The Design page opens in its simple form. Its **Advanced** switch adds:
 
 - **Catalyst form:** powder, or a coated honeycomb (monolith) with its cells per square inch and wall; the reactor

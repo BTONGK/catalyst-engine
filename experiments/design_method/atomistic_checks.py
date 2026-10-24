@@ -33,7 +33,8 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-EXAMPLE = next((REPO / "examples" / "screens").iterdir())
+EXAMPLE = next(p for p in sorted((REPO / "examples" / "screens").iterdir())  # the thermal example
+               if (p / "job.json").exists() and json.loads((p / "job.json").read_text())["request"].get("kind") != "electro")
 
 spec = importlib.util.spec_from_file_location("uma_worker", REPO / "src" / "catalyst_engine" / "design" / "uma_worker.py")
 w = importlib.util.module_from_spec(spec)

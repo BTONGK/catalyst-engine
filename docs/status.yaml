@@ -15,12 +15,23 @@ proof_sequence:
     status: planned
   - step: Electrocatalysis, retrospective
     goal: The engine ranks public OCx24 catalysts before any lab spend
-    status: planned
+    status: building
   - step: Electrochemistry lab module
     goal: The expansion market, on a new assay
     status: planned
 
 recent:
+  - date: 2026-10-24
+    item: >
+      Electrocatalysis in the design app. A "Kind of catalysis" switch at the top of Design a catalyst runs
+      electrochemical screens beside the thermal ones: hydrogen evolution, oxygen reduction and oxygen evolution,
+      on the same UMA binding energies, through the computational hydrogen electrode (Nørskov 2004). Results give
+      each material's overpotential, limiting potential and limiting step, its speed against the catalyst to beat
+      at a chosen potential, a free-energy diagram at any potential, the scaling-relation volcano and the 3D
+      structures. The worker gained hydroperoxyl (OOH*). A check against three published tables (hydrogen free
+      energies on ten metals with measured exchange currents, Nørskov's hydroxyl and oxygen energies, the
+      universal 3.2 eV OOH–OH gap) is step 10 of the Methodology tab, and a ten-metal oxygen-reduction screen
+      ships as the example.
   - date: 2026-10-23
     item: >
       Oxide accuracy check. Four UMA modes scored on 720 molecules on oxide surfaces against OC22's DFT, and five
@@ -136,6 +147,12 @@ next_steps:
     why: >
       The Manual's "How to use the app" tab walks through it. Keep the temperature range near the reaction's
       standard test; the app flags ranges beyond it.
+  - step: "Electrocatalysis next: carbon dioxide reduction and surface stability"
+    owner: Claude
+    why: >
+      CO2 reduction to CO needs a COOH* intermediate and a corrected CO2 gas reference; a Pourbaix check per
+      candidate would say whether its surface survives the working potential. Both extend the electrochemistry
+      switch along the lines of the three shipped reactions.
   - step: Decide how oxide screens run
     owner: You
     why: >

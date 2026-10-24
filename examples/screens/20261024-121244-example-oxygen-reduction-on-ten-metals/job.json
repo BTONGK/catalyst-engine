@@ -1,0 +1,249 @@
+{
+ "checkpoint": "/Users/bt/uma/checkpoints/uma-s-1p1.pt",
+ "task": "oc20",
+ "thoroughness": "standard",
+ "adsorbates": [
+  "H",
+  "O",
+  "OH",
+  "OOH"
+ ],
+ "materials": [
+  {
+   "id": "element:Pt",
+   "label": "Platinum (catalyst to beat)",
+   "formula": "Pt",
+   "ase_bulk": "Pt",
+   "e_hull": 0.0,
+   "elements": [
+    "Pt"
+   ],
+   "source": "Reference crystal",
+   "is_reference": true
+  },
+  {
+   "id": "element:Pd",
+   "label": "Pd",
+   "formula": "Pd",
+   "ase_bulk": "Pd",
+   "e_hull": 0.0,
+   "elements": [
+    "Pd"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Ir",
+   "label": "Ir",
+   "formula": "Ir",
+   "ase_bulk": "Ir",
+   "e_hull": 0.0,
+   "elements": [
+    "Ir"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Rh",
+   "label": "Rh",
+   "formula": "Rh",
+   "ase_bulk": "Rh",
+   "e_hull": 0.0,
+   "elements": [
+    "Rh"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Ru",
+   "label": "Ru",
+   "formula": "Ru",
+   "ase_bulk": "Ru",
+   "e_hull": 0.0,
+   "elements": [
+    "Ru"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Ni",
+   "label": "Ni",
+   "formula": "Ni",
+   "ase_bulk": "Ni",
+   "e_hull": 0.0,
+   "elements": [
+    "Ni"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Co",
+   "label": "Co",
+   "formula": "Co",
+   "ase_bulk": "Co",
+   "e_hull": 0.0,
+   "elements": [
+    "Co"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Cu",
+   "label": "Cu",
+   "formula": "Cu",
+   "ase_bulk": "Cu",
+   "e_hull": 0.0,
+   "elements": [
+    "Cu"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Ag",
+   "label": "Ag",
+   "formula": "Ag",
+   "ase_bulk": "Ag",
+   "e_hull": 0.0,
+   "elements": [
+    "Ag"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Au",
+   "label": "Au",
+   "formula": "Au",
+   "ase_bulk": "Au",
+   "e_hull": 0.0,
+   "elements": [
+    "Au"
+   ],
+   "source": "Reference crystal"
+  }
+ ],
+ "request": {
+  "name": "Example: oxygen reduction on ten metals",
+  "kind": "electro",
+  "pack": "oxygen_reduction",
+  "pack_name": "Oxygen reduction (ORR)",
+  "created": "2026-10-24T12:12:44",
+  "conditions": {
+   "compare_V": 0.9
+  },
+  "thoroughness": "standard",
+  "task": "oc20",
+  "materials": [
+   {
+    "id": "element:Pt",
+    "label": "Platinum (catalyst to beat)",
+    "formula": "Pt",
+    "ase_bulk": "Pt",
+    "e_hull": 0.0,
+    "elements": [
+     "Pt"
+    ],
+    "source": "Reference crystal",
+    "is_reference": true
+   },
+   {
+    "id": "element:Pd",
+    "label": "Pd",
+    "formula": "Pd",
+    "ase_bulk": "Pd",
+    "e_hull": 0.0,
+    "elements": [
+     "Pd"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Ir",
+    "label": "Ir",
+    "formula": "Ir",
+    "ase_bulk": "Ir",
+    "e_hull": 0.0,
+    "elements": [
+     "Ir"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Rh",
+    "label": "Rh",
+    "formula": "Rh",
+    "ase_bulk": "Rh",
+    "e_hull": 0.0,
+    "elements": [
+     "Rh"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Ru",
+    "label": "Ru",
+    "formula": "Ru",
+    "ase_bulk": "Ru",
+    "e_hull": 0.0,
+    "elements": [
+     "Ru"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Ni",
+    "label": "Ni",
+    "formula": "Ni",
+    "ase_bulk": "Ni",
+    "e_hull": 0.0,
+    "elements": [
+     "Ni"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Co",
+    "label": "Co",
+    "formula": "Co",
+    "ase_bulk": "Co",
+    "e_hull": 0.0,
+    "elements": [
+     "Co"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Cu",
+    "label": "Cu",
+    "formula": "Cu",
+    "ase_bulk": "Cu",
+    "e_hull": 0.0,
+    "elements": [
+     "Cu"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Ag",
+    "label": "Ag",
+    "formula": "Ag",
+    "ase_bulk": "Ag",
+    "e_hull": 0.0,
+    "elements": [
+     "Ag"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Au",
+    "label": "Au",
+    "formula": "Au",
+    "ase_bulk": "Au",
+    "e_hull": 0.0,
+    "elements": [
+     "Au"
+    ],
+    "source": "Reference crystal"
+   }
+  ]
+ }
+}

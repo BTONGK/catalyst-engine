@@ -1,0 +1,331 @@
+{
+ "values": {
+  "her_n": 10,
+  "her_mae_rpbe": 0.038,
+  "her_mae_pbe": 0.136,
+  "her_max_rpbe": 0.094,
+  "her_offset_rpbe": -0.015,
+  "her_spearman": 0.78,
+  "her_spearman_published": 0.82,
+  "her_j0_n": 9,
+  "her_pt": -0.084,
+  "orr_n": 10,
+  "orr_oh_mae": 0.08,
+  "orr_o_mae": 0.128,
+  "orr_oh_max": 0.241,
+  "orr_o_max": 0.293,
+  "orr_oh_offset": 0.013,
+  "orr_o_offset": -0.077,
+  "orr_oh_spearman": 0.99,
+  "orr_o_spearman": 1.0,
+  "ooh_n": 10,
+  "ooh_gap_mean": 3.33,
+  "ooh_gap_sd": 0.25,
+  "ooh_gap_published": 3.2,
+  "ooh_gap_published_mae": 0.17,
+  "pt_orr_limit": 0.569,
+  "pt_orr_limit_published": 0.78,
+  "pt_orr_step": "O \u2192 OH",
+  "pt_her_eta": 0.084,
+  "orr_ranking": "Ag, Pt, Pd, Cu, Ir, Au, Rh, Ni, Ru, Co",
+  "her_ranking": "Ir, Pt, Rh, Pd, Cu, Ru, Ni, Co, Au, Ag",
+  "orr_incomplete": "none",
+  "screen": "20261024-121244-example-oxygen-reduction-on-ten-metals",
+  "task": "oc20",
+  "generated": "2026-10-24"
+ },
+ "tables": {
+  "her": [
+   {
+    "metal": "Ag",
+    "uma": 0.624,
+    "rpbe": 0.565,
+    "pbe": 0.416,
+    "gap_rpbe": 0.059,
+    "gap_pbe": 0.208,
+    "log_j0": -6.42
+   },
+   {
+    "metal": "Au",
+    "uma": 0.573,
+    "rpbe": 0.574,
+    "pbe": 0.418,
+    "gap_rpbe": -0.001,
+    "gap_pbe": 0.155,
+    "log_j0": -6.6
+   },
+   {
+    "metal": "Co",
+    "uma": -0.296,
+    "rpbe": -0.202,
+    "pbe": -0.355,
+    "gap_rpbe": -0.094,
+    "gap_pbe": 0.059,
+    "log_j0": -5.32
+   },
+   {
+    "metal": "Cu",
+    "uma": 0.198,
+    "rpbe": 0.188,
+    "pbe": 0.04,
+    "gap_rpbe": 0.01,
+    "gap_pbe": 0.158,
+    "log_j0": -5.37
+   },
+   {
+    "metal": "Ir",
+    "uma": -0.034,
+    "rpbe": -0.081,
+    "pbe": -0.208,
+    "gap_rpbe": 0.047,
+    "gap_pbe": 0.174,
+    "log_j0": -3.58
+   },
+   {
+    "metal": "Ni",
+    "uma": -0.269,
+    "rpbe": -0.231,
+    "pbe": -0.388,
+    "gap_rpbe": -0.038,
+    "gap_pbe": 0.119,
+    "log_j0": -5.21
+   },
+   {
+    "metal": "Pd",
+    "uma": -0.158,
+    "rpbe": -0.123,
+    "pbe": -0.286,
+    "gap_rpbe": -0.035,
+    "gap_pbe": 0.128,
+    "log_j0": -3.0
+   },
+   {
+    "metal": "Pt",
+    "uma": -0.084,
+    "rpbe": -0.038,
+    "pbe": -0.192,
+    "gap_rpbe": -0.046,
+    "gap_pbe": 0.108,
+    "log_j0": -3.1
+   },
+   {
+    "metal": "Rh",
+    "uma": -0.141,
+    "rpbe": -0.116,
+    "pbe": -0.27,
+    "gap_rpbe": -0.025,
+    "gap_pbe": 0.129,
+    "log_j0": -3.41
+   },
+   {
+    "metal": "Ru",
+    "uma": -0.207,
+    "rpbe": -0.18,
+    "pbe": -0.33,
+    "gap_rpbe": -0.027,
+    "gap_pbe": 0.123,
+    "log_j0": null
+   }
+  ],
+  "orr_metals": [
+   {
+    "metal": "Ag",
+    "uma_oh": 0.863,
+    "pub_oh": 0.72,
+    "uma_o": 2.24,
+    "pub_o": 2.12,
+    "gap_oh": 0.143,
+    "gap_o": 0.12
+   },
+   {
+    "metal": "Au",
+    "uma_oh": 1.567,
+    "pub_oh": 1.49,
+    "uma_o": 2.793,
+    "pub_o": 2.75,
+    "gap_oh": 0.077,
+    "gap_o": 0.043
+   },
+   {
+    "metal": "Co",
+    "uma_oh": -0.321,
+    "pub_oh": -0.08,
+    "uma_o": -0.513,
+    "pub_o": -0.22,
+    "gap_oh": -0.241,
+    "gap_o": -0.293
+   },
+   {
+    "metal": "Cu",
+    "uma_oh": 0.343,
+    "pub_oh": 0.37,
+    "uma_o": 1.031,
+    "pub_o": 1.2,
+    "gap_oh": -0.027,
+    "gap_o": -0.169
+   },
+   {
+    "metal": "Ir",
+    "uma_oh": 0.763,
+    "pub_oh": 0.63,
+    "uma_o": 0.986,
+    "pub_o": 1.0,
+    "gap_oh": 0.133,
+    "gap_o": -0.014
+   },
+   {
+    "metal": "Ni",
+    "uma_oh": 0.085,
+    "pub_oh": 0.13,
+    "uma_o": 0.089,
+    "pub_o": 0.34,
+    "gap_oh": -0.045,
+    "gap_o": -0.251
+   },
+   {
+    "metal": "Pd",
+    "uma_oh": 0.907,
+    "pub_oh": 0.92,
+    "uma_o": 1.385,
+    "pub_o": 1.53,
+    "gap_oh": -0.013,
+    "gap_o": -0.145
+   },
+   {
+    "metal": "Pt",
+    "uma_oh": 1.04,
+    "pub_oh": 1.05,
+    "uma_o": 1.579,
+    "pub_o": 1.57,
+    "gap_oh": -0.01,
+    "gap_o": 0.009
+   },
+   {
+    "metal": "Rh",
+    "uma_oh": 0.446,
+    "pub_oh": 0.34,
+    "uma_o": 0.525,
+    "pub_o": 0.44,
+    "gap_oh": 0.106,
+    "gap_o": 0.085
+   },
+   {
+    "metal": "Ru",
+    "uma_oh": -0.003,
+    "pub_oh": -0.01,
+    "uma_o": -0.202,
+    "pub_o": -0.05,
+    "gap_oh": 0.007,
+    "gap_o": -0.152
+   }
+  ],
+  "ooh": [
+   {
+    "metal": "Ag",
+    "oh": 0.863,
+    "ooh": 4.185,
+    "gap": 3.321
+   },
+   {
+    "metal": "Au",
+    "oh": 1.567,
+    "ooh": 4.673,
+    "gap": 3.107
+   },
+   {
+    "metal": "Co",
+    "oh": -0.321,
+    "ooh": 3.494,
+    "gap": 3.814
+   },
+   {
+    "metal": "Cu",
+    "oh": 0.343,
+    "ooh": 3.704,
+    "gap": 3.361
+   },
+   {
+    "metal": "Ir",
+    "oh": 0.763,
+    "ooh": 3.861,
+    "gap": 3.097
+   },
+   {
+    "metal": "Ni",
+    "oh": 0.085,
+    "ooh": 3.737,
+    "gap": 3.652
+   },
+   {
+    "metal": "Pd",
+    "oh": 0.907,
+    "ooh": 4.062,
+    "gap": 3.155
+   },
+   {
+    "metal": "Pt",
+    "oh": 1.04,
+    "ooh": 4.051,
+    "gap": 3.011
+   },
+   {
+    "metal": "Rh",
+    "oh": 0.446,
+    "ooh": 3.696,
+    "gap": 3.251
+   },
+   {
+    "metal": "Ru",
+    "oh": -0.003,
+    "ooh": 3.488,
+    "gap": 3.491
+   }
+  ]
+ },
+ "pipeline": {
+  "oxygen_reduction": {
+   "limiting_V": 0.569,
+   "overpotential_V": 0.661,
+   "limiting_step": "O \u2192 OH",
+   "free_energies": {
+    "OOH": 4.121,
+    "O": 1.629,
+    "OH": 1.06
+   },
+   "ranking": [
+    "Ag",
+    "Pt",
+    "Pd",
+    "Cu",
+    "Ir",
+    "Au",
+    "Rh",
+    "Ni",
+    "Ru",
+    "Co"
+   ],
+   "incomplete": {}
+  },
+  "hydrogen_evolution": {
+   "limiting_V": -0.084,
+   "overpotential_V": 0.084,
+   "limiting_step": "H \u2192 *",
+   "free_energies": {
+    "H": -0.084
+   },
+   "ranking": [
+    "Ir",
+    "Pt",
+    "Rh",
+    "Pd",
+    "Cu",
+    "Ru",
+    "Ni",
+    "Co",
+    "Au",
+    "Ag"
+   ],
+   "incomplete": {}
+  }
+ }
+}
