@@ -1,0 +1,36 @@
+# Two-electron oxygen reduction: O2 + 2 (H+ + e-) -> H2O2, through OOH* alone (Viswanathan et al., J. Phys. Chem.
+# Lett. 3, 2948 (2012); Siahrostami et al., Nature Materials 12, 1137 (2013)).
+
+id: h2o2_production
+name: Hydrogen peroxide production (two-electron ORR)
+category: Chemicals
+summary: Makes hydrogen peroxide from oxygen with electricity, stopping oxygen reduction after two electrons.
+equation: O2 + 2 H+ + 2 e- -> H2O2
+direction: reduction
+electrons: 2
+equilibrium_V: 0.695        # O2/H2O2(aq), from tabulated formation free energies (H2O2(aq) -134.03 kJ/mol)
+compare_V: 0.50
+# OOH*: the oxygen-reduction file's own +0.18 eV (Nørskov 2004, Fig. 8 caption), so both reactions place OOH* alike.
+# shift: this reaction's zero is H2O2(aq), which sits 3.526 eV (2 x 1.763 V) above two waters less one H2, the scale
+#   OOH*'s binding energy starts on.
+intermediates:
+  - {name: OOH, label: "hydroperoxyl (OOH*)", correction_eV: 0.18, shift_eV: -3.526}
+descriptor: {OOH: 1}
+# the two steps at 0 V as lines in x = G(OOH*) on this reaction's scale: O2 -> OOH* is x - 1.39, OOH* -> H2O2 is -x
+volcano_steps: [[1, -1.39], [-1, 0]]
+reference: {formula: Pt, name: Platinum}
+task: oc20
+suggested_elements: [Pt, Pd, Au, Ag, Hg, Cu, Ni, Co, Rh, Ir]
+# On the Design page since the reaction check (experiments/reaction_check: PASS_RULE.md, results/summary.json):
+#   its limiting potentials order 11 metals of
+#   Nørskov 2004's Table 2 (O* through the Fig. 8 relation) with rho 0.84 (p 0.001), through OOH*, which the
+#   oxygen-reduction check covers.
+on_design_page: true
+basis: >
+  Hydrogen peroxide forms when oxygen reduction stops after two electrons: O2 takes a proton and electron to
+  become OOH*, and OOH* takes a second to leave as H2O2. Both steps turn downhill together when OOH* sits halfway
+  between O2 and H2O2, so OOH* binding is the single descriptor and the volcano peaks at 0.70 V (Viswanathan et
+  al. 2012). The same OOH* can split instead, sending the reaction on to water; that choice between two and four
+  electrons is the selectivity, and the best peroxide catalysts keep their active metal atoms apart so the O-O
+  bond stays whole (Siahrostami et al. 2013, platinum-mercury). This page ranks activity on the two-electron path;
+  selectivity against water comes from experiment or from the oxygen-reduction screen beside it.

@@ -1,0 +1,31 @@
+# CO2 reduction to formic acid (formate in neutral electrolyte): CO2 + 2 (H+ + e-) -> HCOOH, through OCHO* bound
+# through its oxygens (Feaster et al., ACS Catal. 7, 4822 (2017)).
+
+id: co2_to_formate
+name: CO2 reduction to formate
+category: CO2 conversion
+summary: Turns carbon dioxide into formic acid or formate with electricity, the CO2 route tin and bismuth favour.
+equation: CO2 + 2 H+ + 2 e- -> HCOOH
+direction: reduction
+electrons: 2
+equilibrium_V: -0.114       # to dissolved formic acid, from tabulated formation free energies (HCOOH(aq) -372.3 kJ/mol)
+compare_V: -0.80
+# Correction: UMA's own vibrations on Pt(111) (results/corrections.json); the same calculation missed the published
+#   values for OH* and OOH* by 0.16-0.20 eV (PASS_RULE.md), so this number serves the playground's starting point.
+# shift: OCHO* starts against CO(g) + H2O - 1/2 H2; dissolved formic acid sits 0.021 eV above CO(g) and water.
+intermediates:
+  - {name: OCHO, label: "formate (OCHO*)", correction_eV: 0.93, shift_eV: -0.021}
+descriptor: {OCHO: 1}
+# the two steps at 0 V as lines in x = G(OCHO*): CO2 -> OCHO* is x + 0.228, OCHO* -> HCOOH is -x
+volcano_steps: [[1, 0.228], [-1, 0]]
+reference: {formula: Sn, name: Tin}
+task: oc20
+suggested_elements: [Sn, Bi, In, Pb, Cd, Ag, Au, Cu, Zn, Pd]
+on_design_page: false
+design_note: OCHO* passes the DFT check and the ranking matches; it waits for a published zero-point and entropy correction for OCHO*
+basis: >
+  Formate forms through OCHO*, CO2 bound through its two oxygens with the hydrogen on carbon, while CO forms
+  through COOH*, bound through carbon; which one a metal prefers sets what it makes. Plotting measured formate
+  currents against OCHO* binding gives a volcano with tin near its top: gold, silver, platinum and copper bind
+  OCHO* too weakly, nickel and zinc too strongly (Feaster et al. 2017). The limiting potential is the larger of
+  the two steps, forming OCHO* from CO2 and releasing it as formic acid.

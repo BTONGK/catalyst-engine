@@ -1,0 +1,16 @@
+id: fad-screen-v1
+pack: formic_acid_decomposition
+version: 1
+status: draft
+description: 2% formic acid vapor in nitrogen, at 1 atm.
+analyzer:
+  name: Gas chromatograph
+  measured: [HCOOH, CO2, CO, H2]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Formic acid conversion against temperature
+    feed: {HCOOH: 2 %, N2: balance}
+    ghsv_per_h: 20000
+    temperatures_C: [75, 100, 125, 150, 175, 200, 250, 300]

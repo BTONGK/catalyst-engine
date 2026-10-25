@@ -32,7 +32,11 @@ preface:
           oxidation, such as oxygen evolution, as it rises. The ideal catalyst has every step the same size, so the
           whole staircase levels out together at the equilibrium potential. A real surface holds some intermediate
           too tightly or too loosely, one step stays uphill longer than the rest, and that step sets the limiting
-          potential: the voltage at which every step finally runs downhill.
+          potential: the voltage at which every step that moves an electron finally runs downhill.
+        - >
+          Some steps move zero electrons: a molecule landing on the surface or leaving it, or two adsorbates pairing
+          up, as two N* do when ammonia oxidizes to N2. The potential leaves these chemical steps alone, so one that
+          runs uphill stays uphill at every voltage, and the surface's speed waits on it.
         - >
           Some reactions have more than one path. Oxygen reduction can turn O2 into OOH* first, or split O2 on the
           surface into two O* first and go on from there. Splitting is a chemical step with an energy barrier, and
@@ -79,7 +83,7 @@ steps:
     image: step-design.png
     do:
       - Click "Design an electrocatalyst" in the menu on the left.
-      - "In part 1, pick hydrogen evolution (making hydrogen) or oxygen reduction (a fuel-cell cathode). The page shows the reaction, its intermediates and routes, the catalyst to beat and the free energy that places each material on the volcano; \"Why this works\" explains the choice. Oxygen evolution (an electrolyzer anode) runs in the Free-energy playground until UMA passes its oxide check."
+      - "In part 1, pick a reaction: hydrogen evolution (making hydrogen), hydrogen oxidation (a fuel-cell anode), oxygen reduction (a fuel-cell cathode), or hydrogen peroxide production or reduction. The page shows the reaction, its intermediates and routes, the catalyst to beat and the free energy that places each material on the volcano; \"Why this works\" explains the choice. The other reactions, oxygen evolution (an electrolyzer anode) and those through nitrogen and carbon intermediates among them, run in the Free-energy playground until their checks pass (Methodology tab, the reaction check)."
       - "In part 2, set the potential to compare catalysts at, in volts vs RHE. The text under the slider says how far that is from the equilibrium potential. Each material's limiting potential and overpotential read the same whatever you choose here; the speeds, and the ranking that sorts by them, depend on it."
     get: The reaction, the catalyst every material is compared with, and the operating potential.
   - phase: Set up the design
@@ -136,7 +140,8 @@ glossary:
       - {term: Potential (V vs RHE), means: "The voltage of the electrode against the reversible hydrogen electrode, a scale on which hydrogen's own reaction sits at 0 V at any pH."}
       - {term: Equilibrium potential, means: "The voltage where a reaction's forward and backward rates balance: 0 V for hydrogen evolution, 1.23 V for the oxygen reactions."}
       - {term: Overpotential, means: "The extra voltage past the equilibrium potential a catalyst needs before the reaction runs. Smaller is better; it is paid as wasted energy."}
-      - {term: Limiting potential, means: "The potential at which every step of the reaction's better route runs downhill on a given surface."}
+      - {term: Limiting potential, means: "The potential at which every step that moves an electron, along the reaction's better route, runs downhill on a given surface."}
+      - {term: Chemical step, means: "A step that moves zero electrons: a molecule landing on the surface or leaving it, or two adsorbates pairing up. The potential leaves it alone."}
       - {term: Route, means: "One way through a reaction's steps. Oxygen reduction has two: OOH* forms first, or O2 splits first; the faster carries the current."}
       - {term: Hurdle, means: "At a given potential, a route's largest step still uphill, or its chemical barrier when that is higher. Each tenth of an eV slows the route about fiftyfold."}
       - {term: Limiting step, means: "The step that stays uphill longest as the potential changes; the one a better material has to fix."}

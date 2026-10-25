@@ -23,6 +23,23 @@ proof_sequence:
 recent:
   - date: 2026-10-25
     item: >
+      Thirty reactions added: 20 thermal packages (methanation, reforming, combustion, hydrogenation, NOx and more)
+      and 10 electrochemical reactions through nitrogen and carbon intermediates (hydrogen peroxide, hydrogen
+      oxidation, nitrogen and nitric oxide reduction, ammonia, hydrazine and formic acid oxidation, CO2 to CO and to
+      formate). Each one joins its Design page only after a check written down before any prediction was computed
+      (experiments/reaction_check/PASS_RULE.md). Thermal: 2 of 6 scored reactions pass against measured tables
+      (ammonia cracking, CO methanation); ammonia synthesis and water-gas shift, on the Design page before, fail
+      theirs and move to the playground with the reason in their files; the rest await a measured table. Electro:
+      7 of 10 new intermediates match published DFT, and 3 of 10 reactions pass (hydrogen peroxide production and
+      reduction, hydrogen oxidation). UMA's own zero-point and entropy corrections miss the four published values by
+      up to 0.20 eV, so reactions needing them wait in the playground. Both Methodology tabs gain a stage-by-stage
+      walk-through of what the app does when it loads a reaction, from the file to the ranking, with one reaction
+      followed through in real numbers, and a section scoring every reaction against the published tables. A test
+      caught the speed calculation skipping one step for reactions with a chemical step (all in the playground);
+      fixed, with the limiting potentials and every check's numbers unchanged. The playground now names each
+      chemical step's hurdle, and every protocol states its exact feed at 1 atm.
+  - date: 2026-10-25
+    item: >
       Audit fixes applied, after a second pass over every computation in both sections. Oxygen reduction follows
       Nørskov 2004's faster-route rule: once O2 splits with its barrier at or below zero, the route that skips OOH*
       sets the limiting potential, and the speed takes the faster route's hurdle. The ten-metal example ranks Pt,
@@ -192,12 +209,28 @@ next_steps:
     why: >
       The Manual's "How to use the app" tab walks through it. Keep the temperature range near the reaction's
       standard test; the app flags ranges beyond it.
-  - step: "Electrocatalysis next: carbon dioxide reduction and surface stability"
+  - step: "Batch 2: ten more thermal reactions and ten more electrochemical ones"
     owner: Claude
     why: >
-      CO2 reduction to CO needs a COOH* intermediate and a corrected CO2 gas reference; a Pourbaix check per
-      candidate would say whether its surface survives the working potential. Both extend the electrochemistry
-      switch along the lines of the three shipped reactions.
+      Same path as batch 1: each file loads under the format's checks, each new electrochemical intermediate (CHO*,
+      COH*, CH2O*, CH3O*, NO2*, NO3* and others) runs through UMA on the 16 metals and meets a published DFT table,
+      and each ranking meets the rule before its reaction joins a Design page.
+  - step: Find measured tables for the seven Design-page reactions from before the check
+    owner: Claude
+    why: >
+      CO2 methanation, CO oxidation, methanol from CO2, N2O removal, the gas-engine oxidation catalyst, hot SCR and
+      steam reforming rank materials on the Design page on the method's own checks, ahead of a per-metal measured
+      table scored under the rule. Each needs one table measured in one laboratory to carry the same backing as the
+      new ones.
+  - step: Published zero-point and entropy corrections for HNNH*, N2H3*, NO*, NOH*, CO*, COOH* and OCHO*
+    owner: Claude
+    why: >
+      UMA's own vibrations miss the four published corrections by up to 0.20 eV, so these seven wait. Published
+      values from DFT studies of CO2 reduction and nitrogen chemistry, entered and checked the same way, would bring
+      CO2 to formate and formic acid oxidation (whose rankings already pass) to the Design page.
+  - step: "Surface stability for electrocatalysts: a Pourbaix check per candidate"
+    owner: Claude
+    why: A candidate that dissolves or oxidizes at the working potential ranks well and fails in the cell.
   - step: Decide how oxide screens run
     owner: You
     why: >
@@ -294,6 +327,20 @@ phases:
       so far (Literature check page).
 
 findings:
+  - title: Predicted speed ratios run wider than measured ones
+    detail: >
+      The rule scores order, and the passing reactions order the metals well. The sizes run wide: across the
+      measured tables, the fastest and slowest scored metals sit 2.0 to 6.1 powers of ten apart, and the predictions
+      put them 7.7 to 40.3 powers of ten apart, 1.3 to 20 times as many. Likely reasons: the volcano's slopes describe
+      the close-packed face while working catalysts also run on steps and edges, and a laboratory's slowest readings
+      sit near its detection limit. Read a predicted ratio beyond about tenfold as a place in the order.
+    source: experiments/reaction_check (2026-10-25); Methodology tab, the reaction check section.
+  - title: Two older rankings miss their measured tables
+    detail: >
+      Ammonia synthesis orders Ozaki's K-promoted metals with rho 0.40 over 9 metals (p 0.15), and water-gas shift
+      orders Grenoble's metals on alumina with rho −0.53 over 11, where the strong oxygen binders Re, Co and Ru lead.
+      Both move to the playground under the rule; on_design_page in each pack.yaml brings one back.
+    source: experiments/reaction_check (2026-10-25); each pack.yaml's comment.
   - title: Oxides belong in UMA's materials mode, at about 0.2 eV
     detail: >
       On 720 molecules on oxide surfaces from OC22, set against its DFT, the typical miss is 0.64–0.70 eV in the
@@ -413,6 +460,13 @@ findings:
     source: Two-proportion power calculation.
 
 decisions:
+  - item: "Ammonia synthesis and water-gas shift leave the Design page after failing their ranking check (2026-10-25)"
+    owner: You
+    status: open
+    detail: >
+      The rule, written before the results, keeps a reaction on the Design page only while its ranking passes.
+      Both failed (rho 0.40 and −0.53), so both run in the Reactions library and the playground. Setting
+      on_design_page: true in a pack.yaml brings it back; yours to keep or reverse as catalysis lead.
   - item: "O2 basis for the bench yardstick: dry (decided 2026-10-21)"
     owner: You
     status: closed

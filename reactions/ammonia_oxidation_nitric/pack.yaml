@@ -1,0 +1,72 @@
+# Ammonia oxidation to nitric oxide, the Ostwald process. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (platinum) reaches half of the best possible NO yield at 750 C under the screen protocol.
+
+id: ammonia_oxidation_nitric
+name: Ammonia oxidation to NO (Ostwald)
+version: 1
+status: draft-illustrative-parameters
+summary: Burns ammonia to nitric oxide on platinum gauze, the first step of every nitric acid and fertilizer plant.
+category: Chemicals and fuels
+description: >
+  Ammonia and air make NO and water in about a millisecond; burning to N2 or N2O competes. Each path is first order
+  in ammonia.
+
+reference_temperature_K: 1023.15
+water: H2O
+oxygen: O2
+
+species:
+  NH3: {formula: NH3}
+  O2:  {formula: O2}
+  NO:  {formula: NO}
+  H2O: {formula: H2O}
+  N2:  {formula: N2}
+  N2O: {formula: N2O}
+
+pathways:
+  nh3_to_no:
+    equation: 4 NH3 + 5 O2 -> 4 NO + 6 H2O
+    role: desired
+    rate: {key: NH3, orders: {NH3: 1}, ln_k_ref: 5.895, Ea_kJ: 60}
+  nh3_to_n2:
+    equation: 4 NH3 + 3 O2 -> 2 N2 + 6 H2O
+    role: side
+    note: "Burning to nitrogen; it wastes ammonia."
+    rate: {key: NH3, orders: {NH3: 1}, ln_k_ref: -2.500, Ea_kJ: 40}
+  nh3_to_n2o:
+    equation: 2 NH3 + 2 O2 -> N2O + 3 H2O
+    role: side
+    note: "Makes nitrous oxide, a strong greenhouse gas."
+    rate: {key: NH3, orders: {NH3: 1}, ln_k_ref: -4.000, Ea_kJ: 40}
+
+metrics:
+  no_yield:
+    kind: yield
+    species: [NO]
+    denominator: [NH3]
+    description: "NO made per ammonia fed (1 is the most possible)."
+  nh3_conversion:
+    kind: conversion
+    species: [NH3]
+    description: "Share of the ammonia that reacts."
+  n2o_out:
+    kind: outlet
+    species: [N2O]
+    description: "Nitrous oxide made."
+
+screening:
+  descriptor: {N: 0.5, O: 0.5}
+  pathways: [nh3_to_no]
+  metric: no_yield
+  reference: {formula: Pt, name: Platinum}
+  optimum_shift_eV: 0.0
+  peak_gas: {N2: 0.25, O2: 0.25}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Pt, Rh, Pd, Ir, Ru, Co, Ni, Ag]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    On the gauze, oxygen strips ammonia of its hydrogen, and the nitrogen atoms left behind pair with oxygen to
+    leave as NO or with each other to leave as N2, so nitrogen and oxygen binding together set rate and product (Ma
+    and Schneider, J. Catal. 2020, comparing platinum, palladium and rhodium). The descriptor averages the N and O
+    binding; the top is set at platinum's, the gauze metal.

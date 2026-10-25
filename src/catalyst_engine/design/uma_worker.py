@@ -26,8 +26,13 @@ site relaxes whole in its fixed cell, the most stable is E(slab), and each adsor
 metal ion, or the proton) along the most open direction.
 
 Gas references come from the same model: H = 1/2 H2, O = H2O - H2, N = 1/2 N2, C = CO - O, OH = O + H,
-OOH = 2 H2O - 3/2 H2, and the molecules themselves for CO, NO and NH3. Negative is bound; more negative binds more
-strongly. H, O, OH and OOH against H2O and H2 are the computational hydrogen electrode's references (design/electro.py).
+OOH = 2 H2O - 3/2 H2, and the molecules themselves for CO, NO and NH3. The electrochemical intermediates take the
+same gases: COOH and the formate OCHO = CO + H2O - 1/2 H2, NHx = 1/2 N2 + x/2 H2, N2Hx = N2 + x/2 H2, and
+NOH = NO + 1/2 H2. Negative is bound; more negative binds more strongly. H, O, OH and OOH against H2O and H2 are the
+computational hydrogen electrode's references (design/electro.py).
+
+Formate (OCHO), diazene (HNNH) and HNNH2 bind through two atoms side by side; on a bridge site they lie along the
+bridge, one binding atom toward each metal atom (ALIGNED).
 """
 
 from __future__ import annotations
@@ -68,7 +73,23 @@ ADSORBATE_ATOMS = {
     "CO": Atoms("CO", positions=[(0, 0, 0), (0, 0, 1.15)]),
     "NO": Atoms("NO", positions=[(0, 0, 0), (0, 0, 1.17)]),
     "NH3": Atoms("NH3", positions=[(0, 0, 0), *_NH3_H]),
+    # carboxyl: bound through C, the C=O (1.26 A) and C-OH (1.35 A) bonds leaning out to either side
+    "COOH": Atoms("COOH", positions=[(0, 0, 0), (1.05, 0, 0.70), (-1.15, 0, 0.70), (-1.15, 0, 1.68)]),
+    # formate, bound through both O (C-O 1.28 A); the origin sits midway between them, the C-H points up
+    "OCHO": Atoms("OOCH", positions=[(-1.10, 0, 0), (1.10, 0, 0), (0, 0, 0.65), (0, 0, 1.75)]),
+    "NH": Atoms("NH", positions=[(0, 0, 0), (0, 0, 1.03)]),
+    "NH2": Atoms("NHH", positions=[(0, 0, 0), (0.82, 0, 0.62), (-0.82, 0, 0.62)]),
+    # N2H end-on: the N-N bond (1.20 A) tilted, the H (1.04 A) on the outer N
+    "NNH": Atoms("NNH", positions=[(0, 0, 0), (0.35, 0, 1.15), (1.35, 0, 1.45)]),
+    "NNH2": Atoms("NNHH", positions=[(0, 0, 0), (0, 0, 1.28), (0.87, 0, 1.80), (-0.87, 0, 1.80)]),
+    # diazene and N2H3 bound through both N (N-N 1.30 and 1.44 A); the origin sits midway between them
+    "HNNH": Atoms("NNHH", positions=[(-0.65, 0, 0), (0.65, 0, 0), (-1.20, 0, 0.85), (1.20, 0, 0.85)]),
+    "HNNH2": Atoms("NNHHH", positions=[(-0.72, 0, 0), (0.72, 0, 0), (-1.30, 0, 0.84), (1.10, 0.82, 0.55),
+                                         (1.10, -0.82, 0.55)]),
+    "NOH": Atoms("NOH", positions=[(0, 0, 0), (0, 0, 1.36), (0.92, 0, 1.71)]),
 }
+# Adsorbates bound through two atoms side by side: on a bridge site their x axis lies along the bridge
+ALIGNED = {"OCHO", "HNNH", "HNNH2"}
 # Height of the binding atom above the local top-layer height, by site kind (Angstrom)
 HEIGHTS = {
     "H": {"top": 1.6, "bridge": 1.2, "hollow": 1.0},
@@ -80,6 +101,15 @@ HEIGHTS = {
     "CO": {"top": 1.9, "bridge": 1.5, "hollow": 1.3},
     "NO": {"top": 1.8, "bridge": 1.5, "hollow": 1.3},
     "NH3": {"top": 2.1, "bridge": 2.1, "hollow": 2.1},
+    "COOH": {"top": 1.95, "bridge": 1.55, "hollow": 1.35},
+    "OCHO": {"top": 2.0, "bridge": 2.0, "hollow": 1.9},
+    "NH": {"top": 1.8, "bridge": 1.4, "hollow": 1.1},
+    "NH2": {"top": 1.9, "bridge": 1.5, "hollow": 1.3},
+    "NNH": {"top": 1.9, "bridge": 1.5, "hollow": 1.3},
+    "NNH2": {"top": 1.9, "bridge": 1.5, "hollow": 1.2},
+    "HNNH": {"top": 1.9, "bridge": 1.9, "hollow": 1.7},
+    "HNNH2": {"top": 2.0, "bridge": 2.0, "hollow": 1.8},
+    "NOH": {"top": 1.8, "bridge": 1.4, "hollow": 1.1},
 }
 # Site kinds to try first, per adsorbate (the quick setting keeps the first two sites)
 PREFERENCE = {
@@ -92,6 +122,15 @@ PREFERENCE = {
     "CO": ["top", "hollow", "bridge"],
     "NO": ["hollow", "top", "bridge"],
     "NH3": ["top"],
+    "COOH": ["top", "bridge", "hollow"],
+    "OCHO": ["bridge", "top", "hollow"],
+    "NH": ["hollow", "bridge", "top"],
+    "NH2": ["bridge", "hollow", "top"],
+    "NNH": ["top", "bridge", "hollow"],
+    "NNH2": ["top", "hollow", "bridge"],
+    "HNNH": ["bridge", "top", "hollow"],
+    "HNNH2": ["bridge", "top", "hollow"],
+    "NOH": ["hollow", "bridge", "top"],
 }
 GAS = {
     "H2": Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.74)]),
@@ -112,6 +151,15 @@ REFERENCE = {
     "CO": {"CO": 1.0},
     "NO": {"NO": 1.0},
     "NH3": {"NH3": 1.0},
+    "COOH": {"CO": 1.0, "H2O": 1.0, "H2": -0.5},
+    "OCHO": {"CO": 1.0, "H2O": 1.0, "H2": -0.5},
+    "NH": {"N2": 0.5, "H2": 0.5},
+    "NH2": {"N2": 0.5, "H2": 1.0},
+    "NNH": {"N2": 1.0, "H2": 0.5},
+    "NNH2": {"N2": 1.0, "H2": 1.0},
+    "HNNH": {"N2": 1.0, "H2": 1.0},
+    "HNNH2": {"N2": 1.0, "H2": 1.5},
+    "NOH": {"NO": 1.0, "H2": 0.5},
 }
 NONMETALS = {"H", "B", "C", "N", "O", "F", "Si", "P", "S", "Cl", "Se", "Br", "I", "Te"}
 SETTINGS = {  # sites per adsorbate, force tolerance (eV/A), step cap
@@ -274,7 +322,9 @@ def surface_sites(slab: Atoms, depth: float = 1.2) -> list[dict]:
         d[d < 1e-6] = np.inf
         j = int(np.argmin(d))
         mid = (xy[0] + images[j]) / 2
-        sites.append({"kind": "bridge", "label": "bridge", "xy": mid.tolist(), "z": float(max(z[top[0]], zz[j]))})
+        axis = (images[j] - xy[0]) / np.linalg.norm(images[j] - xy[0])
+        sites.append({"kind": "bridge", "label": "bridge", "xy": mid.tolist(), "z": float(max(z[top[0]], zz[j])),
+                      "axis": axis.tolist()})
     # hollows: centroids of triangles of the first atom and two near neighbors that are near each other; on a
     # close-packed face the first two distinct ones are the fcc and hcp hollows
     d = np.linalg.norm(images - xy[0], axis=1)
@@ -300,6 +350,8 @@ def choose_sites(sites: list[dict], adsorbate: str, n: int) -> list[dict]:
 
 def place(slab: Atoms, adsorbate: str, site: dict) -> Atoms:
     ads = ADSORBATE_ATOMS[adsorbate].copy()
+    if adsorbate in ALIGNED and "axis" in site:  # one binding atom toward each atom of the bridge
+        ads.rotate(float(np.degrees(np.arctan2(site["axis"][1], site["axis"][0]))), "z", center=(0, 0, 0))
     h = HEIGHTS[adsorbate][site["kind"]]
     ads.translate([site["xy"][0], site["xy"][1], site["z"] + h])
     out = slab.copy()

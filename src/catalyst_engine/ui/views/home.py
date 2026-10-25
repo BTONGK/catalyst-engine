@@ -77,6 +77,10 @@ with right:
                         "pure metals work right away")
         ids = common.screening_pack_ids()
         st.markdown(f":green[:material/check_circle:] **{len(ids)} reactions** ready to design for")
+        waiting = common.playground_only_ids()
+        if waiting:
+            st.markdown(f":blue[:material/science:] **{len(waiting)} more** in the Reactions library and the "
+                        "playground, each joining the Design page once its ranking check passes")
 
     st.markdown("#### Reactions ready now")
     by_cat: dict[str, list[str]] = {}

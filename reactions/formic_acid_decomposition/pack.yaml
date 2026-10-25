@@ -1,0 +1,66 @@
+# Formic acid dehydrogenation. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (platinum) reaches half of the best possible result at 150 C under the screen protocol.
+
+id: formic_acid_decomposition
+name: Formic acid dehydrogenation
+version: 1
+status: draft-illustrative-parameters
+summary: Releases hydrogen from formic acid, a liquid that stores hydrogen safely at room temperature.
+category: Hydrogen and energy
+description: >
+  Formic acid splits into CO2 and hydrogen on the desired path, or into CO and water on the competing one. Both are
+  first order in formic acid here (NASA Glenn data, since formic acid sits outside GRI-Mech).
+
+reference_temperature_K: 423.15
+water: H2O
+
+species:
+  HCOOH: {formula: HCOOH}
+  CO2:   {formula: CO2}
+  H2:    {formula: H2}
+  CO:    {formula: CO}
+  H2O:   {formula: H2O}
+  N2:    {formula: N2}
+
+pathways:
+  dehydrogenation:
+    equation: HCOOH -> CO2 + H2
+    role: desired
+    rate: {key: HCOOH, orders: {HCOOH: 1}, ln_k_ref: 1.789, Ea_kJ: 70}
+  dehydration:
+    equation: HCOOH -> CO + H2O
+    role: side
+    note: "Dehydration; it makes CO in place of hydrogen."
+    rate: {key: HCOOH, orders: {HCOOH: 1}, ln_k_ref: -4.000, Ea_kJ: 100}
+
+metrics:
+  hcooh_conversion:
+    kind: conversion
+    species: [HCOOH]
+    description: "Share of the formic acid that reacts."
+  h2_yield:
+    kind: yield
+    species: [H2]
+    denominator: [HCOOH]
+    description: "Hydrogen made per formic acid fed (1 is the most possible)."
+  co_out:
+    kind: outlet
+    species: [CO]
+    description: "Carbon monoxide made; fuel cells tolerate a few ppm."
+
+screening:
+  descriptor: {O: 1}
+  pathways: [dehydrogenation]
+  metric: hcooh_conversion
+  reference: {formula: Pt, name: Platinum}
+  optimum_shift_eV: 0.0
+  peak_gas: {H2O: 1.0, H2: -1.0}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Pt, Pd, Ir, Rh, Ru, Au, Ag, Cu, Ni]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    Formic acid decomposes through formate, held to the surface by its two oxygen atoms, so oxygen binding sorts the
+    metals. The classic volcano of Fahrenfort, van Reyen and Sachtler (1960) puts platinum, iridium and palladium
+    near the top, with gold and silver too weak and the base metals too strong; Tang et al. (Surf. Sci. 2016)
+    revisited it with rates per surface site and questioned its shape. The top is set at platinum's oxygen binding.

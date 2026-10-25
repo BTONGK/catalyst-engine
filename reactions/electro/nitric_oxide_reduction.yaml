@@ -1,0 +1,39 @@
+# Nitric oxide reduction to ammonia: NO + 5 (H+ + e-) -> NH3 + H2O, through NO*, NOH*, N*, NH* and NH2*
+# (Long et al., Angew. Chem. Int. Ed. 59, 9711 (2020): copper foam makes ammonia from NO at 93.5 % faradaic
+# efficiency at -0.9 V vs RHE, and the same work's descriptor screen picks copper as the most active metal).
+
+id: nitric_oxide_reduction
+name: Nitric oxide reduction to ammonia
+category: Nitrogen
+summary: Turns nitric oxide from exhaust or nitrate waste into ammonia with electricity.
+equation: NO + 5 H+ + 5 e- -> NH3 + H2O
+direction: reduction
+electrons: 5
+equilibrium_V: 0.705        # to NH3 gas and liquid water, from tabulated formation free energies (NO(g) +86.55 kJ/mol)
+compare_V: -0.30
+# Corrections: N*, NH* and NH2* take Skúlason 2012's constants; NO* and NOH* take UMA's own vibrations on Pt(111)
+#   (results/corrections.json), whose check on OH* and OOH* missed by 0.16-0.20 eV (PASS_RULE.md), so those two serve
+#   the playground's starting point only.
+# shift: NO* and NOH* start against NO(g) and H2; this reaction's zero is NH3 + liquid water, 3.525 eV below
+#   NO + 5/2 H2. N*, NH* and NH2* start against N2 and H2, and NH3 sits 0.1705 eV below 1/2 N2 + 3/2 H2.
+intermediates:
+  - {name: NO, label: "adsorbed NO (NO*)", correction_eV: 0.59, shift_eV: 3.525}
+  - {name: NOH, label: "NOH*", correction_eV: 0.91, shift_eV: 3.525}
+  - {name: N, label: "adsorbed nitrogen (N*)", correction_eV: 0.26, shift_eV: 0.1705}
+  - {name: NH, label: "imide (NH*)", correction_eV: 0.57, shift_eV: 0.1705}
+  - {name: NH2, label: "amide (NH2*)", correction_eV: 0.88, shift_eV: 0.1705}
+chemical_steps:
+  - {step: 0, label: "NO lands on the surface"}
+descriptor: {N: 1}
+reference: {formula: Cu, name: Copper}
+task: oc20
+suggested_elements: [Cu, Pt, Pd, Ni, Co, Rh, Ru, Ir, Ag, Au]
+on_design_page: false
+design_note: it waits for a published DFT table of NO* and NOH* on metals and published zero-point and entropy corrections for both
+basis: >
+  Nitric oxide lands on the surface, takes a proton and electron on its oxygen to become NOH*, and a second
+  splits off water and leaves N*; three more turn N* into ammonia through NH* and NH2*. Landing moves zero electrons,
+  so the potential leaves that step alone. Copper sits in the middle of the metals for binding, and a copper foam
+  turns NO into ammonia at 93.5 percent faradaic efficiency at -0.9 V (Long et al. 2020); platinum-group metals
+  bind N* and NO* more tightly, where N2O and N2 compete with ammonia. The route through HNO*, hydrogen on
+  nitrogen first, runs beside this one on some metals.

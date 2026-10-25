@@ -1,0 +1,16 @@
+id: hcho-screen-v1
+pack: formaldehyde_oxidation
+version: 1
+status: draft
+description: Air-like gas, 20% oxygen and 1% water in nitrogen, with 100 ppm formaldehyde, at 1 atm.
+analyzer:
+  name: FTIR
+  measured: [CH2O, CO2]
+  sigma_abs_ppm: 0.5
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Formaldehyde conversion against temperature
+    feed: {CH2O: 100 ppm, O2: 20 %, H2O: 1 %, N2: balance}
+    ghsv_per_h: 50000
+    temperatures_C: [20, 40, 60, 80, 100, 125, 150, 200]

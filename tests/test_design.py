@@ -437,7 +437,7 @@ def test_the_shipped_example_lands_in_an_empty_screens_folder_and_ranks_like_the
 
 # ---------------------------------------------------------------- the reaction builder
 
-def _new_reaction(tmp_path, name="Dry reforming", **over):
+def _new_reaction(tmp_path, name="Dry reforming at home", **over):
     args = dict(name=name, category="Hydrogen and energy", summary="Turns methane and CO2 into syngas.",
                 wanted="CH4 + CO2 <=> 2 CO + 2 H2", side=["CO2 + H2 <=> CO + H2O"],
                 metric={"kind": "conversion", "species": ["CH4"]}, descriptor=["C", "O"], reference_formula="Ni",

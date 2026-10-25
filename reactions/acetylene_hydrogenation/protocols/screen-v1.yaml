@@ -1,0 +1,16 @@
+id: ahy-screen-v1
+pack: acetylene_hydrogenation
+version: 1
+status: draft
+description: "A tail-end stream diluted in nitrogen: 1% acetylene and 2% hydrogen with 40% ethylene, at 1 atm."
+analyzer:
+  name: Gas chromatograph
+  measured: [C2H2, C2H4, C2H6, H2]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Acetylene removal against temperature
+    feed: {C2H2: 1 %, H2: 2 %, C2H4: 40 %, N2: balance}
+    ghsv_per_h: 5000
+    temperatures_C: [30, 50, 70, 90, 110, 130, 150]

@@ -1,0 +1,16 @@
+id: eth-screen-v1
+pack: ethane_hydrogenolysis
+version: 1
+status: draft
+description: "3% ethane with 20% hydrogen in nitrogen at 1 atm: Sinfelt's standard partial pressures, 0.03 and 0.20 atm."
+analyzer:
+  name: Gas chromatograph
+  measured: [C2H6, CH4]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Ethane conversion against temperature
+    feed: {C2H6: 3 %, H2: 20 %, N2: balance}
+    ghsv_per_h: 10000
+    temperatures_C: [150, 175, 200, 225, 250, 275, 300, 325, 350, 400]

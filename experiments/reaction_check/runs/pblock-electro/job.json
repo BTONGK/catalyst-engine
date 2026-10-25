@@ -1,0 +1,134 @@
+{
+ "checkpoint": "/Users/bt/uma/checkpoints/uma-s-1p1.pt",
+ "task": "oc20",
+ "thoroughness": "standard",
+ "adsorbates": [
+  "H",
+  "O",
+  "OH",
+  "CO",
+  "COOH",
+  "OCHO"
+ ],
+ "materials": [
+  {
+   "id": "element:Sn",
+   "label": "Sn",
+   "formula": "Sn",
+   "ase_bulk": "Sn",
+   "e_hull": 0.0,
+   "elements": [
+    "Sn"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Pb",
+   "label": "Pb",
+   "formula": "Pb",
+   "ase_bulk": "Pb",
+   "e_hull": 0.0,
+   "elements": [
+    "Pb"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:In",
+   "label": "In",
+   "formula": "In",
+   "ase_bulk": "In",
+   "e_hull": 0.0,
+   "elements": [
+    "In"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Bi",
+   "label": "Bi",
+   "formula": "Bi",
+   "ase_bulk": "Bi",
+   "e_hull": 0.0,
+   "elements": [
+    "Bi"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Cd",
+   "label": "Cd",
+   "formula": "Cd",
+   "ase_bulk": "Cd",
+   "e_hull": 0.0,
+   "elements": [
+    "Cd"
+   ],
+   "source": "Reference crystal"
+  }
+ ],
+ "request": {
+  "name": "pblock-electro",
+  "kind": "check",
+  "materials": [
+   {
+    "id": "element:Sn",
+    "label": "Sn",
+    "formula": "Sn",
+    "ase_bulk": "Sn",
+    "e_hull": 0.0,
+    "elements": [
+     "Sn"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Pb",
+    "label": "Pb",
+    "formula": "Pb",
+    "ase_bulk": "Pb",
+    "e_hull": 0.0,
+    "elements": [
+     "Pb"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:In",
+    "label": "In",
+    "formula": "In",
+    "ase_bulk": "In",
+    "e_hull": 0.0,
+    "elements": [
+     "In"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Bi",
+    "label": "Bi",
+    "formula": "Bi",
+    "ase_bulk": "Bi",
+    "e_hull": 0.0,
+    "elements": [
+     "Bi"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Cd",
+    "label": "Cd",
+    "formula": "Cd",
+    "ase_bulk": "Cd",
+    "e_hull": 0.0,
+    "elements": [
+     "Cd"
+    ],
+    "source": "Reference crystal"
+   }
+  ],
+  "task": "oc20",
+  "thoroughness": "standard",
+  "created": "2026-10-25T11:04:17"
+ }
+}

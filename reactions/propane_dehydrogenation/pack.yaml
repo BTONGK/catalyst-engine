@@ -1,0 +1,67 @@
+# Propane dehydrogenation. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (platinum) reaches half of the best possible propylene yield at 600 C under the screen protocol.
+
+id: propane_dehydrogenation
+name: Propane dehydrogenation
+version: 1
+status: draft-illustrative-parameters
+summary: Makes propylene, the raw material for polypropylene, by pulling hydrogen off propane.
+category: Chemicals and fuels
+description: >
+  Propane gives up one hydrogen molecule to become propylene. The reaction draws heat, so equilibrium favors high
+  temperature; cracking to methane and ethylene competes there. First order in propane, with the approach to
+  equilibrium from thermodynamics (NASA Glenn data, since propylene sits outside GRI-Mech).
+
+reference_temperature_K: 873.15
+
+species:
+  C3H8: {formula: C3H8}
+  C3H6: {formula: C3H6, cantera: "C3H6,propylene"}
+  H2:   {formula: H2}
+  CH4:  {formula: CH4}
+  C2H4: {formula: C2H4}
+  N2:   {formula: N2}
+
+pathways:
+  dehydrogenation:
+    equation: C3H8 <=> C3H6 + H2
+    role: desired
+    rate: {key: C3H8, orders: {C3H8: 1}, ln_k_ref: 0.689, Ea_kJ: 120}
+  cracking:
+    equation: C3H8 -> CH4 + C2H4
+    role: side
+    note: "Cracking; it grows fastest at the hot end."
+    rate: {key: C3H8, orders: {C3H8: 1}, ln_k_ref: -4.000, Ea_kJ: 200}
+
+metrics:
+  c3h6_yield:
+    kind: yield
+    species: [C3H6]
+    denominator: [C3H8]
+    description: "Propylene made per propane fed."
+  c3h8_conversion:
+    kind: conversion
+    species: [C3H8]
+    description: "Share of the propane that reacts."
+  ch4_yield:
+    kind: yield
+    species: [CH4]
+    denominator: [C3H8]
+    description: "Methane made by cracking, per propane fed."
+
+screening:
+  descriptor: {C: 0.25}
+  pathways: [dehydrogenation]
+  metric: c3h6_yield
+  reference: {formula: Pt, name: Platinum}
+  optimum_shift_eV: 0.0
+  peak_gas: {CH4: 0.25, H2: -0.5}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Pt, Pd, Ir, Rh, Ni, Co, Cu, Zn, Ag]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    Platinum, often alloyed with tin, leads propane dehydrogenation: it breaks C-H bonds while holding carbon gently
+    enough to limit cracking and coke (Sattler et al., Chem. Rev. 2014). The first C-H break leaves a propyl group
+    whose binding follows the carbon atom's at a quarter of its slope, like methyl (Abild-Pedersen et al., Phys.
+    Rev. Lett. 2007). The descriptor is a quarter of the carbon binding; the top is set at platinum's.

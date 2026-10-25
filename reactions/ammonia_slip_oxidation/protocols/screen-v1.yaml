@@ -1,0 +1,16 @@
+id: aso-screen-v1
+pack: ammonia_slip_oxidation
+version: 1
+status: draft
+description: "Stack gas after a NOx converter: 200 ppm slipped ammonia with 10% oxygen and 5% water in nitrogen, at 1 atm."
+analyzer:
+  name: FTIR
+  measured: [NH3, NO, N2O]
+  sigma_abs_ppm: 0.5
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Ammonia conversion against temperature
+    feed: {NH3: 200 ppm, O2: 10 %, H2O: 5 %, N2: balance}
+    ghsv_per_h: 100000
+    temperatures_C: [150, 200, 250, 300, 350, 400, 450]

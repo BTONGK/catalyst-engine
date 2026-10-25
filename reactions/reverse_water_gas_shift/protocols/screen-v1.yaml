@@ -1,0 +1,16 @@
+id: rwgs-screen-v1
+pack: reverse_water_gas_shift
+version: 1
+status: draft
+description: 20% CO2 and 60% hydrogen, a ratio of one to three, in nitrogen, at 1 atm.
+analyzer:
+  name: Gas chromatograph
+  measured: [CO2, CO, CH4, H2]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: CO2 conversion against temperature
+    feed: {CO2: 20 %, H2: 60 %, N2: balance}
+    ghsv_per_h: 20000
+    temperatures_C: [300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800]

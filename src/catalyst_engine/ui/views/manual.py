@@ -184,12 +184,76 @@ def method_chart(spec: dict, tables: dict) -> None:
         st.caption(spec["caption"])
 
 
+WHEN = {"load": ("Each load", "blue", ":material/upload_file:"),
+        "written": ("When the package is written", "violet", ":material/edit_note:"),
+        "screen": ("Each screen", "green", ":material/play_circle:")}
+
+
+def loading_flow(stages: list[dict]) -> str:
+    """The loading stages as three columns read top to bottom: each load, once when written, each screen."""
+    lines = []
+    for when, (label, _, _) in WHEN.items():
+        idx = [i for i, s in enumerate(stages, start=1) if s["when"] == when]
+        if not idx:
+            continue
+        lines.append(f'subgraph cluster_{when} {{ label="{label}"; labeljust="l"; fontname="Helvetica"; fontsize=13; '
+                     'fontcolor="#0f766e"; color="#cbd5e1"; style="rounded";')
+        lines += [f'g{i} [label="{i}. {stages[i - 1]["title"]}" width=2.6];' for i in idx]
+        lines.append(" -> ".join(f"g{i}" for i in idx) + "; }")
+    order = range(1, len(stages) + 1)
+    lines.append(" -> ".join(f"g{i}" for i in order) + ' [style=invis];')
+    lines += [f"g{a} -> g{b} [constraint=false];" for a, b in zip(order, list(order)[1:])
+              if stages[a - 1]["when"] != stages[b - 1]["when"]]
+    return flow_chart([], lines, "TB")
+
+
+def loading_section(sec: dict, fill) -> None:
+    """What the app does with a reaction package, stage by stage, with one package followed through."""
+    st.write(fill(sec["text"]))
+    st.graphviz_chart(loading_flow(sec["stages"]))
+    for i, s in enumerate(sec["stages"], start=1):
+        label, color, icon = WHEN[s["when"]]
+        with st.container(border=True):
+            a, b = st.columns([3, 2], vertical_alignment="center")
+            a.markdown(f"##### Stage {i} · {s['title']}")
+            b.badge(label, icon=icon, color=color)
+            st.write(fill(s["does"]))
+            for eq in s.get("equations", []):
+                st.latex(eq["tex"])
+                st.caption(f"In words: {fill(eq['words'])}")
+            if s.get("checks"):
+                st.markdown("**What must hold** (the app stops the load and names what it found)")
+                st.markdown("\n".join(f"- {fill(c)}" for c in s["checks"]))
+            st.markdown(f":blue[**In the example.**] {fill(s['example'])}")
+
+
+def check_section(sec: dict, tables: dict, fill) -> None:
+    """A whole-chain check: its rule, its table of verdicts, the rows behind it and what the sizes show."""
+    st.write(fill(sec["text"]))
+    st.markdown("\n".join(f"- {fill(p)}" for p in sec["points"]))
+    method_table(sec["table"], tables)
+    if sec.get("metals"):
+        with st.expander(fill(sec["metals"].get("see", "See the numbers"))):
+            method_table(sec["metals"], tables)
+    st.write(fill(sec["result"]))
+    if sec.get("sizes"):
+        st.write(fill(sec["sizes"]["text"]))
+        with st.expander(fill(sec["sizes"].get("see", "See the numbers"))):
+            method_table(sec["sizes"], tables)
+
+
 def methodology(paper: dict) -> None:
     """The Methodology tab: a method paper whose numbers come from the experiment's summary."""
     values, tables = paper["data"]["values"], paper["data"]["tables"]
+    # section numbers in page order, so the text can point at them ({sec_limits}, {sec_reaction_check} ...)
+    order = [f"intro_{i}" for i in range(len(paper["intro"]))] + [k for k in ("loading",) if paper.get(k)] + \
+        ["steps", "example"] + [k for k in ("reaction_check",) if paper.get(k)] + \
+        ["budget", "assumptions", "trust", "limits"] + [k for k in ("audit",) if paper.get(k)] + ["reproduce"]
+    num = {key: i for i, key in enumerate(order, start=1)}
+    mapping = {**values, **{f"sec_{k}": v for k, v in num.items()}}
 
     def fill(text: str) -> str:
-        return flat(text).format_map(values)
+        return flat(text).format_map(mapping)
 
     st.markdown(f"### {paper['title']}")
     st.caption(fill(paper["byline"]))
@@ -199,8 +263,8 @@ def methodology(paper: dict) -> None:
     st.info(fill(paper["how_to_read"]), icon=":material/school:")
     st.markdown(" ".join(f":{color}-badge[{icon} {label}]" for label, color, icon in STATUS.values()))
 
-    for n, sec in enumerate(paper["intro"], start=1):
-        st.markdown(f"#### {n}. {sec['title']}")
+    for i, sec in enumerate(paper["intro"]):
+        st.markdown(f"#### {num[f'intro_{i}']}. {sec['title']}")
         st.write(fill(sec["text"]))
         if sec.get("points"):
             st.markdown("\n".join(f"- {fill(p)}" for p in sec["points"]))
@@ -210,10 +274,13 @@ def methodology(paper: dict) -> None:
                 f"| {i}. {s['title']} | {s['takes']} | {s['gives']} | {s['tool']} |"
                 for i, s in enumerate(paper["steps"], start=1)))
 
-    n_intro = len(paper["intro"])
-    st.markdown(f"#### {n_intro + 1}. Methods and checks, step by step")
+    if paper.get("loading"):
+        st.markdown(f"#### {num['loading']}. {paper['loading']['title']}")
+        loading_section(paper["loading"], fill)
+
+    st.markdown(f"#### {num['steps']}. Methods and checks, step by step")
     st.caption("Each step: what the app does, the equation with the same idea in words, the assumptions it rests on "
-               "(numbered A1, A2 … and collected in section " + str(n_intro + 4) + "), and how it was checked.")
+               f"(numbered A1, A2 … and collected in section {num['assumptions']}), and how it was checked.")
     for i, s in enumerate(paper["steps"], start=1):
         label, color, icon = STATUS[s["status"]]
         with st.container(border=True):
@@ -239,29 +306,33 @@ def methodology(paper: dict) -> None:
                 st.markdown(f":{color}[**Verdict.**] {fill(s['verdict'])}")
 
     ex = paper["example"]
-    st.markdown(f"#### {n_intro + 2}. {ex['title']}")
+    st.markdown(f"#### {num['example']}. {ex['title']}")
     st.write(fill(ex["text"]))
     method_table(ex["table"], tables)
     st.markdown("\n".join(f"- {fill(p)}" for p in ex["points"]))
 
-    st.markdown(f"#### {n_intro + 3}. {paper['budget']['title']}")
+    if paper.get("reaction_check"):
+        st.markdown(f"#### {num['reaction_check']}. {paper['reaction_check']['title']}")
+        check_section(paper["reaction_check"], tables, fill)
+
+    st.markdown(f"#### {num['budget']}. {paper['budget']['title']}")
     st.write(fill(paper["budget"]["text"]))
     st.markdown("| Source | Size (eV) | Where it comes from |\n|---|---|---|\n" + "\n".join(
         f"| {row['source']} | {fill(row['size'])} | {fill(row['basis'])} |" for row in paper["budget"]["rows"]))
     st.write(fill(paper["budget"]["after"]))
 
-    st.markdown(f"#### {n_intro + 4}. Every assumption in one place")
+    st.markdown(f"#### {num['assumptions']}. Every assumption in one place")
     rows = [(x, i) for i, s in enumerate(paper["steps"], start=1) for x in s["assumptions"]]
     st.markdown("| | Assumption | Step | If it fails |\n|---|---|---|---|\n" + "\n".join(
         f"| **{x['id']}** | {fill(x['short'])} | {i} | {fill(x['effect'])} |" for x, i in rows))
 
-    st.markdown(f"#### {n_intro + 5}. {paper['trust']['title']}")
+    st.markdown(f"#### {num['trust']}. {paper['trust']['title']}")
     for group in paper["trust"]["groups"]:
         st.markdown(f"**{group['heading']}**")
         st.markdown("\n".join(f"- {fill(p)}" for p in group["points"]))
 
     lim = paper["limits"]
-    st.markdown(f"#### {n_intro + 6}. {lim['title']}")
+    st.markdown(f"#### {num['limits']}. {lim['title']}")
     st.write(fill(lim["text"]))
     st.markdown("| Left out | Why | How large | Meanwhile |\n|---|---|---|---|\n" + "\n".join(
         f"| **{row['part']}** | {fill(row['why'])} | {fill(row['size'])} | {fill(row['meanwhile'])} |"
@@ -271,18 +342,16 @@ def methodology(paper: dict) -> None:
         with st.expander(fill(c.get("see", "See the numbers"))):
             method_table(c["table"], tables)
 
-    n = n_intro + 7
     if audit := paper.get("audit"):
-        st.markdown(f"#### {n}. {audit['title']}")
+        st.markdown(f"#### {num['audit']}. {audit['title']}")
         st.write(fill(audit["text"]))
         a, b = st.columns(2, gap="large")
         a.markdown("**Checked**")
         a.markdown("\n".join(f"- {fill(p)}" for p in audit["checked"]))
         b.markdown("**Changed in the latest review**")
         b.markdown("\n".join(f"- {fill(p)}" for p in audit["changed"]))
-        n += 1
 
-    st.markdown(f"#### {n}. Reproduce this page")
+    st.markdown(f"#### {num['reproduce']}. Reproduce this page")
     st.write(fill(paper["reproduce"]["text"]))
     st.code(paper["reproduce"]["code"].strip(), language="bash")
     st.markdown("\n".join(f"- {fill(v)}" for v in paper["reproduce"]["versions"]))
@@ -290,7 +359,8 @@ def methodology(paper: dict) -> None:
     st.markdown("#### References")
     st.markdown("\n".join(f"{n}. {ref['cite']}" + (f" [link]({ref['url']})" if ref.get("url") else "")
                           for n, ref in enumerate(paper["references"], start=1)))
-    st.caption("Text in experiments/design_method/report.yaml; numbers in its results/summary.json.")
+    st.caption("Text in experiments/design_method/report.yaml; numbers in its results/summary.json"
+               + "".join(f" and {a.replace('../', 'experiments/')}" for a in paper.get("also", [])) + ".")
 
 
 st.title("Manual")

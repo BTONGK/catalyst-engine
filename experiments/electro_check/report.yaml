@@ -4,6 +4,8 @@
 
 kind: electro
 summary: results/summary.json
+# the reaction check's numbers, quoted in its section, the loading walk-through and the limits
+also: [../reaction_check/results/summary.json]
 title: "How the app designs an electrocatalyst: method and checks"
 byline: >
   Computed on {generated} from the shipped example screen ({screen}), UMA-S 1.1 in the {task} mode; text in
@@ -26,15 +28,169 @@ abstract: >
   a rank correlation of {orr_spearman_paper:.2f}. Set copper, silver and gold aside, as the paper does when it
   compares with experiment, and the order reads {orr_set_aside}, {orr_follows_paper}. Oxygen evolution runs in the
   free-energy playground, because its catalysts are oxides, where UMA's closest mode misses published calculations by
-  {oxide_omat_lo:.2f}–{oxide_omat_hi:.2f} eV, beyond the {gate:.2f} eV the error bar allows. Read every ranking as a
-  shortlist of what to test.
+  {oxide_omat_lo:.2f}–{oxide_omat_hi:.2f} eV, beyond the {gate:.2f} eV the error bar allows. The reactions added
+  since, through nitrogen and carbon intermediates as well, each pass a check against published calculations before
+  they join the Design page. Of the {rc_e_checked} checked, {rc_e_passed} pass and joined it: {rc_e_passed_names}.
+  The other {rc_e_waiting} run in the playground, each with its reason stated. Read every ranking as a shortlist of what to test.
 how_to_read: >
-  Each step below says what the app does, gives the equation with the same idea in words, lists the assumptions it
-  rests on (numbered A1, A2 …), shows how it was checked, and ends with a verdict. Four words recur. A binding energy
-  says how strongly a molecule holds to the surface. A free energy adds what the molecule gains and loses at room
-  temperature in water. The limiting potential is the voltage at which every step of the reaction runs downhill, and
-  the overpotential is the extra voltage that costs beyond the reaction's own equilibrium. Every number on this page
-  comes from results/summary.json, written by experiments/electro_check/electro_check.py.
+  Section {sec_loading} follows one reaction file through everything the app computes. Each method step in section
+  {sec_method} says what the app does, gives the equation with the same idea in words, lists the assumptions it rests
+  on (numbered A1, A2 …), shows how it was checked, and ends with a verdict. Four words recur. A binding energy says
+  how strongly a molecule holds to the surface. A free energy adds what the molecule gains and loses at room
+  temperature in water. The limiting potential is the voltage at which every step that moves an electron runs
+  downhill, and the overpotential is the extra voltage that costs beyond the reaction's own equilibrium. Every number
+  on this page comes from results/summary.json, written by experiments/electro_check/electro_check.py, and from the
+  reaction check's experiments/reaction_check/results/summary.json, written by reaction_check.py beside it.
+
+loading:
+  title: What the app does when it loads an electrochemical reaction
+  text: >
+    Every electrochemical reaction in the app is one plain text file. This section follows one of them, {ew_name},
+    through every stage the app runs, from the file on disk to the ranking on the Design page, with platinum, the
+    catalyst to beat, and copper as the two surfaces. Stages 1 to 3 run each time the app loads the file; stages 4 to
+    7 run with each screen. Every number comes from the reaction check's UMA runs (section {sec_reaction_check}).
+  stages:
+    - title: Find the reaction file and read it
+      when: load
+      does: >
+        A reaction is one file, reactions/electro/ followed by its id: its equation and direction, its electron count
+        and equilibrium potential, its intermediates in path order with their free-energy terms, the descriptor, the
+        volcano's lines, the catalyst to beat and the UMA mode. The app reads it with the same YAML reader as the
+        thermal packages (NO stays nitric oxide), keeps it in memory, and reads it again when the file changes.
+      checks:
+        - The id inside the file matches the file's name.
+        - Every key is one the format defines; a misspelt key stops the load, and the message names it.
+      example: "{ew_name} sits in reactions/electro/{ew_id}.yaml: {ew_equation}, a reduction of {ew_electrons} electrons with its equilibrium at {ew_U_eq:.3f} V."
+    - title: Check the path as written
+      when: load
+      does: >
+        The path is the list of intermediates between the starting molecules and the products. Each step between
+        neighbours either moves one proton and one electron, or moves zero electrons: a chemical step, such as a
+        molecule landing on the surface, leaving it, or two adsorbates pairing up.
+      checks:
+        - Each intermediate, and each adsorbate of the descriptor, is one the atomistic worker can place; each intermediate appears once.
+        - The electron count equals the steps that move one, the intermediates plus one, less the chemical steps.
+        - Each chemical step names a step of the path, and any barrier on it follows an intermediate of the path.
+        - Each line of the volcano is a slope and an intercept.
+        - A second route, where a file opens one (O2 splitting for oxygen reduction), starts from and joins intermediates of the path.
+      example: "{ew_name} has one intermediate, {ew_ads}*, so two steps, each moving one proton and one electron: O2 to OOH*, then OOH* to H2O2."
+    - title: Set the free-energy scale
+      when: load
+      does: >
+        The whole reaction releases its electrons times its equilibrium potential in free energy. A reduction's path
+        runs down from the reactants at that total to the products at zero; an oxidation's runs up from the reactants
+        at zero. Each intermediate's free energy at 0 V against the reversible hydrogen electrode is its binding energy
+        from UMA plus four numbers from the file: the zero-point energy less temperature times entropy (correction),
+        hydrogen bonds from liquid water (water), hydrogen bonds within the adsorbate layer (layer), and a shift that
+        moves the worker's gas reference to the reaction's own zero, from tabulated formation free energies.
+      equations:
+        - tex: 'G = \Delta E_{\rm UMA} + \big(E_{\rm ZPE} - T S\big) + G_{\rm water} + G_{\rm layer} + G_{\rm shift}'
+          words: >
+            an intermediate's free energy is its binding energy plus the four terms its reaction file states.
+      example: >
+        The path holds {ew_total:.2f} eV ({ew_electrons} × {ew_U_eq:.3f} V). UMA sets OOH*'s binding against
+        {ew_reference}; the file adds {ew_correction:+.2f} eV, the single figure Nørskov 2004 gives OOH* (its Fig. 8 caption), and {ew_shift:+.3f} eV,
+        which moves the zero from water to dissolved H2O2 (by the tabulated values, H2O2 and H2 sit 3.526 eV above two
+        waters). The ideal catalyst holds OOH* at {ew_ideal:.3f} eV, halfway down the path.
+    - title: Find each step and the limiting potential
+      when: screen
+      does: >
+        Each step's free energy follows by subtraction along the path. At a potential U, each electron step of a
+        reduction moves by +eU and each of an oxidation by −eU; a chemical step stays put. The limiting potential is
+        where the last electron step turns downhill: for a reduction, minus the largest electron step at 0 V; for an
+        oxidation, the largest. Where a file opens a second route (O2 splitting for oxygen reduction), that route
+        counts once its barrier is gone. The overpotential is the limiting potential's distance from the equilibrium
+        potential.
+      equations:
+        - tex: 'U_L = -\max_i \Delta G_i \ \ (\text{reduction}), \qquad \eta = U_{\rm eq} - U_L'
+          words: the potential where every electron step runs downhill, and how far it sits from equilibrium.
+      example: >
+        Platinum binds OOH* at {ew_pt_E:.3f} eV against that reference, so G(OOH*) = {ew_pt_G:.3f} eV, and the two
+        steps run {ew_pt_step1:+.3f} and {ew_pt_step2:+.3f} eV at 0 V. The first drops less, so it turns uphill first
+        as the potential rises: U_L = {ew_pt_UL:.3f} V, an overpotential of {ew_pt_eta:.3f} V, close to the volcano's
+        top. Copper holds OOH* at {ew_cu_G:.3f} eV, so its second step limits: U_L = {ew_cu_UL:.3f} V.
+    - title: Compare speeds at a potential
+      when: screen
+      does: >
+        At the comparison potential, each route's hurdle is its largest step still uphill, or a chemical step's free
+        energy or barrier where that is higher, and the faster route carries the current. A surface's speed against
+        the catalyst to beat is e^((h_ref − h)/kT) at 25 °C, with kT = {ew_kT:.4f} eV.
+      example: >
+        At {ew_compare:.2f} V both of platinum's steps run downhill, a hurdle of zero. Copper's second step sits
+        {ew_cu_step2_at:+.3f} eV uphill there, so copper runs at 1 in {ew_other_one_in} of platinum's speed.
+    - title: Give each result its likely range
+      when: screen
+      does: >
+        Every intermediate's free energy moves anywhere within ±{sigma:.2f} eV at once, and linear programming finds
+        the exact lowest and highest limiting potential and hurdle over that whole box (section {sec_method}, step 5).
+      example: >
+        Platinum's limiting potential spans {ew_pt_lo:.3f} to {ew_pt_hi:.3f} V; the top end is the equilibrium
+        potential, which the ideal free energy, inside platinum's error bar, reaches. Copper's spans {ew_cu_lo:.3f} to
+        {ew_cu_hi:.3f} V.
+    - title: Rank the surfaces and choose where the reaction appears
+      when: screen
+      does: >
+        The Design page lists surfaces with the smallest hurdle first at the comparison potential, then the smallest
+        overpotential. A reaction file with on_design_page set to true appears there; a new one joins once its check
+        passes (section {sec_reaction_check}). Until then it runs in the Free-energy playground on free energies you
+        set, and its design_note, shown on that page, says what it waits for.
+      example: >
+        {ew_name} passed its check: its limiting potentials order {rc_e_h2o2_production_n} metals of Nørskov 2004's
+        Table 2 with rho {rc_e_h2o2_production_rho:.2f}.
+
+reaction_check:
+  title: Each reaction against published calculations
+  text: >
+    Hydrogen evolution and oxygen reduction rest on the checks in the method steps above. Each reaction added since
+    passes a check of its own before it joins the Design page, under a rule fixed in writing before any prediction was
+    computed (experiments/reaction_check/PASS_RULE.md), on the app's own UMA runs: {rc_run_metals} metals
+    ({rc_run_metal_list}), plus Bi, Cd, In, Pb and Sn for the carbon intermediates.
+  points:
+    - >
+      Each intermediate new to the app: UMA's binding energy against a published DFT table on {rc_e_min_metals} or more
+      of the same metals, after one constant offset per intermediate, since different functionals and corrections move
+      every metal alike. It passes with a typical miss (the median) of {rc_e_max_median:.2f} eV or less, and rho of
+      {rc_min_rho} or more with p of {rc_max_p} or less.
+    - >
+      Each reaction: its limiting potentials from UMA against those from the paper's own free energies, put on the
+      reaction's scale with tabulated formation free energies and through the same limiting-potential rule. Pass:
+      rho of {rc_min_rho} or more, with p of {rc_max_p} or less, over {rc_e_min_metals} or more metals.
+    - >
+      A reaction joins the Design page when every new intermediate on its path passes, its ranking passes, and each of
+      its intermediates has a published zero-point and entropy correction.
+  table:
+    table: rc_electro_reactions
+    columns: {reaction: Reaction, table: Published side, n: Metals, rho: rho, p: p, verdict: Verdict}
+  intermediates:
+    see: The intermediates, one by one
+    table: rc_electro_intermediates
+    columns: {intermediate: Intermediate, table: Published table, n: Metals, offset_eV: "Offset (eV)", median_miss_eV: "Typical miss (eV)", max_miss_eV: "Largest miss (eV)", rho: rho, p: p, verdict: Verdict}
+  metals:
+    see: Every metal behind the reaction scores
+    table: rc_electro_metals
+    columns: {reaction: Reaction, metal: Metal, uma_V: "Limiting potential, UMA (V)", published_V: "From the paper (V)", uma_step: "Limiting step, UMA", published_step: "Limiting step, paper"}
+  result: >
+    Of the {rc_i_checked} new intermediates with a published table, {rc_i_passed} pass ({rc_i_passed_names}) and
+    {rc_i_missed_names} miss; {rc_i_awaiting_names} await a table. Of the {rc_e_checked} reactions, {rc_e_passed} pass: {rc_e_passed_names}, now on the Design page. The other
+    {rc_e_waiting} run in the Free-energy playground, each with its reason in the table above and on its own page.
+  corrections:
+    text: >
+      The published sets the app takes its zero-point and entropy corrections from (Nørskov 2004 and 2005, Rossmeisl
+      2007, Skúlason 2012) cover every intermediate but seven: {rc_corr_uma_only}. The app computed those seven from
+      UMA's own vibrations on Pt(111) and, before using any, ran the same calculation on the four
+      intermediates with published values, under a rule fixed beforehand: each within 0.10 eV, and the typical miss
+      within 0.05 eV. The calculation {rc_corr_passes} it: {rc_corr_misses}, the largest {rc_corr_max_miss:.2f} eV and
+      the typical miss {rc_corr_median_miss:.2f} eV. The two largest misses trace to soft motions: UMA gives OH*
+      {rc_corr_soft_OH} motions below 110 cm⁻¹ and OOH* {rc_corr_soft_OOH}, each set with one imaginary motion raised
+      to 50 cm⁻¹, and the harmonic
+      entropy of such soft motions comes out large ({rc_corr_ts_OH:.2f} and {rc_corr_ts_OOH:.2f} eV at 25 °C). Set the
+      adsorbate's entropy aside, a look taken after the result and outside the rule, and all four land within
+      {rc_corr_entropy_aside_max:.2f} eV. Skúlason 2012's constants for five nitrogen intermediates differ from UMA's by
+      {rc_corr_skulason_gaps}, shown beside the rule. UMA's corrections therefore wait outside the Design page, and
+      the reactions that need them wait in the playground.
+    see: The corrections, intermediate by intermediate
+    table: rc_corrections
+    columns: {intermediate: Intermediate, site: Site, uma_eV: "UMA on Pt(111) (eV)", published_eV: "Published (eV)", gap_eV: "Gap (eV)", role: Use, lowest_cm: "Lowest vibration (cm⁻¹; minus: imaginary)", spread_eV: "Spread over Pt, Pd and Ru (eV)"}
 
 sections:
   - title: Binding energies, shared with the thermal app
@@ -308,6 +464,8 @@ audit:
     - "The likely ranges, against a grid of 29,791 surfaces around platinum."
     - "The ideal catalyst, every step the same size and an overpotential of zero, for every reaction file."
     - "The error bar and the oxide misses, read straight from the thermal checks in experiments/design_method."
+    - "Every new intermediate against a published DFT table, and every new reaction's ranking, under a rule fixed beforehand (section {sec_reaction_check})."
+    - "UMA's own zero-point and entropy corrections against the four published values, under a rule fixed beforehand: they miss (section {sec_reaction_check})."
   changed:
     - "Oxygen reduction runs its two routes side by side and takes the faster, as the paper does. The earlier version charged the O2-splitting barrier to both routes, which held silver and gold further back than the paper's own analysis."
     - "OOH* takes the paper's own +0.18 eV. The earlier version gave it OH*'s water and layer terms, 0.38 eV lower."
@@ -316,6 +474,11 @@ audit:
     - "The playground's ideal catalyst for a reduction runs its staircase down from the reactants."
     - "Oxygen evolution moved to the free-energy playground until a UMA mode passes the oxide check (limits below)."
     - "The comparison with experiment quotes the paper's own statement, in place of a review."
+    - "Ten reactions joined: {rc_e_passed_names} on the Design page, the other {rc_e_waiting} in the playground with the reason each waits."
+    - "Reaction files gained chemical steps (a molecule landing or leaving, two adsorbates pairing up), which the potential leaves alone, and a shift to each reaction's own zero."
+    - "This page gained the loading walk-through (section {sec_loading}) and the reaction check (section {sec_reaction_check})."
+    - "The speed at a potential counts every step of the path, a chemical step's included. A test found it one step short for the reactions with a chemical step, all of them in the playground; the limiting potentials and the reaction check's scores stay as they were."
+    - "The playground and the results pages define the limiting potential through the steps that move an electron, and the playground names each chemical step's hurdle beside it."
 
 trust:
   title: When to trust a result
@@ -393,29 +556,90 @@ limits:
         Manual, Methodology, oxide check).
       size: "{oxide_omat_lo:.2f}–{oxide_omat_hi:.2f} eV in the closest mode, against the {gate:.2f} eV the error bar allows."
       meanwhile: The Free-energy playground runs oxygen evolution on free energies you enter, such as published DFT values. The Design page adds it once a UMA mode passes the check.
-    - part: Carbon dioxide and nitrogen reduction
+    - part: Zero-point and entropy corrections for seven intermediates
       why: >
-        Their intermediates (COOH*, CHO*, NNH*) need gas references beyond water and hydrogen, and DFT's energy for CO2
-        and N2 carries a known error of several tenths of an eV that the method corrects by hand, reaction by
-        reaction.
-      size: 0.3 to 0.5 eV in the gas references before any surface error.
-      meanwhile: The shipped reactions cover water electrolysis and fuel cells; a reaction file in reactions/electro/ shows the form a new one takes.
+        The app takes published corrections for H*, O*, OH* and OOH* (Nørskov 2004 and 2005, Rossmeisl 2007) and for
+        N*, NH*, NH2*, NNH* and NNH2* (Skúlason 2012). UMA's own vibrations give the rest, and the same calculation misses the four
+        published values it was checked on: {rc_corr_misses} (section {sec_reaction_check}).
+      size: "{rc_corr_max_miss:.2f} eV at worst on the four checked, against the 0.10 eV the rule allows; across Pt, Pd and Ru the values move {rc_corr_spread_max:.2f} eV at most."
+      meanwhile: >
+        Reactions through {rc_corr_uma_only} run in the playground on free energies you set. Their files hold UMA's
+        values, rounded, ready for the Design page once a published value or a passing check backs them.
+    - part: Intermediates whose binding misses its published table
+      why: >
+        Against Herron 2015, UMA's N* binding misses by {rc_i_herron2015_N_median:.3f} eV in typical size and HNNH2*
+        (N2H3*) by {rc_i_herron2015_HNNH2_median:.3f} eV, past the {rc_e_max_median:.2f} eV the rule allows, though
+        both order the metals well (rho {rc_i_herron2015_N_rho:.2f} and {rc_i_herron2015_HNNH2_rho:.2f}). Against
+        Elnabawy 2018, CO* lands close in size ({rc_i_elnabawy2018_CO_median:.2f} eV) and orders the metals with rho
+        {rc_i_elnabawy2018_CO_rho:.2f}, below {rc_min_rho}.
+      size: "Typical misses of {rc_i_herron2015_N_median:.2f} and {rc_i_herron2015_HNNH2_median:.2f} eV; largest {rc_i_herron2015_N_max:.2f} eV for N*."
+      meanwhile: >
+        Nitrogen reduction, ammonia oxidation and nitric oxide reduction (through N*), hydrazine oxidation (through
+        HNNH2*) and CO2 reduction to CO (through CO*) run in the playground. Published free energies for a metal of
+        interest, entered there, give its limiting potential exactly.
+    - part: The N–N pairing barrier in ammonia oxidation
+      why: >
+        Two N* atoms pair up and leave as N2, a step that moves zero electrons. Herron 2015 computed its barrier on
+        {rc_nn_n} metals ({rc_nn_metals}): {rc_nn_lo:.2f} to {rc_nn_hi:.2f} eV. A straight line in N*'s free energy, the
+        form a reaction file could carry, leaves {rc_nn_rms:.2f} eV of scatter, beyond the {sigma:.2f} eV error bar.
+      size: "{rc_nn_rms:.2f} eV scatter about E_a = {rc_nn_intercept:.2f} {rc_nn_slope:+.2f} × G(N*); the barriers themselves sit above 1 eV on every metal computed."
+      meanwhile: >
+        The file counts the pairing step's free energy alone, so its hurdle reads as a floor. Experiment finds platinum
+        and iridium best through a second route, in which partly stripped NHx groups pair first (Gerischer and Mauerer);
+        that route awaits its own file and check.
+    - part: Routes beside the one each file follows
+      why: >
+        Each file follows one path. Formic acid also oxidizes through carboxyl, COOH*, and through CO*, which poisons
+        platinum until hydroxyl arrives at higher potential (Elnabawy 2018); nitric oxide also reduces through HNO*;
+        CO2 reduction makes formate through OCHO* or CO through COOH*, and which one a metal favours sets its product.
+      size: Material by material; a route faster than the file's sets the current instead.
+      meanwhile: Compare the formate and CO files on the same metal, and read a file's ranking as one route's.
+    - part: Products and hydrogen at negative potential
+      why: >
+        The method ranks the speed of one product's path. At the potentials nitrogen, nitric oxide and CO2 reduction
+        need, hydrogen evolution runs on the same surface, and hydrogen peroxide production competes with the
+        four-electron path to water. The share of the current that reaches the product (the faradaic efficiency) sits
+        outside the free-energy picture.
+      size: Nitrogen reduction on every pure metal needs a potential well below 0 V, where hydrogen forms faster.
+      meanwhile: Measure the product's share of the current; for peroxide, measure electrons per O2 on a rotating ring-disk electrode.
+    - part: CO on Bi, Cd, In, Pb and Sn
+      why: >
+        On these five metals CO drifts off every site while UMA relaxes it, so CO* keeps a bound free energy on the
+        {rc_run_metals} metals of the main runs alone. Drifting off means CO binds at most weakly there, so the step
+        where CO leaves runs downhill.
+      size: Those five show as incomplete for CO2 reduction to CO.
+      meanwhile: Read them through the formate file, the product these metals make.
+    - part: Hydrogen oxidation in alkaline electrolyte
+      why: >
+        The computational hydrogen electrode puts every pH on one scale. In alkaline electrolyte, hydrogen oxidation
+        on platinum runs about a hundred times slower than in acid, an effect of the water and ions at the surface.
+      size: About a hundredfold on platinum.
+      meanwhile: Read the ranking as the acid ranking; compare alkaline catalysts by experiment.
 
 reproduce:
   text: >
-    Two scripts produce every number on this page. The first runs UMA on ten metals (the shipped example screen, about
-    45 minutes on this Mac); the second scores it against the published tables in about a second, reading the error bar
-    from experiments/design_method/.
+    The method's numbers come from two scripts. The first runs UMA on ten metals (the shipped example screen, about
+    45 minutes on this Mac); the second scores it against the published tables in about a second, reading the error
+    bar from experiments/design_method/. The reaction check adds three UMA runs, UMA's own corrections and its scores.
   code: |
     # 1. the example screen: Design an electrocatalyst -> oxygen reduction, the ten suggested metals, Standard care
     #    (or copy examples/electro/screens/*oxygen-reduction* into data/electro/screens/)
     # 2. the check -> results/summary.json (reads experiments/design_method/results/summary.json for the error bar)
     uv run python experiments/electro_check/electro_check.py
-    # 3. the unit checks named on this page
+    # 3. the reaction check: three UMA runs (each folder holds its job.json; about 3 hours in all), UMA's own
+    #    corrections, then the scores -> experiments/reaction_check/results/summary.json
+    export TORCHDYNAMO_DISABLE=1
+    for r in metals-thermal metals-electro pblock-electro; do
+      /opt/miniconda3/bin/python3 src/catalyst_engine/design/uma_worker.py experiments/reaction_check/runs/$r
+    done
+    /opt/miniconda3/bin/python3 experiments/reaction_check/corrections.py
+    uv run python experiments/reaction_check/reaction_check.py
+    # 4. the unit checks named on this page
     uv run pytest tests/test_electro.py
   versions:
     - "UMA-S 1.1 (uma-s-1p1.pt) with fairchem-core 2.23 and PyTorch 2.13, on CPU."
-    - "Published tables: Nørskov 2004 Tables 1–3 and the Fig. 8 caption; arXiv:2109.04219 Tables S2 and S3-1 with its supporting methods; Man 2011 Fig. 2."
+    - "Published tables: Nørskov 2004 Tables 1–3 and the Fig. 8 caption; arXiv:2109.04219 Tables S2 and S3-1 with its supporting methods; Man 2011 Fig. 2; Herron 2015 Tables 1 and 3; Elnabawy 2018 Table 1 (experiments/reaction_check/data/published.yaml)."
+    - "Gas thermochemistry: NBS tables (Wagman et al. 1982) for the shifts; NIST-JANAF entropies and NIST CCCBDB fundamentals for UMA's corrections."
 
 references:
   - {cite: "Nørskov, J. K., Rossmeisl, J., Logadottir, A., Lindqvist, L., Kitchin, J. R., Bligaard, T. & Jónsson, H. Origin of the overpotential for oxygen reduction at a fuel-cell cathode. J. Phys. Chem. B 108, 17886 (2004).", url: "https://doi.org/10.1021/jp047349j"}
@@ -426,3 +650,8 @@ references:
   - {cite: "Standard electrode potentials (Ag⁺/Ag 0.80 V, Cu²⁺/Cu 0.34 V, Ag2O/Ag 0.34 V vs SHE at pH 14, 1.17 V vs RHE): CRC Handbook of Chemistry and Physics, Electrochemical Series."}
   - {cite: "Tran, R. et al. The Open Catalyst 2022 (OC22) Dataset and Challenges for Oxide Electrocatalysts. ACS Catal. 13, 3066 (2023).", url: "https://arxiv.org/abs/2206.08917"}
   - {cite: "Wood, B. M. et al. UMA: A Family of Universal Models for Atoms. NeurIPS 2025; arXiv:2506.23971.", url: "https://arxiv.org/abs/2506.23971"}
+  - {cite: "Herron, J. A., Ferrin, P. & Mavrikakis, M. Electrocatalytic oxidation of ammonia on transition-metal surfaces: a first-principles study. J. Phys. Chem. C 119, 14692 (2015).", url: "https://doi.org/10.1021/jp512981f"}
+  - {cite: "Elnabawy, A. O., Herron, J. A., Scaranto, J. & Mavrikakis, M. Structure sensitivity of formic acid electrooxidation on transition metal surfaces: a first-principles study. J. Electrochem. Soc. 165, J3109 (2018).", url: "https://doi.org/10.1149/2.0161815jes"}
+  - {cite: "Skúlason, E. et al. A theoretical evaluation of possible transition metal electro-catalysts for N2 reduction. Phys. Chem. Chem. Phys. 14, 1235 (2012).", url: "https://doi.org/10.1039/C1CP22271F"}
+  - {cite: "Rossmeisl, J., Qu, Z.-W., Zhu, H., Kroes, G.-J. & Nørskov, J. K. Electrolysis of water on oxide surfaces. J. Electroanal. Chem. 607, 83 (2007).", url: "https://doi.org/10.1016/j.jelechem.2006.11.008"}
+  - {cite: "Wagman, D. D. et al. The NBS tables of chemical thermodynamic properties. J. Phys. Chem. Ref. Data 11, Suppl. 2 (1982)."}

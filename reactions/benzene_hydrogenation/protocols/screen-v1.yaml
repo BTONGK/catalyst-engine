@@ -1,0 +1,16 @@
+id: bzh-screen-v1
+pack: benzene_hydrogenation
+version: 1
+status: draft
+description: 1% benzene vapor with 30% hydrogen in nitrogen, at 1 atm.
+analyzer:
+  name: Gas chromatograph
+  measured: [C6H6, C6H12]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Benzene conversion against temperature
+    feed: {C6H6: 1 %, H2: 30 %, N2: balance}
+    ghsv_per_h: 20000
+    temperatures_C: [30, 50, 75, 100, 125, 150, 175, 200, 250]

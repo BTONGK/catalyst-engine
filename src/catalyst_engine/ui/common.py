@@ -82,6 +82,14 @@ def _report(folder: Path, mtime_key: float) -> dict:
     report = yaml.safe_load((folder / "report.yaml").read_text())
     summary = folder / report.get("summary", "results/summary.json")
     report["data"] = json.loads(summary.read_text()) if summary.exists() else None
+    # `also`: other experiments' summaries (paths from this folder) whose values and tables the write-up quotes;
+    # the report's own summary keeps its numbers where a name repeats
+    for extra in report.get("also", []):
+        path = folder / extra
+        if report["data"] is not None and path.exists():
+            more = json.loads(path.read_text())
+            for key in ("values", "tables"):
+                report["data"][key] = {**more.get(key, {}), **report["data"].get(key, {})}
     return report
 
 
@@ -89,9 +97,9 @@ def experiment_reports(kind: str = "atomistic") -> dict[str, dict]:
     """Experiments that publish a report.yaml of one `kind` (atomistic unless the report says otherwise), keyed by
     folder name; each carries its summary numbers as `data`."""
     out = {}
+    results = [p.stat().st_mtime for p in (REPO / "experiments").glob("*/results/*.json")]  # `also` reads any of them
     for path in sorted((REPO / "experiments").glob("*/report.yaml")):
-        stamps = [path.stat().st_mtime] + [p.stat().st_mtime for p in path.parent.glob("results/*.json")]
-        report = _report(path.parent, max(stamps))
+        report = _report(path.parent, max([path.stat().st_mtime, *results]))
         if report.get("kind", "atomistic") == kind:
             out[path.parent.name] = report
     return out
@@ -235,8 +243,15 @@ def catalyst_presets(pack_id: str) -> dict[str, dict[str, float]]:
 # ---------------------------------------------------------------- catalyst design
 
 def screening_pack_ids() -> list[str]:
-    """Reactions that can rank materials (their pack declares a screening descriptor)."""
-    return [pid for pid in pack_ids() if pack(pid).spec.screening is not None]
+    """Reactions the Design page ranks materials for: their pack declares a screening descriptor, and its ranking
+    check has passed (or the reaction was built in the app)."""
+    return [pid for pid in pack_ids() if pack(pid).spec.screening is not None and pack(pid).spec.screening.on_design_page]
+
+
+def playground_only_ids() -> list[str]:
+    """Reactions with a screening descriptor that stay in the library and the playground until their check passes."""
+    return [pid for pid in pack_ids() if pack(pid).spec.screening is not None
+            and not pack(pid).spec.screening.on_design_page]
 
 
 def link(page: str, label: str, icon: str | None = None) -> None:

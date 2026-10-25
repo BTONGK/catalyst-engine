@@ -1,0 +1,16 @@
+id: prox-screen-v1
+pack: prox
+version: 1
+status: draft
+description: "Reformate-like gas: 60% hydrogen with 1% CO and 1% oxygen in nitrogen, at 1 atm."
+analyzer:
+  name: Gas chromatograph
+  measured: [CO, O2, CO2]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: CO conversion against temperature
+    feed: {CO: 1 %, O2: 1 %, H2: 60 %, N2: balance}
+    ghsv_per_h: 30000
+    temperatures_C: [50, 75, 100, 125, 150, 175, 200, 225, 250]

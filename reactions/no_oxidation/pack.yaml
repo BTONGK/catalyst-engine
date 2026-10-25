@@ -1,0 +1,59 @@
+# NO oxidation to NO2. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (platinum) reaches half of the best possible result at 250 C under the screen protocol.
+
+id: no_oxidation
+name: NO oxidation
+version: 1
+status: draft-illustrative-parameters
+summary: Turns NO into NO2 in diesel exhaust, which feeds the soot filter and speeds up the NOx converter downstream.
+category: Clean air
+description: >
+  NO and oxygen make NO2. The reaction gives off heat, so equilibrium caps the NO2 share at the hot end. First order
+  in NO, with the approach to equilibrium from thermodynamics.
+
+reference_temperature_K: 523.15
+water: H2O
+oxygen: O2
+
+species:
+  NO:  {formula: NO}
+  O2:  {formula: O2}
+  NO2: {formula: NO2}
+  H2O: {formula: H2O}
+  N2:  {formula: N2}
+
+pathways:
+  oxidation:
+    equation: NO + 0.5 O2 <=> NO2
+    role: desired
+    rate: {key: NO, orders: {NO: 1}, ln_k_ref: 2.864, Ea_kJ: 60}
+
+metrics:
+  no_conversion:
+    kind: conversion
+    species: [NO]
+    description: "Share of the NO turned into NO2."
+  no2_out:
+    kind: outlet
+    species: [NO2]
+    description: "NO2 leaving the converter."
+
+screening:
+  descriptor: {O: 1}
+  pathways: [oxidation]
+  metric: no_conversion
+  reference: {formula: Pt, name: Platinum}
+  optimum_shift_eV: 0.0
+  # the weak side waits on O2 splitting into two atoms the descriptor counts: 0.9 eV of barrier per eV of
+  # splitting energy (Nørskov et al., J. Catal. 2002), and that energy moves twice as fast as the descriptor
+  slope_weak: 1.8
+  peak_gas: {O2: 0.5}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Pt, Pd, Rh, Ru, Ir, Co, Ag, Au]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    On platinum the surface has to split O2, and the oxygen it holds has to pass to NO; oxygen piling up on the
+    surface slows both, so oxygen binding sets the rate (Weiss and Iglesia, J. Phys. Chem. C 2009). The descriptor
+    is oxygen binding; the top is set at platinum's, the diesel oxidation catalyst, and the weak side falls 1.8 eV
+    per eV for O2 splitting.

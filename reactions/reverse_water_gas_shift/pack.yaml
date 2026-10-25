@@ -1,0 +1,66 @@
+# Reverse water-gas shift. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (copper) reaches half of the best possible result at 550 C under the screen protocol.
+
+id: reverse_water_gas_shift
+name: Reverse water-gas shift
+version: 1
+status: draft-illustrative-parameters
+summary: Turns captured CO2 and green hydrogen into carbon monoxide, the first step to e-fuels.
+category: Hydrogen and energy
+description: >
+  CO2 takes hydrogen to make CO and water. The reaction draws heat, so equilibrium favors high temperature;
+  methanation competes at the cool end. First order in CO2, with the approach to equilibrium from thermodynamics.
+
+reference_temperature_K: 823.15
+water: H2O
+
+species:
+  CO2: {formula: CO2}
+  H2:  {formula: H2}
+  CO:  {formula: CO}
+  H2O: {formula: H2O}
+  CH4: {formula: CH4}
+  N2:  {formula: N2}
+
+pathways:
+  rwgs:
+    equation: CO2 + H2 <=> CO + H2O
+    role: desired
+    rate: {key: CO2, orders: {CO2: 1}, ln_k_ref: 1.731, Ea_kJ: 80}
+  methanation:
+    equation: CO2 + 4 H2 <=> CH4 + 2 H2O
+    role: side
+    note: "CO2 methanation; it wastes hydrogen on methane at the cool end."
+    rate: {key: CO2, orders: {CO2: 1}, ln_k_ref: -4.000, Ea_kJ: 80}
+
+metrics:
+  co2_conversion:
+    kind: conversion
+    species: [CO2]
+    description: "Share of the CO2 that reacts."
+  co_yield:
+    kind: yield
+    species: [CO]
+    denominator: [CO2]
+    description: "Carbon monoxide made per CO2 fed."
+  ch4_out:
+    kind: outlet
+    species: [CH4]
+    description: "Methane made by the side reaction."
+
+screening:
+  descriptor: {O: 1}
+  pathways: [rwgs]
+  metric: co2_conversion
+  reference: {formula: Cu, name: Copper}
+  optimum_shift_eV: 0.0
+  peak_gas: {CO2: 1.0, CO: -1.0}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Cu, Ni, Pt, Pd, Fe, Co, Rh, Au, Mo]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    The reverse shift runs the water-gas shift backward through the same surface steps, so the same oxygen-binding
+    volcano sorts the metals (Schumacher et al., J. Catal. 2005, for the forward reaction): CO2 has to leave an
+    oxygen on the surface, and hydrogen has to clear it as water. The top is set at copper's binding, as in the
+    water-gas shift pack.

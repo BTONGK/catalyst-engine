@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+from catalyst_engine.chem import thermo
 from catalyst_engine.design import elements, materials, screening
 from catalyst_engine.design.spec import ADSORBATES
 from catalyst_engine.ui import common, viewer
@@ -95,11 +96,16 @@ with st.container(border=True):
     shape_ok = True
     if advanced:
         c = st.columns(3)
-        form = c[0].radio("Catalyst form", ["powder", "monolith"], key=f"design_form_{pid}",
-                          format_func={"powder": "Powder (fine grains)", "monolith": "Coated honeycomb (monolith)"}.get,
-                          help="Powder runs at the reaction's own rates. A coated honeycomb, as in exhaust systems, "
-                               "adds the time gas takes to reach the channel walls; diffusion inside the coat itself "
-                               "sits outside the model (Manual, Methodology tab, section on limits).")
+        if all(thermo.has_transport(sp.thermo_id) for sp in pack.spec.species.values()):
+            form = c[0].radio("Catalyst form", ["powder", "monolith"], key=f"design_form_{pid}",
+                              format_func={"powder": "Powder (fine grains)", "monolith": "Coated honeycomb (monolith)"}.get,
+                              help="Powder runs at the reaction's own rates. A coated honeycomb, as in exhaust systems, "
+                                   "adds the time gas takes to reach the channel walls; diffusion inside the coat itself "
+                                   "sits outside the model (Manual, Methodology tab, section on limits).")
+        else:
+            form = "powder"
+            c[0].caption("Catalyst form: powder. A coated honeycomb needs diffusion data for every gas, and some of "
+                         "this reaction's gases carry thermodynamic data alone.")
         if form == "monolith":
             cpsi = c[1].number_input("Cells per square inch", 25, 1200, int(screening.MONOLITH["cpsi"]), step=25,
                                      key=f"design_cpsi_{pid}",

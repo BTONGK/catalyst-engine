@@ -1,0 +1,38 @@
+# Nitrogen reduction to ammonia: N2 + 6 (H+ + e-) -> 2 NH3, the associative route through N2H*, NNH2*, N*, NH* and
+# NH2* on close-packed faces (Skúlason et al., Phys. Chem. Chem. Phys. 14, 1235 (2012), its eqs. 25-32).
+
+id: nitrogen_reduction
+name: Nitrogen reduction to ammonia (NRR)
+category: Nitrogen
+summary: Makes ammonia from nitrogen and water with electricity, a low-temperature route beside the Haber-Bosch process.
+equation: N2 + 6 H+ + 6 e- -> 2 NH3
+direction: reduction
+electrons: 6
+equilibrium_V: 0.057        # to NH3 gas, from tabulated formation free energies (NH3(g) -16.45 kJ/mol)
+compare_V: -0.50
+# Corrections: Skúlason 2012's constants (eqs. 25-32), from its DFT vibrations and gas-phase tables; its text adds an
+#   estimate of water's hydrogen bonds to the N-H groups. UMA's own vibrations on Pt(111) give 0.01-0.13 eV more
+#   (results/corrections.json), about the size of that estimate.
+# shift: each intermediate starts against N2 and H2; this reaction's zero is two NH3 molecules, which sit 0.341 eV
+#   below N2 + 3 H2, so the N2Hx species move up by 0.341 eV and the NHx species, which have already released one
+#   NH3, by 0.1705 eV.
+intermediates:
+  - {name: NNH, label: "N2H* (NNH*)", correction_eV: 0.80, shift_eV: 0.341}
+  - {name: NNH2, label: "NNH2*", correction_eV: 1.11, shift_eV: 0.341}
+  - {name: N, label: "adsorbed nitrogen (N*)", correction_eV: 0.26, shift_eV: 0.1705}
+  - {name: NH, label: "imide (NH*)", correction_eV: 0.57, shift_eV: 0.1705}
+  - {name: NH2, label: "amide (NH2*)", correction_eV: 0.88, shift_eV: 0.1705}
+descriptor: {N: 1}
+reference: {formula: Ru, name: Ruthenium}
+task: oc20
+suggested_elements: [Ru, Mo, Fe, Re, Rh, Os, Co, Ni, W, Pt]
+on_design_page: false
+design_note: UMA's N* binding misses Herron 2015's DFT table by 0.26 eV in typical size, beyond the 0.20 eV the rule allows
+basis: >
+  Nitrogen reduction adds six protons and electrons one at a time. N2 takes the first to become N2H* and the
+  second to become NNH2*; the third releases the first ammonia and leaves N*, and three more turn N* into the
+  second ammonia through NH* and NH2*. Metals that bind nitrogen weakly struggle to form N2H*; metals that bind it
+  strongly struggle to turn NH* into NH2*, so the limiting potential traces a volcano in nitrogen binding
+  (Skúlason et al. 2012, close-packed faces). Every pure metal needs a potential well below 0 V, where
+  hydrogen evolution runs faster on the same surface; that competition, which sets the ammonia yield, sits in the
+  Methodology tab's limits.

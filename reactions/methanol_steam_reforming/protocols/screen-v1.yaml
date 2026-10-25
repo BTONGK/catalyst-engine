@@ -1,0 +1,16 @@
+id: msr-screen-v1
+pack: methanol_steam_reforming
+version: 1
+status: draft
+description: 10% methanol with 15% steam in nitrogen, a steam-to-carbon ratio of 1.5, at 1 atm.
+analyzer:
+  name: Gas chromatograph
+  measured: [CH3OH, CO2, CO, H2]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Methanol conversion against temperature
+    feed: {CH3OH: 10 %, H2O: 15 %, N2: balance}
+    ghsv_per_h: 10000
+    temperatures_C: [150, 175, 200, 225, 250, 275, 300, 325, 350]

@@ -1,0 +1,50 @@
+# Ethylene hydrogenation. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (rhodium) reaches half of the best possible result at 50 C under the screen protocol.
+
+id: ethylene_hydrogenation
+name: Ethylene hydrogenation
+version: 1
+status: draft-illustrative-parameters
+summary: Adds hydrogen to ethylene to make ethane, the textbook test reaction for metal catalysts.
+category: Chemicals and fuels
+description: >
+  Ethylene takes one hydrogen molecule to become ethane. Equilibrium lies far toward ethane below about 400 °C.
+  First order in ethylene.
+
+reference_temperature_K: 323.15
+
+species:
+  C2H4: {formula: C2H4}
+  H2:   {formula: H2}
+  C2H6: {formula: C2H6}
+  N2:   {formula: N2}
+
+pathways:
+  hydrogenation:
+    equation: C2H4 + H2 -> C2H6
+    role: desired
+    rate: {key: C2H4, orders: {C2H4: 1}, ln_k_ref: 1.511, Ea_kJ: 40}
+
+metrics:
+  c2h4_conversion:
+    kind: conversion
+    species: [C2H4]
+    description: "Share of the ethylene turned into ethane."
+
+screening:
+  descriptor: {C: 0.25}
+  pathways: [hydrogenation]
+  metric: c2h4_conversion
+  reference: {formula: Rh, name: Rhodium}
+  optimum_shift_eV: 0.0
+  peak_gas: {}   # the reaction's gases hold none its adsorbates exchange with; the top holds still
+  suggested_elements: [Rh, Ru, Pd, Pt, Ni, Co, Ir, Fe, Cu]
+  # Kept to the library and the Catalyst playground until the reaction check (experiments/reaction_check)
+  # scores its ranking against the published table; the Manual's Methodology tab lists the outcome.
+  on_design_page: false
+  basis: >
+    Ethylene and the ethyl group it passes through hold to the surface by carbon-metal bonds, and their binding
+    follows the carbon atom's at a quarter of its slope, like a methyl group (Abild-Pedersen et al., Phys. Rev.
+    Lett. 2007). Activity peaks among the metals of groups 8 to 10 (Bond, Metal-Catalysed Reactions of Hydrocarbons,
+    2005, chapter 7). The descriptor is a quarter of the carbon binding; the top is set at rhodium's, the most
+    active metal in Bond's silica-supported series.

@@ -47,6 +47,10 @@ screening:
   slope_weak: 1.8
   peak_gas: {N2: 0.5}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Ru, Fe, Co, Mo, Os, Ni, Re, W, Rh]
+  # The reaction check (experiments/reaction_check) scores this ranking against Ozaki's measured table (K-promoted
+  # metals on carbon): rho 0.40 over 9 metals, p 0.15, short of the rule; iridium ranks second there and eighth here.
+  # The playground keeps it until a check passes (Manual, Methodology tab, limits).
+  on_design_page: false
   basis: >
     Nitrogen binding sets ammonia synthesis rates (Logadottir et al., J. Catal. 2001; Jacobsen et al., JACS
     2001): metals such as Mo hold nitrogen too tightly, metals such as Ni barely split N2, ruthenium and osmium

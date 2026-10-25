@@ -1,0 +1,33 @@
+# Hydrogen oxidation: the fuel-cell anode, H2 -> 2 (H+ + e-), hydrogen evolution run backwards through the same
+# adsorbed hydrogen (Nørskov et al., J. Electrochem. Soc. 2005; the exchange currents it explains are shared by
+# both directions).
+
+id: hydrogen_oxidation
+name: Hydrogen oxidation (HOR)
+category: Hydrogen and energy
+summary: Turns hydrogen into protons and electrons at a fuel-cell anode, hydrogen evolution run backwards.
+equation: H2 -> 2 H+ + 2 e-
+direction: oxidation
+electrons: 2
+equilibrium_V: 0.0          # vs the reversible hydrogen electrode (RHE), at any pH
+compare_V: 0.10             # a typical anode overpotential for the headline numbers (vs RHE)
+# H*: the hydrogen-evolution file's own +0.24 eV (Nørskov 2005), so both directions place H* alike
+intermediates:
+  - {name: H, label: "adsorbed hydrogen (H*)", correction_eV: 0.24}
+descriptor: {H: 1}
+# the two steps at 0 V as lines in x = G(H*): H2 -> H* + (H+ + e-) is x, H* -> (H+ + e-) is -x
+volcano_steps: [[1, 0], [-1, 0]]
+reference: {formula: Pt, name: Platinum}
+task: oc20
+suggested_elements: [Pt, Pd, Ir, Rh, Ru, Ni, Co, Cu, Mo, W, Au]
+# On the Design page since the reaction check (experiments/reaction_check: PASS_RULE.md, results/summary.json):
+#   its limiting potentials order the 12 metals of
+#   arXiv:2109.04219's RPBE table with rho 0.92 (p < 0.001), through H*, which the hydrogen-evolution check covers.
+on_design_page: true
+basis: >
+  Hydrogen oxidation runs hydrogen evolution backwards: H2 meets the surface and gives up one proton and electron,
+  leaving H* behind, and H* gives up the second. Both steps turn downhill together when H* sits at a free energy
+  of zero, so the limiting potential is the size of the H* free energy on either side of zero, the mirror image
+  of hydrogen evolution (Nørskov et al. 2005). Platinum sits close to zero and leads the measured exchange
+  currents, which the two directions share. In alkaline electrolyte hydrogen oxidation runs about a hundred
+  times slower on platinum than in acid, a pH effect outside this free-energy picture.

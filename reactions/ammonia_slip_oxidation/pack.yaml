@@ -1,0 +1,76 @@
+# Selective oxidation of slipped ammonia to nitrogen. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (platinum) reaches half of the best possible result at 250 C under the screen protocol.
+
+id: ammonia_slip_oxidation
+name: Ammonia slip oxidation
+version: 1
+status: draft-illustrative-parameters
+summary: Burns the ammonia that slips past a NOx converter into harmless nitrogen before it leaves the stack.
+category: Clean air
+description: >
+  Ammonia and oxygen make nitrogen and water; burning to NO or N2O competes and adds back the pollutants the
+  converter removed. Each path is first order in ammonia.
+
+reference_temperature_K: 523.15
+water: H2O
+oxygen: O2
+
+species:
+  NH3: {formula: NH3}
+  O2:  {formula: O2}
+  N2:  {formula: N2}
+  H2O: {formula: H2O}
+  NO:  {formula: NO}
+  N2O: {formula: N2O}
+
+pathways:
+  nh3_to_n2:
+    equation: 4 NH3 + 3 O2 -> 2 N2 + 6 H2O
+    role: desired
+    rate: {key: NH3, orders: {NH3: 1}, ln_k_ref: 3.606, Ea_kJ: 80}
+  nh3_to_no:
+    equation: 4 NH3 + 5 O2 -> 4 NO + 6 H2O
+    role: side
+    note: "Makes NO, mostly at the hot end."
+    rate: {key: NH3, orders: {NH3: 1}, ln_k_ref: -4.000, Ea_kJ: 140}
+  nh3_to_n2o:
+    equation: 2 NH3 + 2 O2 -> N2O + 3 H2O
+    role: side
+    note: "Makes nitrous oxide, a strong greenhouse gas."
+    rate: {key: NH3, orders: {NH3: 1}, ln_k_ref: -3.000, Ea_kJ: 100}
+
+metrics:
+  nh3_conversion:
+    kind: conversion
+    species: [NH3]
+    description: "Share of the ammonia removed."
+    target: {min: 0.95, label: Target}
+  nh3_out:
+    kind: outlet
+    species: [NH3]
+    description: "Ammonia left in the stack gas."
+  no_out:
+    kind: outlet
+    species: [NO]
+    description: "NO made from the ammonia."
+  n2o_out:
+    kind: outlet
+    species: [N2O]
+    description: "Nitrous oxide made from the ammonia."
+
+screening:
+  descriptor: {N: 0.5, O: 0.5}
+  pathways: [nh3_to_n2]
+  metric: nh3_conversion
+  reference: {formula: Pt, name: Platinum}
+  optimum_shift_eV: 0.0
+  peak_gas: {N2: 0.25, O2: 0.25}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Pt, Pd, Rh, Ir, Ru, Cu, Ag, Co]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    Oxygen strips ammonia of its hydrogen, and the nitrogen atoms left behind pair with each other to leave as N2 or
+    with oxygen to leave as NO, so nitrogen and oxygen binding together set rate and product (Ma and Schneider, J.
+    Catal. 2020). The descriptor averages the N and O binding; the top is set at platinum's, the metal in ammonia
+    slip catalysts.

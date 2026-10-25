@@ -80,6 +80,8 @@ class ScreeningSpec(_Strict):
     peak_gas: dict[str, float] = Field(default_factory=dict)
     suggested_elements: list[str] = Field(default_factory=list)
     basis: str = ""  # where the descriptor and the optimum come from, in plain words
+    # False keeps the reaction to the library and the playground until its ranking check passes
+    on_design_page: bool = True
 
     @model_validator(mode="after")
     def _check(self) -> "ScreeningSpec":

@@ -1,0 +1,66 @@
+# Hydrogen cyanide synthesis from methane and ammonia. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (platinum) reaches half of the best possible result at 1100 C under the screen protocol.
+
+id: hcn_synthesis
+name: Hydrogen cyanide synthesis (BMA)
+version: 1
+status: draft-illustrative-parameters
+summary: Makes hydrogen cyanide from methane and ammonia, a building block for nylon and acrylic plastics.
+category: Chemicals and fuels
+description: >
+  Methane and ammonia make HCN and hydrogen at about 1,200 °C on platinum, the Degussa BMA process; ammonia
+  splitting to N2 and hydrogen competes. First order in methane for the desired path and in ammonia for the
+  competing one.
+
+reference_temperature_K: 1373.15
+
+species:
+  CH4: {formula: CH4}
+  NH3: {formula: NH3}
+  HCN: {formula: HCN}
+  H2:  {formula: H2}
+  N2:  {formula: N2}
+  AR:  {formula: Ar, cantera: AR}
+
+pathways:
+  hcn:
+    equation: CH4 + NH3 -> HCN + 3 H2
+    role: desired
+    rate: {key: CH4, orders: {CH4: 1}, ln_k_ref: 3.014, Ea_kJ: 150}
+  nh3_split:
+    equation: 2 NH3 -> N2 + 3 H2
+    role: side
+    note: "Ammonia splitting; it wastes ammonia as nitrogen."
+    rate: {key: NH3, orders: {NH3: 1}, ln_k_ref: -2.000, Ea_kJ: 150}
+
+metrics:
+  hcn_yield:
+    kind: yield
+    species: [HCN]
+    denominator: [CH4]
+    description: "HCN made per methane fed."
+  ch4_conversion:
+    kind: conversion
+    species: [CH4]
+    description: "Share of the methane that reacts."
+  nh3_conversion:
+    kind: conversion
+    species: [NH3]
+    description: "Share of the ammonia used, to HCN or to nitrogen."
+
+screening:
+  descriptor: {C: 0.5, N: 0.5}
+  pathways: [hcn]
+  metric: hcn_yield
+  reference: {formula: Pt, name: Platinum}
+  optimum_shift_eV: 0.0
+  peak_gas: {CH4: 0.5, H2: -1.75, NH3: 0.5}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Pt, Ir, Rh, Co, Ni, Pd, Ru]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    Carbon and nitrogen binding set both the rate and the selectivity of HCN synthesis (Grabow et al., Angew. Chem.
+    Int. Ed. 2011). Their microkinetic model puts cobalt, iridium and nickel nearer the top of activity, all three
+    also splitting ammonia to N2, and platinum, the industrial catalyst, alone among the modelled metals in making
+    HCN with little N2. The descriptor averages C and N binding; the top is set at platinum's, the catalyst to beat.

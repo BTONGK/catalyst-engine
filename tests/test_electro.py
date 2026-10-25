@@ -27,9 +27,86 @@ def test_every_shipped_reaction_loads_with_one_intermediate_per_electron_transfe
     assert {"hydrogen_evolution", "oxygen_reduction", "oxygen_evolution"} <= set(ids)
     for sid in ids:
         s = electro.load_electro(sid)
-        assert len(s.intermediates) == s.electrons - 1
+        # each chemical step adds a step of the path that moves zero electrons
+        assert len(s.intermediates) == s.electrons - 1 + len(s.chemical_steps)
+        assert len(s.electron_steps) == s.electrons
         assert s.total_eV == pytest.approx(s.electrons * s.equilibrium_V)
         assert s.reference.formula
+        # a reaction kept to the playground says what it waits for
+        assert s.on_design_page or s.design_note
+
+
+def test_a_file_whose_electron_count_and_path_disagree_stops_the_load():
+    from pydantic import ValidationError
+
+    raw = electro.load_electro("co2_to_co").model_dump(by_alias=True)
+    with pytest.raises(ValidationError, match="electron steps"):
+        electro.ElectroSpec.model_validate({**raw, "chemical_steps": []})  # three steps would move three electrons
+    with pytest.raises(ValidationError, match="distinct step"):
+        electro.ElectroSpec.model_validate({**raw, "chemical_steps": [{"step": 9, "label": "past the end"}]})
+    with pytest.raises(ValidationError, match="Extra inputs"):
+        electro.ElectroSpec.model_validate({**raw, "chemical_step": raw["chemical_steps"]})  # a misspelt key
+
+
+def test_a_chemical_step_stays_put_as_the_potential_moves():
+    """CO2 to CO: two proton-electron steps, then CO leaves the surface, a step that moves zero electrons. The
+    potential tilts the first two and leaves the third; the limiting potential reads the electron steps alone, and
+    the hurdle at a potential counts an uphill chemical step at every potential."""
+    s = electro.load_electro("co2_to_co")
+    assert [c.step for c in s.chemical_steps] == [2] and s.electron_steps == [0, 1]
+    g = {"COOH": -0.6, "CO": -0.5}  # CO held 0.5 eV too tightly
+    at0, at1 = s.steps_at(g, 0.0), s.steps_at(g, -0.3)
+    assert at1[0] == pytest.approx(at0[0] - 0.3) and at1[1] == pytest.approx(at0[1] - 0.3)
+    assert at1[2] == pytest.approx(at0[2]) == pytest.approx(0.5)  # CO leaving: uphill at every potential
+    u_l, k = s.limiting_potential(g)
+    assert k == 1 and u_l == pytest.approx(-s.steps(g)[1])
+    assert s.chemical_hurdles(g) == {2: pytest.approx(0.5)}
+    for u in (u_l - 0.5, u_l, 0.0):
+        assert s.hurdle(g, u) >= 0.5 - 1e-9  # the chemical step holds the surface back at any potential
+    # electron steps that carry less than their share leave the rest to the chemical step: a negative overpotential
+    g2 = {"COOH": -0.2, "CO": -0.3}
+    assert s.overpotential(g2) < 0 and sum(s.steps(g2)[k] for k in s.electron_steps) < -s.total_eV
+    # the ideal catalyst keeps the chemical step level
+    assert s.chemical_hurdles(s.ideal()) == {2: pytest.approx(0.0, abs=1e-12)}
+    assert s.overpotential(s.ideal()) == pytest.approx(0.0, abs=1e-12)
+
+
+def test_the_likely_ranges_hold_with_chemical_steps():
+    """Ammonia oxidation ends in a step that moves zero electrons (two N* pair up and leave as N2); a grid over the
+    error box stays inside the exact ranges and reaches within one spacing of their ends."""
+    import itertools
+
+    import numpy as np
+    for sid, potential in (("ammonia_oxidation", 0.5), ("co2_to_co", -0.6)):
+        s = electro.load_electro(sid)
+        g = {a: v + 0.07 * (i + 1) for i, (a, v) in enumerate(s.ideal().items())}
+        lo, hi = electro.limiting_range(s, g)
+        h_lo, h_hi = electro.hurdle_range(s, g, potential)
+        n = 13 if len(s.adsorbates) > 2 else 41
+        spacing = 2 * electro.SIGMA_EV / (n - 1)
+        axes = [np.linspace(g[a] - electro.SIGMA_EV, g[a] + electro.SIGMA_EV, n) for a in s.adsorbates]
+        ul, hu = [], []
+        for v in itertools.product(*axes):
+            gg = dict(zip(s.adsorbates, v))
+            ul.append(s.limiting_potential(gg)[0])
+            hu.append(s.hurdle(gg, potential))
+        tol = spacing + 1e-9
+        assert lo - 1e-9 <= min(ul) <= lo + tol and hi - tol <= max(ul) <= hi + 1e-9, sid
+        assert h_lo - 1e-9 <= min(hu) <= h_lo + tol and h_hi - tol <= max(hu) <= h_hi + 1e-9, sid
+
+
+def test_a_shift_moves_the_reaction_to_its_own_zero():
+    """Hydrogen peroxide production: OOH*'s binding starts on two waters less 1.5 H2; the file adds Nørskov 2004's
+    +0.18 eV and a -3.526 eV shift (H2O2(aq) and H2 sit 3.526 eV above two waters), so the path runs from 1.39 eV
+    (2 x 0.695 V) to zero. The walk-through in the electro Methodology tab follows these same numbers."""
+    s = electro.load_electro("h2o2_production")
+    assert s.total_eV == pytest.approx(1.39)
+    assert s.free_energies({"OOH": 4.052})["OOH"] == pytest.approx(4.052 + 0.18 - 3.526)
+    g = s.free_energies({"OOH": 4.052})
+    assert s.steps(g) == pytest.approx([0.706 - 1.39, -0.706])
+    assert s.limiting_potential(g) == (pytest.approx(0.684), 0)
+    assert s.ideal()["OOH"] == pytest.approx(0.695)
+    assert electro.limiting_range(s, g) == pytest.approx((0.534, 0.695), abs=1e-9)
 
 
 def test_hydrogen_evolution_overpotential_is_the_size_of_the_hydrogen_free_energy():
@@ -131,11 +208,14 @@ def test_the_volcano_follows_the_paper_s_scaling_and_both_routes():
 
 def test_the_ideal_catalyst_levels_every_step_at_the_equilibrium_potential():
     """A reduction path runs down from the reactants, an oxidation path up; either way the ideal staircase has every
-    step the same size and zero overpotential."""
+    electron step the same size, every chemical step level, and zero overpotential."""
     for pid in electro.list_electro():
         s = electro.load_electro(pid)
         ideal = s.ideal()
-        assert s.steps(ideal) == pytest.approx([s.steps(ideal)[0]] * s.electrons, abs=1e-12)
+        steps = s.steps(ideal)
+        assert [steps[k] for k in s.electron_steps] == pytest.approx([steps[s.electron_steps[0]]] * s.electrons,
+                                                                     abs=1e-12)
+        assert [steps[c.step] for c in s.chemical_steps] == pytest.approx([0.0] * len(s.chemical_steps), abs=1e-12)
         assert s.overpotential(ideal) == pytest.approx(0.0, abs=1e-12)
     assert electro.load_electro("oxygen_reduction").ideal() == pytest.approx({"OOH": 3.69, "O": 2.46, "OH": 1.23})
     assert electro.load_electro("oxygen_evolution").ideal() == pytest.approx({"OH": 1.23, "O": 2.46, "OOH": 3.69})
@@ -282,8 +362,11 @@ def test_the_electro_design_page_adds_metals_and_switches_reactions():
     assert not at.exception, at.exception
     assert len(at.session_state["electro_candidates"]) > 0
     shown = at.selectbox(key="electro_pack").options  # the reactions on the Design page, by their names
-    assert len(shown) == 2 and all(electro.load_electro(i).name in " ".join(shown)
-                                   for i in ("hydrogen_evolution", "oxygen_reduction"))
+    on_page = [i for i in electro.list_electro() if electro.load_electro(i).on_design_page]
+    assert len(shown) == len(on_page) and {"hydrogen_evolution", "oxygen_reduction"} <= set(on_page)
+    assert all(electro.load_electro(i).name in " ".join(shown) for i in on_page)
+    kept = [i for i in electro.list_electro() if i not in on_page]  # the playground keeps the rest
+    assert kept and all(electro.load_electro(i).name not in " ".join(shown) for i in kept)
     at.selectbox(key="electro_pack").set_value("hydrogen_evolution").run()
     assert not at.exception, at.exception
     assert any("Platinum" in m.value for m in at.markdown)
@@ -338,3 +421,22 @@ def test_the_playground_and_manual_render_and_the_ideal_catalyst_has_zero_overpo
     assert not at.exception, at.exception
     assert any("Electrochemistry basics" in t.label for t in at.tabs)
     assert any("computational hydrogen electrode" in m.value.lower() for m in at.markdown)
+
+
+def test_the_playground_reads_a_chemical_step_apart_from_the_electron_steps():
+    """CO2 to CO with CO held 0.5 eV too tightly: the electron steps reach the equilibrium potential, and the page
+    says the CO-leaving step stays uphill at every potential. Hold COOH* and CO* so the electron steps carry less than
+    their share, and the page says the chemical step holds the rest."""
+    at = AppTest.from_file(str(VIEWS / "electro_playground.py"), default_timeout=120).run()
+    at.selectbox(key="epg_pack").set_value("co2_to_co").run()
+    for ads, g in (("COOH", -0.6), ("CO", -0.5)):
+        at.slider(key=f"epg_g_co2_to_co_{ads}").set_value(g).run()
+    assert not at.exception, at.exception
+    text = " ".join(m.value for m in at.markdown)
+    assert "Every electron step runs downhill by the equilibrium potential." in text
+    assert "(CO leaves the surface) **+0.50 eV**" in text and "holds the surface back at every potential" in text
+    assert next(m.value for m in at.metric if m.label == "Overpotential") == "0.00 V"
+    at.slider(key="epg_g_co2_to_co_COOH").set_value(-0.2).run()
+    at.slider(key="epg_g_co2_to_co_CO").set_value(-0.3).run()
+    text = " ".join(m.value for m in at.markdown)
+    assert "before the equilibrium potential, because the chemical step holds the rest" in text

@@ -1,0 +1,175 @@
+# Published per-metal tables the reaction check scores the app against (rule: ../PASS_RULE.md).
+# Declared 2026-10-25 before any new pack's prediction was computed. Each table names the pack it checks, its role
+# (primary: scored by the pass rule; secondary: shown beside the primary; indicative: shown, outside the pass rule),
+# the source and the route by which its numbers reached this file, the conditions, and the values.
+# Papers stay outside the repository; these are the digitized numbers with their citations.
+
+thermal:
+  - pack: nh3_synthesis
+    role: primary
+    short: Ozaki 1981
+    quantity: Ammonia made per metal atom
+    unit: 1e-5 mol NH3 per mol metal per s
+    higher_is_better: true
+    temperature_K: 573
+    conditions: Potassium-promoted metals on carbon, 600 Torr of 3 H2 + N2; equal dispersion assumed for every metal.
+    source: "A. Ozaki, Development of alkali-promoted ruthenium as a novel catalyst for ammonia synthesis, Acc. Chem. Res. 14, 16 (1981)"
+    via: "H. Toulhoat, P. Raybaud, V. Mendez, E. Puzenat, arXiv:1812.09531 (version 1), supplementary Table ST.4.1"
+    url: https://arxiv.org/abs/1812.09531v1
+    values: {Pt: 0.0387, Ni: 0.0582, Co: 0.5846, Ir: 3.24, Rh: 1.327, Ru: 56.2, Os: 26.4, Re: 1.66, Fe: 0.9973, Mo: 1.428}
+
+  - pack: nh3_decomposition
+    role: primary
+    short: Ganley et al. 2004
+    quantity: Turnover frequency
+    unit: 1/s
+    higher_is_better: true
+    temperature_K: 853
+    conditions: Metals on activated alumina, pure ammonia at 1 atm, differential conversion, rates per surface site.
+    source: "J. C. Ganley, F. S. Thomas, E. G. Seebauer, R. I. Masel, A priori catalytic activity correlations: the difficult case of hydrogen production from ammonia, Catal. Lett. 96, 117 (2004)"
+    via: "arXiv:1812.09531 (version 1), supplementary Table ST.4.3"
+    url: https://arxiv.org/abs/1812.09531v1
+    values: {Cu: 0.0130, Pd: 0.0194, Pt: 0.0226, Ir: 0.786, Rh: 2.26, Ni: 4.21, Ru: 6.85, Co: 1.33, Fe: 0.327, Cr: 0.0220}
+    outside_run: {Cr: chromium sits outside the 16-metal run}
+
+  - pack: water_gas_shift
+    role: primary
+    short: Grenoble et al. 1981
+    quantity: Order of turnover numbers (1 = most active)
+    unit: rank
+    higher_is_better: false
+    order_only: true
+    temperature_K: null   # the review that carries the order gives no temperature; the pack's reference temperature serves
+    conditions: Metals on alumina; the review reports the order of turnover numbers.
+    source: "D. C. Grenoble, M. M. Estadt, D. F. Ollis, The chemistry and catalysis of the water gas shift reaction: 1. The kinetics over supported metal catalysts, J. Catal. 67, 90 (1981)"
+    via: "Mini review of water-gas shift chemistry, arXiv:1409.7976, page 1"
+    url: https://arxiv.org/abs/1409.7976
+    values: {Cu: 1, Re: 2, Co: 3, Ru: 4, Ni: 5, Pt: 6, Os: 7, Au: 8, Fe: 9, Pd: 10, Rh: 11, Ir: 12}
+
+  - pack: co_methanation
+    role: primary
+    short: Bligaard et al. 2004
+    quantity: Methane made per metal atom (activity A1)
+    unit: mmol CH4 per mol metal per s
+    higher_is_better: true
+    temperature_K: 550
+    conditions: Metals on alumina-stabilized magnesia (Mg/Al = 7), CO and H2.
+    source: "T. Bligaard, J. K. Nørskov, S. Dahl, J. Matthiesen, C. H. Christensen, J. Sehested, The Brønsted–Evans–Polanyi relation and the volcano curve in heterogeneous catalysis, J. Catal. 224, 206 (2004)"
+    via: "arXiv:1812.09531 (version 1), supplementary Table ST.8.3"
+    url: https://arxiv.org/abs/1812.09531v1
+    values: {Ir: 0.694, Pd: 0.136, Pt: 0.126, Co: 18.2, Ni: 3.43, Fe: 3.81, Re: 1.30, Ru: 18.2, Rh: 4.09}
+    left_out: {Cu: "the table's copper value (0.03) is estimated from the A2 set, so it leaves the comparison"}
+
+  - pack: co_methanation
+    role: secondary
+    short: Vannice 1977
+    quantity: Turnover frequency (activity A2)
+    unit: 1/s
+    higher_is_better: true
+    temperature_K: 548
+    conditions: Metals on silica; methane made per CO adsorbed site.
+    source: "M. A. Vannice, Catalytic synthesis of hydrocarbons from H2-CO mixtures over the group VIII metals. V. The catalytic behavior of silica-supported metals, J. Catal. 50, 228 (1977)"
+    via: "arXiv:1812.09531 (version 1), supplementary Table ST.8.1"
+    url: https://arxiv.org/abs/1812.09531v1
+    values: {Cu: 1.5e-5, Ir: 7.9e-4, Pd: 3.0e-4, Pt: 1.6e-3, Co: 0.87, Ni: 1.8e-2, Fe: 0.16, Ru: 0.27, Rh: 7.3e-3}
+    left_out: {Re: "the table's rhenium value is estimated from the A1 set, so it leaves the comparison"}
+
+  - pack: ethane_hydrogenolysis
+    role: primary
+    short: Sinfelt, in Bond 2005
+    quantity: Rate at 478 K from each metal's Arrhenius parameters, ln(r) = ln A - E / (R T)
+    unit: ln(molecules per cm2 per s)
+    higher_is_better: true
+    temperature_K: 478
+    conditions: >
+      Metals on silica, ethane and hydrogen at Sinfelt's standard pressures (0.030 atm ethane, 0.20 atm hydrogen);
+      A in molecules per cm2 per s with 1e15 sites per cm2. 478 K (205 °C) is Sinfelt's own comparison temperature,
+      inside the range his measurements span (425 to 627 K).
+    source: "J. H. Sinfelt, ethane hydrogenolysis on silica-supported metals (Bond's references 24-27)"
+    via: "G. C. Bond, Metal-Catalysed Reactions of Hydrocarbons (Springer, 2005), Table 13.2"
+    arrhenius: {Co: [125, 58.7], Ni: [170, 73.0], Rh: [176, 73.1], Pd: [243, 77.3], Os: [146, 71.0], Ir: [151, 66.1]}
+    left_out: {Ru: "the table's ruthenium entry comes from another laboratory", Pt: "the table's platinum entry comes from another laboratory"}
+
+  - pack: benzene_hydrogenation
+    role: primary
+    short: Toulhoat and Raybaud 2003
+    quantity: Turnover frequency as tabulated
+    unit: as tabulated
+    higher_is_better: true
+    temperature_K: 303
+    conditions: Metals on gamma-alumina.
+    source: "H. Toulhoat, P. Raybaud, Kinetic interpretation of catalytic activity patterns based on theoretical chemical descriptors, J. Catal. 216, 63 (2003)"
+    via: "arXiv:1812.09531 (version 1), supplementary Table ST.7.1"
+    url: https://arxiv.org/abs/1812.09531v1
+    values: {Cu: 2.3, Pd: 6.5, Pt: 139.6, Ir: 117.5, Os: 331.1, Co: 231.8, Ni: 56.0, Ru: 42.0, Re: 35.5}
+
+  - pack: ethylene_hydrogenation
+    role: indicative
+    short: Bond 2005, Table 7.3
+    quantity: Temperature listed for each metal (read here as the temperature of equal rate; lower = more active)
+    unit: K
+    higher_is_better: false
+    temperature_K: 250
+    conditions: >
+      Metals on silica, one laboratory (Bond's reference 51), with the same activation energy, 35 kJ/mol, listed
+      for every metal. The text reached here leaves the meaning of the temperature column unconfirmed, so the table
+      stays outside the pass rule.
+    source: "Bond's reference 51 (ethene hydrogenation on silica-supported metals)"
+    via: "G. C. Bond, Metal-Catalysed Reactions of Hydrocarbons (Springer, 2005), Table 7.3"
+    values: {Fe: 303, Co: 213, Ni: 233, Cu: 353, Ru: 203, Rh: 197, Pd: 243}
+
+electro:
+  - table: herron2015
+    role: primary
+    short: Herron et al. 2015
+    quantity: Free energy of each adsorbed intermediate at 0 V
+    unit: eV against N2(g) and the hydrogen electrode (H2O(g) and OH-)
+    surfaces: close-packed faces, 1/9 monolayer
+    source: "J. A. Herron, P. Ferrin, M. Mavrikakis, Electrocatalytic oxidation of ammonia on transition-metal surfaces: a first-principles study, J. Phys. Chem. C 119, 14692 (2015)"
+    doi: 10.1021/jp512981f
+    url: https://www.osti.gov/biblio/1405312
+    reference_gases: {N: 0.5 N2, NH: 0.5 N2 + 0.5 H2, NH2: 0.5 N2 + H2, NNH: N2 + 0.5 H2, HNNH: N2 + H2, NNH2: N2 + H2, HNNH2: N2 + 1.5 H2}
+    nh3_gas_eV: -0.36
+    columns: [N, NH, NH2, NNH, HNNH, NNH2, HNNH2, H2NNH2]
+    app: {N: N, NH: NH, NH2: NH2, NNH: NNH, HNNH: HNNH, NNH2: NNH2, HNNH2: HNNH2}   # column -> the app's intermediate
+    # Table 3, N* + N* -> N2: free energy of the step and its barrier (eV), computed for six metals only
+    n_pairing: {Cu: [-3.88, 1.16], Pd: [-1.89, 2.16], Pt: [-1.58, 2.24], Ir: [-0.26, 2.10], Co: [0.23, 2.00], Rh: [0.28, 2.55]}
+    values:
+      Ag: [3.20, 1.75, 0.74, 2.63, 2.12, 2.63, 1.97, 1.31]
+      Au: [3.16, 2.11, 1.06, 2.47, 2.07, 2.93, 2.13, 1.61]
+      Cu: [1.94, 0.71, 0.27, 2.08, 1.87, 1.78, 1.40, 1.21]
+      Pd: [0.94, 0.40, 0.08, 1.18, 1.27, 1.05, 1.07, 0.87]
+      Pt: [0.79, 0.27, 0.10, 1.16, 1.16, 1.08, 1.03, 0.75]
+      Ni: [0.23, -0.33, -0.21, 0.97, 1.00, 0.58, 0.68, 0.97]
+      Ir: [0.13, -0.37, -0.28, 0.82, 0.68, 0.61, 0.29, 0.42]
+      Co: [-0.11, -0.50, -0.27, 0.82, 0.69, 0.41, 0.61, 0.99]
+      Rh: [-0.14, -0.39, -0.36, 0.89, 0.65, 0.48, 0.31, 0.53]
+      Ru: [-0.30, -0.69, -0.59, 0.49, 0.25, 0.12, -0.09, 0.26]
+      Os: [-0.82, -0.99, -0.58, 0.33, 0.31, 0.03, -0.18, 0.24]
+      Re: [-1.49, -1.62, -0.73, -0.25, -0.28, -0.59, -0.27, 0.48]
+
+  - table: elnabawy2018
+    role: primary
+    short: Elnabawy et al. 2018
+    quantity: Free energy of each adsorbed intermediate at 0 V
+    unit: eV against HCOOH(g) and the hydrogen electrode; CO2(g) + 2 (H+ + e-) sits at -0.26 eV
+    surfaces: close-packed faces, (111) and (0001)
+    source: "A. O. Elnabawy, J. A. Herron, J. Scaranto, M. Mavrikakis, Structure sensitivity of formic acid electrooxidation on transition metal surfaces: a first-principles study, J. Electrochem. Soc. 165, J3109 (2018)"
+    doi: 10.1149/2.0161815jes
+    url: https://www.osti.gov/biblio/1494744
+    final_state_eV: -0.26
+    columns: [COOH, OCHO, CO_OH, CO_H2O]   # COOH*, HCOO*, CO* + OH*, CO* + H2O(g)
+    app: {COOH: COOH, OCHO: OCHO, CO_H2O: CO}   # CO* + H2O(g) differs from CO* alone by a constant
+    values:
+      Au: [1.07, 0.91, 1.86, 0.27]
+      Ag: [1.29, 0.37, 1.38, 0.43]
+      Cu: [0.79, -0.04, 0.14, -0.28]
+      Pt: [0.05, 0.34, 0.06, -1.17]
+      Pd: [0.22, 0.26, -0.36, -1.41]
+      Ni: [0.26, -0.12, -0.90, -1.26]
+      Ir: [-0.21, -0.15, -0.59, -1.44]
+      Rh: [-0.06, -0.11, -0.66, -1.34]
+      Co: [0.23, -0.28, -0.93, -1.08]
+      Os: [-0.31, -0.63, -1.08, -1.46]
+      Ru: [-0.16, -0.56, -1.07, -1.28]
+      Re: [-0.09, -0.67, -1.21, -1.11]

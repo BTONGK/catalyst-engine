@@ -42,8 +42,8 @@ steps:
   - id: nh3_oxidation
     purpose: >
       Ammonia alone at 200 ppm, so oxidation to N2, NO and N2O is measured well above the
-      FTIR noise floor. At 25 ppm the NO and N2O it forms sit near 0.5 ppm and the fitter
-      cannot separate those pathways.
+      FTIR noise floor. At 25 ppm the NO and N2O it forms sit near 0.5 ppm, inside the noise, so
+      the fitter needs this step to tell those pathways apart.
     feed: {NH3: 200 ppm, O2: 15 %, H2O: 10 %, N2: balance}
     feed_basis: dry
     ghsv_per_h: 30000

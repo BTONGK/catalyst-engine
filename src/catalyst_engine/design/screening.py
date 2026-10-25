@@ -292,6 +292,8 @@ def wall_transfer(pack: Pack, step: StepSpec, shape: dict | None) -> np.ndarray 
         return None
     mono = Monolith(float(shape["cpsi"]), float(shape["wall_mm"]))
     net, species = pack.network, pack.spec.species
+    if not all(thermo.has_transport(sp.thermo_id) for sp in species.values()):
+        raise ValueError(f"{pack.spec.name}: a coated honeycomb needs diffusion data for every gas; run it as powder")
     y = step.feed_fractions(net.species, pack.spec.water)
     gas = {species[s].thermo_id: float(v) for s, v in zip(net.species, y) if v > 0}
     keys = [species[net.species[pw.key]].thermo_id for pw in net.pathways]

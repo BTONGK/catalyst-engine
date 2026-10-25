@@ -2,6 +2,8 @@
 # {name} fills in from results/summary.json (values), written by model_checks.py from atomistic_checks.py's run.
 kind: methodology
 summary: results/summary.json
+# the reaction check's numbers, quoted in its section, the loading walk-through and the limits
+also: [../reaction_check/results/summary.json]
 title: "How the app designs a catalyst: method and checks"
 byline: >
   Method paper for the catalyst design app. Checks run {generated} with UMA-S 1.1 (fairchem-core 2.23) on this
@@ -55,6 +57,164 @@ intro:
     text: >
       Nine steps turn a crystal into a ranking. Steps 1 to 5 work at the scale of atoms; steps 6 to 9 turn energies
       into rates, curves and error bars.
+
+loading:
+  title: What the app does when it loads a reaction package
+  text: >
+    Every reaction in the app is a package: a folder of plain text files that states the chemistry, the bench test
+    and how a screen ranks catalysts. This section follows one package, {load_name}, through every stage the app
+    runs, from the files on disk to the ranking on the Design page, so each number there traces back to its source.
+    Stages 1 to 5 run each time the app loads a package; stage 6 ran once, when the package was written; stages 7
+    to 10 run with each screen.
+  stages:
+    - title: Find the package and read it
+      when: load
+      does: >
+        A package is a folder holding pack.yaml (the gases, the reactions with their rate laws, the quantities to
+        report and how a screen ranks catalysts) and a protocols folder (the bench test: feed, flow, pressure,
+        temperatures and the analyzer). The app looks first in the shipped library, reactions/, then in
+        data/reactions/, where reactions built on the Reactions page go. It reads the files as YAML with one change:
+        NO, ON, OFF and YES stay text, so NO means nitric oxide, and only true and false act as switches. The app
+        keeps each loaded package in memory and reads it again when one of its files changes on disk, so an edit
+        shows on the next page view.
+      checks:
+        - The package's id matches its folder's name.
+        - Every key is one the format defines; a misspelt key stops the load, and the message names it.
+        - Each protocol names this package, and its analyzer measures the package's own gases.
+      example: "{load_name} sits in reactions/{load_id}/: pack.yaml and {load_protocol_files}."
+    - title: Check the chemistry as written
+      when: load
+      does: >
+        Before computing anything, the app checks every gas and every equation. It gathers all the problems it finds
+        and stops the load with the full list, so a package loads whole or waits, with its reasons, for a fix.
+      checks:
+        - Each gas's formula reads as elements and counts (CH4 is one carbon and four hydrogen).
+        - Each gas names an entry in the thermodynamic data of stage 3.
+        - Each equation reads as one way (->) or reversible (<=>) and balances every element to a billionth of an atom.
+        - Each rate law names declared gases, and its key gas, whose consumption the law gives, is a reactant.
+        - Each reported quantity (a conversion, a yield, an outlet level) names declared gases.
+        - >
+          The screening block names existing reactions, one of the package's reported quantities, adsorbates the
+          atomistic model can place (H, C, N, O, OH, CO, NO and NH3) and declared gases for the volcano's top.
+        - Each list of temperatures uses one scale (°C, °F or K).
+      example: "{load_equation} counts {load_balance}, so it balances. Its rate law is first order in CO, its key reactant."
+    - title: Choose the thermodynamic data
+      when: load
+      does: >
+        Equilibrium needs each gas's standard Gibbs energy at every temperature. The app takes all of a package's
+        gases from one database, so their numbers share one basis: GRI-Mech 3.0 ({load_db_gri_n} gases) when it holds
+        every one of them, else NASA Glenn ({load_db_nasa_n} gases; McBride, Zehe and Gordon 2002). For the
+        {load_db_shared} gases the packages use that both databases hold, the two agree within 0.1 kJ/mol from 300 to
+        1500 K for {load_db_within} of them and within {load_db_worst_gap:.1f} kJ/mol for every one (the largest gap:
+        {load_db_worst}). Viscosity and diffusion, which the coated
+        honeycomb's gas film needs, come from GRI-Mech alone, so the honeycomb option appears for packages whose gases
+        all sit in GRI-Mech.
+      example: >
+        {load_name}'s {load_species_n} gases ({load_species}) all sit in {load_thermo}. Of the {load_packs_n}
+        packages, {load_packs_gri} take GRI-Mech and offer the honeycomb; {load_packs_nasa} take NASA Glenn and run
+        as powder.
+    - title: Compile the rate laws and the equilibrium
+      when: load
+      does: >
+        Each reaction becomes one row of two tables: how many molecules of each gas it uses and makes, and its
+        reaction orders. Its rate, in moles of its key gas per cubic metre of catalyst per second, multiplies a rate
+        constant by each gas's concentration raised to its order, by any saturating or inhibiting terms the package
+        declares, and, for a reversible reaction, by its distance from equilibrium. That last factor, 1 − Q/K, sets
+        the gas as it stands (Q) against the gas at equilibrium (K, from the Gibbs energies of stage 3): it slows the
+        reaction to a stop exactly at equilibrium, so even the best catalyst stops there. The app computes rates in
+        logarithms, so a gas at zero concentration gives a zero forward rate and every number stays finite.
+      equations:
+        - tex: 'r = k(T)\,\prod_i C_i^{\,n_i}\,\Big(1-\frac{Q}{K}\Big), \qquad k(T) = k_{\rm ref}\, e^{-\frac{E_a}{R}\left(\frac{1}{T}-\frac{1}{T_{\rm ref}}\right)}'
+          words: >
+            the rate grows with each gas's concentration to its order and with temperature through the activation
+            energy, and falls to zero as the gas reaches equilibrium.
+      example: >
+        Methanation runs first order in CO with k_ref = {load_k:.2f} per second at {load_T_ref_C:.0f} °C (ln k_ref =
+        {load_ln_k:.3f}) and Ea = {load_Ea:.0f} kJ/mol. At {load_T_ref_C:.0f} °C the products sit {load_drop_ref:.1f}
+        kJ/mol below the reactants, so the equilibrium constant against 1 atm is about {load_Kp_ref_words}: nearly
+        all the CO can become methane. At {load_T_hot_C:.0f} °C the drop narrows to {load_drop_hot:.1f} kJ/mol and the
+        constant to about {load_Kp_hot:.0f}; with this feed, equilibrium still turns {load_X_eq_hot:.1f}% of the CO into
+        methane. The reactor takes the same constant in concentrations, as the rate law does.
+    - title: Build the bench conditions
+      when: load
+      does: >
+        Each step of a protocol (feed, gas hourly space velocity, pressure and temperatures) becomes one condition per
+        temperature: that temperature, the pressure, the flow and the feed as mole fractions in the package's order of
+        gases. One gas may take the balance, the rest of the feed after the others, so the fractions add to one
+        exactly. A feed written on a dry basis, the convention of emissions permits, turns into the wet fractions the
+        reactor uses.
+      checks:
+        - Every feed gas belongs to the package.
+        - The fractions add to one, with one balance gas at most.
+        - The space velocity is positive.
+      example: >
+        The screen protocol feeds {load_feed} at {load_ghsv} per hour and {load_p_kPa:g} kPa, at {load_T_n}
+        temperatures from {load_T_lo:.0f} to {load_T_hi:.0f} °C: {load_conditions} conditions. The Design page starts
+        from this step, and you can change any part of it there.
+    - title: Anchor the rates on the catalyst to beat
+      when: written
+      does: >
+        A package's rate constants describe its catalyst to beat. When the package is written (the shipped ones by
+        their authors, a reaction built on the Reactions page by the app), the screened rate constant is set so this
+        catalyst reaches half the best possible result at the package's reference temperature. The best possible is
+        the same reactor with the screened reactions about 8,000 times faster (e⁹) and nearly free of temperature (an
+        activation energy of 5 kJ/mol): the outlet then sits at equilibrium or at full conversion. A bisection moves
+        ln k_ref until the catalyst to beat reaches half of that, and the number goes into pack.yaml; each load reads
+        it as written.
+      example: >
+        At {load_T_ref_C:.0f} °C the best possible converts {load_best_ref:.1f}% of the CO, and {load_reference}, with
+        ln k_ref = {load_ln_k:.3f}, converts {load_refv_ref:.1f}%. Across the {calibration_packs} packages,
+        {calibrated_halfway} sit at half within 2 points (step 8).
+    - title: Place the volcano's top, and let it move
+      when: screen
+      does: >
+        The volcano's top sits on the descriptor of the catalyst to beat, plus the package's optimum shift, at the
+        reference temperature with the standard feed. At other temperatures and feeds it follows the free energy of
+        the gas the descriptor's adsorbates exchange with (peak_gas, which the app picks from the feed when the
+        package is written): hotter or thinner gas holds less free energy, the surface empties more easily, and the
+        top moves toward stronger binding (step 6).
+      example: >
+        The descriptor is {load_descriptor}. A carbon atom and an oxygen atom on the surface together make one CO,
+        so the top follows {load_peak_gas} per unit of descriptor. Against {load_T_ref_C:.0f} °C it moves
+        {load_move_200:+.2f} eV at 200 °C, {load_move_400:+.2f} eV at 400 °C and {load_move_hot:+.2f} eV at
+        {load_T_hot_C:.0f} °C (minus: toward stronger binding).
+    - title: Place each candidate on the volcano
+      when: screen
+      does: >
+        UMA computes each candidate's binding energies (steps 1 to 5), and the descriptor is their weighted sum. The
+        candidate's extra barrier over the catalyst to beat is the volcano's height difference: the package's
+        weak-side slope per eV on the weak-binding side, its strong-side slope on the other. The screened reactions
+        then run with the activation energy raised by that barrier and k_ref lowered to match, so at the reference
+        temperature the candidate runs e^(−barrier/kT) times as fast as the catalyst to beat.
+      example: >
+        In the reaction check's {rc_run_metals}-metal run, {load_reference}'s descriptor is {load_ref_desc:.3f} eV and
+        ruthenium's {load_ru_desc:.3f} eV. Ruthenium binds {load_ru_weaker:.3f} eV more weakly, on the weak side,
+        whose slope here is {load_slope_weak:g}, so its barrier rises {load_ru_shift:.3f} eV, and at
+        {load_check_T:.0f} K it runs at 1 in {load_ru_one_in} of cobalt's speed. Bligaard's measurements put the two
+        level: the order across the metals holds, and ratios this large run wider than measured ones (section
+        {sec_reaction_check}).
+    - title: Run the reactor
+      when: screen
+      does: >
+        The reactor is a plug-flow bed held at one temperature: gas enters with the feed's composition and reacts as
+        it moves along. The app integrates along the bed with a second-order Rosenbrock method, which stays stable for
+        fast chemistry, and each condition picks its own step sizes. Every candidate, its low and high cases and the
+        best possible run together as one batch. Against the exact answer for a first-order reaction, the outlet
+        agrees within {reactor_exact_pct:.2g} percentage points (step 7).
+      example: "For each metal: the CO conversion at each temperature, its low and high cases, and the best possible for this feed."
+    - title: Rank the candidates and choose where the reaction appears
+      when: screen
+      does: >
+        The Design page lists the candidates fastest first at your design temperature, each with its likely range:
+        its descriptor anywhere within the error bar and the top following its gas by any share from
+        {peak_follow_low:.0%} to {peak_follow_high:.0%} (step 9). A new shipped reaction joins the Design page once its
+        ranking check passes (on_design_page: true in pack.yaml; section {sec_reaction_check}); until then it sits in
+        the Reactions library and the playground, where its rates run as written. A reaction you build on the
+        Reactions page goes to the Design page at once, and its ranking rests on the descriptor and the catalyst to
+        beat you chose.
+      example: >
+        {load_name} joined the Design page through its check: rho {rc_co_methanation_primary_rho:.2f} over
+        {rc_co_methanation_primary_n} metals against Bligaard's measured table.
 
 steps:
   - title: Candidate crystals
@@ -634,6 +794,58 @@ example:
       {example_rh_hot}: the direction practice shows for metals that bind strongly, at a size step 6's slopes keep
       qualitative.
 
+reaction_check:
+  title: Each reaction against published measurements
+  text: >
+    Steps 1 to 9 check each part of the method on its own. This check scores the whole chain at once, reaction by
+    reaction: does the app's order of the metals match the order a laboratory measured? The rule was fixed in writing
+    before any prediction was computed (experiments/reaction_check/PASS_RULE.md). The prediction uses the app's own
+    binding energies for {rc_run_metals} pure metals ({rc_run_metal_list}; UMA-S 1.1, catalysis mode, close-packed
+    faces, standard setting), each reaction's descriptor and volcano with the top moved to the measurement's
+    temperature, and the reaction's standard feed.
+  points:
+    - >
+      The published side: one table of activities per metal from one laboratory under one set of conditions, cited
+      with the route its numbers took to this repository (experiments/reaction_check/data/published.yaml). A second
+      table for the same reaction is shown beside the first, and a table whose meaning the source leaves open is
+      shown as indicative; the rule scores the first.
+    - >
+      The score: Spearman's rank correlation, rho, between the predicted and the measured order. 1 is the same order,
+      0 an order unrelated to it, −1 the reverse. Its p-value is the share of all possible orders of the metals that
+      agree at least as well by chance alone, counted exactly over every order.
+    - >
+      Pass: at least {rc_min_metals} metals scored, rho of {rc_min_rho} or more, p of {rc_max_p} or less, and the metal
+      the table finds most active among the predicted top {rc_top}.
+    - >
+      The catalyst to beat leaves the scoring, since the volcano's top is set on it and its place would flatter the
+      score. For a reaction checked against measurements, it is the metal those measurements find most active.
+  table:
+    table: rc_thermal
+    columns: {reaction: Reaction, table: Measured table, role: Use, T_K: "Temperature (K)", n: Metals, rho: rho, p: p, best: Measured best, top: Predicted top three, verdict: Verdict}
+  metals:
+    see: Every metal behind these scores
+    table: rc_thermal_metals
+    columns: {reaction: Reaction, table: Table, metal: Metal, descriptor_eV: "Descriptor (eV)", shift_eV: "Extra barrier (eV)", predicted_rank: Predicted rank, published: Measured value, published_rank: Measured rank}
+  result: >
+    {rc_thermal_passed} of the {rc_thermal_scored} scored reactions pass: {rc_thermal_passed_names}, now on the Design
+    page. {rc_thermal_failed_names} sit in the Reactions library and the playground, with a row in the limits
+    (section {sec_limits}). The other new packages await a measured table of their own and wait in the playground
+    meanwhile. The Design page also holds {rc_design_waiting_n} reactions from before this check began, each awaiting
+    a measured table: {rc_design_waiting_names}. Hot SCR's rate laws reproduce published bench data (the Literature
+    check page); its ranking across materials awaits a table like the ones above.
+  sizes:
+    text: >
+      The rule scores order. The sizes of the speed ratios run wider than the measured ones: in the tables that give
+      rates, the fastest and slowest scored metals sit {rc_span_measured_lo:.1f} to {rc_span_measured_hi:.1f} powers
+      of ten apart, and the predictions put them {rc_span_predicted_lo:.1f} to {rc_span_predicted_hi:.1f} powers of
+      ten apart, {rc_span_factor_lo:.1f} to {rc_span_factor_hi:.0f} times as many. Two likely reasons, which this
+      check leaves open: the volcano's slopes describe the close-packed face, while a working catalyst also runs on
+      its steps and edges; and a laboratory's slowest readings sit near its detection limit. Read a predicted ratio
+      beyond about tenfold as a place in the order (section {sec_trust}).
+    see: Measured and predicted spread, table by table
+    table: rc_spans
+    columns: {reaction: Reaction, table: Measured table, n: Metals, measured: "Measured (powers of ten)", predicted: "Predicted (powers of ten)", factor: Predicted over measured}
+
 budget:
   title: The error budget
   text: >
@@ -658,11 +870,20 @@ trust:
     - heading: Firm
       points:
         - Binding energies, and their order among metals on their close-packed faces.
+        - >
+          The order of metals for {rc_design_checked_names}, which matches a laboratory's measured order (section
+          {sec_reaction_check}).
         - Which materials sit near the volcano's peak and which sit far from it.
         - Equilibrium limits, atom balance and the shape of the performance curves.
     - heading: Use with care
       points:
-        - Speed ratios beyond about tenfold, and anything on the far side of the volcano (step 6).
+        - >
+          Speed ratios beyond about tenfold, and anything on the far side of the volcano (step 6): where measured
+          rates exist, the predicted spread across metals runs {rc_span_factor_lo:.1f} to {rc_span_factor_hi:.0f}
+          times as many powers of ten as the measured one (section {sec_reaction_check}).
+        - >
+          Reactions on the Design page from before the reaction check, until a measured table scores them: section
+          {sec_reaction_check} names them.
         - Alloys, whose surface atoms may differ from the bulk (step 2).
         - Oxides. The materials mode tracks oxide DFT about {oxide_mat_factor:.0f} times closer than the catalysis
           mode and matches measured ammonia on titania; its typical miss, {oxide_mat_mae_ood:.2f} eV, still sits
@@ -755,6 +976,39 @@ limits:
       why: The surface keeps the bulk's composition (A4); real alloys often gather one element on top under gas.
       size: "Up to {seg_max:.2f} eV of oxygen binding (step 2)."
       meanwhile: Check a promising alloy with each element on top before making it.
+    - part: Reactions whose ranking misses its measured table
+      why: >
+        Scored against one laboratory's table of activities per metal (section {sec_reaction_check}), ammonia synthesis
+        gives rho {rc_nh3_synthesis_primary_rho:.2f} (p {rc_nh3_synthesis_primary_p:.2f}) against Ozaki's table,
+        water-gas shift {rc_water_gas_shift_primary_rho:.2f}, near the reverse of Grenoble's order, ethane
+        hydrogenolysis {rc_ethane_hydrogenolysis_primary_rho:.2f} over {rc_ethane_hydrogenolysis_primary_n} metals, and
+        benzene hydrogenation {rc_benzene_hydrogenation_primary_rho:.2f} (p {rc_benzene_hydrogenation_primary_p:.3f}), a
+        near miss. Ammonia synthesis and water-gas shift sat on the Design page before the check and moved to the
+        playground.
+      size: "rho from {rc_thermal_failed_rho_lo:.2f} to {rc_thermal_failed_rho_hi:.2f}, against the {rc_min_rho} the rule asks."
+      meanwhile: >
+        The playground runs them with their rates as written. A descriptor with a second adsorbate, or a face beyond the
+        close-packed one, may lift them; each change takes the check again before the Design page.
+    - part: Reactions awaiting a measured table
+      why: >
+        The rule asks for one laboratory's activities on at least {rc_min_metals} metals under one set of conditions.
+        For {rc_playground_untabled_n} of the new packages such a table remains to be found: {rc_playground_untabled_names}.
+        Ethylene hydrogenation has one, Bond's Table 7.3, whose temperature column the text reached here leaves
+        unconfirmed; read as the temperature of equal rate, it gives rho {rc_ethylene_hydrogenation_indicative_rho:.2f}
+        over {rc_ethylene_hydrogenation_indicative_n} metals, shown as indicative.
+      size: "{rc_playground_untabled_n} packages in the playground, and {rc_design_waiting_n} on the Design page from before the check."
+      meanwhile: >
+        A table of five or more metals from one laboratory, added to experiments/reaction_check/data/published.yaml,
+        puts a package through the check; a pass sets on_design_page to true.
+    - part: The size of large speed ratios
+      why: >
+        The check scores order. In its tables of rates, the predicted spread from the fastest to the slowest metal runs
+        {rc_span_factor_lo:.1f} to {rc_span_factor_hi:.0f} times as many powers of ten as the measured spread (section
+        {sec_reaction_check}).
+      size: "Measured spreads of {rc_span_measured_lo:.1f} to {rc_span_measured_hi:.1f} powers of ten; predicted {rc_span_predicted_lo:.1f} to {rc_span_predicted_hi:.1f}."
+      meanwhile: >
+        Read a speed ratio beyond about tenfold as a place in the order, and a light-off far from the catalyst to beat's
+        as a direction; measure the leaders.
     - part: Particle size, poisons, aging, surfaces that rebuild under gas, heat in a full-size reactor
       why: Each needs its own model and its own data.
       size: Specific to each catalyst and plant.
@@ -817,6 +1071,8 @@ audit:
     - "The reactor against its exact solution ({reactor_exact_pct:.3f} percentage points), the atom balance and Cantera's equilibrium (step 7), and the anchor at each pack's stated point (step 8)."
     - "Each pack's volcano slopes against the Brønsted–Evans–Polanyi work they rest on (A11)."
     - "The likely range against brute force over every case it covers (step 9)."
+    - "Every reaction with a measured table per metal, scored by a rule fixed beforehand: {rc_thermal_passed} of {rc_thermal_scored} pass (section {sec_reaction_check})."
+    - "The two thermodynamic databases against each other from 300 to 1500 K, for every gas the packages use (section {sec_loading}, stage 3)."
   changed:
     - "The volcano's weak side now falls 1.8 eV per eV for the four reactions whose weak side waits on a molecule splitting into two atoms the descriptor counts (CO oxidation, engine exhaust, ammonia synthesis, methanation), twice the generic 0.9 (A11). In the CO oxidation example silver moves from fifth to ninth, and platinum leads across the whole 50 to 350 °C."
     - "The volcano check runs {volcano_settings_n} settings, with weak-side slopes from {volcano_slopes_weak} (step 6)."
@@ -824,25 +1080,31 @@ audit:
     - "The hand-built benchmark is described as what it is: the same UMA model with structures set up by hand, a check of the automation (step 5)."
     - "UMA's published errors cite Tables 2 and 4 of the UMA paper with their exact values (step 4)."
     - "Rhodium's place in the example comes straight from the computed figure, {example_rh_design} of platinum's speed (step 6)."
+    - "A new shipped reaction joins the Design page once its ranking check passes; {rc_thermal_failed_names} wait in the playground, and ammonia synthesis and water-gas shift moved there from the Design page (section {sec_reaction_check})."
+    - "This page gained the loading walk-through (section {sec_loading}) and the reaction check (section {sec_reaction_check})."
 
 reproduce:
   text: >
-    Two scripts produce every number on this page. The first runs UMA ({atomistic_minutes:.0f} minutes on this Mac);
-    the second runs in the app's Python in seconds and writes the summary this page reads.
+    Four scripts produce every number on this page. Two run UMA: the method checks ({atomistic_minutes:.0f} minutes on
+    this Mac) and the reaction check's 16 metals (43 minutes). The other two run in the app's Python in seconds: the
+    reaction check's scores, and the summary this page reads.
   code: |
     # 1. the UMA checks -> results/atomistic.json
     export TORCHDYNAMO_DISABLE=1
     /opt/miniconda3/bin/python3 experiments/design_method/atomistic_checks.py
     # 1b. the oxide check -> experiments/oxide_check/results/oxide.json (OC22 download and extraction in its scripts)
     for m in single nh3 anatase101; do /opt/miniconda3/bin/python3 experiments/oxide_check/oxide_check.py $m; done
-    # 2. everything else -> results/summary.json
+    # 2. the reaction check: 16 metals in UMA (each run folder holds its job.json; 43 minutes), then the scores
+    /opt/miniconda3/bin/python3 src/catalyst_engine/design/uma_worker.py experiments/reaction_check/runs/metals-thermal
+    uv run python experiments/reaction_check/reaction_check.py
+    # 3. everything else -> results/summary.json
     uv run python experiments/design_method/model_checks.py
-    # 3. the unit checks named on this page
-    uv run pytest tests/test_design.py
+    # 4. the unit checks named on this page
+    uv run pytest tests/test_design.py tests/test_packs.py
   versions:
     - "UMA-S 1.1 (uma-s-1p1.pt) with fairchem-core 2.23 and PyTorch 2.13, on CPU; UMA-S 1.2.1 (uma-s-1p2p1.pt) for the oxide check."
     - "OC22 validation sets from the IS2RE-Total LMDBs (CC BY 4.0), read with a restricted unpickler (experiments/oxide_check/extract_oc22.py)."
-    - "ASE 3.29; Cantera 3.2 with GRI-Mech 3.0."
+    - "ASE 3.29; Cantera 3.2 with GRI-Mech 3.0 and NASA Glenn (nasa_gas.yaml)."
     - "The example screen: examples/screens/. The hand-built benchmark: experiments/uma_binding/. Results before the face fix: experiments/design_method/data/."
 
 references:

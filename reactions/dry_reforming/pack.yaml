@@ -1,0 +1,68 @@
+# Dry reforming of methane. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (nickel) reaches half of the best possible result at 700 C under the screen protocol.
+
+id: dry_reforming
+name: Dry reforming of methane
+version: 1
+status: draft-illustrative-parameters
+summary: Turns methane and carbon dioxide, two greenhouse gases, into syngas for fuels and chemicals.
+category: Hydrogen and energy
+description: >
+  Methane reacts with CO2 to make CO and hydrogen; the reverse water-gas shift runs alongside and trades some
+  hydrogen for water. Both draw heat, so equilibrium favors high temperature. First order in methane, with the
+  approach to equilibrium from thermodynamics.
+
+reference_temperature_K: 973.15
+water: H2O
+
+species:
+  CH4: {formula: CH4}
+  CO2: {formula: CO2}
+  CO:  {formula: CO}
+  H2:  {formula: H2}
+  H2O: {formula: H2O}
+  N2:  {formula: N2}
+
+pathways:
+  reforming:
+    equation: CH4 + CO2 <=> 2 CO + 2 H2
+    role: desired
+    rate: {key: CH4, orders: {CH4: 1}, ln_k_ref: 2.489, Ea_kJ: 110}
+  rwgs:
+    equation: CO2 + H2 <=> CO + H2O
+    role: side
+    note: "Reverse water-gas shift, fast at reforming temperatures, so it stays near equilibrium."
+    rate: {key: H2, orders: {H2: 1}, ln_k_ref: 6.000, Ea_kJ: 60}
+
+metrics:
+  ch4_conversion:
+    kind: conversion
+    species: [CH4]
+    description: "Share of the methane reformed."
+  h2_yield:
+    kind: yield
+    species: [H2]
+    denominator: [CH4]
+    description: "Hydrogen made per methane fed (2 is the most from dry reforming alone)."
+  co2_conversion:
+    kind: conversion
+    species: [CO2]
+    description: "Share of the CO2 used."
+
+screening:
+  descriptor: {C: 0.5, O: 0.5}
+  pathways: [reforming]
+  metric: ch4_conversion
+  reference: {formula: Ni, name: Nickel}
+  optimum_shift_eV: 0.0
+  peak_gas: {CH4: 0.5, H2: -1.0, CO2: 0.5, CO: -0.5}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Ni, Ru, Rh, Co, Ir, Pt, Pd, Fe, Mo]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    Dry reforming splits methane with CO2 in place of steam, and like steam reforming its rate follows how strongly
+    a metal holds carbon and oxygen (Jones et al., J. Catal. 2008, for steam reforming). Ruthenium and rhodium rank
+    among the most active metals, and nickel is the industrial choice for its price (Rostrup-Nielsen and Bak Hansen,
+    J. Catal. 1993). The descriptor averages the C and O binding; the top is set at nickel's, as in the steam
+    reforming pack.

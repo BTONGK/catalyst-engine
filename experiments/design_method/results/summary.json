@@ -89,14 +89,14 @@
   "reactor_exact_max_gap": 4e-05,
   "reactor_exact_pct": 0.004,
   "balance_worst": 9e-09,
-  "balance_packs": 10,
-  "equilibrium_packs": 4,
+  "balance_packs": 30,
+  "equilibrium_packs": 6,
   "equilibrium_worst": 3e-13,
   "balance_digits": 8,
   "equilibrium_digits": 12,
-  "calibrated_halfway": 8,
-  "calibration_packs": 10,
-  "calibration_note": "8 of 10 packs put the catalyst to beat at 50% of the best possible, within 2 points, at their anchor temperature. Gas-engine oxidation catalyst (CO, HCHO, CH4, NO) sits at 100% at 427 \u00b0C; High-temperature SCR of NOx with NH3 sits at 88% at 566 \u00b0C. These two packs came before the design app: their illustrative rates follow a conventional catalyst across the whole operating window, and their reference temperature anchors the rate constants in place of a light-off. The ranking within each reaction stays the same; their curves sit hotter or cooler accordingly.",
+  "calibrated_halfway": 28,
+  "calibration_packs": 30,
+  "calibration_note": "28 of 30 packs put the catalyst to beat at 50% of the best possible, within 2 points, at their anchor temperature. Gas-engine oxidation catalyst (CO, HCHO, CH4, NO) sits at 100% at 427 \u00b0C; High-temperature SCR of NOx with NH3 sits at 88% at 566 \u00b0C. These two packs came before the design app: their illustrative rates follow a conventional catalyst across the whole operating window, and their reference temperature anchors the rate constants in place of a light-off. The ranking within each reaction stays the same; their curves sit hotter or cooler accordingly.",
   "film_exact_pct": 0.004,
   "form_T_C": 566.0,
   "form_T_F": 1050.0,
@@ -162,6 +162,72 @@
   "cut_gap": 1.2,
   "v2o5_nh3_mat": -0.52,
   "cut_gap_app": 0.16,
+  "load_db_gri_n": 53,
+  "load_db_nasa_n": 748,
+  "load_db_shared": 16,
+  "load_db_within": 13,
+  "load_db_worst": "HCN",
+  "load_db_worst_gap": 4.2,
+  "load_db_all_shared": 37,
+  "load_db_any_worst": "NCO",
+  "load_db_any_worst_gap": 46.0,
+  "load_packs_n": 30,
+  "load_packs_gri": 26,
+  "load_packs_nasa": 4,
+  "load_name": "CO methanation",
+  "load_id": "co_methanation",
+  "load_species": "CO, H2, CH4, H2O and N2",
+  "load_species_n": 5,
+  "load_protocol_files": "protocols/screen-v1.yaml",
+  "load_equation": "CO + 3 H2 <=> CH4 + H2O",
+  "load_pathway": "methanation",
+  "load_balance": "C 1 in and 1 out, H 6 in and 6 out, O 1 in and 1 out",
+  "load_thermo": "GRI-Mech 3.0",
+  "load_T_ref_C": 275.0,
+  "load_T_hot_C": 500.0,
+  "load_dG_ref": -84.7,
+  "load_drop_ref": 84.7,
+  "load_drop_hot": 29.6,
+  "load_K_ref": 240000.0,
+  "load_dG_hot": -29.6,
+  "load_K_hot": 0.4,
+  "load_dn": -2.0,
+  "load_Kp_ref": 120000000.0,
+  "load_Kp_hot": 100.0,
+  "load_Kp_ref_words": "120 million",
+  "load_X_eq_hot": 97.4,
+  "load_ln_k": 1.335,
+  "load_k": 3.8,
+  "load_Ea": 90.0,
+  "load_feed": "3% CO, 30% H2 and 67% N2",
+  "load_ghsv": "10,000",
+  "load_p_kPa": 101.325,
+  "load_T_n": 11,
+  "load_T_lo": 150.0,
+  "load_T_hi": 500.0,
+  "load_conditions": 11,
+  "load_best_ref": 100.0,
+  "load_refv_ref": 50.0,
+  "load_share": 50.0,
+  "load_peak_gas": "0.5 CO",
+  "load_move_200": 0.09,
+  "load_move_400": -0.16,
+  "load_move_hot": -0.29,
+  "load_reference": "Cobalt",
+  "load_descriptor": "0.5 C* + 0.5 O*",
+  "load_slope_weak": 1.8,
+  "load_slope_strong": 1.0,
+  "load_on_design": true,
+  "load_ref_desc": -0.941,
+  "load_check_T": 550,
+  "load_check_move": -0.002,
+  "load_ru_desc": -0.736,
+  "load_ru_shift": 0.369,
+  "load_ru_weaker": 0.205,
+  "load_ru_one_in": "2,400",
+  "load_pt_desc": 0.438,
+  "load_pt_shift": 2.483,
+  "load_pt_ratio": 2e-23,
   "generated": "2026-10-23",
   "atomistic_minutes": 76.0
  },
@@ -1547,16 +1613,58 @@
     "move_per_100K": -0.137
    },
    {
+    "reaction": "Preferential CO oxidation (PROX)",
+    "gas": "+0.5 O2",
+    "anchor_C": 125,
+    "move_per_100K": -0.132
+   },
+   {
     "reaction": "Gas-engine oxidation catalyst (CO, HCHO, CH4, NO)",
     "gas": "+0.5 O2",
     "anchor_C": 427,
     "move_per_100K": -0.131
    },
    {
+    "reaction": "Methane combustion",
+    "gas": "+0.5 O2",
+    "anchor_C": 400,
+    "move_per_100K": -0.13
+   },
+   {
+    "reaction": "Ammonia oxidation to NO (Ostwald)",
+    "gas": "+0.25 N2 +0.25 O2",
+    "anchor_C": 750,
+    "move_per_100K": -0.128
+   },
+   {
+    "reaction": "CO methanation",
+    "gas": "+0.5 CO",
+    "anchor_C": 275,
+    "move_per_100K": -0.128
+   },
+   {
     "reaction": "CO oxidation",
     "gas": "+0.5 O2",
     "anchor_C": 180,
     "move_per_100K": -0.127
+   },
+   {
+    "reaction": "NO oxidation",
+    "gas": "+0.5 O2",
+    "anchor_C": 250,
+    "move_per_100K": -0.127
+   },
+   {
+    "reaction": "Ammonia slip oxidation",
+    "gas": "+0.25 N2 +0.25 O2",
+    "anchor_C": 250,
+    "move_per_100K": -0.118
+   },
+   {
+    "reaction": "Formaldehyde oxidation",
+    "gas": "+0.5 O2",
+    "anchor_C": 60,
+    "move_per_100K": -0.117
    },
    {
     "reaction": "CO2 methanation",
@@ -1571,10 +1679,40 @@
     "move_per_100K": -0.099
    },
    {
+    "reaction": "Methanol steam reforming",
+    "gas": "+1 H2O -1 H2",
+    "anchor_C": 250,
+    "move_per_100K": -0.08
+   },
+   {
+    "reaction": "Formic acid dehydrogenation",
+    "gas": "+1 H2O -1 H2",
+    "anchor_C": 150,
+    "move_per_100K": -0.063
+   },
+   {
     "reaction": "Water-gas shift",
     "gas": "+1 H2O -1 H2",
     "anchor_C": 220,
     "move_per_100K": -0.06
+   },
+   {
+    "reaction": "NO reduction by CO",
+    "gas": "+0.25 N2 +0.5 CO2 -0.5 CO",
+    "anchor_C": 300,
+    "move_per_100K": -0.059
+   },
+   {
+    "reaction": "Reverse water-gas shift",
+    "gas": "+1 CO2 -1 CO",
+    "anchor_C": 550,
+    "move_per_100K": -0.047
+   },
+   {
+    "reaction": "Partial oxidation of methane",
+    "gas": "+0.5 CH4 -1 H2 +0.25 O2",
+    "anchor_C": 650,
+    "move_per_100K": -0.035
    },
    {
     "reaction": "Ammonia cracking",
@@ -1593,6 +1731,54 @@
     "gas": "+1 CO2 -1 CO",
     "anchor_C": 240,
     "move_per_100K": -0.003
+   },
+   {
+    "reaction": "Selective acetylene hydrogenation",
+    "gas": "",
+    "anchor_C": 70,
+    "move_per_100K": 0.0
+   },
+   {
+    "reaction": "Benzene hydrogenation",
+    "gas": "",
+    "anchor_C": 100,
+    "move_per_100K": 0.0
+   },
+   {
+    "reaction": "Ethylene hydrogenation",
+    "gas": "",
+    "anchor_C": 50,
+    "move_per_100K": 0.0
+   },
+   {
+    "reaction": "Dry reforming of methane",
+    "gas": "+0.5 CH4 -1 H2 +0.5 CO2 -0.5 CO",
+    "anchor_C": 700,
+    "move_per_100K": 0.005
+   },
+   {
+    "reaction": "Ethanol steam reforming",
+    "gas": "+0.5 CH4 -1.5 H2 +0.5 H2O",
+    "anchor_C": 550,
+    "move_per_100K": 0.005
+   },
+   {
+    "reaction": "Hydrogen cyanide synthesis (BMA)",
+    "gas": "+0.5 CH4 -1.75 H2 +0.5 NH3",
+    "anchor_C": 1100,
+    "move_per_100K": 0.019
+   },
+   {
+    "reaction": "Propane dehydrogenation",
+    "gas": "+0.25 CH4 -0.5 H2",
+    "anchor_C": 600,
+    "move_per_100K": 0.035
+   },
+   {
+    "reaction": "Ethane hydrogenolysis",
+    "gas": "+1 CH4 -2 H2",
+    "anchor_C": 250,
+    "move_per_100K": 0.117
    }
   ],
   "reactor_exact": [
@@ -1664,12 +1850,72 @@
   ],
   "element_balance": [
    {
+    "reaction": "Selective acetylene hydrogenation",
+    "worst_element_gap": 1e-13
+   },
+   {
+    "reaction": "Ammonia oxidation to NO (Ostwald)",
+    "worst_element_gap": 1e-12
+   },
+   {
+    "reaction": "Ammonia slip oxidation",
+    "worst_element_gap": 3e-13
+   },
+   {
+    "reaction": "Benzene hydrogenation",
+    "worst_element_gap": 8e-12
+   },
+   {
     "reaction": "CO2 methanation",
     "worst_element_gap": 7e-16
    },
    {
+    "reaction": "CO methanation",
+    "worst_element_gap": 3e-13
+   },
+   {
     "reaction": "CO oxidation",
     "worst_element_gap": 4e-13
+   },
+   {
+    "reaction": "Dry reforming of methane",
+    "worst_element_gap": 3e-09
+   },
+   {
+    "reaction": "Ethane hydrogenolysis",
+    "worst_element_gap": 2e-13
+   },
+   {
+    "reaction": "Ethanol steam reforming",
+    "worst_element_gap": 3e-12
+   },
+   {
+    "reaction": "Ethylene hydrogenation",
+    "worst_element_gap": 4e-12
+   },
+   {
+    "reaction": "Formaldehyde oxidation",
+    "worst_element_gap": 2e-11
+   },
+   {
+    "reaction": "Formic acid dehydrogenation",
+    "worst_element_gap": 7e-13
+   },
+   {
+    "reaction": "Hydrogen cyanide synthesis (BMA)",
+    "worst_element_gap": 2e-12
+   },
+   {
+    "reaction": "Methane combustion",
+    "worst_element_gap": 4e-12
+   },
+   {
+    "reaction": "Partial oxidation of methane",
+    "worst_element_gap": 7e-13
+   },
+   {
+    "reaction": "Methanol steam reforming",
+    "worst_element_gap": 5e-12
    },
    {
     "reaction": "Methanol from CO2",
@@ -1688,8 +1934,28 @@
     "worst_element_gap": 1e-12
    },
    {
+    "reaction": "NO reduction by CO",
+    "worst_element_gap": 1e-14
+   },
+   {
+    "reaction": "NO oxidation",
+    "worst_element_gap": 7e-16
+   },
+   {
     "reaction": "Gas-engine oxidation catalyst (CO, HCHO, CH4, NO)",
     "worst_element_gap": 1e-12
+   },
+   {
+    "reaction": "Propane dehydrogenation",
+    "worst_element_gap": 5e-13
+   },
+   {
+    "reaction": "Preferential CO oxidation (PROX)",
+    "worst_element_gap": 8e-12
+   },
+   {
+    "reaction": "Reverse water-gas shift",
+    "worst_element_gap": 5e-12
    },
    {
     "reaction": "High-temperature SCR of NOx with NH3",
@@ -1706,9 +1972,19 @@
   ],
   "equilibrium": [
    {
+    "reaction": "Benzene hydrogenation",
+    "temperatures_C": "175, 200, 250",
+    "largest_mole_fraction_gap": 7e-15
+   },
+   {
     "reaction": "CO2 methanation",
     "temperatures_C": "450, 500, 550",
     "largest_mole_fraction_gap": 3e-13
+   },
+   {
+    "reaction": "CO methanation",
+    "temperatures_C": "400, 450, 500",
+    "largest_mole_fraction_gap": 3e-14
    },
    {
     "reaction": "Ammonia cracking",
@@ -1728,6 +2004,38 @@
   ],
   "calibration": [
    {
+    "reaction": "Selective acetylene hydrogenation",
+    "reference": "Palladium",
+    "T_ref_C": 70.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Ammonia oxidation to NO (Ostwald)",
+    "reference": "Platinum",
+    "T_ref_C": 750.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Ammonia slip oxidation",
+    "reference": "Platinum",
+    "T_ref_C": 250.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Benzene hydrogenation",
+    "reference": "Osmium",
+    "T_ref_C": 100.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
     "reaction": "CO2 methanation",
     "reference": "Nickel",
     "T_ref_C": 330.0,
@@ -1736,9 +2044,97 @@
     "share_of_best": 0.5
    },
    {
+    "reaction": "CO methanation",
+    "reference": "Cobalt",
+    "T_ref_C": 275.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
     "reaction": "CO oxidation",
     "reference": "Platinum",
     "T_ref_C": 180.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Dry reforming of methane",
+    "reference": "Nickel",
+    "T_ref_C": 700.0,
+    "reference_metric": 0.44,
+    "best_metric": 0.881,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Ethane hydrogenolysis",
+    "reference": "Osmium",
+    "T_ref_C": 250.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Ethanol steam reforming",
+    "reference": "Rhodium",
+    "T_ref_C": 550.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Ethylene hydrogenation",
+    "reference": "Rhodium",
+    "T_ref_C": 50.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Formaldehyde oxidation",
+    "reference": "Platinum",
+    "T_ref_C": 60.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Formic acid dehydrogenation",
+    "reference": "Platinum",
+    "T_ref_C": 150.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Hydrogen cyanide synthesis (BMA)",
+    "reference": "Platinum",
+    "T_ref_C": 1100.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Methane combustion",
+    "reference": "Palladium",
+    "T_ref_C": 400.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Partial oxidation of methane",
+    "reference": "Rhodium",
+    "T_ref_C": 650.0,
+    "reference_metric": 0.489,
+    "best_metric": 1.0,
+    "share_of_best": 0.489
+   },
+   {
+    "reaction": "Methanol steam reforming",
+    "reference": "Copper",
+    "T_ref_C": 250.0,
     "reference_metric": 0.5,
     "best_metric": 1.0,
     "share_of_best": 0.5
@@ -1776,12 +2172,52 @@
     "share_of_best": 0.5
    },
    {
+    "reaction": "NO reduction by CO",
+    "reference": "Rhodium",
+    "T_ref_C": 300.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "NO oxidation",
+    "reference": "Platinum",
+    "T_ref_C": 250.0,
+    "reference_metric": 0.475,
+    "best_metric": 0.951,
+    "share_of_best": 0.5
+   },
+   {
     "reaction": "Gas-engine oxidation catalyst (CO, HCHO, CH4, NO)",
     "reference": "Platinum",
     "T_ref_C": 427.0,
     "reference_metric": 1.0,
     "best_metric": 1.0,
     "share_of_best": 1.0
+   },
+   {
+    "reaction": "Propane dehydrogenation",
+    "reference": "Platinum",
+    "T_ref_C": 600.0,
+    "reference_metric": 0.331,
+    "best_metric": 0.661,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Preferential CO oxidation (PROX)",
+    "reference": "Platinum",
+    "T_ref_C": 125.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Reverse water-gas shift",
+    "reference": "Copper",
+    "T_ref_C": 550.0,
+    "reference_metric": 0.276,
+    "best_metric": 0.551,
+    "share_of_best": 0.5
    },
    {
     "reaction": "High-temperature SCR of NOx with NH3",

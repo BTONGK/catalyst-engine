@@ -1,0 +1,16 @@
+id: com-screen-v1
+pack: co_methanation
+version: 1
+status: draft
+description: 3% CO with 30% hydrogen in nitrogen, at 1 atm.
+analyzer:
+  name: Gas chromatograph
+  measured: [CO, CH4]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: CO conversion against temperature
+    feed: {CO: 3 %, H2: 30 %, N2: balance}
+    ghsv_per_h: 10000
+    temperatures_C: [150, 175, 200, 225, 250, 275, 300, 350, 400, 450, 500]

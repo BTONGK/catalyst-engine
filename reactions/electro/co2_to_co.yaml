@@ -1,0 +1,37 @@
+# CO2 reduction to carbon monoxide: CO2 + 2 (H+ + e-) -> CO + H2O, through COOH* and CO*, then CO leaving the
+# surface (Peterson et al., Energy Environ. Sci. 3, 1311 (2010); Hansen et al., J. Phys. Chem. Lett. 4, 388 (2013)).
+
+id: co2_to_co
+name: CO2 reduction to CO
+category: CO2 conversion
+summary: Turns carbon dioxide into carbon monoxide with electricity, the first step toward fuels made from CO2.
+equation: CO2 + 2 H+ + 2 e- -> CO + H2O
+direction: reduction
+electrons: 2
+equilibrium_V: -0.104       # from tabulated formation free energies, CO(g) and liquid water
+compare_V: -0.80
+# Corrections: UMA's own vibrations on Pt(111) (experiments/reaction_check/results/corrections.json). The same
+#   calculation missed the published values for OH* and OOH* by 0.16-0.20 eV (PASS_RULE.md, corrections section),
+#   so these numbers serve the playground's starting point only.
+# shift: COOH* and CO* start against CO(g) and water, this reaction's own zero, so both shifts are 0.
+intermediates:
+  - {name: COOH, label: "carboxyl (COOH*)", correction_eV: 0.88}
+  - {name: CO, label: "adsorbed CO (CO*)", correction_eV: 0.53}
+route: "COOH* forms first"
+chemical_steps:
+  - {step: 2, label: "CO leaves the surface"}
+descriptor: {COOH: 1}
+# CO* follows COOH* loosely on the 16 metals of the reaction check (R2 0.79), so the volcano line is left to the dots.
+reference: {formula: Au, name: Gold}
+task: oc20
+suggested_elements: [Au, Ag, Zn, Cu, Pd, Pt, Ni, Sn, In, Cd]
+on_design_page: false
+design_note: UMA's CO* binding orders Elnabawy 2018's metals with rho 0.56, below the 0.6 the rule asks, and COOH* and CO* need published zero-point and entropy corrections
+basis: >
+  CO2 takes a proton and electron to become carboxyl, COOH*, bound through its carbon; a second proton and
+  electron split off water and leave CO*, which then has to leave the surface as gas. A surface that binds COOH*
+  too weakly needs a large negative potential for the first step (silver, gold, zinc and the p-block metals); one
+  that binds CO* too tightly keeps it, so the surface fills with CO and makes hydrogen instead (platinum, nickel,
+  palladium). Gold and silver sit between, and gold makes CO at the smallest overpotential among the pure metals
+  (Hansen et al. 2013; Kuhl et al. 2014). Leaving the surface moves zero electrons, so the potential leaves that step
+  alone: on a surface that holds CO*, it stays uphill at every potential.

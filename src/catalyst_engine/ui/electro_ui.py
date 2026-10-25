@@ -14,6 +14,7 @@ import streamlit as st
 
 from catalyst_engine.design import electro, screening
 from catalyst_engine.design.electro import ADSORBATES
+from catalyst_engine.design.uma_worker import REFERENCE
 from catalyst_engine.ui import common, screen_ui
 
 LEVELS = {"Quick": "quick", "Standard": "standard", "Thorough": "thorough"}
@@ -73,6 +74,31 @@ def screen_label(folder: Path) -> str:
 
 # ---------------------------------------------------------------- design page
 
+GAS_WORDS = {"H2O": "water", "H2": "hydrogen", "N2": "nitrogen", "CO": "carbon monoxide", "NO": "nitric oxide",
+             "NH3": "ammonia"}
+
+
+def joined(words: list[str]) -> str:
+    return words[0] if len(words) == 1 else ", ".join(words[:-1]) + " and " + words[-1]
+
+
+def gases_text(s: electro.ElectroSpec) -> str:
+    """The gas molecules the worker sets this reaction's binding energies against, in plain words."""
+    used = {g for a in s.adsorbates for g in REFERENCE[a]}
+    return joined([w for g, w in GAS_WORDS.items() if g in used])
+
+
+def chemical_text(s: electro.ElectroSpec) -> str:
+    """The steps of the path that move zero electrons, in one sentence; empty for a reaction with none."""
+    if not s.chemical_steps:
+        return ""
+    names = s.step_names()
+    one = len(s.chemical_steps) == 1
+    return (f"{joined([f'{names[c.step]}' for c in s.chemical_steps])} {'moves' if one else 'move'} zero electrons, "
+            f"so the potential leaves {'it' if one else 'them'} alone: {'its' if one else 'each one’s'} hurdle is "
+            "its free energy, or its barrier where the file gives one, at every potential.")
+
+
 def routes_text(s: electro.ElectroSpec) -> str:
     """The two routes of a reaction with a chemical step, in one sentence."""
     a = s.activation
@@ -123,9 +149,10 @@ def design_page(advanced: bool, status: dict) -> None:
         gap = (s.equilibrium_V - u_cmp) if s.direction == "reduction" else (u_cmp - s.equilibrium_V)
         st.markdown(f"That is **{abs(gap):.2f} V {'past' if gap >= 0 else 'short of'} the equilibrium potential** "
                     f"({s.equilibrium_V:.2f} V). A material whose limiting potential lies "
-                    f"{'above' if s.direction == 'reduction' else 'below'} {u_cmp:.2f} V runs every step"
-                    f"{' of its better route' if s.activation else ''} downhill there; the others pay for their "
-                    "largest hurdle.")
+                    f"{'above' if s.direction == 'reduction' else 'below'} {u_cmp:.2f} V runs every step that "
+                    f"moves an electron{' on its better route' if s.activation else ''} downhill there; the others pay "
+                    "for their largest hurdle" + (", and a chemical step uphill holds back every material at every "
+                                                  "potential" if s.chemical_steps else "") + ".")
         conditions = {"compare_V": float(u_cmp)}
 
     screen_ui.candidates_section(pid=pid, reference_formula=s.reference.formula,
@@ -253,7 +280,8 @@ def results_body(folder: Path, choice: str) -> None:
                     help="How far the limiting potential sits from the equilibrium potential. Smaller is better.")
         m[1].metric("Limiting potential", f"{best.limiting_V:.2f} V vs RHE", f"{ref_name}: {ref.limiting_V:.2f} V",
                     delta_color="off", delta_arrow="off", border=True,
-                    help=f"Where every step{' of the better route' if s.activation else ''} runs downhill; "
+                    help=f"Where every step that moves an electron{' on the better route' if s.activation else ''} "
+                         "runs downhill; "
                          f"{better} is better for this reaction.")
         m[2].metric(f"Predicted speed vs {ref_name} at {u_cmp:.2f} V", fmt_ratio(best.rate_ratio), border=True,
                     help="From the largest hurdle at that potential: the largest step still uphill"
@@ -299,8 +327,9 @@ def results_body(folder: Path, choice: str) -> None:
                                     "Material": st.column_config.TextColumn(width="medium"),
                                     "Stability (eV/atom)": st.column_config.NumberColumn("Stability", width="small")})
         a = s.activation
-        st.caption(f"Overpotential: how far the limiting potential, where every step of the "
+        st.caption(f"Overpotential: how far the limiting potential, where every step that moves an electron on the "
                    f"{'better route' if a else 'path'} runs downhill, sits from {s.equilibrium_V:.2f} V. "
+                   + (chemical_text(s) + " " if s.chemical_steps else "")
                    + (f"{routes_text(s)} On each route the hurdle at {u_cmp:.2f} V is its largest step still uphill, "
                       f"or its barrier when that is higher (Nørskov et al. 2004); the ranking sorts by the faster "
                       "route's hurdle, then by overpotential. The limiting potential counts the second route once "
@@ -414,19 +443,25 @@ def results_body(folder: Path, choice: str) -> None:
                              + (f", {i.layer_eV:+.2f} eV from its neighbors in the layer" if i.layer_eV else "")
                              for i in s.intermediates)
             a = s.activation
+            sign = "+" if s.direction == "reduction" else "−"
             st.markdown(
                 f"1. **Binding.** For each material, the app cuts its densest crystal face, places "
                 f"{', '.join(ADSORBATES[x] for x in s.adsorbates)} on its top, bridge and hollow sites, and lets "
                 "Meta's UMA model relax each arrangement. The lowest energy is the binding energy, set against "
-                "water and hydrogen gas.\n"
+                f"{gases_text(s)} molecules in the gas.\n"
                 f"2. **Free energies.** Each intermediate's free energy at 0 V vs RHE is its binding energy plus "
-                f"published corrections for zero-point motion, entropy and hydrogen bonds ({corr}). A proton and "
-                "electron at 0 V count as half a hydrogen molecule (the computational hydrogen electrode, Nørskov "
-                "et al. 2004).\n"
-                f"3. **Potential.** Every step moves one electron, so a potential U shifts each step by "
-                f"{'+' if s.direction == 'reduction' else '−'}eU. The limiting potential is the best potential where "
-                f"every step of {'a route' if a else 'the path'} runs downhill; the overpotential is its distance "
-                "from the equilibrium potential.\n"
+                f"{'published' if s.on_design_page else 'the reaction file’s'} corrections for zero-point motion, "
+                f"entropy and hydrogen bonds ({corr})"
+                + (", plus a shift from tabulated formation free energies that moves the gas reference to the "
+                   "reaction's own zero" if any(i.shift_eV for i in s.intermediates) else "")
+                + ". A proton and electron at 0 V count as half a hydrogen molecule (the computational hydrogen "
+                "electrode, Nørskov et al. 2004).\n"
+                "3. **Potential.** "
+                + (f"Each step that moves an electron shifts by {sign}eU at a potential U. {chemical_text(s)} "
+                   if s.chemical_steps else f"Every step moves one electron, so a potential U shifts each step by {sign}eU. ")
+                + f"The limiting potential is the best potential where every step that moves an electron along "
+                f"{'a route' if a else 'the path'} runs downhill; the overpotential is its distance from the "
+                "equilibrium potential.\n"
                 f"4. **Speed.** At the comparison potential the rate follows the largest hurdle h, exp(−h/kT) at "
                 "25 °C (Sabatier analysis), so speeds are relative to the catalyst to beat. "
                 + (f"{routes_text(s)} The {a.label} barrier is E_a = {a.slope:g} × ΔE({a.from_}*) "
@@ -435,7 +470,8 @@ def results_body(folder: Path, choice: str) -> None:
                    "barrier when that is higher (Nørskov et al. 2004, Fig. 8).\n" if a else "\n")
                 + f"5. **Likely ranges.** Every binding energy moves anywhere within ±{electro.SIGMA_EV:.2f} eV at "
                 "once, and linear programming finds the exact highest and lowest limiting potential and hurdle"
-                + (", the barrier moving with its binding energy" if a else "") + ".\n\n"
+                + (", each barrier moving with its binding energy"
+                   if a or any(c.barrier for c in s.chemical_steps) else "") + ".\n\n"
                 "Barriers of the proton transfers, the structure of the water layer and the surface's change of "
                 "coverage with potential stay outside this picture (Manual, Methodology tab). Read the ranking as "
                 "a shortlist.")
@@ -459,7 +495,7 @@ def diagram_chart(s: electro.ElectroSpec, g: dict[str, float], potentials: dict[
     scale = alt.Scale(domain=names_, range=PALETTE[:len(names_)])
     states = [r["state"] for r in electro.diagram(s, g, 0.0)]
     x_axis = alt.X("x:Q", title="Along the reaction path", axis=alt.Axis(
-        values=[k + 0.4 for k in range(s.electrons + 1)],
+        values=[k + 0.4 for k in range(len(states))],
         labelExpr="[" + ",".join(f"'{st_}'" for st_ in states) + "][round(datum.value - 0.4)]"))
     seg = alt.Chart(pd.DataFrame(segs)).mark_rule(strokeWidth=4).encode(
         x=x_axis, x2="x2:Q", y=alt.Y("y:Q", title="Free energy (eV)"),

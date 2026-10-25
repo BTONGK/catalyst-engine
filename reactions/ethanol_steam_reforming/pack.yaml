@@ -1,0 +1,69 @@
+# Ethanol steam reforming. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (rhodium) reaches half of the best possible result at 550 C under the screen protocol.
+
+id: ethanol_steam_reforming
+name: Ethanol steam reforming
+version: 1
+status: draft-illustrative-parameters
+summary: Makes hydrogen from bio-ethanol and steam, a renewable route to fuel-cell hydrogen.
+category: Hydrogen and energy
+description: >
+  Ethanol and steam make CO2 and six hydrogens once the C-C bond breaks; ethanol splitting to methane, CO and
+  hydrogen competes. First order in ethanol, with the approach to equilibrium from thermodynamics (NASA Glenn data,
+  since ethanol sits outside GRI-Mech).
+
+reference_temperature_K: 823.15
+water: H2O
+
+species:
+  C2H5OH: {formula: C2H5OH}
+  H2O:    {formula: H2O}
+  CO2:    {formula: CO2}
+  H2:     {formula: H2}
+  CH4:    {formula: CH4}
+  CO:     {formula: CO}
+  N2:     {formula: N2}
+
+pathways:
+  reforming:
+    equation: C2H5OH + 3 H2O <=> 2 CO2 + 6 H2
+    role: desired
+    rate: {key: C2H5OH, orders: {C2H5OH: 1}, ln_k_ref: 2.494, Ea_kJ: 100}
+  decomposition:
+    equation: C2H5OH -> CH4 + CO + H2
+    role: side
+    note: "Ethanol splitting; it keeps half the hydrogen locked in methane."
+    rate: {key: C2H5OH, orders: {C2H5OH: 1}, ln_k_ref: -2.000, Ea_kJ: 90}
+
+metrics:
+  c2h5oh_conversion:
+    kind: conversion
+    species: [C2H5OH]
+    description: "Share of the ethanol that reacts."
+  h2_yield:
+    kind: yield
+    species: [H2]
+    denominator: [C2H5OH]
+    description: "Hydrogen made per ethanol fed (6 is the most possible)."
+  ch4_yield:
+    kind: yield
+    species: [CH4]
+    denominator: [C2H5OH]
+    description: "Methane made per ethanol fed."
+
+screening:
+  descriptor: {C: 0.5, O: 0.5}
+  pathways: [reforming]
+  metric: c2h5oh_conversion
+  reference: {formula: Rh, name: Rhodium}
+  optimum_shift_eV: 0.0
+  peak_gas: {CH4: 0.5, H2: -1.5, H2O: 0.5}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Rh, Ru, Ni, Co, Pt, Pd, Ir, Cu]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    Ethanol reforming has to break the C-C bond and then turn the carbon into CO2, so carbon and oxygen binding both
+    matter, as in methane reforming. Rhodium breaks the C-C bond best among supported metals (Breen et al., Appl.
+    Catal. B 2002; Liguras et al., Appl. Catal. B 2003). The descriptor averages the C and O binding; the top is set
+    at rhodium's.

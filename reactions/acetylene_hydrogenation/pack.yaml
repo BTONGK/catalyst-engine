@@ -1,0 +1,66 @@
+# Selective hydrogenation of acetylene in ethylene. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (palladium) reaches half of the best possible result at 70 C under the screen protocol.
+
+id: acetylene_hydrogenation
+name: Selective acetylene hydrogenation
+version: 1
+status: draft-illustrative-parameters
+summary: Removes traces of acetylene from ethylene before it becomes plastic, while sparing the ethylene itself.
+category: Chemicals and fuels
+description: >
+  Acetylene takes one hydrogen molecule to become ethylene; ethylene taking a second one to ethane wastes the
+  product. First order in acetylene and in hydrogen for the desired path, and in ethylene and in hydrogen for the
+  competing one, in an ethylene-rich stream.
+
+reference_temperature_K: 343.15
+
+species:
+  C2H2: {formula: C2H2}
+  H2:   {formula: H2}
+  C2H4: {formula: C2H4}
+  C2H6: {formula: C2H6}
+  N2:   {formula: N2}
+
+pathways:
+  semihydrogenation:
+    equation: C2H2 + H2 -> C2H4
+    role: desired
+    rate: {key: C2H2, orders: {C2H2: 1, H2: 1}, ln_k_ref: 0.684, Ea_kJ: 50}
+  overhydrogenation:
+    equation: C2H4 + H2 -> C2H6
+    role: side
+    note: "Ethylene hydrogenation; it destroys the product the plant sells."
+    rate: {key: C2H4, orders: {C2H4: 1, H2: 1}, ln_k_ref: -9.000, Ea_kJ: 70}
+
+metrics:
+  c2h2_conversion:
+    kind: conversion
+    species: [C2H2]
+    description: "Share of the acetylene removed."
+  c2h2_out:
+    kind: outlet
+    species: [C2H2]
+    description: "Acetylene left; polymer-grade ethylene allows about 1 ppm."
+    target: {max: 1.0, label: Polymer grade}
+  c2h4_gain:
+    kind: yield
+    species: [C2H4]
+    denominator: [C2H2]
+    description: "Ethylene gained per acetylene fed: 1 is fully selective, below zero means ethylene lost."
+
+screening:
+  descriptor: {C: 0.25}
+  pathways: [semihydrogenation]
+  metric: c2h2_conversion
+  reference: {formula: Pd, name: Palladium}
+  optimum_shift_eV: 0.0
+  peak_gas: {}   # the reaction's gases hold none its adsorbates exchange with; the top holds still
+  suggested_elements: [Pd, Pt, Ni, Cu, Ag, Au, Co, Fe, Zn, Rh]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    Methyl binding, a quarter of the carbon atom's, sorts metals and alloys for this reaction (Studt et al., Science
+    2008): stronger binders hydrogenate acetylene faster but also hydrogenate the ethylene, and palladium, the
+    industrial catalyst, sits near the top of the activity volcano. The descriptor is a quarter of the carbon
+    binding; the top is set at palladium's.

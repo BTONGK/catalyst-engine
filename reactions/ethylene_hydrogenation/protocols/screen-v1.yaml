@@ -1,0 +1,16 @@
+id: ehy-screen-v1
+pack: ethylene_hydrogenation
+version: 1
+status: draft
+description: 2% ethylene with 20% hydrogen in nitrogen, at 1 atm.
+analyzer:
+  name: Gas chromatograph
+  measured: [C2H4, C2H6]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Ethylene conversion against temperature
+    feed: {C2H4: 2 %, H2: 20 %, N2: balance}
+    ghsv_per_h: 20000
+    temperatures_C: [0, 25, 50, 75, 100, 125, 150, 200]

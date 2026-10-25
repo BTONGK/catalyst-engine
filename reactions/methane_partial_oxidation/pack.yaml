@@ -1,0 +1,70 @@
+# Partial oxidation of methane. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (rhodium) reaches half of the best possible result at 650 C under the screen protocol.
+
+id: methane_partial_oxidation
+name: Partial oxidation of methane
+version: 1
+status: draft-illustrative-parameters
+summary: Turns methane and a little oxygen into syngas in a few milliseconds, a compact route to hydrogen.
+category: Hydrogen and energy
+description: >
+  Methane burns with half a molecule of oxygen to CO and hydrogen; full combustion to CO2 and water competes. Both
+  are first order in methane and in oxygen, so both stop once the oxygen is used up, and full combustion takes a
+  share of it.
+
+reference_temperature_K: 923.15
+water: H2O
+oxygen: O2
+
+species:
+  CH4: {formula: CH4}
+  O2:  {formula: O2}
+  CO:  {formula: CO}
+  H2:  {formula: H2}
+  CO2: {formula: CO2}
+  H2O: {formula: H2O}
+  N2:  {formula: N2}
+
+pathways:
+  pox:
+    equation: CH4 + 0.5 O2 -> CO + 2 H2
+    role: desired
+    rate: {key: CH4, orders: {CH4: 1, O2: 1}, ln_k_ref: 5.001, Ea_kJ: 90}
+  combustion:
+    equation: CH4 + 2 O2 -> CO2 + 2 H2O
+    role: side
+    note: "Full combustion; it uses four times the oxygen per methane and gives CO2 and water in place of syngas."
+    rate: {key: CH4, orders: {CH4: 1, O2: 1}, ln_k_ref: -3.000, Ea_kJ: 80}
+
+metrics:
+  ch4_conversion:
+    kind: conversion
+    species: [CH4]
+    description: "Share of the methane that reacts."
+  h2_yield:
+    kind: yield
+    species: [H2]
+    denominator: [CH4]
+    description: "Hydrogen made per methane fed (2 is the most possible)."
+  co_yield:
+    kind: yield
+    species: [CO]
+    denominator: [CH4]
+    description: "Carbon monoxide made per methane fed."
+
+screening:
+  descriptor: {C: 0.5, O: 0.5}
+  pathways: [pox]
+  metric: ch4_conversion
+  reference: {formula: Rh, name: Rhodium}
+  optimum_shift_eV: 0.0
+  peak_gas: {CH4: 0.5, H2: -1.0, O2: 0.25}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Rh, Pt, Ru, Ir, Ni, Pd, Co]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    Partial oxidation turns methane and a little oxygen into syngas within milliseconds on rhodium and platinum,
+    with rhodium the more selective (Hickman and Schmidt, Science 1993). Breaking methane's C-H bonds and clearing
+    carbon and oxygen from the surface set the rate, so the descriptor averages the C and O binding, as for
+    reforming; the top is set at rhodium's.

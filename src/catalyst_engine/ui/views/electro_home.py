@@ -47,7 +47,7 @@ with left:
     st.markdown(
         "- **The free energy of each intermediate** on its surface (eV), computed atom by atom and corrected to "
         "room temperature in water.\n"
-        "- **Its limiting potential:** the voltage where every step of the reaction path runs downhill. Where a "
+        "- **Its limiting potential:** the voltage where every step that moves an electron runs downhill. Where a "
         "reaction has two routes, as oxygen reduction does, the better route counts.\n"
         "- **Its overpotential:** how far that sits from the equilibrium potential; smaller is better.\n"
         "- **Which step limits it, and by which route,** so you know what a better material has to change.\n"
@@ -61,9 +61,12 @@ with left:
         "| Crystal structures | The Materials Project, plus reference crystals for pure metals |\n"
         "| Binding energies | UMA, Meta FAIR Chemistry's machine-learned model, trained on millions of DFT calculations; "
         "it runs on this computer |\n"
-        "| Free energies | Published zero-point, entropy and water corrections (Nørskov et al. 2004, 2005) |\n"
+        "| Free energies | Published zero-point, entropy and water corrections (Nørskov et al. 2004 and 2005, "
+        "Rossmeisl et al. 2007, Skúlason et al. 2012), and tabulated formation free energies (the NBS tables) that "
+        "put each reaction on its own scale |\n"
         "| Potentials | The computational hydrogen electrode: a proton and electron at 0 V count as half a hydrogen "
-        "molecule, and the potential tilts every step by one electron-volt per volt |\n"
+        "molecule, and the potential tilts every step that moves an electron by one electron-volt per volt; a "
+        "chemical step, such as a molecule leaving the surface, stays put |\n"
         "| Speed | Sabatier analysis: on each route the largest hurdle at a potential, a step still uphill or a "
         "chemical barrier such as splitting O2, and the faster route sets the rate (Nørskov et al. 2004) |\n"
         "| Likely ranges | Every binding energy moved within UMA's typical error, ±0.15 eV, all at once; the exact "
@@ -94,9 +97,10 @@ with right:
                     f"catalyst to beat {s.reference.name or s.reference.formula}]")
     waiting = [electro_ui.spec(i) for i in electro.list_electro() if i not in ids]
     if waiting:
-        st.markdown(":gray-badge[In the playground] " + ", ".join(s.name for s in waiting)
-                    + " :gray[· its catalysts are oxides, where UMA's binding energies sit beyond the error bar; the "
-                      "Design page adds it once a check passes]")
+        st.markdown(":gray-badge[In the playground] :gray[each one runs on free energies you set, and the Design "
+                    "page adds it once its checks pass (Manual, Methodology tab, limits)]\n"
+                    + "\n".join(f"- **{s.name}** :gray[· {s.design_note or 'its checks are in the Methodology tab'}]"
+                                for s in waiting))
     st.caption("A new reaction is a file in reactions/electro/; the Manual's Methodology tab shows the form.")
 
 st.markdown("#### Your latest electrochemical screens")

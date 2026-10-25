@@ -1,0 +1,56 @@
+# Lean methane combustion. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (palladium) reaches half of the best possible result at 400 C under the screen protocol.
+
+id: methane_combustion
+name: Methane combustion
+version: 1
+status: draft-illustrative-parameters
+summary: Burns the unburned methane in exhaust from gas engines, a greenhouse gas 80 times stronger than CO2 over 20 years.
+category: Clean air
+description: >
+  Methane burns with excess oxygen to CO2 and water. First order in methane.
+
+reference_temperature_K: 673.15
+water: H2O
+oxygen: O2
+
+species:
+  CH4: {formula: CH4}
+  O2:  {formula: O2}
+  CO2: {formula: CO2}
+  H2O: {formula: H2O}
+  N2:  {formula: N2}
+
+pathways:
+  combustion:
+    equation: CH4 + 2 O2 -> CO2 + 2 H2O
+    role: desired
+    rate: {key: CH4, orders: {CH4: 1}, ln_k_ref: 3.167, Ea_kJ: 90}
+
+metrics:
+  ch4_conversion:
+    kind: conversion
+    species: [CH4]
+    description: "Share of the methane burned."
+    target: {min: 0.9, label: Target}
+  ch4_out:
+    kind: outlet
+    species: [CH4]
+    description: "Methane left in the exhaust."
+
+screening:
+  descriptor: {O: 1}
+  pathways: [combustion]
+  metric: ch4_conversion
+  reference: {formula: Pd, name: Palladium}
+  optimum_shift_eV: 0.0
+  peak_gas: {O2: 0.5}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Pd, Pt, Rh, Ir, Ru, Co, Ni, Cu, Ag]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    Lean methane burns fastest on palladium, where an oxygen-covered surface pulls the first hydrogen off methane.
+    That step's barrier follows how strongly the surface oxygen takes up hydrogen, which tracks oxygen binding
+    (Latimer et al., Nat. Mater. 2017). The descriptor is oxygen binding; the top is set at palladium's, the
+    catalyst in natural-gas engine converters.

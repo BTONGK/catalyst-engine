@@ -1,0 +1,380 @@
+{
+ "checkpoint": "/Users/bt/uma/checkpoints/uma-s-1p1.pt",
+ "task": "oc20",
+ "thoroughness": "standard",
+ "adsorbates": [
+  "COOH",
+  "OCHO",
+  "NH",
+  "NH2",
+  "NNH",
+  "NNH2",
+  "HNNH",
+  "HNNH2",
+  "NOH",
+  "OOH"
+ ],
+ "materials": [
+  {
+   "id": "element:Pt",
+   "label": "Pt",
+   "formula": "Pt",
+   "ase_bulk": "Pt",
+   "e_hull": 0.0,
+   "elements": [
+    "Pt"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Pd",
+   "label": "Pd",
+   "formula": "Pd",
+   "ase_bulk": "Pd",
+   "e_hull": 0.0,
+   "elements": [
+    "Pd"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Rh",
+   "label": "Rh",
+   "formula": "Rh",
+   "ase_bulk": "Rh",
+   "e_hull": 0.0,
+   "elements": [
+    "Rh"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Ir",
+   "label": "Ir",
+   "formula": "Ir",
+   "ase_bulk": "Ir",
+   "e_hull": 0.0,
+   "elements": [
+    "Ir"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Ru",
+   "label": "Ru",
+   "formula": "Ru",
+   "ase_bulk": "Ru",
+   "e_hull": 0.0,
+   "elements": [
+    "Ru"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Os",
+   "label": "Os",
+   "formula": "Os",
+   "ase_bulk": "Os",
+   "e_hull": 0.0,
+   "elements": [
+    "Os"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Ni",
+   "label": "Ni",
+   "formula": "Ni",
+   "ase_bulk": "Ni",
+   "e_hull": 0.0,
+   "elements": [
+    "Ni"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Co",
+   "label": "Co",
+   "formula": "Co",
+   "ase_bulk": "Co",
+   "e_hull": 0.0,
+   "elements": [
+    "Co"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Fe",
+   "label": "Fe",
+   "formula": "Fe",
+   "ase_bulk": "Fe",
+   "e_hull": 0.0,
+   "elements": [
+    "Fe"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Cu",
+   "label": "Cu",
+   "formula": "Cu",
+   "ase_bulk": "Cu",
+   "e_hull": 0.0,
+   "elements": [
+    "Cu"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Ag",
+   "label": "Ag",
+   "formula": "Ag",
+   "ase_bulk": "Ag",
+   "e_hull": 0.0,
+   "elements": [
+    "Ag"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Au",
+   "label": "Au",
+   "formula": "Au",
+   "ase_bulk": "Au",
+   "e_hull": 0.0,
+   "elements": [
+    "Au"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Re",
+   "label": "Re",
+   "formula": "Re",
+   "ase_bulk": "Re",
+   "e_hull": 0.0,
+   "elements": [
+    "Re"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Mo",
+   "label": "Mo",
+   "formula": "Mo",
+   "ase_bulk": "Mo",
+   "e_hull": 0.0,
+   "elements": [
+    "Mo"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:W",
+   "label": "W",
+   "formula": "W",
+   "ase_bulk": "W",
+   "e_hull": 0.0,
+   "elements": [
+    "W"
+   ],
+   "source": "Reference crystal"
+  },
+  {
+   "id": "element:Zn",
+   "label": "Zn",
+   "formula": "Zn",
+   "ase_bulk": "Zn",
+   "e_hull": 0.0,
+   "elements": [
+    "Zn"
+   ],
+   "source": "Reference crystal"
+  }
+ ],
+ "request": {
+  "name": "metals-electro",
+  "kind": "check",
+  "materials": [
+   {
+    "id": "element:Pt",
+    "label": "Pt",
+    "formula": "Pt",
+    "ase_bulk": "Pt",
+    "e_hull": 0.0,
+    "elements": [
+     "Pt"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Pd",
+    "label": "Pd",
+    "formula": "Pd",
+    "ase_bulk": "Pd",
+    "e_hull": 0.0,
+    "elements": [
+     "Pd"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Rh",
+    "label": "Rh",
+    "formula": "Rh",
+    "ase_bulk": "Rh",
+    "e_hull": 0.0,
+    "elements": [
+     "Rh"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Ir",
+    "label": "Ir",
+    "formula": "Ir",
+    "ase_bulk": "Ir",
+    "e_hull": 0.0,
+    "elements": [
+     "Ir"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Ru",
+    "label": "Ru",
+    "formula": "Ru",
+    "ase_bulk": "Ru",
+    "e_hull": 0.0,
+    "elements": [
+     "Ru"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Os",
+    "label": "Os",
+    "formula": "Os",
+    "ase_bulk": "Os",
+    "e_hull": 0.0,
+    "elements": [
+     "Os"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Ni",
+    "label": "Ni",
+    "formula": "Ni",
+    "ase_bulk": "Ni",
+    "e_hull": 0.0,
+    "elements": [
+     "Ni"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Co",
+    "label": "Co",
+    "formula": "Co",
+    "ase_bulk": "Co",
+    "e_hull": 0.0,
+    "elements": [
+     "Co"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Fe",
+    "label": "Fe",
+    "formula": "Fe",
+    "ase_bulk": "Fe",
+    "e_hull": 0.0,
+    "elements": [
+     "Fe"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Cu",
+    "label": "Cu",
+    "formula": "Cu",
+    "ase_bulk": "Cu",
+    "e_hull": 0.0,
+    "elements": [
+     "Cu"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Ag",
+    "label": "Ag",
+    "formula": "Ag",
+    "ase_bulk": "Ag",
+    "e_hull": 0.0,
+    "elements": [
+     "Ag"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Au",
+    "label": "Au",
+    "formula": "Au",
+    "ase_bulk": "Au",
+    "e_hull": 0.0,
+    "elements": [
+     "Au"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Re",
+    "label": "Re",
+    "formula": "Re",
+    "ase_bulk": "Re",
+    "e_hull": 0.0,
+    "elements": [
+     "Re"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Mo",
+    "label": "Mo",
+    "formula": "Mo",
+    "ase_bulk": "Mo",
+    "e_hull": 0.0,
+    "elements": [
+     "Mo"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:W",
+    "label": "W",
+    "formula": "W",
+    "ase_bulk": "W",
+    "e_hull": 0.0,
+    "elements": [
+     "W"
+    ],
+    "source": "Reference crystal"
+   },
+   {
+    "id": "element:Zn",
+    "label": "Zn",
+    "formula": "Zn",
+    "ase_bulk": "Zn",
+    "e_hull": 0.0,
+    "elements": [
+     "Zn"
+    ],
+    "source": "Reference crystal"
+   }
+  ],
+  "task": "oc20",
+  "thoroughness": "standard",
+  "created": "2026-10-25T11:04:17"
+ }
+}

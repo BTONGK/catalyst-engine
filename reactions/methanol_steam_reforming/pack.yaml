@@ -1,0 +1,67 @@
+# Methanol steam reforming. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (copper) reaches half of the best possible result at 250 C under the screen protocol.
+
+id: methanol_steam_reforming
+name: Methanol steam reforming
+version: 1
+status: draft-illustrative-parameters
+summary: Makes hydrogen from methanol and steam at modest temperature, for on-site and on-board fuel cells.
+category: Hydrogen and energy
+description: >
+  Methanol and steam make CO2 and three hydrogens; methanol splitting to CO and hydrogen competes and leaves CO,
+  which fuel cells tolerate only at ppm levels. First order in methanol, with the approach to equilibrium from
+  thermodynamics.
+
+reference_temperature_K: 523.15
+water: H2O
+
+species:
+  CH3OH: {formula: CH3OH}
+  H2O:   {formula: H2O}
+  CO2:   {formula: CO2}
+  H2:    {formula: H2}
+  CO:    {formula: CO}
+  N2:    {formula: N2}
+
+pathways:
+  reforming:
+    equation: CH3OH + H2O <=> CO2 + 3 H2
+    role: desired
+    rate: {key: CH3OH, orders: {CH3OH: 1}, ln_k_ref: 1.346, Ea_kJ: 100}
+  decomposition:
+    equation: CH3OH <=> CO + 2 H2
+    role: side
+    note: "Methanol splitting; it makes CO and grows faster with temperature."
+    rate: {key: CH3OH, orders: {CH3OH: 1}, ln_k_ref: -3.000, Ea_kJ: 130}
+
+metrics:
+  ch3oh_conversion:
+    kind: conversion
+    species: [CH3OH]
+    description: "Share of the methanol reformed."
+  h2_yield:
+    kind: yield
+    species: [H2]
+    denominator: [CH3OH]
+    description: "Hydrogen made per methanol fed (3 is the most possible)."
+  co_out:
+    kind: outlet
+    species: [CO]
+    description: "Carbon monoxide made; fuel cells tolerate a few ppm."
+
+screening:
+  descriptor: {O: 1}
+  pathways: [reforming]
+  metric: ch3oh_conversion
+  reference: {formula: Cu, name: Copper}
+  optimum_shift_eV: 0.0
+  peak_gas: {H2O: 1.0, H2: -1.0}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Cu, Zn, Pd, Pt, Ni, Co, Ag, Au]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    Methanol steam reforming on copper runs through methoxy and formate, both held to the surface through oxygen, so
+    oxygen binding sorts the metals; copper with zinc oxide leads in practice (Sá et al., Appl. Catal. B 2010). The
+    reaction runs methanol synthesis backward through the same surface steps, so the top is set at copper's oxygen
+    binding, as in the methanol synthesis pack.

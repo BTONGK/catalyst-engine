@@ -1,0 +1,16 @@
+id: pox-screen-v1
+pack: methane_partial_oxidation
+version: 1
+status: draft
+description: 10% methane and 5% oxygen in nitrogen, a carbon-to-oxygen ratio of one, at 1 atm.
+analyzer:
+  name: Gas chromatograph
+  measured: [CH4, O2, CO, CO2, H2]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Methane conversion against temperature
+    feed: {CH4: 10 %, O2: 5 %, N2: balance}
+    ghsv_per_h: 100000
+    temperatures_C: [400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900]

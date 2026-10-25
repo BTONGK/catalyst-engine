@@ -1,0 +1,32 @@
+# Formic acid oxidation: HCOOH -> CO2 + 2 (H+ + e-), the direct route through formate, OCHO* (Elnabawy et al.,
+# J. Electrochem. Soc. 165, J3109 (2018); Feaster et al. 2017 for the intermediate).
+
+id: formic_acid_oxidation
+name: Formic acid oxidation
+category: Hydrogen and energy
+summary: Oxidizes formic acid to CO2 at the anode of a direct formic-acid fuel cell.
+equation: HCOOH -> CO2 + 2 H+ + 2 e-
+direction: oxidation
+electrons: 2
+equilibrium_V: -0.114       # from dissolved formic acid, from tabulated formation free energies
+compare_V: 0.30
+# Correction: UMA's own vibrations on Pt(111) (results/corrections.json); the same calculation missed the published
+#   values for OH* and OOH* by 0.16-0.20 eV (PASS_RULE.md), so this number serves the playground's starting point.
+# shift: this reaction's zero is dissolved formic acid, 0.021 eV above CO(g) and water, OCHO*'s starting scale.
+intermediates:
+  - {name: OCHO, label: "formate (OCHO*)", correction_eV: 0.93, shift_eV: -0.021}
+descriptor: {OCHO: 1}
+# the two steps at 0 V as lines in x = G(OCHO*): HCOOH -> OCHO* is x, OCHO* -> CO2 is -0.228 - x
+volcano_steps: [[1, 0], [-1, -0.228]]
+reference: {formula: Pd, name: Palladium}
+task: oc20
+suggested_elements: [Pd, Pt, Au, Ag, Ir, Rh, Ru, Cu, Ni, Bi]
+on_design_page: false
+design_note: OCHO* passes the DFT check and the ranking matches; it waits for a published zero-point and entropy correction for OCHO*
+basis: >
+  Formic acid gives up a proton and electron to sit on the surface as formate, OCHO*, which gives up a second
+  and leaves as CO2. This direct route keeps carbon monoxide off the surface; a second direct route runs through
+  carboxyl, COOH*, and an indirect one makes CO* first, which poisons platinum until hydroxyl arrives at higher
+  potential (Elnabawy et al. 2018). Palladium favours the formate route and resists CO, which makes it the
+  standard formic-acid anode. This page follows the formate route only; the carboxyl route and CO poisoning are in
+  the Methodology tab's limits.

@@ -1,0 +1,5046 @@
+{
+ "rule": {
+  "min_metals": 5,
+  "min_rho": 0.6,
+  "max_p": 0.05,
+  "top": 3,
+  "electro_min_metals": 6,
+  "electro_max_median_eV": 0.2
+ },
+ "thermal_run": {
+  "folder": "runs/metals-thermal",
+  "state": "finished",
+  "metals": [
+   "Ag",
+   "Au",
+   "Co",
+   "Cu",
+   "Fe",
+   "Ir",
+   "Mo",
+   "Ni",
+   "Os",
+   "Pd",
+   "Pt",
+   "Re",
+   "Rh",
+   "Ru",
+   "W",
+   "Zn"
+  ],
+  "model": "UMA-S 1.1, oc20 mode"
+ },
+ "thermal": [
+  {
+   "pack": "nh3_synthesis",
+   "name": "Ammonia synthesis",
+   "role": "primary",
+   "source": "A. Ozaki, Development of alkali-promoted ruthenium as a novel catalyst for ammonia synthesis, Acc. Chem. Res. 14, 16 (1981)",
+   "short": "Ozaki 1981",
+   "via": "H. Toulhoat, P. Raybaud, V. Mendez, E. Puzenat, arXiv:1812.09531 (version 1), supplementary Table ST.4.1",
+   "quantity": "Ammonia made per metal atom",
+   "unit": "1e-5 mol NH3 per mol metal per s",
+   "temperature_K": 573,
+   "temperature_from": "table",
+   "anchor": "Ru",
+   "anchor_descriptor_eV": -0.786,
+   "peak_move_eV": 0.097,
+   "descriptor": {
+    "N": 1.0
+   },
+   "n": 9,
+   "rho": 0.4,
+   "p": 0.146,
+   "published_best": "Os",
+   "predicted_top": [
+    "Os",
+    "Co",
+    "Re"
+   ],
+   "best_in_top": true,
+   "passes": false,
+   "left_out": [],
+   "measured_decades": 2.8,
+   "predicted_decades": 20.3,
+   "rows": [
+    {
+     "metal": "Os",
+     "descriptor_eV": -0.738,
+     "shift_eV": -0.047,
+     "ratio": 2.5953377768963866,
+     "predicted_rank": 1.0,
+     "published": 26.4,
+     "published_rank": 1.0
+    },
+    {
+     "metal": "Ir",
+     "descriptor_eV": 0.21,
+     "shift_eV": 1.52,
+     "ratio": 4.240388738858775e-14,
+     "predicted_rank": 8.0,
+     "published": 3.24,
+     "published_rank": 2.0
+    },
+    {
+     "metal": "Re",
+     "descriptor_eV": -1.1,
+     "shift_eV": 0.315,
+     "ratio": 0.0017116144099863925,
+     "predicted_rank": 3.0,
+     "published": 1.66,
+     "published_rank": 3.0
+    },
+    {
+     "metal": "Mo",
+     "descriptor_eV": -1.332,
+     "shift_eV": 0.547,
+     "ratio": 1.549636948870749e-05,
+     "predicted_rank": 4.0,
+     "published": 1.428,
+     "published_rank": 4.0
+    },
+    {
+     "metal": "Rh",
+     "descriptor_eV": -0.198,
+     "shift_eV": 0.786,
+     "ratio": 1.2307059007525628e-07,
+     "predicted_rank": 6.0,
+     "published": 1.327,
+     "published_rank": 5.0
+    },
+    {
+     "metal": "Fe",
+     "descriptor_eV": -1.72,
+     "shift_eV": 0.934,
+     "ratio": 6.075791028877615e-09,
+     "predicted_rank": 7.0,
+     "published": 0.9973,
+     "published_rank": 6.0
+    },
+    {
+     "metal": "Co",
+     "descriptor_eV": -1.017,
+     "shift_eV": 0.232,
+     "ratio": 0.009157004849776813,
+     "predicted_rank": 2.0,
+     "published": 0.5846,
+     "published_rank": 7.0
+    },
+    {
+     "metal": "Ni",
+     "descriptor_eV": -0.301,
+     "shift_eV": 0.601,
+     "ratio": 5.1714668026807324e-06,
+     "predicted_rank": 5.0,
+     "published": 0.0582,
+     "published_rank": 8.0
+    },
+    {
+     "metal": "Pt",
+     "descriptor_eV": 0.62,
+     "shift_eV": 2.26,
+     "ratio": 1.33554603056645e-20,
+     "predicted_rank": 9.0,
+     "published": 0.0387,
+     "published_rank": 9.0
+    }
+   ]
+  },
+  {
+   "pack": "nh3_decomposition",
+   "name": "Ammonia cracking",
+   "role": "primary",
+   "source": "J. C. Ganley, F. S. Thomas, E. G. Seebauer, R. I. Masel, A priori catalytic activity correlations: the difficult case of hydrogen production from ammonia, Catal. Lett. 96, 117 (2004)",
+   "short": "Ganley et al. 2004",
+   "via": "arXiv:1812.09531 (version 1), supplementary Table ST.4.3",
+   "quantity": "Turnover frequency",
+   "unit": "1/s",
+   "temperature_K": 853,
+   "temperature_from": "table",
+   "anchor": "Ru",
+   "anchor_descriptor_eV": -0.786,
+   "peak_move_eV": -0.026,
+   "descriptor": {
+    "N": 1.0
+   },
+   "n": 8,
+   "rho": 0.905,
+   "p": 0.00228,
+   "published_best": "Ni",
+   "predicted_top": [
+    "Co",
+    "Ni",
+    "Rh"
+   ],
+   "best_in_top": true,
+   "passes": true,
+   "left_out": [
+    "Cr"
+   ],
+   "measured_decades": 2.5,
+   "predicted_decades": 11.8,
+   "rows": [
+    {
+     "metal": "Ni",
+     "descriptor_eV": -0.301,
+     "shift_eV": 0.436,
+     "ratio": 0.0026519342461245226,
+     "predicted_rank": 2.0,
+     "published": 4.21,
+     "published_rank": 1.0
+    },
+    {
+     "metal": "Rh",
+     "descriptor_eV": -0.198,
+     "shift_eV": 0.528,
+     "ratio": 0.0007555895155248254,
+     "predicted_rank": 3.0,
+     "published": 2.26,
+     "published_rank": 2.0
+    },
+    {
+     "metal": "Co",
+     "descriptor_eV": -1.017,
+     "shift_eV": 0.182,
+     "ratio": 0.08391288225269608,
+     "predicted_rank": 1.0,
+     "published": 1.33,
+     "published_rank": 3.0
+    },
+    {
+     "metal": "Ir",
+     "descriptor_eV": 0.21,
+     "shift_eV": 0.896,
+     "ratio": 5.100592773269782e-06,
+     "predicted_rank": 5.0,
+     "published": 0.786,
+     "published_rank": 4.0
+    },
+    {
+     "metal": "Fe",
+     "descriptor_eV": -1.72,
+     "shift_eV": 0.885,
+     "ratio": 5.9384879581872406e-06,
+     "predicted_rank": 4.0,
+     "published": 0.327,
+     "published_rank": 5.0
+    },
+    {
+     "metal": "Pt",
+     "descriptor_eV": 0.62,
+     "shift_eV": 1.265,
+     "ratio": 3.340849574107021e-08,
+     "predicted_rank": 6.0,
+     "published": 0.0226,
+     "published_rank": 6.0
+    },
+    {
+     "metal": "Pd",
+     "descriptor_eV": 0.631,
+     "shift_eV": 1.275,
+     "ratio": 2.9363498027971933e-08,
+     "predicted_rank": 7.0,
+     "published": 0.0194,
+     "published_rank": 7.0
+    },
+    {
+     "metal": "Cu",
+     "descriptor_eV": 1.645,
+     "shift_eV": 2.187,
+     "ratio": 1.1936520962382817e-13,
+     "predicted_rank": 8.0,
+     "published": 0.013,
+     "published_rank": 8.0
+    }
+   ]
+  },
+  {
+   "pack": "water_gas_shift",
+   "name": "Water-gas shift",
+   "role": "primary",
+   "source": "D. C. Grenoble, M. M. Estadt, D. F. Ollis, The chemistry and catalysis of the water gas shift reaction: 1. The kinetics over supported metal catalysts, J. Catal. 67, 90 (1981)",
+   "short": "Grenoble et al. 1981",
+   "via": "Mini review of water-gas shift chemistry, arXiv:1409.7976, page 1",
+   "quantity": "Order of turnover numbers (1 = most active)",
+   "unit": "rank",
+   "temperature_K": 493.15,
+   "temperature_from": "pack reference",
+   "anchor": "Cu",
+   "anchor_descriptor_eV": 1.031,
+   "peak_move_eV": 0.0,
+   "descriptor": {
+    "O": 1.0
+   },
+   "n": 11,
+   "rho": -0.527,
+   "p": 0.953,
+   "published_best": "Re",
+   "predicted_top": [
+    "Ir",
+    "Pd",
+    "Pt"
+   ],
+   "best_in_top": false,
+   "passes": false,
+   "left_out": [],
+   "measured_decades": null,
+   "predicted_decades": 20.0,
+   "rows": [
+    {
+     "metal": "Re",
+     "descriptor_eV": -0.882,
+     "shift_eV": 1.913,
+     "ratio": 2.846939414735918e-20,
+     "predicted_rank": 10.0,
+     "published": 2,
+     "published_rank": 1.0
+    },
+    {
+     "metal": "Co",
+     "descriptor_eV": -0.513,
+     "shift_eV": 1.544,
+     "ratio": 1.6676204982440602e-16,
+     "predicted_rank": 8.0,
+     "published": 3,
+     "published_rank": 2.0
+    },
+    {
+     "metal": "Ru",
+     "descriptor_eV": -0.202,
+     "shift_eV": 1.233,
+     "ratio": 2.514845374075511e-13,
+     "predicted_rank": 7.0,
+     "published": 4,
+     "published_rank": 3.0
+    },
+    {
+     "metal": "Ni",
+     "descriptor_eV": 0.089,
+     "shift_eV": 0.942,
+     "ratio": 2.33789542919925e-10,
+     "predicted_rank": 5.0,
+     "published": 5,
+     "published_rank": 4.0
+    },
+    {
+     "metal": "Pt",
+     "descriptor_eV": 1.579,
+     "shift_eV": 0.493,
+     "ratio": 9.144776327280287e-06,
+     "predicted_rank": 3.0,
+     "published": 6,
+     "published_rank": 5.0
+    },
+    {
+     "metal": "Os",
+     "descriptor_eV": -0.016,
+     "shift_eV": 1.047,
+     "ratio": 1.981225701968458e-11,
+     "predicted_rank": 6.0,
+     "published": 7,
+     "published_rank": 6.0
+    },
+    {
+     "metal": "Au",
+     "descriptor_eV": 2.793,
+     "shift_eV": 1.586,
+     "ratio": 6.219060834574031e-17,
+     "predicted_rank": 9.0,
+     "published": 8,
+     "published_rank": 7.0
+    },
+    {
+     "metal": "Fe",
+     "descriptor_eV": -0.966,
+     "shift_eV": 1.997,
+     "ratio": 3.866531200372936e-21,
+     "predicted_rank": 11.0,
+     "published": 9,
+     "published_rank": 8.0
+    },
+    {
+     "metal": "Pd",
+     "descriptor_eV": 1.385,
+     "shift_eV": 0.318,
+     "ratio": 0.00055742103884577,
+     "predicted_rank": 2.0,
+     "published": 10,
+     "published_rank": 9.0
+    },
+    {
+     "metal": "Rh",
+     "descriptor_eV": 0.525,
+     "shift_eV": 0.506,
+     "ratio": 6.775133702677121e-06,
+     "predicted_rank": 4.0,
+     "published": 11,
+     "published_rank": 10.0
+    },
+    {
+     "metal": "Ir",
+     "descriptor_eV": 0.986,
+     "shift_eV": 0.045,
+     "ratio": 0.3503857840412344,
+     "predicted_rank": 1.0,
+     "published": 12,
+     "published_rank": 11.0
+    }
+   ]
+  },
+  {
+   "pack": "co_methanation",
+   "name": "CO methanation",
+   "role": "primary",
+   "source": "T. Bligaard, J. K. Nørskov, S. Dahl, J. Matthiesen, C. H. Christensen, J. Sehested, The Brønsted–Evans–Polanyi relation and the volcano curve in heterogeneous catalysis, J. Catal. 224, 206 (2004)",
+   "short": "Bligaard et al. 2004",
+   "via": "arXiv:1812.09531 (version 1), supplementary Table ST.8.3",
+   "quantity": "Methane made per metal atom (activity A1)",
+   "unit": "mmol CH4 per mol metal per s",
+   "temperature_K": 550,
+   "temperature_from": "table",
+   "anchor": "Co",
+   "anchor_descriptor_eV": -0.941,
+   "peak_move_eV": -0.002,
+   "descriptor": {
+    "C": 0.5,
+    "O": 0.5
+   },
+   "n": 8,
+   "rho": 0.69,
+   "p": 0.0347,
+   "published_best": "Ru",
+   "predicted_top": [
+    "Re",
+    "Ru",
+    "Fe"
+   ],
+   "best_in_top": true,
+   "passes": true,
+   "left_out": [
+    "Cu"
+   ],
+   "measured_decades": 2.2,
+   "predicted_decades": 22.1,
+   "rows": [
+    {
+     "metal": "Ru",
+     "descriptor_eV": -0.736,
+     "shift_eV": 0.369,
+     "ratio": 0.0004159769004834743,
+     "predicted_rank": 2.0,
+     "published": 18.2,
+     "published_rank": 1.0
+    },
+    {
+     "metal": "Rh",
+     "descriptor_eV": -0.281,
+     "shift_eV": 1.188,
+     "ratio": 1.3038224163393363e-11,
+     "predicted_rank": 5.0,
+     "published": 4.09,
+     "published_rank": 2.0
+    },
+    {
+     "metal": "Fe",
+     "descriptor_eV": -1.726,
+     "shift_eV": 0.778,
+     "ratio": 7.45005686543334e-08,
+     "predicted_rank": 3.0,
+     "published": 3.81,
+     "published_rank": 3.0
+    },
+    {
+     "metal": "Ni",
+     "descriptor_eV": -0.367,
+     "shift_eV": 1.034,
+     "ratio": 3.375353434568416e-10,
+     "predicted_rank": 4.0,
+     "published": 3.43,
+     "published_rank": 4.0
+    },
+    {
+     "metal": "Re",
+     "descriptor_eV": -1.018,
+     "shift_eV": 0.07,
+     "ratio": 0.2303555288176741,
+     "predicted_rank": 1.0,
+     "published": 1.3,
+     "published_rank": 5.0
+    },
+    {
+     "metal": "Ir",
+     "descriptor_eV": 0.074,
+     "shift_eV": 1.828,
+     "ratio": 1.7627313067432607e-17,
+     "predicted_rank": 6.0,
+     "published": 0.694,
+     "published_rank": 6.0
+    },
+    {
+     "metal": "Pd",
+     "descriptor_eV": 0.411,
+     "shift_eV": 2.433,
+     "ratio": 5.027975155168719e-23,
+     "predicted_rank": 7.0,
+     "published": 0.136,
+     "published_rank": 7.0
+    },
+    {
+     "metal": "Pt",
+     "descriptor_eV": 0.438,
+     "shift_eV": 2.483,
+     "ratio": 1.7777493829747173e-23,
+     "predicted_rank": 8.0,
+     "published": 0.126,
+     "published_rank": 8.0
+    }
+   ]
+  },
+  {
+   "pack": "co_methanation",
+   "name": "CO methanation",
+   "role": "secondary",
+   "source": "M. A. Vannice, Catalytic synthesis of hydrocarbons from H2-CO mixtures over the group VIII metals. V. The catalytic behavior of silica-supported metals, J. Catal. 50, 228 (1977)",
+   "short": "Vannice 1977",
+   "via": "arXiv:1812.09531 (version 1), supplementary Table ST.8.1",
+   "quantity": "Turnover frequency (activity A2)",
+   "unit": "1/s",
+   "temperature_K": 548,
+   "temperature_from": "table",
+   "anchor": "Co",
+   "anchor_descriptor_eV": -0.941,
+   "peak_move_eV": 0.0,
+   "descriptor": {
+    "C": 0.5,
+    "O": 0.5
+   },
+   "n": 8,
+   "rho": 0.929,
+   "p": 0.00112,
+   "published_best": "Ru",
+   "predicted_top": [
+    "Ru",
+    "Fe",
+    "Ni"
+   ],
+   "best_in_top": true,
+   "passes": false,
+   "left_out": [
+    "Re"
+   ],
+   "measured_decades": 4.3,
+   "predicted_decades": 32.4,
+   "rows": [
+    {
+     "metal": "Ru",
+     "descriptor_eV": -0.736,
+     "shift_eV": 0.368,
+     "ratio": 0.0004089112696066006,
+     "predicted_rank": 1.0,
+     "published": 0.27,
+     "published_rank": 1.0
+    },
+    {
+     "metal": "Fe",
+     "descriptor_eV": -1.726,
+     "shift_eV": 0.784,
+     "ratio": 6.105351616924432e-08,
+     "predicted_rank": 2.0,
+     "published": 0.16,
+     "published_rank": 2.0
+    },
+    {
+     "metal": "Ni",
+     "descriptor_eV": -0.367,
+     "shift_eV": 1.033,
+     "ratio": 3.1524637804195397e-10,
+     "predicted_rank": 3.0,
+     "published": 0.018,
+     "published_rank": 3.0
+    },
+    {
+     "metal": "Rh",
+     "descriptor_eV": -0.281,
+     "shift_eV": 1.187,
+     "ratio": 1.2033500826025011e-11,
+     "predicted_rank": 4.0,
+     "published": 0.0073,
+     "published_rank": 4.0
+    },
+    {
+     "metal": "Pt",
+     "descriptor_eV": 0.438,
+     "shift_eV": 2.482,
+     "ratio": 1.4850459637944728e-23,
+     "predicted_rank": 7.0,
+     "published": 0.0016,
+     "published_rank": 5.0
+    },
+    {
+     "metal": "Ir",
+     "descriptor_eV": 0.074,
+     "shift_eV": 1.828,
+     "ratio": 1.548602087720667e-17,
+     "predicted_rank": 5.0,
+     "published": 0.00079,
+     "published_rank": 6.0
+    },
+    {
+     "metal": "Pd",
+     "descriptor_eV": 0.411,
+     "shift_eV": 2.433,
+     "ratio": 4.216094871025526e-23,
+     "predicted_rank": 6.0,
+     "published": 0.0003,
+     "published_rank": 7.0
+    },
+    {
+     "metal": "Cu",
+     "descriptor_eV": 1.22,
+     "shift_eV": 3.89,
+     "ratio": 1.6868956577373763e-36,
+     "predicted_rank": 8.0,
+     "published": 1.5e-05,
+     "published_rank": 8.0
+    }
+   ]
+  },
+  {
+   "pack": "ethane_hydrogenolysis",
+   "name": "Ethane hydrogenolysis",
+   "role": "primary",
+   "source": "J. H. Sinfelt, ethane hydrogenolysis on silica-supported metals (Bond's references 24-27)",
+   "short": "Sinfelt, in Bond 2005",
+   "via": "G. C. Bond, Metal-Catalysed Reactions of Hydrocarbons (Springer, 2005), Table 13.2",
+   "quantity": "Rate at 478 K from each metal's Arrhenius parameters, ln(r) = ln A - E / (R T)",
+   "unit": "ln(molecules per cm2 per s)",
+   "temperature_K": 478,
+   "temperature_from": "table",
+   "anchor": "Os",
+   "anchor_descriptor_eV": -1.328,
+   "peak_move_eV": -0.052,
+   "descriptor": {
+    "C": 1.0
+   },
+   "n": 5,
+   "rho": 0.1,
+   "p": 0.475,
+   "published_best": "Ni",
+   "predicted_top": [
+    "Co",
+    "Rh",
+    "Ir"
+   ],
+   "best_in_top": false,
+   "passes": false,
+   "left_out": [
+    "Pt",
+    "Ru"
+   ],
+   "measured_decades": 6.1,
+   "predicted_decades": 7.7,
+   "rows": [
+    {
+     "metal": "Ni",
+     "descriptor_eV": -0.823,
+     "shift_eV": 0.455,
+     "ratio": 1.605597727838931e-05,
+     "predicted_rank": 4.0,
+     "published": 30.22531305932999,
+     "published_rank": 1.0
+    },
+    {
+     "metal": "Rh",
+     "descriptor_eV": -1.088,
+     "shift_eV": 0.216,
+     "ratio": 0.005282616720221042,
+     "predicted_rank": 2.0,
+     "published": 28.81561822612987,
+     "published_rank": 2.0
+    },
+    {
+     "metal": "Ir",
+     "descriptor_eV": -0.838,
+     "shift_eV": 0.441,
+     "ratio": 2.2207564375730272e-05,
+     "predicted_rank": 3.0,
+     "published": 28.106013364463692,
+     "published_rank": 3.0
+    },
+    {
+     "metal": "Co",
+     "descriptor_eV": -1.37,
+     "shift_eV": -0.038,
+     "ratio": 2.4924304308035516,
+     "predicted_rank": 1.0,
+     "published": 27.24802430833088,
+     "published_rank": 4.0
+    },
+    {
+     "metal": "Pd",
+     "descriptor_eV": -0.564,
+     "shift_eV": 0.688,
+     "ratio": 5.576400434983353e-08,
+     "predicted_rank": 5.0,
+     "published": 16.15735925539522,
+     "published_rank": 5.0
+    }
+   ]
+  },
+  {
+   "pack": "benzene_hydrogenation",
+   "name": "Benzene hydrogenation",
+   "role": "primary",
+   "source": "H. Toulhoat, P. Raybaud, Kinetic interpretation of catalytic activity patterns based on theoretical chemical descriptors, J. Catal. 216, 63 (2003)",
+   "short": "Toulhoat and Raybaud 2003",
+   "via": "arXiv:1812.09531 (version 1), supplementary Table ST.7.1",
+   "quantity": "Turnover frequency as tabulated",
+   "unit": "as tabulated",
+   "temperature_K": 303,
+   "temperature_from": "table",
+   "anchor": "Os",
+   "anchor_descriptor_eV": -1.328,
+   "peak_move_eV": 0.0,
+   "descriptor": {
+    "C": 1.0
+   },
+   "n": 8,
+   "rho": 0.571,
+   "p": 0.0756,
+   "published_best": "Co",
+   "predicted_top": [
+    "Co",
+    "Ru",
+    "Re"
+   ],
+   "best_in_top": true,
+   "passes": false,
+   "left_out": [],
+   "measured_decades": 2.0,
+   "predicted_decades": 40.3,
+   "rows": [
+    {
+     "metal": "Co",
+     "descriptor_eV": -1.37,
+     "shift_eV": 0.042,
+     "ratio": 0.20173557382680038,
+     "predicted_rank": 1.0,
+     "published": 231.8,
+     "published_rank": 1.0
+    },
+    {
+     "metal": "Pt",
+     "descriptor_eV": -0.703,
+     "shift_eV": 0.563,
+     "ratio": 4.391028674786972e-10,
+     "predicted_rank": 6.0,
+     "published": 139.6,
+     "published_rank": 2.0
+    },
+    {
+     "metal": "Ir",
+     "descriptor_eV": -0.838,
+     "shift_eV": 0.441,
+     "ratio": 4.5586521055092624e-08,
+     "predicted_rank": 4.0,
+     "published": 117.5,
+     "published_rank": 3.0
+    },
+    {
+     "metal": "Ni",
+     "descriptor_eV": -0.823,
+     "shift_eV": 0.455,
+     "ratio": 2.7328453937747897e-08,
+     "predicted_rank": 5.0,
+     "published": 56.0,
+     "published_rank": 4.0
+    },
+    {
+     "metal": "Ru",
+     "descriptor_eV": -1.271,
+     "shift_eV": 0.051,
+     "ratio": 0.13945686497840729,
+     "predicted_rank": 2.0,
+     "published": 42.0,
+     "published_rank": 5.0
+    },
+    {
+     "metal": "Re",
+     "descriptor_eV": -1.154,
+     "shift_eV": 0.157,
+     "ratio": 0.002436284334721939,
+     "predicted_rank": 3.0,
+     "published": 35.5,
+     "published_rank": 6.0
+    },
+    {
+     "metal": "Pd",
+     "descriptor_eV": -0.564,
+     "shift_eV": 0.688,
+     "ratio": 3.605408015888304e-12,
+     "predicted_rank": 7.0,
+     "published": 6.5,
+     "published_rank": 7.0
+    },
+    {
+     "metal": "Cu",
+     "descriptor_eV": 1.409,
+     "shift_eV": 2.463,
+     "ratio": 1.0718529731498577e-41,
+     "predicted_rank": 8.0,
+     "published": 2.3,
+     "published_rank": 8.0
+    }
+   ]
+  },
+  {
+   "pack": "ethylene_hydrogenation",
+   "name": "Ethylene hydrogenation",
+   "role": "indicative",
+   "source": "Bond's reference 51 (ethene hydrogenation on silica-supported metals)",
+   "short": "Bond 2005, Table 7.3",
+   "via": "G. C. Bond, Metal-Catalysed Reactions of Hydrocarbons (Springer, 2005), Table 7.3",
+   "quantity": "Temperature listed for each metal (read here as the temperature of equal rate; lower = more active)",
+   "unit": "K",
+   "temperature_K": 250,
+   "temperature_from": "table",
+   "anchor": "Rh",
+   "anchor_descriptor_eV": -0.272,
+   "peak_move_eV": 0.0,
+   "descriptor": {
+    "C": 0.25
+   },
+   "n": 6,
+   "rho": 0.943,
+   "p": 0.00833,
+   "published_best": "Ru",
+   "predicted_top": [
+    "Ru",
+    "Ni",
+    "Co"
+   ],
+   "best_in_top": true,
+   "passes": false,
+   "left_out": [],
+   "measured_decades": null,
+   "predicted_decades": 10.4,
+   "rows": [
+    {
+     "metal": "Ru",
+     "descriptor_eV": -0.318,
+     "shift_eV": 0.046,
+     "ratio": 0.11984458721685622,
+     "predicted_rank": 1.0,
+     "published": 203,
+     "published_rank": 1.0
+    },
+    {
+     "metal": "Co",
+     "descriptor_eV": -0.342,
+     "shift_eV": 0.07,
+     "ratio": 0.038012720297734,
+     "predicted_rank": 3.0,
+     "published": 213,
+     "published_rank": 2.0
+    },
+    {
+     "metal": "Ni",
+     "descriptor_eV": -0.206,
+     "shift_eV": 0.06,
+     "ratio": 0.06262856970008117,
+     "predicted_rank": 2.0,
+     "published": 233,
+     "published_rank": 3.0
+    },
+    {
+     "metal": "Pd",
+     "descriptor_eV": -0.141,
+     "shift_eV": 0.118,
+     "ratio": 0.004180568257247846,
+     "predicted_rank": 4.0,
+     "published": 243,
+     "published_rank": 4.0
+    },
+    {
+     "metal": "Fe",
+     "descriptor_eV": -0.621,
+     "shift_eV": 0.349,
+     "ratio": 9.093006372153543e-08,
+     "predicted_rank": 5.0,
+     "published": 303,
+     "published_rank": 5.0
+    },
+    {
+     "metal": "Cu",
+     "descriptor_eV": 0.352,
+     "shift_eV": 0.562,
+     "ratio": 4.7272557650665385e-12,
+     "predicted_rank": 6.0,
+     "published": 353,
+     "published_rank": 6.0
+    }
+   ]
+  }
+ ],
+ "electro_runs": [
+  "runs/metals-thermal",
+  "runs/metals-electro",
+  "runs/pblock-electro"
+ ],
+ "electro_intermediates": [
+  {
+   "table": "herron2015",
+   "short": "Herron et al. 2015",
+   "column": "N",
+   "intermediate": "N",
+   "n": 12,
+   "offset_eV": 0.196,
+   "median_miss_eV": 0.257,
+   "max_miss_eV": 0.711,
+   "rho": 0.923,
+   "p": 3.01e-05,
+   "passes": false,
+   "rows": [
+    {
+     "metal": "Ag",
+     "uma_eV": 3.242,
+     "published_eV": 3.2,
+     "miss_eV": 0.238
+    },
+    {
+     "metal": "Au",
+     "uma_eV": 2.969,
+     "published_eV": 3.16,
+     "miss_eV": 0.005
+    },
+    {
+     "metal": "Cu",
+     "uma_eV": 1.645,
+     "published_eV": 1.94,
+     "miss_eV": -0.099
+    },
+    {
+     "metal": "Pd",
+     "uma_eV": 0.631,
+     "published_eV": 0.94,
+     "miss_eV": -0.113
+    },
+    {
+     "metal": "Pt",
+     "uma_eV": 0.62,
+     "published_eV": 0.79,
+     "miss_eV": 0.027
+    },
+    {
+     "metal": "Ni",
+     "uma_eV": -0.301,
+     "published_eV": 0.23,
+     "miss_eV": -0.335
+    },
+    {
+     "metal": "Ir",
+     "uma_eV": 0.21,
+     "published_eV": 0.13,
+     "miss_eV": 0.276
+    },
+    {
+     "metal": "Co",
+     "uma_eV": -1.017,
+     "published_eV": -0.11,
+     "miss_eV": -0.711
+    },
+    {
+     "metal": "Rh",
+     "uma_eV": -0.198,
+     "published_eV": -0.14,
+     "miss_eV": 0.138
+    },
+    {
+     "metal": "Ru",
+     "uma_eV": -0.786,
+     "published_eV": -0.3,
+     "miss_eV": -0.289
+    },
+    {
+     "metal": "Os",
+     "uma_eV": -0.738,
+     "published_eV": -0.82,
+     "miss_eV": 0.278
+    },
+    {
+     "metal": "Re",
+     "uma_eV": -1.1,
+     "published_eV": -1.49,
+     "miss_eV": 0.586
+    }
+   ]
+  },
+  {
+   "table": "herron2015",
+   "short": "Herron et al. 2015",
+   "column": "NH",
+   "intermediate": "NH",
+   "n": 12,
+   "offset_eV": 0.314,
+   "median_miss_eV": 0.165,
+   "max_miss_eV": 0.604,
+   "rho": 0.958,
+   "p": 3.18e-06,
+   "passes": true,
+   "rows": [
+    {
+     "metal": "Ag",
+     "uma_eV": 1.61,
+     "published_eV": 1.75,
+     "miss_eV": 0.174
+    },
+    {
+     "metal": "Au",
+     "uma_eV": 1.64,
+     "published_eV": 2.11,
+     "miss_eV": -0.156
+    },
+    {
+     "metal": "Cu",
+     "uma_eV": 0.335,
+     "published_eV": 0.71,
+     "miss_eV": -0.061
+    },
+    {
+     "metal": "Pd",
+     "uma_eV": 0.095,
+     "published_eV": 0.4,
+     "miss_eV": 0.009
+    },
+    {
+     "metal": "Pt",
+     "uma_eV": -0.011,
+     "published_eV": 0.27,
+     "miss_eV": 0.033
+    },
+    {
+     "metal": "Ni",
+     "uma_eV": -0.901,
+     "published_eV": -0.33,
+     "miss_eV": -0.257
+    },
+    {
+     "metal": "Ir",
+     "uma_eV": -0.354,
+     "published_eV": -0.37,
+     "miss_eV": 0.33
+    },
+    {
+     "metal": "Co",
+     "uma_eV": -1.418,
+     "published_eV": -0.5,
+     "miss_eV": -0.604
+    },
+    {
+     "metal": "Rh",
+     "uma_eV": -0.647,
+     "published_eV": -0.39,
+     "miss_eV": 0.057
+    },
+    {
+     "metal": "Ru",
+     "uma_eV": -1.12,
+     "published_eV": -0.69,
+     "miss_eV": -0.116
+    },
+    {
+     "metal": "Os",
+     "uma_eV": -1.123,
+     "published_eV": -0.99,
+     "miss_eV": 0.181
+    },
+    {
+     "metal": "Re",
+     "uma_eV": -1.523,
+     "published_eV": -1.62,
+     "miss_eV": 0.411
+    }
+   ]
+  },
+  {
+   "table": "herron2015",
+   "short": "Herron et al. 2015",
+   "column": "NH2",
+   "intermediate": "NH2",
+   "n": 12,
+   "offset_eV": 0.518,
+   "median_miss_eV": 0.086,
+   "max_miss_eV": 0.436,
+   "rho": 0.853,
+   "p": 0.000393,
+   "passes": true,
+   "rows": [
+    {
+     "metal": "Ag",
+     "uma_eV": 0.332,
+     "published_eV": 0.74,
+     "miss_eV": 0.11
+    },
+    {
+     "metal": "Au",
+     "uma_eV": 0.523,
+     "published_eV": 1.06,
+     "miss_eV": -0.019
+    },
+    {
+     "metal": "Cu",
+     "uma_eV": -0.309,
+     "published_eV": 0.27,
+     "miss_eV": -0.061
+    },
+    {
+     "metal": "Pd",
+     "uma_eV": -0.313,
+     "published_eV": 0.08,
+     "miss_eV": 0.126
+    },
+    {
+     "metal": "Pt",
+     "uma_eV": -0.42,
+     "published_eV": 0.1,
+     "miss_eV": -0.002
+    },
+    {
+     "metal": "Ni",
+     "uma_eV": -0.909,
+     "published_eV": -0.21,
+     "miss_eV": -0.18
+    },
+    {
+     "metal": "Ir",
+     "uma_eV": -0.641,
+     "published_eV": -0.28,
+     "miss_eV": 0.157
+    },
+    {
+     "metal": "Co",
+     "uma_eV": -1.224,
+     "published_eV": -0.27,
+     "miss_eV": -0.436
+    },
+    {
+     "metal": "Rh",
+     "uma_eV": -0.822,
+     "published_eV": -0.36,
+     "miss_eV": 0.057
+    },
+    {
+     "metal": "Ru",
+     "uma_eV": -1.055,
+     "published_eV": -0.59,
+     "miss_eV": 0.053
+    },
+    {
+     "metal": "Os",
+     "uma_eV": -1.036,
+     "published_eV": -0.58,
+     "miss_eV": 0.063
+    },
+    {
+     "metal": "Re",
+     "uma_eV": -1.116,
+     "published_eV": -0.73,
+     "miss_eV": 0.132
+    }
+   ]
+  },
+  {
+   "table": "herron2015",
+   "short": "Herron et al. 2015",
+   "column": "NNH",
+   "intermediate": "NNH",
+   "n": 12,
+   "offset_eV": 0.296,
+   "median_miss_eV": 0.188,
+   "max_miss_eV": 0.535,
+   "rho": 0.886,
+   "p": 0.000133,
+   "passes": true,
+   "rows": [
+    {
+     "metal": "Ag",
+     "uma_eV": 2.245,
+     "published_eV": 2.63,
+     "miss_eV": -0.089
+    },
+    {
+     "metal": "Au",
+     "uma_eV": 2.026,
+     "published_eV": 2.47,
+     "miss_eV": -0.147
+    },
+    {
+     "metal": "Cu",
+     "uma_eV": 1.649,
+     "published_eV": 2.08,
+     "miss_eV": -0.134
+    },
+    {
+     "metal": "Pd",
+     "uma_eV": 0.964,
+     "published_eV": 1.18,
+     "miss_eV": 0.08
+    },
+    {
+     "metal": "Pt",
+     "uma_eV": 1.093,
+     "published_eV": 1.16,
+     "miss_eV": 0.229
+    },
+    {
+     "metal": "Ni",
+     "uma_eV": 0.293,
+     "published_eV": 0.97,
+     "miss_eV": -0.381
+    },
+    {
+     "metal": "Ir",
+     "uma_eV": 0.876,
+     "published_eV": 0.82,
+     "miss_eV": 0.352
+    },
+    {
+     "metal": "Co",
+     "uma_eV": -0.011,
+     "published_eV": 0.82,
+     "miss_eV": -0.535
+    },
+    {
+     "metal": "Rh",
+     "uma_eV": 0.485,
+     "published_eV": 0.89,
+     "miss_eV": -0.109
+    },
+    {
+     "metal": "Ru",
+     "uma_eV": 0.119,
+     "published_eV": 0.49,
+     "miss_eV": -0.075
+    },
+    {
+     "metal": "Os",
+     "uma_eV": 0.427,
+     "published_eV": 0.33,
+     "miss_eV": 0.393
+    },
+    {
+     "metal": "Re",
+     "uma_eV": -0.13,
+     "published_eV": -0.25,
+     "miss_eV": 0.416
+    }
+   ]
+  },
+  {
+   "table": "herron2015",
+   "short": "Herron et al. 2015",
+   "column": "HNNH",
+   "intermediate": "HNNH",
+   "n": 10,
+   "offset_eV": 0.462,
+   "median_miss_eV": 0.183,
+   "max_miss_eV": 0.743,
+   "rho": 0.758,
+   "p": 0.00746,
+   "passes": true,
+   "rows": [
+    {
+     "metal": "Cu",
+     "uma_eV": 1.323,
+     "published_eV": 1.87,
+     "miss_eV": -0.084
+    },
+    {
+     "metal": "Pd",
+     "uma_eV": 0.982,
+     "published_eV": 1.27,
+     "miss_eV": 0.174
+    },
+    {
+     "metal": "Pt",
+     "uma_eV": 0.89,
+     "published_eV": 1.16,
+     "miss_eV": 0.192
+    },
+    {
+     "metal": "Ni",
+     "uma_eV": 0.188,
+     "published_eV": 1.0,
+     "miss_eV": -0.35
+    },
+    {
+     "metal": "Ir",
+     "uma_eV": 0.466,
+     "published_eV": 0.68,
+     "miss_eV": 0.248
+    },
+    {
+     "metal": "Co",
+     "uma_eV": -0.516,
+     "published_eV": 0.69,
+     "miss_eV": -0.743
+    },
+    {
+     "metal": "Rh",
+     "uma_eV": 0.277,
+     "published_eV": 0.65,
+     "miss_eV": 0.09
+    },
+    {
+     "metal": "Ru",
+     "uma_eV": -0.162,
+     "published_eV": 0.25,
+     "miss_eV": 0.051
+    },
+    {
+     "metal": "Os",
+     "uma_eV": -0.051,
+     "published_eV": 0.31,
+     "miss_eV": 0.101
+    },
+    {
+     "metal": "Re",
+     "uma_eV": -0.421,
+     "published_eV": -0.28,
+     "miss_eV": 0.322
+    }
+   ]
+  },
+  {
+   "table": "herron2015",
+   "short": "Herron et al. 2015",
+   "column": "NNH2",
+   "intermediate": "NNH2",
+   "n": 12,
+   "offset_eV": 0.529,
+   "median_miss_eV": 0.11,
+   "max_miss_eV": 0.612,
+   "rho": 0.916,
+   "p": 4.19e-05,
+   "passes": true,
+   "rows": [
+    {
+     "metal": "Ag",
+     "uma_eV": 2.2,
+     "published_eV": 2.63,
+     "miss_eV": 0.099
+    },
+    {
+     "metal": "Au",
+     "uma_eV": 2.357,
+     "published_eV": 2.93,
+     "miss_eV": -0.044
+    },
+    {
+     "metal": "Cu",
+     "uma_eV": 1.129,
+     "published_eV": 1.78,
+     "miss_eV": -0.122
+    },
+    {
+     "metal": "Pd",
+     "uma_eV": 0.569,
+     "published_eV": 1.05,
+     "miss_eV": 0.048
+    },
+    {
+     "metal": "Pt",
+     "uma_eV": 0.578,
+     "published_eV": 1.08,
+     "miss_eV": 0.027
+    },
+    {
+     "metal": "Ni",
+     "uma_eV": -0.301,
+     "published_eV": 0.58,
+     "miss_eV": -0.352
+    },
+    {
+     "metal": "Ir",
+     "uma_eV": 0.305,
+     "published_eV": 0.61,
+     "miss_eV": 0.224
+    },
+    {
+     "metal": "Co",
+     "uma_eV": -0.731,
+     "published_eV": 0.41,
+     "miss_eV": -0.612
+    },
+    {
+     "metal": "Rh",
+     "uma_eV": -0.088,
+     "published_eV": 0.48,
+     "miss_eV": -0.038
+    },
+    {
+     "metal": "Ru",
+     "uma_eV": -0.404,
+     "published_eV": 0.12,
+     "miss_eV": 0.006
+    },
+    {
+     "metal": "Os",
+     "uma_eV": -0.207,
+     "published_eV": 0.03,
+     "miss_eV": 0.293
+    },
+    {
+     "metal": "Re",
+     "uma_eV": -0.649,
+     "published_eV": -0.59,
+     "miss_eV": 0.47
+    }
+   ]
+  },
+  {
+   "table": "herron2015",
+   "short": "Herron et al. 2015",
+   "column": "HNNH2",
+   "intermediate": "HNNH2",
+   "n": 12,
+   "offset_eV": 0.739,
+   "median_miss_eV": 0.204,
+   "max_miss_eV": 0.689,
+   "rho": 0.846,
+   "p": 0.000472,
+   "passes": false,
+   "rows": [
+    {
+     "metal": "Ag",
+     "uma_eV": 1.302,
+     "published_eV": 1.97,
+     "miss_eV": 0.07
+    },
+    {
+     "metal": "Au",
+     "uma_eV": 1.179,
+     "published_eV": 2.13,
+     "miss_eV": -0.212
+    },
+    {
+     "metal": "Cu",
+     "uma_eV": 0.503,
+     "published_eV": 1.4,
+     "miss_eV": -0.158
+    },
+    {
+     "metal": "Pd",
+     "uma_eV": 0.418,
+     "published_eV": 1.07,
+     "miss_eV": 0.087
+    },
+    {
+     "metal": "Pt",
+     "uma_eV": 0.253,
+     "published_eV": 1.03,
+     "miss_eV": -0.038
+    },
+    {
+     "metal": "Ni",
+     "uma_eV": -0.32,
+     "published_eV": 0.68,
+     "miss_eV": -0.261
+    },
+    {
+     "metal": "Ir",
+     "uma_eV": -0.026,
+     "published_eV": 0.29,
+     "miss_eV": 0.423
+    },
+    {
+     "metal": "Co",
+     "uma_eV": -0.817,
+     "published_eV": 0.61,
+     "miss_eV": -0.689
+    },
+    {
+     "metal": "Rh",
+     "uma_eV": -0.315,
+     "published_eV": 0.31,
+     "miss_eV": 0.114
+    },
+    {
+     "metal": "Ru",
+     "uma_eV": -0.633,
+     "published_eV": -0.09,
+     "miss_eV": 0.196
+    },
+    {
+     "metal": "Os",
+     "uma_eV": -0.696,
+     "published_eV": -0.18,
+     "miss_eV": 0.223
+    },
+    {
+     "metal": "Re",
+     "uma_eV": -0.762,
+     "published_eV": -0.27,
+     "miss_eV": 0.246
+    }
+   ]
+  },
+  {
+   "table": "elnabawy2018",
+   "short": "Elnabawy et al. 2018",
+   "column": "COOH",
+   "intermediate": "COOH",
+   "n": 12,
+   "offset_eV": 0.829,
+   "median_miss_eV": 0.063,
+   "max_miss_eV": 0.434,
+   "rho": 0.797,
+   "p": 0.00146,
+   "passes": true,
+   "rows": [
+    {
+     "metal": "Au",
+     "uma_eV": 0.222,
+     "published_eV": 1.07,
+     "miss_eV": -0.019
+    },
+    {
+     "metal": "Ag",
+     "uma_eV": 0.386,
+     "published_eV": 1.29,
+     "miss_eV": -0.075
+    },
+    {
+     "metal": "Cu",
+     "uma_eV": -0.003,
+     "published_eV": 0.79,
+     "miss_eV": 0.036
+    },
+    {
+     "metal": "Pt",
+     "uma_eV": -0.727,
+     "published_eV": 0.05,
+     "miss_eV": 0.052
+    },
+    {
+     "metal": "Pd",
+     "uma_eV": -0.479,
+     "published_eV": 0.22,
+     "miss_eV": 0.129
+    },
+    {
+     "metal": "Ni",
+     "uma_eV": -0.7,
+     "published_eV": 0.26,
+     "miss_eV": -0.131
+    },
+    {
+     "metal": "Ir",
+     "uma_eV": -0.743,
+     "published_eV": -0.21,
+     "miss_eV": 0.296
+    },
+    {
+     "metal": "Rh",
+     "uma_eV": -0.847,
+     "published_eV": -0.06,
+     "miss_eV": 0.042
+    },
+    {
+     "metal": "Co",
+     "uma_eV": -1.033,
+     "published_eV": 0.23,
+     "miss_eV": -0.434
+    },
+    {
+     "metal": "Os",
+     "uma_eV": -1.059,
+     "published_eV": -0.31,
+     "miss_eV": 0.079
+    },
+    {
+     "metal": "Ru",
+     "uma_eV": -0.984,
+     "published_eV": -0.16,
+     "miss_eV": 0.005
+    },
+    {
+     "metal": "Re",
+     "uma_eV": -0.898,
+     "published_eV": -0.09,
+     "miss_eV": 0.02
+    }
+   ]
+  },
+  {
+   "table": "elnabawy2018",
+   "short": "Elnabawy et al. 2018",
+   "column": "OCHO",
+   "intermediate": "OCHO",
+   "n": 12,
+   "offset_eV": 0.772,
+   "median_miss_eV": 0.047,
+   "max_miss_eV": 0.278,
+   "rho": 0.951,
+   "p": 5.49e-06,
+   "passes": true,
+   "rows": [
+    {
+     "metal": "Au",
+     "uma_eV": 0.168,
+     "published_eV": 0.91,
+     "miss_eV": 0.031
+    },
+    {
+     "metal": "Ag",
+     "uma_eV": -0.421,
+     "published_eV": 0.37,
+     "miss_eV": -0.019
+    },
+    {
+     "metal": "Cu",
+     "uma_eV": -0.798,
+     "published_eV": -0.04,
+     "miss_eV": 0.015
+    },
+    {
+     "metal": "Pt",
+     "uma_eV": -0.32,
+     "published_eV": 0.34,
+     "miss_eV": 0.112
+    },
+    {
+     "metal": "Pd",
+     "uma_eV": -0.44,
+     "published_eV": 0.26,
+     "miss_eV": 0.072
+    },
+    {
+     "metal": "Ni",
+     "uma_eV": -1.002,
+     "published_eV": -0.12,
+     "miss_eV": -0.109
+    },
+    {
+     "metal": "Ir",
+     "uma_eV": -0.707,
+     "published_eV": -0.15,
+     "miss_eV": 0.216
+    },
+    {
+     "metal": "Rh",
+     "uma_eV": -0.935,
+     "published_eV": -0.11,
+     "miss_eV": -0.053
+    },
+    {
+     "metal": "Co",
+     "uma_eV": -1.33,
+     "published_eV": -0.28,
+     "miss_eV": -0.278
+    },
+    {
+     "metal": "Os",
+     "uma_eV": -1.362,
+     "published_eV": -0.63,
+     "miss_eV": 0.041
+    },
+    {
+     "metal": "Ru",
+     "uma_eV": -1.355,
+     "published_eV": -0.56,
+     "miss_eV": -0.022
+    },
+    {
+     "metal": "Re",
+     "uma_eV": -1.448,
+     "published_eV": -0.67,
+     "miss_eV": -0.006
+    }
+   ]
+  },
+  {
+   "table": "elnabawy2018",
+   "short": "Elnabawy et al. 2018",
+   "column": "CO_H2O",
+   "intermediate": "CO",
+   "n": 12,
+   "offset_eV": 0.387,
+   "median_miss_eV": 0.108,
+   "max_miss_eV": 0.405,
+   "rho": 0.559,
+   "p": 0.0314,
+   "passes": false,
+   "rows": [
+    {
+     "metal": "Au",
+     "uma_eV": 0.084,
+     "published_eV": 0.27,
+     "miss_eV": 0.201
+    },
+    {
+     "metal": "Ag",
+     "uma_eV": 0.064,
+     "published_eV": 0.43,
+     "miss_eV": 0.021
+    },
+    {
+     "metal": "Cu",
+     "uma_eV": -0.531,
+     "published_eV": -0.28,
+     "miss_eV": 0.136
+    },
+    {
+     "metal": "Pt",
+     "uma_eV": -1.498,
+     "published_eV": -1.17,
+     "miss_eV": 0.059
+    },
+    {
+     "metal": "Pd",
+     "uma_eV": -1.679,
+     "published_eV": -1.41,
+     "miss_eV": 0.119
+    },
+    {
+     "metal": "Ni",
+     "uma_eV": -1.837,
+     "published_eV": -1.26,
+     "miss_eV": -0.19
+    },
+    {
+     "metal": "Ir",
+     "uma_eV": -1.678,
+     "published_eV": -1.44,
+     "miss_eV": 0.149
+    },
+    {
+     "metal": "Rh",
+     "uma_eV": -1.701,
+     "published_eV": -1.34,
+     "miss_eV": 0.026
+    },
+    {
+     "metal": "Co",
+     "uma_eV": -1.872,
+     "published_eV": -1.08,
+     "miss_eV": -0.405
+    },
+    {
+     "metal": "Os",
+     "uma_eV": -1.81,
+     "published_eV": -1.46,
+     "miss_eV": 0.037
+    },
+    {
+     "metal": "Ru",
+     "uma_eV": -1.723,
+     "published_eV": -1.28,
+     "miss_eV": -0.056
+    },
+    {
+     "metal": "Re",
+     "uma_eV": -1.594,
+     "published_eV": -1.11,
+     "miss_eV": -0.097
+    }
+   ]
+  }
+ ],
+ "electro_reactions": [
+  {
+   "reaction": "ammonia_oxidation",
+   "name": "Ammonia oxidation to nitrogen (AOR)",
+   "direction": "oxidation",
+   "source": "Herron et al. 2015",
+   "n": 12,
+   "rho": 0.855,
+   "p": 0.000356,
+   "ranking_passes": true,
+   "intermediates_new": [
+    "NH2",
+    "NH",
+    "N"
+   ],
+   "intermediates_failing": [
+    "N"
+   ],
+   "intermediates_awaiting_table": [],
+   "corrections_missing": [],
+   "passes": false,
+   "rows": [
+    {
+     "metal": "Ag",
+     "uma_V": 1.382,
+     "published_V": 1.45,
+     "uma_step": "* → NH2",
+     "published_step": "NH → N"
+    },
+    {
+     "metal": "Au",
+     "uma_V": 1.573,
+     "published_V": 1.231,
+     "uma_step": "* → NH2",
+     "published_step": "* → NH2"
+    },
+    {
+     "metal": "Cu",
+     "uma_V": 1.0,
+     "published_V": 1.23,
+     "uma_step": "NH → N",
+     "published_step": "NH → N"
+    },
+    {
+     "metal": "Pd",
+     "uma_V": 0.738,
+     "published_V": 0.54,
+     "uma_step": "* → NH2",
+     "published_step": "NH → N"
+    },
+    {
+     "metal": "Pt",
+     "uma_V": 0.63,
+     "published_V": 0.52,
+     "uma_step": "* → NH2",
+     "published_step": "NH → N"
+    },
+    {
+     "metal": "Ni",
+     "uma_V": 0.29,
+     "published_V": 0.56,
+     "uma_step": "NH → N",
+     "published_step": "NH → N"
+    },
+    {
+     "metal": "Ir",
+     "uma_V": 0.409,
+     "published_V": 0.5,
+     "uma_step": "* → NH2",
+     "published_step": "NH → N"
+    },
+    {
+     "metal": "Co",
+     "uma_V": 0.09,
+     "published_V": 0.39,
+     "uma_step": "NH → N",
+     "published_step": "NH → N"
+    },
+    {
+     "metal": "Rh",
+     "uma_V": 0.229,
+     "published_V": 0.25,
+     "uma_step": "* → NH2",
+     "published_step": "NH → N"
+    },
+    {
+     "metal": "Ru",
+     "uma_V": 0.025,
+     "published_V": 0.39,
+     "uma_step": "NH → N",
+     "published_step": "NH → N"
+    },
+    {
+     "metal": "Os",
+     "uma_V": 0.074,
+     "published_V": 0.17,
+     "uma_step": "NH → N",
+     "published_step": "NH → N"
+    },
+    {
+     "metal": "Re",
+     "uma_V": 0.113,
+     "published_V": 0.13,
+     "uma_step": "NH → N",
+     "published_step": "NH → N"
+    }
+   ]
+  },
+  {
+   "reaction": "co2_to_co",
+   "name": "CO2 reduction to CO",
+   "direction": "reduction",
+   "source": "Elnabawy et al. 2018",
+   "n": 12,
+   "rho": 0.797,
+   "p": 0.00146,
+   "ranking_passes": true,
+   "intermediates_new": [
+    "COOH",
+    "CO"
+   ],
+   "intermediates_failing": [
+    "CO"
+   ],
+   "intermediates_awaiting_table": [],
+   "corrections_missing": [
+    "CO",
+    "COOH"
+   ],
+   "passes": false,
+   "rows": [
+    {
+     "metal": "Au",
+     "uma_V": -1.31,
+     "published_V": -1.519,
+     "uma_step": "start → COOH",
+     "published_step": "start → COOH"
+    },
+    {
+     "metal": "Ag",
+     "uma_V": -1.474,
+     "published_V": -1.739,
+     "uma_step": "start → COOH",
+     "published_step": "start → COOH"
+    },
+    {
+     "metal": "Cu",
+     "uma_V": -1.085,
+     "published_V": -1.239,
+     "uma_step": "start → COOH",
+     "published_step": "start → COOH"
+    },
+    {
+     "metal": "Pt",
+     "uma_V": -0.361,
+     "published_V": -0.499,
+     "uma_step": "start → COOH",
+     "published_step": "start → COOH"
+    },
+    {
+     "metal": "Pd",
+     "uma_V": -0.609,
+     "published_V": -0.669,
+     "uma_step": "start → COOH",
+     "published_step": "start → COOH"
+    },
+    {
+     "metal": "Ni",
+     "uma_V": -0.388,
+     "published_V": -0.709,
+     "uma_step": "start → COOH",
+     "published_step": "start → COOH"
+    },
+    {
+     "metal": "Ir",
+     "uma_V": -0.345,
+     "published_V": -0.239,
+     "uma_step": "start → COOH",
+     "published_step": "start → COOH"
+    },
+    {
+     "metal": "Rh",
+     "uma_V": -0.241,
+     "published_V": -0.389,
+     "uma_step": "start → COOH",
+     "published_step": "start → COOH"
+    },
+    {
+     "metal": "Co",
+     "uma_V": -0.055,
+     "published_V": -0.679,
+     "uma_step": "start → COOH",
+     "published_step": "start → COOH"
+    },
+    {
+     "metal": "Os",
+     "uma_V": -0.029,
+     "published_V": -0.139,
+     "uma_step": "start → COOH",
+     "published_step": "start → COOH"
+    },
+    {
+     "metal": "Ru",
+     "uma_V": -0.104,
+     "published_V": -0.289,
+     "uma_step": "start → COOH",
+     "published_step": "start → COOH"
+    },
+    {
+     "metal": "Re",
+     "uma_V": -0.19,
+     "published_V": -0.359,
+     "uma_step": "start → COOH",
+     "published_step": "start → COOH"
+    }
+   ]
+  },
+  {
+   "reaction": "co2_to_formate",
+   "name": "CO2 reduction to formate",
+   "direction": "reduction",
+   "source": "Elnabawy et al. 2018",
+   "n": 12,
+   "rho": 0.842,
+   "p": 0.000498,
+   "ranking_passes": true,
+   "intermediates_new": [
+    "OCHO"
+   ],
+   "intermediates_failing": [],
+   "intermediates_awaiting_table": [],
+   "corrections_missing": [
+    "OCHO"
+   ],
+   "passes": false,
+   "rows": [
+    {
+     "metal": "Au",
+     "uma_V": -1.305,
+     "published_V": -1.359,
+     "uma_step": "start → OCHO",
+     "published_step": "start → OCHO"
+    },
+    {
+     "metal": "Ag",
+     "uma_V": -0.716,
+     "published_V": -0.819,
+     "uma_step": "start → OCHO",
+     "published_step": "start → OCHO"
+    },
+    {
+     "metal": "Cu",
+     "uma_V": -0.339,
+     "published_V": -0.409,
+     "uma_step": "start → OCHO",
+     "published_step": "start → OCHO"
+    },
+    {
+     "metal": "Pt",
+     "uma_V": -0.817,
+     "published_V": -0.789,
+     "uma_step": "start → OCHO",
+     "published_step": "start → OCHO"
+    },
+    {
+     "metal": "Pd",
+     "uma_V": -0.697,
+     "published_V": -0.709,
+     "uma_step": "start → OCHO",
+     "published_step": "start → OCHO"
+    },
+    {
+     "metal": "Ni",
+     "uma_V": -0.135,
+     "published_V": -0.329,
+     "uma_step": "start → OCHO",
+     "published_step": "start → OCHO"
+    },
+    {
+     "metal": "Ir",
+     "uma_V": -0.43,
+     "published_V": -0.299,
+     "uma_step": "start → OCHO",
+     "published_step": "start → OCHO"
+    },
+    {
+     "metal": "Rh",
+     "uma_V": -0.202,
+     "published_V": -0.339,
+     "uma_step": "start → OCHO",
+     "published_step": "start → OCHO"
+    },
+    {
+     "metal": "Co",
+     "uma_V": -0.421,
+     "published_V": -0.169,
+     "uma_step": "OCHO → *",
+     "published_step": "start → OCHO"
+    },
+    {
+     "metal": "Os",
+     "uma_V": -0.453,
+     "published_V": -0.409,
+     "uma_step": "OCHO → *",
+     "published_step": "OCHO → *"
+    },
+    {
+     "metal": "Ru",
+     "uma_V": -0.446,
+     "published_V": -0.339,
+     "uma_step": "OCHO → *",
+     "published_step": "OCHO → *"
+    },
+    {
+     "metal": "Re",
+     "uma_V": -0.539,
+     "published_V": -0.449,
+     "uma_step": "OCHO → *",
+     "published_step": "OCHO → *"
+    }
+   ]
+  },
+  {
+   "reaction": "formic_acid_oxidation",
+   "name": "Formic acid oxidation",
+   "direction": "oxidation",
+   "source": "Elnabawy et al. 2018",
+   "n": 12,
+   "rho": 0.842,
+   "p": 0.000498,
+   "ranking_passes": true,
+   "intermediates_new": [
+    "OCHO"
+   ],
+   "intermediates_failing": [],
+   "intermediates_awaiting_table": [],
+   "corrections_missing": [
+    "OCHO"
+   ],
+   "passes": false,
+   "rows": [
+    {
+     "metal": "Au",
+     "uma_V": 1.077,
+     "published_V": 1.131,
+     "uma_step": "* → OCHO",
+     "published_step": "* → OCHO"
+    },
+    {
+     "metal": "Ag",
+     "uma_V": 0.488,
+     "published_V": 0.591,
+     "uma_step": "* → OCHO",
+     "published_step": "* → OCHO"
+    },
+    {
+     "metal": "Cu",
+     "uma_V": 0.111,
+     "published_V": 0.181,
+     "uma_step": "* → OCHO",
+     "published_step": "* → OCHO"
+    },
+    {
+     "metal": "Pt",
+     "uma_V": 0.589,
+     "published_V": 0.561,
+     "uma_step": "* → OCHO",
+     "published_step": "* → OCHO"
+    },
+    {
+     "metal": "Pd",
+     "uma_V": 0.469,
+     "published_V": 0.481,
+     "uma_step": "* → OCHO",
+     "published_step": "* → OCHO"
+    },
+    {
+     "metal": "Ni",
+     "uma_V": -0.093,
+     "published_V": 0.101,
+     "uma_step": "* → OCHO",
+     "published_step": "* → OCHO"
+    },
+    {
+     "metal": "Ir",
+     "uma_V": 0.202,
+     "published_V": 0.071,
+     "uma_step": "* → OCHO",
+     "published_step": "* → OCHO"
+    },
+    {
+     "metal": "Rh",
+     "uma_V": -0.026,
+     "published_V": 0.111,
+     "uma_step": "* → OCHO",
+     "published_step": "* → OCHO"
+    },
+    {
+     "metal": "Co",
+     "uma_V": 0.193,
+     "published_V": -0.059,
+     "uma_step": "OCHO → end",
+     "published_step": "* → OCHO"
+    },
+    {
+     "metal": "Os",
+     "uma_V": 0.225,
+     "published_V": 0.181,
+     "uma_step": "OCHO → end",
+     "published_step": "OCHO → end"
+    },
+    {
+     "metal": "Ru",
+     "uma_V": 0.218,
+     "published_V": 0.111,
+     "uma_step": "OCHO → end",
+     "published_step": "OCHO → end"
+    },
+    {
+     "metal": "Re",
+     "uma_V": 0.311,
+     "published_V": 0.221,
+     "uma_step": "OCHO → end",
+     "published_step": "OCHO → end"
+    }
+   ]
+  },
+  {
+   "reaction": "h2o2_production",
+   "name": "Hydrogen peroxide production (two-electron ORR)",
+   "direction": "reduction",
+   "source": "Nørskov et al. 2004, Table 2 (O* through Fig. 8)",
+   "n": 11,
+   "rho": 0.845,
+   "p": 0.000913,
+   "ranking_passes": true,
+   "intermediates_new": [],
+   "intermediates_failing": [],
+   "intermediates_awaiting_table": [],
+   "corrections_missing": [],
+   "passes": true,
+   "rows": [
+    {
+     "metal": "Ag",
+     "uma_V": 0.551,
+     "published_V": 0.496,
+     "uma_step": "start → OOH",
+     "published_step": "start → OOH"
+    },
+    {
+     "metal": "Au",
+     "uma_V": 0.069,
+     "published_V": 0.181,
+     "uma_step": "start → OOH",
+     "published_step": "start → OOH"
+    },
+    {
+     "metal": "Co",
+     "uma_V": 0.148,
+     "published_V": -0.276,
+     "uma_step": "OOH → *",
+     "published_step": "OOH → *"
+    },
+    {
+     "metal": "Cu",
+     "uma_V": 0.358,
+     "published_V": 0.434,
+     "uma_step": "OOH → *",
+     "published_step": "OOH → *"
+    },
+    {
+     "metal": "Fe",
+     "uma_V": -0.167,
+     "published_V": -0.616,
+     "uma_step": "OOH → *",
+     "published_step": "OOH → *"
+    },
+    {
+     "metal": "Ir",
+     "uma_V": 0.514,
+     "published_V": 0.334,
+     "uma_step": "OOH → *",
+     "published_step": "OOH → *"
+    },
+    {
+     "metal": "Ni",
+     "uma_V": 0.389,
+     "published_V": 0.004,
+     "uma_step": "OOH → *",
+     "published_step": "OOH → *"
+    },
+    {
+     "metal": "Pd",
+     "uma_V": 0.674,
+     "published_V": 0.599,
+     "uma_step": "start → OOH",
+     "published_step": "OOH → *"
+    },
+    {
+     "metal": "Pt",
+     "uma_V": 0.684,
+     "published_V": 0.619,
+     "uma_step": "start → OOH",
+     "published_step": "OOH → *"
+    },
+    {
+     "metal": "Rh",
+     "uma_V": 0.352,
+     "published_V": 0.054,
+     "uma_step": "OOH → *",
+     "published_step": "OOH → *"
+    },
+    {
+     "metal": "Ru",
+     "uma_V": 0.142,
+     "published_V": -0.191,
+     "uma_step": "OOH → *",
+     "published_step": "OOH → *"
+    }
+   ]
+  },
+  {
+   "reaction": "h2o2_reduction",
+   "name": "Hydrogen peroxide reduction",
+   "direction": "reduction",
+   "source": "Nørskov et al. 2004, Table 2",
+   "n": 13,
+   "rho": 0.973,
+   "p": 1.92e-07,
+   "ranking_passes": true,
+   "intermediates_new": [],
+   "intermediates_failing": [],
+   "intermediates_awaiting_table": [],
+   "corrections_missing": [],
+   "passes": true,
+   "rows": [
+    {
+     "metal": "Ag",
+     "uma_V": 0.613,
+     "published_V": 0.47,
+     "uma_step": "OH → *",
+     "published_step": "OH → *"
+    },
+    {
+     "metal": "Au",
+     "uma_V": 1.317,
+     "published_V": 1.24,
+     "uma_step": "OH → *",
+     "published_step": "OH → *"
+    },
+    {
+     "metal": "Co",
+     "uma_V": -0.571,
+     "published_V": -0.33,
+     "uma_step": "OH → *",
+     "published_step": "OH → *"
+    },
+    {
+     "metal": "Cu",
+     "uma_V": 0.093,
+     "published_V": 0.12,
+     "uma_step": "OH → *",
+     "published_step": "OH → *"
+    },
+    {
+     "metal": "Fe",
+     "uma_V": -0.923,
+     "published_V": -1.13,
+     "uma_step": "OH → *",
+     "published_step": "OH → *"
+    },
+    {
+     "metal": "Ir",
+     "uma_V": 0.513,
+     "published_V": 0.38,
+     "uma_step": "OH → *",
+     "published_step": "OH → *"
+    },
+    {
+     "metal": "Mo",
+     "uma_V": -1.184,
+     "published_V": -0.86,
+     "uma_step": "OH → *",
+     "published_step": "OH → *"
+    },
+    {
+     "metal": "Ni",
+     "uma_V": -0.165,
+     "published_V": -0.12,
+     "uma_step": "OH → *",
+     "published_step": "OH → *"
+    },
+    {
+     "metal": "Pd",
+     "uma_V": 0.659,
+     "published_V": 0.67,
+     "uma_step": "OH → *",
+     "published_step": "OH → *"
+    },
+    {
+     "metal": "Pt",
+     "uma_V": 0.791,
+     "published_V": 0.8,
+     "uma_step": "OH → *",
+     "published_step": "OH → *"
+    },
+    {
+     "metal": "Rh",
+     "uma_V": 0.196,
+     "published_V": 0.09,
+     "uma_step": "OH → *",
+     "published_step": "OH → *"
+    },
+    {
+     "metal": "Ru",
+     "uma_V": -0.253,
+     "published_V": -0.26,
+     "uma_step": "OH → *",
+     "published_step": "OH → *"
+    },
+    {
+     "metal": "W",
+     "uma_V": -1.064,
+     "published_V": -1.05,
+     "uma_step": "OH → *",
+     "published_step": "OH → *"
+    }
+   ]
+  },
+  {
+   "reaction": "hydrazine_oxidation",
+   "name": "Hydrazine oxidation",
+   "direction": "oxidation",
+   "source": "Herron et al. 2015",
+   "n": 10,
+   "rho": 0.262,
+   "p": 0.231,
+   "ranking_passes": false,
+   "intermediates_new": [
+    "HNNH2",
+    "HNNH",
+    "NNH"
+   ],
+   "intermediates_failing": [
+    "HNNH2"
+   ],
+   "intermediates_awaiting_table": [],
+   "corrections_missing": [
+    "HNNH",
+    "HNNH2"
+   ],
+   "passes": false,
+   "rows": [
+    {
+     "metal": "Cu",
+     "uma_V": 0.825,
+     "published_V": 0.47,
+     "uma_step": "* → HNNH2",
+     "published_step": "HNNH2 → HNNH"
+    },
+    {
+     "metal": "Pd",
+     "uma_V": 0.74,
+     "published_V": 0.2,
+     "uma_step": "* → HNNH2",
+     "published_step": "HNNH2 → HNNH"
+    },
+    {
+     "metal": "Pt",
+     "uma_V": 0.575,
+     "published_V": 0.13,
+     "uma_step": "* → HNNH2",
+     "published_step": "HNNH2 → HNNH"
+    },
+    {
+     "metal": "Ni",
+     "uma_V": 0.107,
+     "published_V": 0.32,
+     "uma_step": "HNNH2 → HNNH",
+     "published_step": "HNNH2 → HNNH"
+    },
+    {
+     "metal": "Ir",
+     "uma_V": 0.296,
+     "published_V": 0.39,
+     "uma_step": "* → HNNH2",
+     "published_step": "HNNH2 → HNNH"
+    },
+    {
+     "metal": "Co",
+     "uma_V": 0.054,
+     "published_V": 0.13,
+     "uma_step": "HNNH → NNH",
+     "published_step": "HNNH → NNH"
+    },
+    {
+     "metal": "Rh",
+     "uma_V": 0.192,
+     "published_V": 0.34,
+     "uma_step": "HNNH2 → HNNH",
+     "published_step": "HNNH2 → HNNH"
+    },
+    {
+     "metal": "Ru",
+     "uma_V": 0.071,
+     "published_V": 0.34,
+     "uma_step": "HNNH2 → HNNH",
+     "published_step": "HNNH2 → HNNH"
+    },
+    {
+     "metal": "Os",
+     "uma_V": 0.245,
+     "published_V": 0.49,
+     "uma_step": "HNNH2 → HNNH",
+     "published_step": "HNNH2 → HNNH"
+    },
+    {
+     "metal": "Re",
+     "uma_V": -0.058,
+     "published_V": 0.25,
+     "uma_step": "HNNH2 → HNNH",
+     "published_step": "NNH → end"
+    }
+   ]
+  },
+  {
+   "reaction": "hydrogen_oxidation",
+   "name": "Hydrogen oxidation (HOR)",
+   "direction": "oxidation",
+   "source": "arXiv:2109.04219, Table S2 (RPBE)",
+   "n": 12,
+   "rho": 0.923,
+   "p": 3.01e-05,
+   "ranking_passes": true,
+   "intermediates_new": [],
+   "intermediates_failing": [],
+   "intermediates_awaiting_table": [],
+   "corrections_missing": [],
+   "passes": true,
+   "rows": [
+    {
+     "metal": "Ag",
+     "uma_V": 0.624,
+     "published_V": 0.565,
+     "uma_step": "* → H",
+     "published_step": "* → H"
+    },
+    {
+     "metal": "Au",
+     "uma_V": 0.573,
+     "published_V": 0.574,
+     "uma_step": "* → H",
+     "published_step": "* → H"
+    },
+    {
+     "metal": "Co",
+     "uma_V": 0.296,
+     "published_V": 0.202,
+     "uma_step": "H → end",
+     "published_step": "H → end"
+    },
+    {
+     "metal": "Cu",
+     "uma_V": 0.198,
+     "published_V": 0.188,
+     "uma_step": "* → H",
+     "published_step": "* → H"
+    },
+    {
+     "metal": "Ir",
+     "uma_V": 0.034,
+     "published_V": 0.081,
+     "uma_step": "H → end",
+     "published_step": "H → end"
+    },
+    {
+     "metal": "Ni",
+     "uma_V": 0.269,
+     "published_V": 0.231,
+     "uma_step": "H → end",
+     "published_step": "H → end"
+    },
+    {
+     "metal": "Pd",
+     "uma_V": 0.158,
+     "published_V": 0.123,
+     "uma_step": "H → end",
+     "published_step": "H → end"
+    },
+    {
+     "metal": "Pt",
+     "uma_V": 0.084,
+     "published_V": 0.038,
+     "uma_step": "H → end",
+     "published_step": "H → end"
+    },
+    {
+     "metal": "Rh",
+     "uma_V": 0.141,
+     "published_V": 0.116,
+     "uma_step": "H → end",
+     "published_step": "H → end"
+    },
+    {
+     "metal": "Ru",
+     "uma_V": 0.207,
+     "published_V": 0.18,
+     "uma_step": "H → end",
+     "published_step": "H → end"
+    },
+    {
+     "metal": "Mo",
+     "uma_V": 0.363,
+     "published_V": 0.321,
+     "uma_step": "H → end",
+     "published_step": "H → end"
+    },
+    {
+     "metal": "Re",
+     "uma_V": 0.276,
+     "published_V": 0.154,
+     "uma_step": "H → end",
+     "published_step": "H → end"
+    }
+   ]
+  },
+  {
+   "reaction": "nitric_oxide_reduction",
+   "name": "Nitric oxide reduction to ammonia",
+   "direction": "reduction",
+   "source": "",
+   "n": 0,
+   "rho": null,
+   "p": null,
+   "ranking_passes": false,
+   "intermediates_new": [
+    "NO",
+    "NOH",
+    "N",
+    "NH",
+    "NH2"
+   ],
+   "intermediates_failing": [
+    "NO",
+    "NOH",
+    "N"
+   ],
+   "intermediates_awaiting_table": [
+    "NO",
+    "NOH"
+   ],
+   "corrections_missing": [
+    "NO",
+    "NOH"
+   ],
+   "passes": false,
+   "rows": []
+  },
+  {
+   "reaction": "nitrogen_reduction",
+   "name": "Nitrogen reduction to ammonia (NRR)",
+   "direction": "reduction",
+   "source": "Herron et al. 2015",
+   "n": 12,
+   "rho": 0.76,
+   "p": 0.00281,
+   "ranking_passes": true,
+   "intermediates_new": [
+    "NNH",
+    "NNH2",
+    "N",
+    "NH",
+    "NH2"
+   ],
+   "intermediates_failing": [
+    "N"
+   ],
+   "intermediates_awaiting_table": [],
+   "corrections_missing": [],
+   "passes": false,
+   "rows": [
+    {
+     "metal": "Ag",
+     "uma_V": -3.044,
+     "published_V": -2.629,
+     "uma_step": "start → NNH",
+     "published_step": "start → NNH"
+    },
+    {
+     "metal": "Au",
+     "uma_V": -2.825,
+     "published_V": -2.469,
+     "uma_step": "start → NNH",
+     "published_step": "start → NNH"
+    },
+    {
+     "metal": "Cu",
+     "uma_V": -2.448,
+     "published_V": -2.079,
+     "uma_step": "start → NNH",
+     "published_step": "start → NNH"
+    },
+    {
+     "metal": "Pd",
+     "uma_V": -1.763,
+     "published_V": -1.179,
+     "uma_step": "start → NNH",
+     "published_step": "start → NNH"
+    },
+    {
+     "metal": "Pt",
+     "uma_V": -1.892,
+     "published_V": -1.159,
+     "uma_step": "start → NNH",
+     "published_step": "start → NNH"
+    },
+    {
+     "metal": "Ni",
+     "uma_V": -1.092,
+     "published_V": -0.969,
+     "uma_step": "start → NNH",
+     "published_step": "start → NNH"
+    },
+    {
+     "metal": "Ir",
+     "uma_V": -1.675,
+     "published_V": -0.819,
+     "uma_step": "start → NNH",
+     "published_step": "start → NNH"
+    },
+    {
+     "metal": "Co",
+     "uma_V": -0.788,
+     "published_V": -0.819,
+     "uma_step": "start → NNH",
+     "published_step": "start → NNH"
+    },
+    {
+     "metal": "Rh",
+     "uma_V": -1.284,
+     "published_V": -0.889,
+     "uma_step": "start → NNH",
+     "published_step": "start → NNH"
+    },
+    {
+     "metal": "Ru",
+     "uma_V": -0.918,
+     "published_V": -0.489,
+     "uma_step": "start → NNH",
+     "published_step": "start → NNH"
+    },
+    {
+     "metal": "Os",
+     "uma_V": -1.226,
+     "published_V": -0.41,
+     "uma_step": "start → NNH",
+     "published_step": "NH → NH2"
+    },
+    {
+     "metal": "Re",
+     "uma_V": -0.717,
+     "published_V": -0.89,
+     "uma_step": "NH → NH2",
+     "published_step": "NH → NH2"
+    }
+   ]
+  }
+ ],
+ "corrections": {
+  "rule": {
+   "T_K": 298.15,
+   "delta_A": 0.01,
+   "floor_cm": 50.0,
+   "fmax_eV_A": 0.01,
+   "model": "UMA-S 1.1, oc20 mode"
+  },
+  "check": {
+   "published": {
+    "H": 0.24,
+    "O": 0.05,
+    "OH": 0.35,
+    "OOH": 0.4
+   },
+   "misses": {
+    "H": -0.0174,
+    "O": -0.0808,
+    "OH": -0.1579,
+    "OOH": -0.2043
+   },
+   "max_miss": 0.2043,
+   "median_miss": 0.11935000000000001,
+   "skulason": {
+    "N": {
+     "published": 0.26,
+     "uma": 0.2688
+    },
+    "NH": {
+     "published": 0.57,
+     "uma": 0.6266
+    },
+    "NH2": {
+     "published": 0.88,
+     "uma": 0.9963
+    },
+    "NNH": {
+     "published": 0.8,
+     "uma": 0.8679
+    },
+    "NNH2": {
+     "published": 1.11,
+     "uma": 1.2412
+    }
+   },
+   "passes": false
+  },
+  "spread": {
+   "H": 0.0168,
+   "O": 0.0115,
+   "OH": 0.079,
+   "OOH": 0.0932,
+   "N": 0.0292,
+   "NH": 0.0337,
+   "NH2": 0.0558,
+   "NNH": 0.0663,
+   "NNH2": 0.0709,
+   "HNNH": 0.0321,
+   "HNNH2": 0.0269,
+   "NO": 0.0155,
+   "NOH": 0.0709,
+   "CO": 0.0293,
+   "COOH": 0.0246,
+   "OCHO": 0.0332
+  }
+ },
+ "corrections_uma_only": [
+  "CO",
+  "COOH",
+  "HNNH",
+  "HNNH2",
+  "NO",
+  "NOH",
+  "OCHO"
+ ],
+ "values": {
+  "rc_min_metals": 5,
+  "rc_min_rho": 0.6,
+  "rc_max_p": 0.05,
+  "rc_top": 3,
+  "rc_e_min_metals": 6,
+  "rc_e_max_median": 0.2,
+  "rc_nh3_synthesis_primary_n": 9,
+  "rc_nh3_synthesis_primary_rho": 0.4,
+  "rc_nh3_synthesis_primary_p": 0.146,
+  "rc_nh3_synthesis_primary_best": "Os",
+  "rc_nh3_synthesis_primary_top": "Os, Co, Re",
+  "rc_nh3_synthesis_primary_T": 573,
+  "rc_nh3_synthesis_primary_anchor": "Ru",
+  "rc_nh3_decomposition_primary_n": 8,
+  "rc_nh3_decomposition_primary_rho": 0.905,
+  "rc_nh3_decomposition_primary_p": 0.00228,
+  "rc_nh3_decomposition_primary_best": "Ni",
+  "rc_nh3_decomposition_primary_top": "Co, Ni, Rh",
+  "rc_nh3_decomposition_primary_T": 853,
+  "rc_nh3_decomposition_primary_anchor": "Ru",
+  "rc_water_gas_shift_primary_n": 11,
+  "rc_water_gas_shift_primary_rho": -0.527,
+  "rc_water_gas_shift_primary_p": 0.953,
+  "rc_water_gas_shift_primary_best": "Re",
+  "rc_water_gas_shift_primary_top": "Ir, Pd, Pt",
+  "rc_water_gas_shift_primary_T": 493.1,
+  "rc_water_gas_shift_primary_anchor": "Cu",
+  "rc_co_methanation_primary_n": 8,
+  "rc_co_methanation_primary_rho": 0.69,
+  "rc_co_methanation_primary_p": 0.0347,
+  "rc_co_methanation_primary_best": "Ru",
+  "rc_co_methanation_primary_top": "Re, Ru, Fe",
+  "rc_co_methanation_primary_T": 550,
+  "rc_co_methanation_primary_anchor": "Co",
+  "rc_co_methanation_secondary_n": 8,
+  "rc_co_methanation_secondary_rho": 0.929,
+  "rc_co_methanation_secondary_p": 0.00112,
+  "rc_co_methanation_secondary_best": "Ru",
+  "rc_co_methanation_secondary_top": "Ru, Fe, Ni",
+  "rc_co_methanation_secondary_T": 548,
+  "rc_co_methanation_secondary_anchor": "Co",
+  "rc_ethane_hydrogenolysis_primary_n": 5,
+  "rc_ethane_hydrogenolysis_primary_rho": 0.1,
+  "rc_ethane_hydrogenolysis_primary_p": 0.475,
+  "rc_ethane_hydrogenolysis_primary_best": "Ni",
+  "rc_ethane_hydrogenolysis_primary_top": "Co, Rh, Ir",
+  "rc_ethane_hydrogenolysis_primary_T": 478,
+  "rc_ethane_hydrogenolysis_primary_anchor": "Os",
+  "rc_benzene_hydrogenation_primary_n": 8,
+  "rc_benzene_hydrogenation_primary_rho": 0.571,
+  "rc_benzene_hydrogenation_primary_p": 0.0756,
+  "rc_benzene_hydrogenation_primary_best": "Co",
+  "rc_benzene_hydrogenation_primary_top": "Co, Ru, Re",
+  "rc_benzene_hydrogenation_primary_T": 303,
+  "rc_benzene_hydrogenation_primary_anchor": "Os",
+  "rc_ethylene_hydrogenation_indicative_n": 6,
+  "rc_ethylene_hydrogenation_indicative_rho": 0.943,
+  "rc_ethylene_hydrogenation_indicative_p": 0.00833,
+  "rc_ethylene_hydrogenation_indicative_best": "Ru",
+  "rc_ethylene_hydrogenation_indicative_top": "Ru, Ni, Co",
+  "rc_ethylene_hydrogenation_indicative_T": 250,
+  "rc_ethylene_hydrogenation_indicative_anchor": "Rh",
+  "rc_span_measured_lo": 2.0,
+  "rc_span_measured_hi": 6.1,
+  "rc_span_predicted_lo": 7.7,
+  "rc_span_predicted_hi": 40.3,
+  "rc_span_factor_lo": 1.3,
+  "rc_span_factor_hi": 20.1,
+  "rc_design_checked_names": "CO methanation and Ammonia cracking",
+  "rc_design_checked_n": 2,
+  "rc_playground_untabled_names": "Selective acetylene hydrogenation, Ammonia oxidation to NO (Ostwald), Ammonia slip oxidation, Dry reforming of methane, Ethanol steam reforming, Formaldehyde oxidation, Formic acid dehydrogenation, Hydrogen cyanide synthesis (BMA), Methane combustion, Partial oxidation of methane, Methanol steam reforming, NO reduction by CO, NO oxidation, Propane dehydrogenation, Preferential CO oxidation (PROX) and Reverse water-gas shift",
+  "rc_playground_untabled_n": 16,
+  "rc_design_waiting_names": "CO2 methanation, CO oxidation, Methanol from CO2, N2O removal, Gas-engine oxidation catalyst (CO, HCHO, CH4, NO), High-temperature SCR of NOx with NH3 and Steam methane reforming",
+  "rc_design_waiting_n": 7,
+  "rc_design_n": 9,
+  "rc_playground_n": 21,
+  "rc_packs_n": 30,
+  "rc_thermal_tables": 8,
+  "rc_thermal_scored": 6,
+  "rc_thermal_passed": 2,
+  "rc_thermal_passed_names": "Ammonia cracking and CO methanation",
+  "rc_thermal_failed_names": "Ammonia synthesis, Water-gas shift, Ethane hydrogenolysis and Benzene hydrogenation",
+  "rc_thermal_failed_rho_lo": -0.527,
+  "rc_thermal_failed_rho_hi": 0.571,
+  "rc_i_herron2015_N_n": 12,
+  "rc_i_herron2015_N_median": 0.257,
+  "rc_i_herron2015_N_max": 0.711,
+  "rc_i_herron2015_N_offset": 0.196,
+  "rc_i_herron2015_N_rho": 0.923,
+  "rc_i_herron2015_N_p": 3.01e-05,
+  "rc_i_herron2015_NH_n": 12,
+  "rc_i_herron2015_NH_median": 0.165,
+  "rc_i_herron2015_NH_max": 0.604,
+  "rc_i_herron2015_NH_offset": 0.314,
+  "rc_i_herron2015_NH_rho": 0.958,
+  "rc_i_herron2015_NH_p": 3.18e-06,
+  "rc_i_herron2015_NH2_n": 12,
+  "rc_i_herron2015_NH2_median": 0.086,
+  "rc_i_herron2015_NH2_max": 0.436,
+  "rc_i_herron2015_NH2_offset": 0.518,
+  "rc_i_herron2015_NH2_rho": 0.853,
+  "rc_i_herron2015_NH2_p": 0.000393,
+  "rc_i_herron2015_NNH_n": 12,
+  "rc_i_herron2015_NNH_median": 0.188,
+  "rc_i_herron2015_NNH_max": 0.535,
+  "rc_i_herron2015_NNH_offset": 0.296,
+  "rc_i_herron2015_NNH_rho": 0.886,
+  "rc_i_herron2015_NNH_p": 0.000133,
+  "rc_i_herron2015_HNNH_n": 10,
+  "rc_i_herron2015_HNNH_median": 0.183,
+  "rc_i_herron2015_HNNH_max": 0.743,
+  "rc_i_herron2015_HNNH_offset": 0.462,
+  "rc_i_herron2015_HNNH_rho": 0.758,
+  "rc_i_herron2015_HNNH_p": 0.00746,
+  "rc_i_herron2015_NNH2_n": 12,
+  "rc_i_herron2015_NNH2_median": 0.11,
+  "rc_i_herron2015_NNH2_max": 0.612,
+  "rc_i_herron2015_NNH2_offset": 0.529,
+  "rc_i_herron2015_NNH2_rho": 0.916,
+  "rc_i_herron2015_NNH2_p": 4.19e-05,
+  "rc_i_herron2015_HNNH2_n": 12,
+  "rc_i_herron2015_HNNH2_median": 0.204,
+  "rc_i_herron2015_HNNH2_max": 0.689,
+  "rc_i_herron2015_HNNH2_offset": 0.739,
+  "rc_i_herron2015_HNNH2_rho": 0.846,
+  "rc_i_herron2015_HNNH2_p": 0.000472,
+  "rc_i_elnabawy2018_COOH_n": 12,
+  "rc_i_elnabawy2018_COOH_median": 0.063,
+  "rc_i_elnabawy2018_COOH_max": 0.434,
+  "rc_i_elnabawy2018_COOH_offset": 0.829,
+  "rc_i_elnabawy2018_COOH_rho": 0.797,
+  "rc_i_elnabawy2018_COOH_p": 0.00146,
+  "rc_i_elnabawy2018_OCHO_n": 12,
+  "rc_i_elnabawy2018_OCHO_median": 0.047,
+  "rc_i_elnabawy2018_OCHO_max": 0.278,
+  "rc_i_elnabawy2018_OCHO_offset": 0.772,
+  "rc_i_elnabawy2018_OCHO_rho": 0.951,
+  "rc_i_elnabawy2018_OCHO_p": 5.49e-06,
+  "rc_i_elnabawy2018_CO_n": 12,
+  "rc_i_elnabawy2018_CO_median": 0.108,
+  "rc_i_elnabawy2018_CO_max": 0.405,
+  "rc_i_elnabawy2018_CO_offset": 0.387,
+  "rc_i_elnabawy2018_CO_rho": 0.559,
+  "rc_i_elnabawy2018_CO_p": 0.0314,
+  "rc_i_checked": 10,
+  "rc_i_passed_names": "NH*, NH2*, NNH*, HNNH*, NNH2*, COOH* and OCHO*",
+  "rc_i_missed_names": "N*, HNNH2* and CO*",
+  "rc_i_passed": 7,
+  "rc_i_awaiting": 2,
+  "rc_i_awaiting_names": "NO* and NOH*",
+  "rc_e_ammonia_oxidation_n": 12,
+  "rc_e_ammonia_oxidation_rho": 0.855,
+  "rc_e_ammonia_oxidation_p": 0.000356,
+  "rc_e_co2_to_co_n": 12,
+  "rc_e_co2_to_co_rho": 0.797,
+  "rc_e_co2_to_co_p": 0.00146,
+  "rc_e_co2_to_formate_n": 12,
+  "rc_e_co2_to_formate_rho": 0.842,
+  "rc_e_co2_to_formate_p": 0.000498,
+  "rc_e_formic_acid_oxidation_n": 12,
+  "rc_e_formic_acid_oxidation_rho": 0.842,
+  "rc_e_formic_acid_oxidation_p": 0.000498,
+  "rc_e_h2o2_production_n": 11,
+  "rc_e_h2o2_production_rho": 0.845,
+  "rc_e_h2o2_production_p": 0.000913,
+  "rc_e_h2o2_reduction_n": 13,
+  "rc_e_h2o2_reduction_rho": 0.973,
+  "rc_e_h2o2_reduction_p": 1.92e-07,
+  "rc_e_hydrazine_oxidation_n": 10,
+  "rc_e_hydrazine_oxidation_rho": 0.262,
+  "rc_e_hydrazine_oxidation_p": 0.231,
+  "rc_e_hydrogen_oxidation_n": 12,
+  "rc_e_hydrogen_oxidation_rho": 0.923,
+  "rc_e_hydrogen_oxidation_p": 3.01e-05,
+  "rc_e_nitric_oxide_reduction_n": 0,
+  "rc_e_nitric_oxide_reduction_rho": null,
+  "rc_e_nitric_oxide_reduction_p": null,
+  "rc_e_nitrogen_reduction_n": 12,
+  "rc_e_nitrogen_reduction_rho": 0.76,
+  "rc_e_nitrogen_reduction_p": 0.00281,
+  "rc_e_checked": 10,
+  "rc_e_passed": 3,
+  "rc_e_passed_names": "Hydrogen peroxide production (two-electron ORR), Hydrogen peroxide reduction and Hydrogen oxidation (HOR)",
+  "rc_e_waiting": 7,
+  "rc_corr_passes": "misses",
+  "rc_corr_max_miss": 0.2,
+  "rc_corr_median_miss": 0.12,
+  "rc_corr_worst": "OOH*",
+  "rc_corr_misses": "H* -0.02, O* -0.08, OH* -0.16 and OOH* -0.20 eV",
+  "rc_corr_entropy_aside_max": 0.03,
+  "rc_corr_spread_max": 0.09,
+  "rc_corr_skulason_gaps": "N* +0.01, NH* +0.06, NH2* +0.12, NNH* +0.07 and NNH2* +0.13 eV",
+  "rc_corr_skulason_max": 0.13,
+  "rc_corr_uma_only": "HNNH*, HNNH2*, NO*, NOH*, CO*, COOH* and OCHO*",
+  "rc_corr_ts_OH": 0.17,
+  "rc_corr_soft_OH": 3,
+  "rc_corr_ts_OOH": 0.22,
+  "rc_corr_soft_OOH": 3,
+  "ew_id": "h2o2_production",
+  "ew_name": "Hydrogen peroxide production (two-electron ORR)",
+  "ew_equation": "O2 + 2 H+ + 2 e- -> H2O2",
+  "ew_electrons": 2,
+  "ew_U_eq": 0.695,
+  "ew_total": 1.39,
+  "ew_ads": "OOH",
+  "ew_correction": 0.18,
+  "ew_shift": -3.526,
+  "ew_compare": 0.5,
+  "ew_ideal": 0.695,
+  "ew_kT": 0.0257,
+  "ew_reference": "2 H2O − 1.5 H2",
+  "ew_ref": "Pt",
+  "ew_other": "Cu",
+  "ew_pt_E": 4.052,
+  "ew_pt_G": 0.706,
+  "ew_pt_step1": -0.684,
+  "ew_pt_step2": -0.706,
+  "ew_pt_UL": 0.684,
+  "ew_pt_UL_step": 1,
+  "ew_pt_eta": 0.011,
+  "ew_pt_lo": 0.534,
+  "ew_pt_hi": 0.695,
+  "ew_pt_hurdle": 0.0,
+  "ew_pt_step2_at": -0.206,
+  "ew_cu_E": 3.704,
+  "ew_cu_G": 0.358,
+  "ew_cu_step1": -1.032,
+  "ew_cu_step2": -0.358,
+  "ew_cu_UL": 0.358,
+  "ew_cu_UL_step": 2,
+  "ew_cu_eta": 0.337,
+  "ew_cu_lo": 0.208,
+  "ew_cu_hi": 0.508,
+  "ew_cu_hurdle": 0.142,
+  "ew_cu_step2_at": 0.142,
+  "ew_other_one_in": "250",
+  "rc_nn_n": 6,
+  "rc_nn_metals": "Cu, Pd, Pt, Ir, Co and Rh",
+  "rc_nn_slope": -0.46,
+  "rc_nn_intercept": 2.31,
+  "rc_nn_rms": 0.26,
+  "rc_nn_lo": 1.16,
+  "rc_nn_hi": 2.55,
+  "rc_run_metals": 16,
+  "rc_run_metal_list": "Ag, Au, Co, Cu, Fe, Ir, Mo, Ni, Os, Pd, Pt, Re, Rh, Ru, W and Zn"
+ },
+ "tables": {
+  "rc_thermal": [
+   {
+    "reaction": "Ammonia synthesis",
+    "table": "Ozaki 1981",
+    "role": "scored by the rule",
+    "T_K": "573",
+    "n": 9,
+    "rho": 0.4,
+    "p": "0.146",
+    "best": "Os",
+    "top": "Os, Co, Re",
+    "verdict": "in the playground: rho 0.40, below 0.6; p 0.146, above 0.05"
+   },
+   {
+    "reaction": "Ammonia cracking",
+    "table": "Ganley et al. 2004",
+    "role": "scored by the rule",
+    "T_K": "853",
+    "n": 8,
+    "rho": 0.905,
+    "p": "0.002",
+    "best": "Ni",
+    "top": "Co, Ni, Rh",
+    "verdict": "passes: on the Design page"
+   },
+   {
+    "reaction": "Water-gas shift",
+    "table": "Grenoble et al. 1981",
+    "role": "scored by the rule",
+    "T_K": "493 (the pack's)",
+    "n": 11,
+    "rho": -0.527,
+    "p": "0.953",
+    "best": "Re",
+    "top": "Ir, Pd, Pt",
+    "verdict": "in the playground: rho -0.53, below 0.6; p 0.953, above 0.05; Re outside the predicted top 3"
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Bligaard et al. 2004",
+    "role": "scored by the rule",
+    "T_K": "550",
+    "n": 8,
+    "rho": 0.69,
+    "p": "0.035",
+    "best": "Ru",
+    "top": "Re, Ru, Fe",
+    "verdict": "passes: on the Design page"
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Vannice 1977",
+    "role": "second table, shown beside",
+    "T_K": "548",
+    "n": 8,
+    "rho": 0.929,
+    "p": "0.001",
+    "best": "Ru",
+    "top": "Ru, Fe, Ni",
+    "verdict": "shown beside the scored table"
+   },
+   {
+    "reaction": "Ethane hydrogenolysis",
+    "table": "Sinfelt, in Bond 2005",
+    "role": "scored by the rule",
+    "T_K": "478",
+    "n": 5,
+    "rho": 0.1,
+    "p": "0.475",
+    "best": "Ni",
+    "top": "Co, Rh, Ir",
+    "verdict": "in the playground: rho 0.10, below 0.6; p 0.475, above 0.05; Ni outside the predicted top 3"
+   },
+   {
+    "reaction": "Benzene hydrogenation",
+    "table": "Toulhoat and Raybaud 2003",
+    "role": "scored by the rule",
+    "T_K": "303",
+    "n": 8,
+    "rho": 0.571,
+    "p": "0.076",
+    "best": "Co",
+    "top": "Co, Ru, Re",
+    "verdict": "in the playground: rho 0.57, below 0.6; p 0.076, above 0.05"
+   },
+   {
+    "reaction": "Ethylene hydrogenation",
+    "table": "Bond 2005, Table 7.3",
+    "role": "indicative, shown beside",
+    "T_K": "250",
+    "n": 6,
+    "rho": 0.943,
+    "p": "0.008",
+    "best": "Ru",
+    "top": "Ru, Ni, Co",
+    "verdict": "shown beside the scored table"
+   }
+  ],
+  "rc_thermal_metals": [
+   {
+    "reaction": "Ammonia synthesis",
+    "table": "Ozaki 1981",
+    "metal": "Os",
+    "descriptor_eV": -0.738,
+    "shift_eV": -0.047,
+    "predicted_rank": 1.0,
+    "published": 26.4,
+    "published_rank": 1.0
+   },
+   {
+    "reaction": "Ammonia synthesis",
+    "table": "Ozaki 1981",
+    "metal": "Ir",
+    "descriptor_eV": 0.21,
+    "shift_eV": 1.52,
+    "predicted_rank": 8.0,
+    "published": 3.24,
+    "published_rank": 2.0
+   },
+   {
+    "reaction": "Ammonia synthesis",
+    "table": "Ozaki 1981",
+    "metal": "Re",
+    "descriptor_eV": -1.1,
+    "shift_eV": 0.315,
+    "predicted_rank": 3.0,
+    "published": 1.66,
+    "published_rank": 3.0
+   },
+   {
+    "reaction": "Ammonia synthesis",
+    "table": "Ozaki 1981",
+    "metal": "Mo",
+    "descriptor_eV": -1.332,
+    "shift_eV": 0.547,
+    "predicted_rank": 4.0,
+    "published": 1.428,
+    "published_rank": 4.0
+   },
+   {
+    "reaction": "Ammonia synthesis",
+    "table": "Ozaki 1981",
+    "metal": "Rh",
+    "descriptor_eV": -0.198,
+    "shift_eV": 0.786,
+    "predicted_rank": 6.0,
+    "published": 1.327,
+    "published_rank": 5.0
+   },
+   {
+    "reaction": "Ammonia synthesis",
+    "table": "Ozaki 1981",
+    "metal": "Fe",
+    "descriptor_eV": -1.72,
+    "shift_eV": 0.934,
+    "predicted_rank": 7.0,
+    "published": 0.9973,
+    "published_rank": 6.0
+   },
+   {
+    "reaction": "Ammonia synthesis",
+    "table": "Ozaki 1981",
+    "metal": "Co",
+    "descriptor_eV": -1.017,
+    "shift_eV": 0.232,
+    "predicted_rank": 2.0,
+    "published": 0.5846,
+    "published_rank": 7.0
+   },
+   {
+    "reaction": "Ammonia synthesis",
+    "table": "Ozaki 1981",
+    "metal": "Ni",
+    "descriptor_eV": -0.301,
+    "shift_eV": 0.601,
+    "predicted_rank": 5.0,
+    "published": 0.0582,
+    "published_rank": 8.0
+   },
+   {
+    "reaction": "Ammonia synthesis",
+    "table": "Ozaki 1981",
+    "metal": "Pt",
+    "descriptor_eV": 0.62,
+    "shift_eV": 2.26,
+    "predicted_rank": 9.0,
+    "published": 0.0387,
+    "published_rank": 9.0
+   },
+   {
+    "reaction": "Ammonia cracking",
+    "table": "Ganley et al. 2004",
+    "metal": "Ni",
+    "descriptor_eV": -0.301,
+    "shift_eV": 0.436,
+    "predicted_rank": 2.0,
+    "published": 4.21,
+    "published_rank": 1.0
+   },
+   {
+    "reaction": "Ammonia cracking",
+    "table": "Ganley et al. 2004",
+    "metal": "Rh",
+    "descriptor_eV": -0.198,
+    "shift_eV": 0.528,
+    "predicted_rank": 3.0,
+    "published": 2.26,
+    "published_rank": 2.0
+   },
+   {
+    "reaction": "Ammonia cracking",
+    "table": "Ganley et al. 2004",
+    "metal": "Co",
+    "descriptor_eV": -1.017,
+    "shift_eV": 0.182,
+    "predicted_rank": 1.0,
+    "published": 1.33,
+    "published_rank": 3.0
+   },
+   {
+    "reaction": "Ammonia cracking",
+    "table": "Ganley et al. 2004",
+    "metal": "Ir",
+    "descriptor_eV": 0.21,
+    "shift_eV": 0.896,
+    "predicted_rank": 5.0,
+    "published": 0.786,
+    "published_rank": 4.0
+   },
+   {
+    "reaction": "Ammonia cracking",
+    "table": "Ganley et al. 2004",
+    "metal": "Fe",
+    "descriptor_eV": -1.72,
+    "shift_eV": 0.885,
+    "predicted_rank": 4.0,
+    "published": 0.327,
+    "published_rank": 5.0
+   },
+   {
+    "reaction": "Ammonia cracking",
+    "table": "Ganley et al. 2004",
+    "metal": "Pt",
+    "descriptor_eV": 0.62,
+    "shift_eV": 1.265,
+    "predicted_rank": 6.0,
+    "published": 0.0226,
+    "published_rank": 6.0
+   },
+   {
+    "reaction": "Ammonia cracking",
+    "table": "Ganley et al. 2004",
+    "metal": "Pd",
+    "descriptor_eV": 0.631,
+    "shift_eV": 1.275,
+    "predicted_rank": 7.0,
+    "published": 0.0194,
+    "published_rank": 7.0
+   },
+   {
+    "reaction": "Ammonia cracking",
+    "table": "Ganley et al. 2004",
+    "metal": "Cu",
+    "descriptor_eV": 1.645,
+    "shift_eV": 2.187,
+    "predicted_rank": 8.0,
+    "published": 0.013,
+    "published_rank": 8.0
+   },
+   {
+    "reaction": "Water-gas shift",
+    "table": "Grenoble et al. 1981",
+    "metal": "Re",
+    "descriptor_eV": -0.882,
+    "shift_eV": 1.913,
+    "predicted_rank": 10.0,
+    "published": 2,
+    "published_rank": 1.0
+   },
+   {
+    "reaction": "Water-gas shift",
+    "table": "Grenoble et al. 1981",
+    "metal": "Co",
+    "descriptor_eV": -0.513,
+    "shift_eV": 1.544,
+    "predicted_rank": 8.0,
+    "published": 3,
+    "published_rank": 2.0
+   },
+   {
+    "reaction": "Water-gas shift",
+    "table": "Grenoble et al. 1981",
+    "metal": "Ru",
+    "descriptor_eV": -0.202,
+    "shift_eV": 1.233,
+    "predicted_rank": 7.0,
+    "published": 4,
+    "published_rank": 3.0
+   },
+   {
+    "reaction": "Water-gas shift",
+    "table": "Grenoble et al. 1981",
+    "metal": "Ni",
+    "descriptor_eV": 0.089,
+    "shift_eV": 0.942,
+    "predicted_rank": 5.0,
+    "published": 5,
+    "published_rank": 4.0
+   },
+   {
+    "reaction": "Water-gas shift",
+    "table": "Grenoble et al. 1981",
+    "metal": "Pt",
+    "descriptor_eV": 1.579,
+    "shift_eV": 0.493,
+    "predicted_rank": 3.0,
+    "published": 6,
+    "published_rank": 5.0
+   },
+   {
+    "reaction": "Water-gas shift",
+    "table": "Grenoble et al. 1981",
+    "metal": "Os",
+    "descriptor_eV": -0.016,
+    "shift_eV": 1.047,
+    "predicted_rank": 6.0,
+    "published": 7,
+    "published_rank": 6.0
+   },
+   {
+    "reaction": "Water-gas shift",
+    "table": "Grenoble et al. 1981",
+    "metal": "Au",
+    "descriptor_eV": 2.793,
+    "shift_eV": 1.586,
+    "predicted_rank": 9.0,
+    "published": 8,
+    "published_rank": 7.0
+   },
+   {
+    "reaction": "Water-gas shift",
+    "table": "Grenoble et al. 1981",
+    "metal": "Fe",
+    "descriptor_eV": -0.966,
+    "shift_eV": 1.997,
+    "predicted_rank": 11.0,
+    "published": 9,
+    "published_rank": 8.0
+   },
+   {
+    "reaction": "Water-gas shift",
+    "table": "Grenoble et al. 1981",
+    "metal": "Pd",
+    "descriptor_eV": 1.385,
+    "shift_eV": 0.318,
+    "predicted_rank": 2.0,
+    "published": 10,
+    "published_rank": 9.0
+   },
+   {
+    "reaction": "Water-gas shift",
+    "table": "Grenoble et al. 1981",
+    "metal": "Rh",
+    "descriptor_eV": 0.525,
+    "shift_eV": 0.506,
+    "predicted_rank": 4.0,
+    "published": 11,
+    "published_rank": 10.0
+   },
+   {
+    "reaction": "Water-gas shift",
+    "table": "Grenoble et al. 1981",
+    "metal": "Ir",
+    "descriptor_eV": 0.986,
+    "shift_eV": 0.045,
+    "predicted_rank": 1.0,
+    "published": 12,
+    "published_rank": 11.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Bligaard et al. 2004",
+    "metal": "Ru",
+    "descriptor_eV": -0.736,
+    "shift_eV": 0.369,
+    "predicted_rank": 2.0,
+    "published": 18.2,
+    "published_rank": 1.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Bligaard et al. 2004",
+    "metal": "Rh",
+    "descriptor_eV": -0.281,
+    "shift_eV": 1.188,
+    "predicted_rank": 5.0,
+    "published": 4.09,
+    "published_rank": 2.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Bligaard et al. 2004",
+    "metal": "Fe",
+    "descriptor_eV": -1.726,
+    "shift_eV": 0.778,
+    "predicted_rank": 3.0,
+    "published": 3.81,
+    "published_rank": 3.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Bligaard et al. 2004",
+    "metal": "Ni",
+    "descriptor_eV": -0.367,
+    "shift_eV": 1.034,
+    "predicted_rank": 4.0,
+    "published": 3.43,
+    "published_rank": 4.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Bligaard et al. 2004",
+    "metal": "Re",
+    "descriptor_eV": -1.018,
+    "shift_eV": 0.07,
+    "predicted_rank": 1.0,
+    "published": 1.3,
+    "published_rank": 5.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Bligaard et al. 2004",
+    "metal": "Ir",
+    "descriptor_eV": 0.074,
+    "shift_eV": 1.828,
+    "predicted_rank": 6.0,
+    "published": 0.694,
+    "published_rank": 6.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Bligaard et al. 2004",
+    "metal": "Pd",
+    "descriptor_eV": 0.411,
+    "shift_eV": 2.433,
+    "predicted_rank": 7.0,
+    "published": 0.136,
+    "published_rank": 7.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Bligaard et al. 2004",
+    "metal": "Pt",
+    "descriptor_eV": 0.438,
+    "shift_eV": 2.483,
+    "predicted_rank": 8.0,
+    "published": 0.126,
+    "published_rank": 8.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Vannice 1977",
+    "metal": "Ru",
+    "descriptor_eV": -0.736,
+    "shift_eV": 0.368,
+    "predicted_rank": 1.0,
+    "published": 0.27,
+    "published_rank": 1.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Vannice 1977",
+    "metal": "Fe",
+    "descriptor_eV": -1.726,
+    "shift_eV": 0.784,
+    "predicted_rank": 2.0,
+    "published": 0.16,
+    "published_rank": 2.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Vannice 1977",
+    "metal": "Ni",
+    "descriptor_eV": -0.367,
+    "shift_eV": 1.033,
+    "predicted_rank": 3.0,
+    "published": 0.018,
+    "published_rank": 3.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Vannice 1977",
+    "metal": "Rh",
+    "descriptor_eV": -0.281,
+    "shift_eV": 1.187,
+    "predicted_rank": 4.0,
+    "published": 0.0073,
+    "published_rank": 4.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Vannice 1977",
+    "metal": "Pt",
+    "descriptor_eV": 0.438,
+    "shift_eV": 2.482,
+    "predicted_rank": 7.0,
+    "published": 0.0016,
+    "published_rank": 5.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Vannice 1977",
+    "metal": "Ir",
+    "descriptor_eV": 0.074,
+    "shift_eV": 1.828,
+    "predicted_rank": 5.0,
+    "published": 0.00079,
+    "published_rank": 6.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Vannice 1977",
+    "metal": "Pd",
+    "descriptor_eV": 0.411,
+    "shift_eV": 2.433,
+    "predicted_rank": 6.0,
+    "published": 0.0003,
+    "published_rank": 7.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Vannice 1977",
+    "metal": "Cu",
+    "descriptor_eV": 1.22,
+    "shift_eV": 3.89,
+    "predicted_rank": 8.0,
+    "published": 1.5e-05,
+    "published_rank": 8.0
+   },
+   {
+    "reaction": "Ethane hydrogenolysis",
+    "table": "Sinfelt, in Bond 2005",
+    "metal": "Ni",
+    "descriptor_eV": -0.823,
+    "shift_eV": 0.455,
+    "predicted_rank": 4.0,
+    "published": 30.22531305932999,
+    "published_rank": 1.0
+   },
+   {
+    "reaction": "Ethane hydrogenolysis",
+    "table": "Sinfelt, in Bond 2005",
+    "metal": "Rh",
+    "descriptor_eV": -1.088,
+    "shift_eV": 0.216,
+    "predicted_rank": 2.0,
+    "published": 28.81561822612987,
+    "published_rank": 2.0
+   },
+   {
+    "reaction": "Ethane hydrogenolysis",
+    "table": "Sinfelt, in Bond 2005",
+    "metal": "Ir",
+    "descriptor_eV": -0.838,
+    "shift_eV": 0.441,
+    "predicted_rank": 3.0,
+    "published": 28.106013364463692,
+    "published_rank": 3.0
+   },
+   {
+    "reaction": "Ethane hydrogenolysis",
+    "table": "Sinfelt, in Bond 2005",
+    "metal": "Co",
+    "descriptor_eV": -1.37,
+    "shift_eV": -0.038,
+    "predicted_rank": 1.0,
+    "published": 27.24802430833088,
+    "published_rank": 4.0
+   },
+   {
+    "reaction": "Ethane hydrogenolysis",
+    "table": "Sinfelt, in Bond 2005",
+    "metal": "Pd",
+    "descriptor_eV": -0.564,
+    "shift_eV": 0.688,
+    "predicted_rank": 5.0,
+    "published": 16.15735925539522,
+    "published_rank": 5.0
+   },
+   {
+    "reaction": "Benzene hydrogenation",
+    "table": "Toulhoat and Raybaud 2003",
+    "metal": "Co",
+    "descriptor_eV": -1.37,
+    "shift_eV": 0.042,
+    "predicted_rank": 1.0,
+    "published": 231.8,
+    "published_rank": 1.0
+   },
+   {
+    "reaction": "Benzene hydrogenation",
+    "table": "Toulhoat and Raybaud 2003",
+    "metal": "Pt",
+    "descriptor_eV": -0.703,
+    "shift_eV": 0.563,
+    "predicted_rank": 6.0,
+    "published": 139.6,
+    "published_rank": 2.0
+   },
+   {
+    "reaction": "Benzene hydrogenation",
+    "table": "Toulhoat and Raybaud 2003",
+    "metal": "Ir",
+    "descriptor_eV": -0.838,
+    "shift_eV": 0.441,
+    "predicted_rank": 4.0,
+    "published": 117.5,
+    "published_rank": 3.0
+   },
+   {
+    "reaction": "Benzene hydrogenation",
+    "table": "Toulhoat and Raybaud 2003",
+    "metal": "Ni",
+    "descriptor_eV": -0.823,
+    "shift_eV": 0.455,
+    "predicted_rank": 5.0,
+    "published": 56.0,
+    "published_rank": 4.0
+   },
+   {
+    "reaction": "Benzene hydrogenation",
+    "table": "Toulhoat and Raybaud 2003",
+    "metal": "Ru",
+    "descriptor_eV": -1.271,
+    "shift_eV": 0.051,
+    "predicted_rank": 2.0,
+    "published": 42.0,
+    "published_rank": 5.0
+   },
+   {
+    "reaction": "Benzene hydrogenation",
+    "table": "Toulhoat and Raybaud 2003",
+    "metal": "Re",
+    "descriptor_eV": -1.154,
+    "shift_eV": 0.157,
+    "predicted_rank": 3.0,
+    "published": 35.5,
+    "published_rank": 6.0
+   },
+   {
+    "reaction": "Benzene hydrogenation",
+    "table": "Toulhoat and Raybaud 2003",
+    "metal": "Pd",
+    "descriptor_eV": -0.564,
+    "shift_eV": 0.688,
+    "predicted_rank": 7.0,
+    "published": 6.5,
+    "published_rank": 7.0
+   },
+   {
+    "reaction": "Benzene hydrogenation",
+    "table": "Toulhoat and Raybaud 2003",
+    "metal": "Cu",
+    "descriptor_eV": 1.409,
+    "shift_eV": 2.463,
+    "predicted_rank": 8.0,
+    "published": 2.3,
+    "published_rank": 8.0
+   },
+   {
+    "reaction": "Ethylene hydrogenation",
+    "table": "Bond 2005, Table 7.3",
+    "metal": "Ru",
+    "descriptor_eV": -0.318,
+    "shift_eV": 0.046,
+    "predicted_rank": 1.0,
+    "published": 203,
+    "published_rank": 1.0
+   },
+   {
+    "reaction": "Ethylene hydrogenation",
+    "table": "Bond 2005, Table 7.3",
+    "metal": "Co",
+    "descriptor_eV": -0.342,
+    "shift_eV": 0.07,
+    "predicted_rank": 3.0,
+    "published": 213,
+    "published_rank": 2.0
+   },
+   {
+    "reaction": "Ethylene hydrogenation",
+    "table": "Bond 2005, Table 7.3",
+    "metal": "Ni",
+    "descriptor_eV": -0.206,
+    "shift_eV": 0.06,
+    "predicted_rank": 2.0,
+    "published": 233,
+    "published_rank": 3.0
+   },
+   {
+    "reaction": "Ethylene hydrogenation",
+    "table": "Bond 2005, Table 7.3",
+    "metal": "Pd",
+    "descriptor_eV": -0.141,
+    "shift_eV": 0.118,
+    "predicted_rank": 4.0,
+    "published": 243,
+    "published_rank": 4.0
+   },
+   {
+    "reaction": "Ethylene hydrogenation",
+    "table": "Bond 2005, Table 7.3",
+    "metal": "Fe",
+    "descriptor_eV": -0.621,
+    "shift_eV": 0.349,
+    "predicted_rank": 5.0,
+    "published": 303,
+    "published_rank": 5.0
+   },
+   {
+    "reaction": "Ethylene hydrogenation",
+    "table": "Bond 2005, Table 7.3",
+    "metal": "Cu",
+    "descriptor_eV": 0.352,
+    "shift_eV": 0.562,
+    "predicted_rank": 6.0,
+    "published": 353,
+    "published_rank": 6.0
+   }
+  ],
+  "rc_spans": [
+   {
+    "reaction": "Ammonia synthesis",
+    "table": "Ozaki 1981",
+    "n": 9,
+    "measured": 2.8,
+    "predicted": 20.3,
+    "factor": 7.3
+   },
+   {
+    "reaction": "Ammonia cracking",
+    "table": "Ganley et al. 2004",
+    "n": 8,
+    "measured": 2.5,
+    "predicted": 11.8,
+    "factor": 4.7
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Bligaard et al. 2004",
+    "n": 8,
+    "measured": 2.2,
+    "predicted": 22.1,
+    "factor": 10.0
+   },
+   {
+    "reaction": "CO methanation",
+    "table": "Vannice 1977",
+    "n": 8,
+    "measured": 4.3,
+    "predicted": 32.4,
+    "factor": 7.5
+   },
+   {
+    "reaction": "Ethane hydrogenolysis",
+    "table": "Sinfelt, in Bond 2005",
+    "n": 5,
+    "measured": 6.1,
+    "predicted": 7.7,
+    "factor": 1.3
+   },
+   {
+    "reaction": "Benzene hydrogenation",
+    "table": "Toulhoat and Raybaud 2003",
+    "n": 8,
+    "measured": 2.0,
+    "predicted": 40.3,
+    "factor": 20.1
+   }
+  ],
+  "rc_electro_intermediates": [
+   {
+    "intermediate": "N*",
+    "table": "Herron et al. 2015",
+    "n": 12,
+    "offset_eV": 0.196,
+    "median_miss_eV": 0.257,
+    "max_miss_eV": 0.711,
+    "rho": 0.923,
+    "p": "3.0 × 10⁻⁵",
+    "verdict": "misses: typical miss 0.257 eV, above 0.20"
+   },
+   {
+    "intermediate": "NH*",
+    "table": "Herron et al. 2015",
+    "n": 12,
+    "offset_eV": 0.314,
+    "median_miss_eV": 0.165,
+    "max_miss_eV": 0.604,
+    "rho": 0.958,
+    "p": "3.2 × 10⁻⁶",
+    "verdict": "passes"
+   },
+   {
+    "intermediate": "NH2*",
+    "table": "Herron et al. 2015",
+    "n": 12,
+    "offset_eV": 0.518,
+    "median_miss_eV": 0.086,
+    "max_miss_eV": 0.436,
+    "rho": 0.853,
+    "p": "3.9 × 10⁻⁴",
+    "verdict": "passes"
+   },
+   {
+    "intermediate": "NNH*",
+    "table": "Herron et al. 2015",
+    "n": 12,
+    "offset_eV": 0.296,
+    "median_miss_eV": 0.188,
+    "max_miss_eV": 0.535,
+    "rho": 0.886,
+    "p": "1.3 × 10⁻⁴",
+    "verdict": "passes"
+   },
+   {
+    "intermediate": "HNNH*",
+    "table": "Herron et al. 2015",
+    "n": 10,
+    "offset_eV": 0.462,
+    "median_miss_eV": 0.183,
+    "max_miss_eV": 0.743,
+    "rho": 0.758,
+    "p": "0.007",
+    "verdict": "passes"
+   },
+   {
+    "intermediate": "NNH2*",
+    "table": "Herron et al. 2015",
+    "n": 12,
+    "offset_eV": 0.529,
+    "median_miss_eV": 0.11,
+    "max_miss_eV": 0.612,
+    "rho": 0.916,
+    "p": "4.2 × 10⁻⁵",
+    "verdict": "passes"
+   },
+   {
+    "intermediate": "HNNH2*",
+    "table": "Herron et al. 2015",
+    "n": 12,
+    "offset_eV": 0.739,
+    "median_miss_eV": 0.204,
+    "max_miss_eV": 0.689,
+    "rho": 0.846,
+    "p": "4.7 × 10⁻⁴",
+    "verdict": "misses: typical miss 0.204 eV, above 0.20"
+   },
+   {
+    "intermediate": "COOH*",
+    "table": "Elnabawy et al. 2018",
+    "n": 12,
+    "offset_eV": 0.829,
+    "median_miss_eV": 0.063,
+    "max_miss_eV": 0.434,
+    "rho": 0.797,
+    "p": "0.001",
+    "verdict": "passes"
+   },
+   {
+    "intermediate": "OCHO*",
+    "table": "Elnabawy et al. 2018",
+    "n": 12,
+    "offset_eV": 0.772,
+    "median_miss_eV": 0.047,
+    "max_miss_eV": 0.278,
+    "rho": 0.951,
+    "p": "5.5 × 10⁻⁶",
+    "verdict": "passes"
+   },
+   {
+    "intermediate": "CO*",
+    "table": "Elnabawy et al. 2018",
+    "n": 12,
+    "offset_eV": 0.387,
+    "median_miss_eV": 0.108,
+    "max_miss_eV": 0.405,
+    "rho": 0.559,
+    "p": "0.031",
+    "verdict": "misses: rho 0.56, below 0.6"
+   }
+  ],
+  "rc_electro_reactions": [
+   {
+    "reaction": "Ammonia oxidation to nitrogen (AOR)",
+    "table": "Herron et al. 2015",
+    "n": 12,
+    "rho": 0.855,
+    "p": "3.6 × 10⁻⁴",
+    "verdict": "in the playground: N* misses its check"
+   },
+   {
+    "reaction": "CO2 reduction to CO",
+    "table": "Elnabawy et al. 2018",
+    "n": 12,
+    "rho": 0.797,
+    "p": "0.001",
+    "verdict": "in the playground: CO* misses its check; the corrections for CO* and COOH* rest on UMA alone"
+   },
+   {
+    "reaction": "CO2 reduction to formate",
+    "table": "Elnabawy et al. 2018",
+    "n": 12,
+    "rho": 0.842,
+    "p": "5.0 × 10⁻⁴",
+    "verdict": "in the playground: the corrections for OCHO* rest on UMA alone"
+   },
+   {
+    "reaction": "Formic acid oxidation",
+    "table": "Elnabawy et al. 2018",
+    "n": 12,
+    "rho": 0.842,
+    "p": "5.0 × 10⁻⁴",
+    "verdict": "in the playground: the corrections for OCHO* rest on UMA alone"
+   },
+   {
+    "reaction": "Hydrogen peroxide production (two-electron ORR)",
+    "table": "Nørskov et al. 2004, Table 2 (O* through Fig. 8)",
+    "n": 11,
+    "rho": 0.845,
+    "p": "9.1 × 10⁻⁴",
+    "verdict": "passes: on the Design page"
+   },
+   {
+    "reaction": "Hydrogen peroxide reduction",
+    "table": "Nørskov et al. 2004, Table 2",
+    "n": 13,
+    "rho": 0.973,
+    "p": "1.9 × 10⁻⁷",
+    "verdict": "passes: on the Design page"
+   },
+   {
+    "reaction": "Hydrazine oxidation",
+    "table": "Herron et al. 2015",
+    "n": 10,
+    "rho": 0.262,
+    "p": "0.231",
+    "verdict": "in the playground: HNNH2* misses its check; the corrections for HNNH* and HNNH2* rest on UMA alone; rho 0.26, below 0.6; p 0.231, above 0.05"
+   },
+   {
+    "reaction": "Hydrogen oxidation (HOR)",
+    "table": "arXiv:2109.04219, Table S2 (RPBE)",
+    "n": 12,
+    "rho": 0.923,
+    "p": "3.0 × 10⁻⁵",
+    "verdict": "passes: on the Design page"
+   },
+   {
+    "reaction": "Nitric oxide reduction to ammonia",
+    "table": "(a published table to come)",
+    "n": 0,
+    "rho": null,
+    "p": "",
+    "verdict": "in the playground: NO* and NOH* await a published table, and so does the ranking; N* misses its check; the corrections for NO* and NOH* rest on UMA alone"
+   },
+   {
+    "reaction": "Nitrogen reduction to ammonia (NRR)",
+    "table": "Herron et al. 2015",
+    "n": 12,
+    "rho": 0.76,
+    "p": "0.003",
+    "verdict": "in the playground: N* misses its check"
+   }
+  ],
+  "rc_electro_metals": [
+   {
+    "reaction": "Ammonia oxidation to nitrogen (AOR)",
+    "metal": "Ag",
+    "uma_V": 1.382,
+    "published_V": 1.45,
+    "uma_step": "* → NH2",
+    "published_step": "NH → N"
+   },
+   {
+    "reaction": "Ammonia oxidation to nitrogen (AOR)",
+    "metal": "Au",
+    "uma_V": 1.573,
+    "published_V": 1.231,
+    "uma_step": "* → NH2",
+    "published_step": "* → NH2"
+   },
+   {
+    "reaction": "Ammonia oxidation to nitrogen (AOR)",
+    "metal": "Cu",
+    "uma_V": 1.0,
+    "published_V": 1.23,
+    "uma_step": "NH → N",
+    "published_step": "NH → N"
+   },
+   {
+    "reaction": "Ammonia oxidation to nitrogen (AOR)",
+    "metal": "Pd",
+    "uma_V": 0.738,
+    "published_V": 0.54,
+    "uma_step": "* → NH2",
+    "published_step": "NH → N"
+   },
+   {
+    "reaction": "Ammonia oxidation to nitrogen (AOR)",
+    "metal": "Pt",
+    "uma_V": 0.63,
+    "published_V": 0.52,
+    "uma_step": "* → NH2",
+    "published_step": "NH → N"
+   },
+   {
+    "reaction": "Ammonia oxidation to nitrogen (AOR)",
+    "metal": "Ni",
+    "uma_V": 0.29,
+    "published_V": 0.56,
+    "uma_step": "NH → N",
+    "published_step": "NH → N"
+   },
+   {
+    "reaction": "Ammonia oxidation to nitrogen (AOR)",
+    "metal": "Ir",
+    "uma_V": 0.409,
+    "published_V": 0.5,
+    "uma_step": "* → NH2",
+    "published_step": "NH → N"
+   },
+   {
+    "reaction": "Ammonia oxidation to nitrogen (AOR)",
+    "metal": "Co",
+    "uma_V": 0.09,
+    "published_V": 0.39,
+    "uma_step": "NH → N",
+    "published_step": "NH → N"
+   },
+   {
+    "reaction": "Ammonia oxidation to nitrogen (AOR)",
+    "metal": "Rh",
+    "uma_V": 0.229,
+    "published_V": 0.25,
+    "uma_step": "* → NH2",
+    "published_step": "NH → N"
+   },
+   {
+    "reaction": "Ammonia oxidation to nitrogen (AOR)",
+    "metal": "Ru",
+    "uma_V": 0.025,
+    "published_V": 0.39,
+    "uma_step": "NH → N",
+    "published_step": "NH → N"
+   },
+   {
+    "reaction": "Ammonia oxidation to nitrogen (AOR)",
+    "metal": "Os",
+    "uma_V": 0.074,
+    "published_V": 0.17,
+    "uma_step": "NH → N",
+    "published_step": "NH → N"
+   },
+   {
+    "reaction": "Ammonia oxidation to nitrogen (AOR)",
+    "metal": "Re",
+    "uma_V": 0.113,
+    "published_V": 0.13,
+    "uma_step": "NH → N",
+    "published_step": "NH → N"
+   },
+   {
+    "reaction": "CO2 reduction to CO",
+    "metal": "Au",
+    "uma_V": -1.31,
+    "published_V": -1.519,
+    "uma_step": "start → COOH",
+    "published_step": "start → COOH"
+   },
+   {
+    "reaction": "CO2 reduction to CO",
+    "metal": "Ag",
+    "uma_V": -1.474,
+    "published_V": -1.739,
+    "uma_step": "start → COOH",
+    "published_step": "start → COOH"
+   },
+   {
+    "reaction": "CO2 reduction to CO",
+    "metal": "Cu",
+    "uma_V": -1.085,
+    "published_V": -1.239,
+    "uma_step": "start → COOH",
+    "published_step": "start → COOH"
+   },
+   {
+    "reaction": "CO2 reduction to CO",
+    "metal": "Pt",
+    "uma_V": -0.361,
+    "published_V": -0.499,
+    "uma_step": "start → COOH",
+    "published_step": "start → COOH"
+   },
+   {
+    "reaction": "CO2 reduction to CO",
+    "metal": "Pd",
+    "uma_V": -0.609,
+    "published_V": -0.669,
+    "uma_step": "start → COOH",
+    "published_step": "start → COOH"
+   },
+   {
+    "reaction": "CO2 reduction to CO",
+    "metal": "Ni",
+    "uma_V": -0.388,
+    "published_V": -0.709,
+    "uma_step": "start → COOH",
+    "published_step": "start → COOH"
+   },
+   {
+    "reaction": "CO2 reduction to CO",
+    "metal": "Ir",
+    "uma_V": -0.345,
+    "published_V": -0.239,
+    "uma_step": "start → COOH",
+    "published_step": "start → COOH"
+   },
+   {
+    "reaction": "CO2 reduction to CO",
+    "metal": "Rh",
+    "uma_V": -0.241,
+    "published_V": -0.389,
+    "uma_step": "start → COOH",
+    "published_step": "start → COOH"
+   },
+   {
+    "reaction": "CO2 reduction to CO",
+    "metal": "Co",
+    "uma_V": -0.055,
+    "published_V": -0.679,
+    "uma_step": "start → COOH",
+    "published_step": "start → COOH"
+   },
+   {
+    "reaction": "CO2 reduction to CO",
+    "metal": "Os",
+    "uma_V": -0.029,
+    "published_V": -0.139,
+    "uma_step": "start → COOH",
+    "published_step": "start → COOH"
+   },
+   {
+    "reaction": "CO2 reduction to CO",
+    "metal": "Ru",
+    "uma_V": -0.104,
+    "published_V": -0.289,
+    "uma_step": "start → COOH",
+    "published_step": "start → COOH"
+   },
+   {
+    "reaction": "CO2 reduction to CO",
+    "metal": "Re",
+    "uma_V": -0.19,
+    "published_V": -0.359,
+    "uma_step": "start → COOH",
+    "published_step": "start → COOH"
+   },
+   {
+    "reaction": "CO2 reduction to formate",
+    "metal": "Au",
+    "uma_V": -1.305,
+    "published_V": -1.359,
+    "uma_step": "start → OCHO",
+    "published_step": "start → OCHO"
+   },
+   {
+    "reaction": "CO2 reduction to formate",
+    "metal": "Ag",
+    "uma_V": -0.716,
+    "published_V": -0.819,
+    "uma_step": "start → OCHO",
+    "published_step": "start → OCHO"
+   },
+   {
+    "reaction": "CO2 reduction to formate",
+    "metal": "Cu",
+    "uma_V": -0.339,
+    "published_V": -0.409,
+    "uma_step": "start → OCHO",
+    "published_step": "start → OCHO"
+   },
+   {
+    "reaction": "CO2 reduction to formate",
+    "metal": "Pt",
+    "uma_V": -0.817,
+    "published_V": -0.789,
+    "uma_step": "start → OCHO",
+    "published_step": "start → OCHO"
+   },
+   {
+    "reaction": "CO2 reduction to formate",
+    "metal": "Pd",
+    "uma_V": -0.697,
+    "published_V": -0.709,
+    "uma_step": "start → OCHO",
+    "published_step": "start → OCHO"
+   },
+   {
+    "reaction": "CO2 reduction to formate",
+    "metal": "Ni",
+    "uma_V": -0.135,
+    "published_V": -0.329,
+    "uma_step": "start → OCHO",
+    "published_step": "start → OCHO"
+   },
+   {
+    "reaction": "CO2 reduction to formate",
+    "metal": "Ir",
+    "uma_V": -0.43,
+    "published_V": -0.299,
+    "uma_step": "start → OCHO",
+    "published_step": "start → OCHO"
+   },
+   {
+    "reaction": "CO2 reduction to formate",
+    "metal": "Rh",
+    "uma_V": -0.202,
+    "published_V": -0.339,
+    "uma_step": "start → OCHO",
+    "published_step": "start → OCHO"
+   },
+   {
+    "reaction": "CO2 reduction to formate",
+    "metal": "Co",
+    "uma_V": -0.421,
+    "published_V": -0.169,
+    "uma_step": "OCHO → *",
+    "published_step": "start → OCHO"
+   },
+   {
+    "reaction": "CO2 reduction to formate",
+    "metal": "Os",
+    "uma_V": -0.453,
+    "published_V": -0.409,
+    "uma_step": "OCHO → *",
+    "published_step": "OCHO → *"
+   },
+   {
+    "reaction": "CO2 reduction to formate",
+    "metal": "Ru",
+    "uma_V": -0.446,
+    "published_V": -0.339,
+    "uma_step": "OCHO → *",
+    "published_step": "OCHO → *"
+   },
+   {
+    "reaction": "CO2 reduction to formate",
+    "metal": "Re",
+    "uma_V": -0.539,
+    "published_V": -0.449,
+    "uma_step": "OCHO → *",
+    "published_step": "OCHO → *"
+   },
+   {
+    "reaction": "Formic acid oxidation",
+    "metal": "Au",
+    "uma_V": 1.077,
+    "published_V": 1.131,
+    "uma_step": "* → OCHO",
+    "published_step": "* → OCHO"
+   },
+   {
+    "reaction": "Formic acid oxidation",
+    "metal": "Ag",
+    "uma_V": 0.488,
+    "published_V": 0.591,
+    "uma_step": "* → OCHO",
+    "published_step": "* → OCHO"
+   },
+   {
+    "reaction": "Formic acid oxidation",
+    "metal": "Cu",
+    "uma_V": 0.111,
+    "published_V": 0.181,
+    "uma_step": "* → OCHO",
+    "published_step": "* → OCHO"
+   },
+   {
+    "reaction": "Formic acid oxidation",
+    "metal": "Pt",
+    "uma_V": 0.589,
+    "published_V": 0.561,
+    "uma_step": "* → OCHO",
+    "published_step": "* → OCHO"
+   },
+   {
+    "reaction": "Formic acid oxidation",
+    "metal": "Pd",
+    "uma_V": 0.469,
+    "published_V": 0.481,
+    "uma_step": "* → OCHO",
+    "published_step": "* → OCHO"
+   },
+   {
+    "reaction": "Formic acid oxidation",
+    "metal": "Ni",
+    "uma_V": -0.093,
+    "published_V": 0.101,
+    "uma_step": "* → OCHO",
+    "published_step": "* → OCHO"
+   },
+   {
+    "reaction": "Formic acid oxidation",
+    "metal": "Ir",
+    "uma_V": 0.202,
+    "published_V": 0.071,
+    "uma_step": "* → OCHO",
+    "published_step": "* → OCHO"
+   },
+   {
+    "reaction": "Formic acid oxidation",
+    "metal": "Rh",
+    "uma_V": -0.026,
+    "published_V": 0.111,
+    "uma_step": "* → OCHO",
+    "published_step": "* → OCHO"
+   },
+   {
+    "reaction": "Formic acid oxidation",
+    "metal": "Co",
+    "uma_V": 0.193,
+    "published_V": -0.059,
+    "uma_step": "OCHO → end",
+    "published_step": "* → OCHO"
+   },
+   {
+    "reaction": "Formic acid oxidation",
+    "metal": "Os",
+    "uma_V": 0.225,
+    "published_V": 0.181,
+    "uma_step": "OCHO → end",
+    "published_step": "OCHO → end"
+   },
+   {
+    "reaction": "Formic acid oxidation",
+    "metal": "Ru",
+    "uma_V": 0.218,
+    "published_V": 0.111,
+    "uma_step": "OCHO → end",
+    "published_step": "OCHO → end"
+   },
+   {
+    "reaction": "Formic acid oxidation",
+    "metal": "Re",
+    "uma_V": 0.311,
+    "published_V": 0.221,
+    "uma_step": "OCHO → end",
+    "published_step": "OCHO → end"
+   },
+   {
+    "reaction": "Hydrogen peroxide production (two-electron ORR)",
+    "metal": "Ag",
+    "uma_V": 0.551,
+    "published_V": 0.496,
+    "uma_step": "start → OOH",
+    "published_step": "start → OOH"
+   },
+   {
+    "reaction": "Hydrogen peroxide production (two-electron ORR)",
+    "metal": "Au",
+    "uma_V": 0.069,
+    "published_V": 0.181,
+    "uma_step": "start → OOH",
+    "published_step": "start → OOH"
+   },
+   {
+    "reaction": "Hydrogen peroxide production (two-electron ORR)",
+    "metal": "Co",
+    "uma_V": 0.148,
+    "published_V": -0.276,
+    "uma_step": "OOH → *",
+    "published_step": "OOH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide production (two-electron ORR)",
+    "metal": "Cu",
+    "uma_V": 0.358,
+    "published_V": 0.434,
+    "uma_step": "OOH → *",
+    "published_step": "OOH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide production (two-electron ORR)",
+    "metal": "Fe",
+    "uma_V": -0.167,
+    "published_V": -0.616,
+    "uma_step": "OOH → *",
+    "published_step": "OOH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide production (two-electron ORR)",
+    "metal": "Ir",
+    "uma_V": 0.514,
+    "published_V": 0.334,
+    "uma_step": "OOH → *",
+    "published_step": "OOH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide production (two-electron ORR)",
+    "metal": "Ni",
+    "uma_V": 0.389,
+    "published_V": 0.004,
+    "uma_step": "OOH → *",
+    "published_step": "OOH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide production (two-electron ORR)",
+    "metal": "Pd",
+    "uma_V": 0.674,
+    "published_V": 0.599,
+    "uma_step": "start → OOH",
+    "published_step": "OOH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide production (two-electron ORR)",
+    "metal": "Pt",
+    "uma_V": 0.684,
+    "published_V": 0.619,
+    "uma_step": "start → OOH",
+    "published_step": "OOH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide production (two-electron ORR)",
+    "metal": "Rh",
+    "uma_V": 0.352,
+    "published_V": 0.054,
+    "uma_step": "OOH → *",
+    "published_step": "OOH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide production (two-electron ORR)",
+    "metal": "Ru",
+    "uma_V": 0.142,
+    "published_V": -0.191,
+    "uma_step": "OOH → *",
+    "published_step": "OOH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide reduction",
+    "metal": "Ag",
+    "uma_V": 0.613,
+    "published_V": 0.47,
+    "uma_step": "OH → *",
+    "published_step": "OH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide reduction",
+    "metal": "Au",
+    "uma_V": 1.317,
+    "published_V": 1.24,
+    "uma_step": "OH → *",
+    "published_step": "OH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide reduction",
+    "metal": "Co",
+    "uma_V": -0.571,
+    "published_V": -0.33,
+    "uma_step": "OH → *",
+    "published_step": "OH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide reduction",
+    "metal": "Cu",
+    "uma_V": 0.093,
+    "published_V": 0.12,
+    "uma_step": "OH → *",
+    "published_step": "OH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide reduction",
+    "metal": "Fe",
+    "uma_V": -0.923,
+    "published_V": -1.13,
+    "uma_step": "OH → *",
+    "published_step": "OH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide reduction",
+    "metal": "Ir",
+    "uma_V": 0.513,
+    "published_V": 0.38,
+    "uma_step": "OH → *",
+    "published_step": "OH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide reduction",
+    "metal": "Mo",
+    "uma_V": -1.184,
+    "published_V": -0.86,
+    "uma_step": "OH → *",
+    "published_step": "OH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide reduction",
+    "metal": "Ni",
+    "uma_V": -0.165,
+    "published_V": -0.12,
+    "uma_step": "OH → *",
+    "published_step": "OH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide reduction",
+    "metal": "Pd",
+    "uma_V": 0.659,
+    "published_V": 0.67,
+    "uma_step": "OH → *",
+    "published_step": "OH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide reduction",
+    "metal": "Pt",
+    "uma_V": 0.791,
+    "published_V": 0.8,
+    "uma_step": "OH → *",
+    "published_step": "OH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide reduction",
+    "metal": "Rh",
+    "uma_V": 0.196,
+    "published_V": 0.09,
+    "uma_step": "OH → *",
+    "published_step": "OH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide reduction",
+    "metal": "Ru",
+    "uma_V": -0.253,
+    "published_V": -0.26,
+    "uma_step": "OH → *",
+    "published_step": "OH → *"
+   },
+   {
+    "reaction": "Hydrogen peroxide reduction",
+    "metal": "W",
+    "uma_V": -1.064,
+    "published_V": -1.05,
+    "uma_step": "OH → *",
+    "published_step": "OH → *"
+   },
+   {
+    "reaction": "Hydrazine oxidation",
+    "metal": "Cu",
+    "uma_V": 0.825,
+    "published_V": 0.47,
+    "uma_step": "* → HNNH2",
+    "published_step": "HNNH2 → HNNH"
+   },
+   {
+    "reaction": "Hydrazine oxidation",
+    "metal": "Pd",
+    "uma_V": 0.74,
+    "published_V": 0.2,
+    "uma_step": "* → HNNH2",
+    "published_step": "HNNH2 → HNNH"
+   },
+   {
+    "reaction": "Hydrazine oxidation",
+    "metal": "Pt",
+    "uma_V": 0.575,
+    "published_V": 0.13,
+    "uma_step": "* → HNNH2",
+    "published_step": "HNNH2 → HNNH"
+   },
+   {
+    "reaction": "Hydrazine oxidation",
+    "metal": "Ni",
+    "uma_V": 0.107,
+    "published_V": 0.32,
+    "uma_step": "HNNH2 → HNNH",
+    "published_step": "HNNH2 → HNNH"
+   },
+   {
+    "reaction": "Hydrazine oxidation",
+    "metal": "Ir",
+    "uma_V": 0.296,
+    "published_V": 0.39,
+    "uma_step": "* → HNNH2",
+    "published_step": "HNNH2 → HNNH"
+   },
+   {
+    "reaction": "Hydrazine oxidation",
+    "metal": "Co",
+    "uma_V": 0.054,
+    "published_V": 0.13,
+    "uma_step": "HNNH → NNH",
+    "published_step": "HNNH → NNH"
+   },
+   {
+    "reaction": "Hydrazine oxidation",
+    "metal": "Rh",
+    "uma_V": 0.192,
+    "published_V": 0.34,
+    "uma_step": "HNNH2 → HNNH",
+    "published_step": "HNNH2 → HNNH"
+   },
+   {
+    "reaction": "Hydrazine oxidation",
+    "metal": "Ru",
+    "uma_V": 0.071,
+    "published_V": 0.34,
+    "uma_step": "HNNH2 → HNNH",
+    "published_step": "HNNH2 → HNNH"
+   },
+   {
+    "reaction": "Hydrazine oxidation",
+    "metal": "Os",
+    "uma_V": 0.245,
+    "published_V": 0.49,
+    "uma_step": "HNNH2 → HNNH",
+    "published_step": "HNNH2 → HNNH"
+   },
+   {
+    "reaction": "Hydrazine oxidation",
+    "metal": "Re",
+    "uma_V": -0.058,
+    "published_V": 0.25,
+    "uma_step": "HNNH2 → HNNH",
+    "published_step": "NNH → end"
+   },
+   {
+    "reaction": "Hydrogen oxidation (HOR)",
+    "metal": "Ag",
+    "uma_V": 0.624,
+    "published_V": 0.565,
+    "uma_step": "* → H",
+    "published_step": "* → H"
+   },
+   {
+    "reaction": "Hydrogen oxidation (HOR)",
+    "metal": "Au",
+    "uma_V": 0.573,
+    "published_V": 0.574,
+    "uma_step": "* → H",
+    "published_step": "* → H"
+   },
+   {
+    "reaction": "Hydrogen oxidation (HOR)",
+    "metal": "Co",
+    "uma_V": 0.296,
+    "published_V": 0.202,
+    "uma_step": "H → end",
+    "published_step": "H → end"
+   },
+   {
+    "reaction": "Hydrogen oxidation (HOR)",
+    "metal": "Cu",
+    "uma_V": 0.198,
+    "published_V": 0.188,
+    "uma_step": "* → H",
+    "published_step": "* → H"
+   },
+   {
+    "reaction": "Hydrogen oxidation (HOR)",
+    "metal": "Ir",
+    "uma_V": 0.034,
+    "published_V": 0.081,
+    "uma_step": "H → end",
+    "published_step": "H → end"
+   },
+   {
+    "reaction": "Hydrogen oxidation (HOR)",
+    "metal": "Ni",
+    "uma_V": 0.269,
+    "published_V": 0.231,
+    "uma_step": "H → end",
+    "published_step": "H → end"
+   },
+   {
+    "reaction": "Hydrogen oxidation (HOR)",
+    "metal": "Pd",
+    "uma_V": 0.158,
+    "published_V": 0.123,
+    "uma_step": "H → end",
+    "published_step": "H → end"
+   },
+   {
+    "reaction": "Hydrogen oxidation (HOR)",
+    "metal": "Pt",
+    "uma_V": 0.084,
+    "published_V": 0.038,
+    "uma_step": "H → end",
+    "published_step": "H → end"
+   },
+   {
+    "reaction": "Hydrogen oxidation (HOR)",
+    "metal": "Rh",
+    "uma_V": 0.141,
+    "published_V": 0.116,
+    "uma_step": "H → end",
+    "published_step": "H → end"
+   },
+   {
+    "reaction": "Hydrogen oxidation (HOR)",
+    "metal": "Ru",
+    "uma_V": 0.207,
+    "published_V": 0.18,
+    "uma_step": "H → end",
+    "published_step": "H → end"
+   },
+   {
+    "reaction": "Hydrogen oxidation (HOR)",
+    "metal": "Mo",
+    "uma_V": 0.363,
+    "published_V": 0.321,
+    "uma_step": "H → end",
+    "published_step": "H → end"
+   },
+   {
+    "reaction": "Hydrogen oxidation (HOR)",
+    "metal": "Re",
+    "uma_V": 0.276,
+    "published_V": 0.154,
+    "uma_step": "H → end",
+    "published_step": "H → end"
+   },
+   {
+    "reaction": "Nitrogen reduction to ammonia (NRR)",
+    "metal": "Ag",
+    "uma_V": -3.044,
+    "published_V": -2.629,
+    "uma_step": "start → NNH",
+    "published_step": "start → NNH"
+   },
+   {
+    "reaction": "Nitrogen reduction to ammonia (NRR)",
+    "metal": "Au",
+    "uma_V": -2.825,
+    "published_V": -2.469,
+    "uma_step": "start → NNH",
+    "published_step": "start → NNH"
+   },
+   {
+    "reaction": "Nitrogen reduction to ammonia (NRR)",
+    "metal": "Cu",
+    "uma_V": -2.448,
+    "published_V": -2.079,
+    "uma_step": "start → NNH",
+    "published_step": "start → NNH"
+   },
+   {
+    "reaction": "Nitrogen reduction to ammonia (NRR)",
+    "metal": "Pd",
+    "uma_V": -1.763,
+    "published_V": -1.179,
+    "uma_step": "start → NNH",
+    "published_step": "start → NNH"
+   },
+   {
+    "reaction": "Nitrogen reduction to ammonia (NRR)",
+    "metal": "Pt",
+    "uma_V": -1.892,
+    "published_V": -1.159,
+    "uma_step": "start → NNH",
+    "published_step": "start → NNH"
+   },
+   {
+    "reaction": "Nitrogen reduction to ammonia (NRR)",
+    "metal": "Ni",
+    "uma_V": -1.092,
+    "published_V": -0.969,
+    "uma_step": "start → NNH",
+    "published_step": "start → NNH"
+   },
+   {
+    "reaction": "Nitrogen reduction to ammonia (NRR)",
+    "metal": "Ir",
+    "uma_V": -1.675,
+    "published_V": -0.819,
+    "uma_step": "start → NNH",
+    "published_step": "start → NNH"
+   },
+   {
+    "reaction": "Nitrogen reduction to ammonia (NRR)",
+    "metal": "Co",
+    "uma_V": -0.788,
+    "published_V": -0.819,
+    "uma_step": "start → NNH",
+    "published_step": "start → NNH"
+   },
+   {
+    "reaction": "Nitrogen reduction to ammonia (NRR)",
+    "metal": "Rh",
+    "uma_V": -1.284,
+    "published_V": -0.889,
+    "uma_step": "start → NNH",
+    "published_step": "start → NNH"
+   },
+   {
+    "reaction": "Nitrogen reduction to ammonia (NRR)",
+    "metal": "Ru",
+    "uma_V": -0.918,
+    "published_V": -0.489,
+    "uma_step": "start → NNH",
+    "published_step": "start → NNH"
+   },
+   {
+    "reaction": "Nitrogen reduction to ammonia (NRR)",
+    "metal": "Os",
+    "uma_V": -1.226,
+    "published_V": -0.41,
+    "uma_step": "start → NNH",
+    "published_step": "NH → NH2"
+   },
+   {
+    "reaction": "Nitrogen reduction to ammonia (NRR)",
+    "metal": "Re",
+    "uma_V": -0.717,
+    "published_V": -0.89,
+    "uma_step": "NH → NH2",
+    "published_step": "NH → NH2"
+   }
+  ],
+  "rc_corrections": [
+   {
+    "intermediate": "H*",
+    "site": "top Pt",
+    "uma_eV": 0.2226,
+    "published_eV": 0.24,
+    "gap_eV": -0.017,
+    "role": "checked against (the rule)",
+    "lowest_cm": 353.0,
+    "spread_eV": 0.0168
+   },
+   {
+    "intermediate": "O*",
+    "site": "hollow 2",
+    "uma_eV": -0.0308,
+    "published_eV": 0.05,
+    "gap_eV": -0.081,
+    "role": "checked against (the rule)",
+    "lowest_cm": 282.0,
+    "spread_eV": 0.0115
+   },
+   {
+    "intermediate": "OH*",
+    "site": "top Pt",
+    "uma_eV": 0.1921,
+    "published_eV": 0.35,
+    "gap_eV": -0.158,
+    "role": "checked against (the rule)",
+    "lowest_cm": -46.0,
+    "spread_eV": 0.079
+   },
+   {
+    "intermediate": "OOH*",
+    "site": "top Pt",
+    "uma_eV": 0.1957,
+    "published_eV": 0.4,
+    "gap_eV": -0.204,
+    "role": "checked against (the rule)",
+    "lowest_cm": -23.0,
+    "spread_eV": 0.0932
+   },
+   {
+    "intermediate": "N*",
+    "site": "hollow 2",
+    "uma_eV": 0.2688,
+    "published_eV": 0.26,
+    "gap_eV": 0.009,
+    "role": "shown beside (Skúlason 2012)",
+    "lowest_cm": 409.0,
+    "spread_eV": 0.0292
+   },
+   {
+    "intermediate": "NH*",
+    "site": "hollow 2",
+    "uma_eV": 0.6266,
+    "published_eV": 0.57,
+    "gap_eV": 0.057,
+    "role": "shown beside (Skúlason 2012)",
+    "lowest_cm": 395.0,
+    "spread_eV": 0.0337
+   },
+   {
+    "intermediate": "NH2*",
+    "site": "bridge",
+    "uma_eV": 0.9963,
+    "published_eV": 0.88,
+    "gap_eV": 0.116,
+    "role": "shown beside (Skúlason 2012)",
+    "lowest_cm": 206.0,
+    "spread_eV": 0.0558
+   },
+   {
+    "intermediate": "NNH*",
+    "site": "hollow 1",
+    "uma_eV": 0.8679,
+    "published_eV": 0.8,
+    "gap_eV": 0.068,
+    "role": "shown beside (Skúlason 2012)",
+    "lowest_cm": 78.0,
+    "spread_eV": 0.0663
+   },
+   {
+    "intermediate": "NNH2*",
+    "site": "hollow 2",
+    "uma_eV": 1.2412,
+    "published_eV": 1.11,
+    "gap_eV": 0.131,
+    "role": "shown beside (Skúlason 2012)",
+    "lowest_cm": 147.0,
+    "spread_eV": 0.0709
+   },
+   {
+    "intermediate": "HNNH*",
+    "site": "hollow 1",
+    "uma_eV": 1.245,
+    "published_eV": null,
+    "gap_eV": null,
+    "role": "UMA's value alone",
+    "lowest_cm": 117.0,
+    "spread_eV": 0.0321
+   },
+   {
+    "intermediate": "HNNH2*",
+    "site": "bridge",
+    "uma_eV": 1.6521,
+    "published_eV": null,
+    "gap_eV": null,
+    "role": "UMA's value alone",
+    "lowest_cm": 122.0,
+    "spread_eV": 0.0269
+   },
+   {
+    "intermediate": "NO*",
+    "site": "hollow 2",
+    "uma_eV": 0.5881,
+    "published_eV": null,
+    "gap_eV": null,
+    "role": "UMA's value alone",
+    "lowest_cm": 144.0,
+    "spread_eV": 0.0155
+   },
+   {
+    "intermediate": "NOH*",
+    "site": "hollow 2",
+    "uma_eV": 0.9113,
+    "published_eV": null,
+    "gap_eV": null,
+    "role": "UMA's value alone",
+    "lowest_cm": 136.0,
+    "spread_eV": 0.0709
+   },
+   {
+    "intermediate": "CO*",
+    "site": "hollow 2",
+    "uma_eV": 0.533,
+    "published_eV": null,
+    "gap_eV": null,
+    "role": "UMA's value alone",
+    "lowest_cm": 143.0,
+    "spread_eV": 0.0293
+   },
+   {
+    "intermediate": "COOH*",
+    "site": "top Pt",
+    "uma_eV": 0.8764,
+    "published_eV": null,
+    "gap_eV": null,
+    "role": "UMA's value alone",
+    "lowest_cm": 19.0,
+    "spread_eV": 0.0246
+   },
+   {
+    "intermediate": "OCHO*",
+    "site": "hollow 1",
+    "uma_eV": 0.927,
+    "published_eV": null,
+    "gap_eV": null,
+    "role": "UMA's value alone",
+    "lowest_cm": 86.0,
+    "spread_eV": 0.0332
+   }
+  ]
+ },
+ "n_pairing": {
+  "n": 6,
+  "metals": [
+   "Cu",
+   "Pd",
+   "Pt",
+   "Ir",
+   "Co",
+   "Rh"
+  ],
+  "slope": -0.46,
+  "intercept": 2.31,
+  "rms_eV": 0.26,
+  "range_eV": [
+   1.16,
+   2.55
+  ]
+ }
+}

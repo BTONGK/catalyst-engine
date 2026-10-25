@@ -7,19 +7,23 @@ core never names one. Electrochemical screens live in their own folder, <data di
 the thermal screens, and the shipped examples in examples/electro/screens/.
 
 The method (Nørskov et al., J. Phys. Chem. B 2004):
-  1. each intermediate's free energy against liquid water and H2 at U = 0 V vs RHE is its binding energy from the
-     worker (set against H2O and H2 gas) plus a zero-point and entropy correction, plus the hydrogen bonds from
-     water where the reaction declares them;
-  2. every step transfers one proton and electron, so at potential U its free energy shifts by +eU (reduction) or
-     -eU (oxidation); a proton's free energy at U = 0 is half an H2 molecule on the RHE scale, at any pH;
+  1. each intermediate's free energy at U = 0 V vs RHE is its binding energy from the worker (set against the
+     worker's gases: H2O, H2, N2, CO, NO, NH3) plus a zero-point and entropy correction, plus the hydrogen bonds
+     from water where the reaction declares them, plus a fixed shift from tabulated thermochemistry that moves the
+     worker's gases to the reaction's own zero (its products for a reduction, its reactants for an oxidation);
+  2. each electron step transfers one proton and electron, so at potential U its free energy shifts by +eU
+     (reduction) or -eU (oxidation); a proton's free energy at U = 0 is half an H2 molecule on the RHE scale, at
+     any pH. A chemical step moves no electron (a molecule landing or leaving, two adsorbates pairing up), so the
+     potential leaves it alone; it may carry a barrier that follows a binding energy;
   3. a reaction may declare a chemical step (O2 splitting for oxygen reduction) that opens a second route: it makes
      one intermediate straight from the reactants, with a barrier that follows a binding energy, and the route
      goes on along the path's own steps from there (the paper's eqs. 18-22);
-  4. the limiting potential is the best an open route reaches, where its last step turns downhill:
-     U_L = -max(dG_i) over the route's steps for a reduction, +max(dG_i) for an oxidation; the chemical route is
-     open once its barrier is gone; the overpotential is the distance from the equilibrium potential;
-  5. the rate at a potential follows each route's largest hurdle there, its largest step still uphill or its
-     chemical barrier, and the faster route carries it (Sabatier analysis, the paper's eq. 16 and Fig. 8):
+  4. the limiting potential is the best an open route reaches, where its last electron step turns downhill:
+     U_L = -max(dG_i) over the route's electron steps for a reduction, +max(dG_i) for an oxidation; the chemical
+     route is open once its barrier is gone; the overpotential is the distance from the equilibrium potential;
+  5. the rate at a potential follows each route's largest hurdle there, its largest step still uphill, a chemical
+     step's free energy or barrier, or the route's own barrier, and the faster route carries it (Sabatier analysis,
+     the paper's eq. 16 and Fig. 8):
      rate ~ exp(-h(U) / kT), so a material's speed against the catalyst to beat is exp((h_ref(U) - h(U)) / kT)
      at 298 K;
   6. the likely ranges move every intermediate's free energy anywhere within the error bar at once and take the
@@ -50,8 +54,10 @@ from catalyst_engine.packs import PACKS_DIR, read_yaml
 
 ELECTRO_DIR = PACKS_DIR / "electro"
 EXAMPLES = Path(__file__).resolve().parents[3] / "examples" / "electro" / "screens"
-# the intermediates the worker can place, in plain words: the thermal set plus hydroperoxyl
-ADSORBATES = {**THERMAL_ADSORBATES, "OOH": "hydroperoxyl"}
+# the intermediates the worker can place, in plain words: the thermal set plus the electrochemical ones
+ADSORBATES = {**THERMAL_ADSORBATES, "OOH": "hydroperoxyl", "COOH": "carboxyl", "OCHO": "formate", "NH": "imide",
+              "NH2": "amide", "NNH": "diazenyl (N2H)", "NNH2": "hydrazinylidene (NNH2)", "HNNH": "diazene (HNNH)",
+              "HNNH2": "hydrazinyl (N2H3)", "NOH": "NOH"}
 K_T = 8.617333e-5 * 298.15  # eV at 25 C
 SIGMA_EV = 0.15  # uncertainty of each binding energy, as the thermal screens take it
 EITHER = "Either route"  # both routes reach the same value: the step that limits lies on both
@@ -68,10 +74,30 @@ class Intermediate(_Strict):
     correction_eV: float = 0.0  # zero-point energy minus T x entropy at 298 K
     water_eV: float = 0.0  # stabilization by hydrogen bonds from liquid water
     layer_eV: float = 0.0  # stabilization by hydrogen bonds within the adsorbate layer at the working coverage
+    # moves the worker's gas reference to the reaction's own zero, from tabulated formation free energies
+    shift_eV: float = 0.0
 
     @property
     def total_correction(self) -> float:
         return self.correction_eV + self.water_eV + self.layer_eV
+
+
+class Barrier(_Strict):
+    """A chemical step's barrier from one intermediate's binding energy, E_a = slope x dE + intercept (eV)."""
+    from_: str = Field(alias="from")
+    slope: float
+    intercept: float
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+
+class ChemicalStep(_Strict):
+    """A step of the path that moves no electron, so the potential leaves it alone: a molecule landing on the
+    surface or leaving it, or two adsorbates pairing up. `step` counts along the path from 0 (start to the first
+    intermediate) to the number of intermediates (the last one to the end). Its hurdle is its free energy, or its
+    barrier when that is higher."""
+    step: int = Field(ge=0)
+    label: str
+    barrier: Barrier | None = None
 
 
 class Activation(_Strict):
@@ -114,10 +140,12 @@ class ElectroSpec(_Strict):
     volcano_steps: list[list[float]] = Field(default_factory=list)  # each step's dG as a x + b in the descriptor
     volcano_barrier: list[float] | None = None  # the chemical barrier, less its bonus, as [a, b] in the descriptor
     activation: Activation | None = None  # a chemical step and the route it opens
+    chemical_steps: list[ChemicalStep] = Field(default_factory=list)  # steps along the path that move no electron
     reference: ElectroReference
     task: str = "oc20"
     suggested_elements: list[str] = Field(default_factory=list)
     on_design_page: bool = True  # False keeps a reaction to the playground until its check passes
+    design_note: str = ""  # what it waits for before the Design page, in plain words
     basis: str = ""
 
     @model_validator(mode="after")
@@ -129,8 +157,16 @@ class ElectroSpec(_Strict):
             raise ValueError(f"{self.id} names unknown adsorbates {sorted(unknown)}")
         if not names or len(set(names)) != len(names):
             raise ValueError(f"{self.id} needs a list of distinct intermediates")
-        if len(names) != self.electrons - 1:
-            raise ValueError(f"{self.id}: {self.electrons} electrons need {self.electrons - 1} intermediates")
+        chem = [c.step for c in self.chemical_steps]
+        if len(set(chem)) != len(chem) or any(k > len(names) for k in chem):
+            raise ValueError(f"{self.id}: each chemical step names a distinct step of the path, 0 to {len(names)}")
+        if len(names) + 1 - len(chem) != self.electrons:
+            raise ValueError(f"{self.id}: {self.electrons} electrons need {self.electrons} electron steps, so "
+                             f"{self.electrons - 1 + len(chem)} intermediates beside {len(chem)} chemical steps")
+        if {c.barrier.from_ for c in self.chemical_steps if c.barrier} - set(names):
+            raise ValueError(f"{self.id}: a chemical step's barrier follows an intermediate of the path")
+        if chem and self.activation is not None:
+            raise ValueError(f"{self.id}: a second route and chemical steps along the path stay in separate reactions")
         if any(len(ab) != 2 for ab in self.volcano_steps):
             raise ValueError(f"{self.id}: each volcano step is [slope, intercept]")
         if self.activation is not None and not {self.activation.from_, self.activation.joins_at} <= set(names):
@@ -144,6 +180,19 @@ class ElectroSpec(_Strict):
         return [i.name for i in self.intermediates]
 
     @property
+    def n_steps(self) -> int:
+        return len(self.intermediates) + 1
+
+    @property
+    def electron_steps(self) -> list[int]:
+        """The steps that move a proton and electron, in path order."""
+        chem = {c.step for c in self.chemical_steps}
+        return [k for k in range(self.n_steps) if k not in chem]
+
+    def chemical(self, k: int) -> ChemicalStep | None:
+        return next((c for c in self.chemical_steps if c.step == k), None)
+
+    @property
     def total_eV(self) -> float:
         """Free energy released by the whole reaction at U = 0: electrons x equilibrium potential."""
         return self.electrons * self.equilibrium_V
@@ -151,8 +200,13 @@ class ElectroSpec(_Strict):
     def ideal(self) -> dict[str, float]:
         """The ideal catalyst's free energies at U = 0: every step the same size, so all of them turn downhill
         together at the equilibrium potential. A reduction path runs down from the reactants, an oxidation path up."""
-        step, n = self.total_eV / self.electrons, len(self.adsorbates)
-        return {a: step * (n - k if self.direction == "reduction" else k + 1) for k, a in enumerate(self.adsorbates)}
+        step = self.total_eV / self.electrons * (-1 if self.direction == "reduction" else 1)
+        level = self.total_eV if self.direction == "reduction" else 0.0
+        out, electron = {}, set(self.electron_steps)
+        for k, a in enumerate(self.adsorbates):
+            level += step if k in electron else 0.0  # a chemical step stays level on the ideal catalyst
+            out[a] = level
+        return out
 
     @property
     def sigma_descriptor(self) -> float:
@@ -164,15 +218,21 @@ class ElectroSpec(_Strict):
         return 1 + self.adsorbates.index(self.activation.joins_at) if self.activation is not None else 0
 
     def routes(self) -> list[tuple[str, list[int], bool]]:
-        """Each route: its name, the steps it takes along the path, and whether it carries the chemical barrier."""
-        path = list(range(self.electrons))
+        """Each route: its name, the steps it takes along the path, and whether it carries the chemical barrier. The
+        path's own route takes every step, a chemical step's included."""
+        path = list(range(self.n_steps))
         if self.activation is None:
             return [(self.route, path, False)]
         return [(self.route, path, False), (self.activation.route, path[self.join_step:], True)]
 
+    def _binding_of(self, g: dict[str, float], name: str) -> float:
+        """An intermediate's binding energy back from its free energy: less its corrections and its shift."""
+        i = self.intermediates[self.adsorbates.index(name)]
+        return g[name] - i.total_correction - i.shift_eV
+
     def free_energies(self, binding: dict[str, float]) -> dict[str, float]:
-        """Each intermediate's free energy at U = 0 vs RHE from its binding energy (eV)."""
-        return {i.name: binding[i.name] + i.total_correction for i in self.intermediates}
+        """Each intermediate's free energy at U = 0 vs RHE from its binding energy (eV), on the reaction's own scale."""
+        return {i.name: binding[i.name] + i.total_correction + i.shift_eV for i in self.intermediates}
 
     def levels(self, g: dict[str, float]) -> list[float]:
         """Free energy along the path at U = 0: the start, each intermediate, the end."""
@@ -184,18 +244,21 @@ class ElectroSpec(_Strict):
         return [b - a for a, b in zip(lv, lv[1:])]
 
     def steps_at(self, g: dict[str, float], potential_V: float) -> list[float]:
-        """Each step's free energy at a potential: every step moves one electron."""
+        """Each step's free energy at a potential: an electron step moves by one electron's worth, a chemical step
+        stays put."""
         shift = potential_V if self.direction == "reduction" else -potential_V
-        return [s + shift for s in self.steps(g)]
+        electron = set(self.electron_steps)
+        return [s + shift if k in electron else s for k, s in enumerate(self.steps(g))]
 
     def step_lines(self, potential_V: float = 0.0) -> list[Affine]:
         """Each step's free energy at a potential as an affine function of the intermediates' free energies."""
         n = len(self.intermediates)
         start, end = (self.total_eV, 0.0) if self.direction == "reduction" else (0.0, self.total_eV)
         shift = potential_V if self.direction == "reduction" else -potential_V
+        electron = set(self.electron_steps)
         lines = []
         for k in range(n + 1):
-            c, d = np.zeros(n), shift
+            c, d = np.zeros(n), shift if k in electron else 0.0
             if k < n:
                 c[k] += 1.0
             else:
@@ -216,7 +279,30 @@ class ElectroSpec(_Strict):
         j = self.adsorbates.index(a.from_)
         c = np.zeros(len(self.intermediates))
         c[j] = a.slope
-        return c, a.intercept - a.bonus_eV - a.slope * self.intermediates[j].total_correction
+        i = self.intermediates[j]
+        return c, a.intercept - a.bonus_eV - a.slope * (i.total_correction + i.shift_eV)
+
+    def chemical_barrier_line(self, k: int) -> Affine | None:
+        """A chemical step's barrier as an affine function of the free energies; None without one."""
+        c_step = self.chemical(k)
+        if c_step is None or c_step.barrier is None:
+            return None
+        b = c_step.barrier
+        j = self.adsorbates.index(b.from_)
+        c = np.zeros(len(self.intermediates))
+        c[j] = b.slope
+        i = self.intermediates[j]
+        return c, b.intercept - b.slope * (i.total_correction + i.shift_eV)
+
+    def chemical_hurdles(self, g: dict[str, float]) -> dict[int, float]:
+        """Each chemical step's hurdle (eV): its free energy, or its barrier when that is higher. The potential
+        leaves both alone."""
+        st = self.steps(g)
+        out = {}
+        for c in self.chemical_steps:
+            barrier = None if c.barrier is None else c.barrier.slope * self._binding_of(g, c.barrier.from_) + c.barrier.intercept
+            out[c.step] = st[c.step] if barrier is None else max(st[c.step], barrier)
+        return out
 
     def barrier(self, g: dict[str, float]) -> float | None:
         """The chemical step's barrier on a surface (eV) from its free energies at U = 0, with its prefactor bonus
@@ -229,7 +315,7 @@ class ElectroSpec(_Strict):
         reduction, the lowest for an oxidation), and which step that is. The chemical route counts once its barrier
         is gone; it takes part of the path's steps, so it then reaches at least as far as the path."""
         st = self.steps(g)
-        take = self.routes()[-1][1] if self.activation is not None and self.barrier(g) <= 0 else range(len(st))
+        take = self.routes()[-1][1] if self.activation is not None and self.barrier(g) <= 0 else self.electron_steps
         k = max(take, key=lambda i: st[i])
         return (-st[k], k) if self.direction == "reduction" else (st[k], k)
 
@@ -245,14 +331,16 @@ class ElectroSpec(_Strict):
         return (self.equilibrium_V - u) if self.direction == "reduction" else (u - self.equilibrium_V)
 
     def uphill(self, g: dict[str, float], potential_V: float) -> float:
-        """The largest step of the path still uphill at a potential (eV); zero once every step runs downhill."""
+        """The largest step of the path still uphill at a potential (eV); zero once every step runs downhill. A
+        chemical step uphill stays so at every potential."""
         return max(0.0, max(self.steps_at(g, potential_V)))
 
     def route_hurdles(self, g: dict[str, float], potential_V: float) -> dict[str, float]:
         """Each route's largest hurdle at a potential (eV): its largest step still uphill, or its chemical barrier
         when that is higher; zero once the route runs downhill throughout."""
-        st, b = self.steps_at(g, potential_V), self.barrier(g)
-        return {name: max(0.0, *(st[k] for k in take), *((b,) if chem else ())) for name, take, chem in self.routes()}
+        st, b, ch = self.steps_at(g, potential_V), self.barrier(g), self.chemical_hurdles(g)
+        return {name: max(0.0, *(ch.get(k, st[k]) for k in take), *((b,) if chem else ()))
+                for name, take, chem in self.routes()}
 
     def hurdle(self, g: dict[str, float], potential_V: float) -> float:
         """The hurdle that sets the rate at a potential: the faster route's, since the routes run side by side
@@ -269,7 +357,7 @@ class ElectroSpec(_Strict):
     def volcano_limit(self, x: float) -> float:
         """The limiting potential of the drawn volcano at descriptor x, through the reaction's scaling lines: the
         best open route, the chemical one where its barrier line sits at or below zero."""
-        lines = [a * x + b for a, b in self.volcano_steps]
+        lines = [a * x + b for a, b in self.volcano_steps]  # the electron steps that can limit
         top = max(lines)
         if self.volcano_barrier is not None and self.volcano_barrier[0] * x + self.volcano_barrier[1] <= 0:
             top = max(lines[self.join_step:])
@@ -281,7 +369,11 @@ class ElectroSpec(_Strict):
             names[0] = "start"
         else:
             names[-1] = "end"
-        return [f"{a} → {b}" for a, b in zip(names, names[1:])]
+        out = []
+        for k, (a, b) in enumerate(zip(names, names[1:])):
+            c = self.chemical(k)
+            out.append(f"{a} → {b}" + (f" ({c.label})" if c else ""))
+        return out
 
 
 def list_electro() -> list[str]:
@@ -362,6 +454,7 @@ class ElectroPrediction:
     overpotential_V: float | None = None
     descriptor: float | None = None
     barrier_eV: float | None = None  # the chemical step's barrier, where the reaction has one
+    chemical_eV: dict[int, float] = field(default_factory=dict)  # each chemical step's hurdle along the path
     hurdle_eV: float | None = None  # the faster route's largest hurdle at the comparison potential
     route: str = ""  # the faster route at the comparison potential
     rate_ratio: float | None = None  # speed over the catalyst to beat at the comparison potential
@@ -407,7 +500,8 @@ def limiting_range(spec: ElectroSpec, g: dict[str, float], sigma: float = SIGMA_
     """The exact spread of the limiting potential while every intermediate's free energy moves anywhere within
     ±sigma at once. The box splits where the chemical barrier reaches zero: on one side the path's own steps
     count, on the other the chemical route's."""
-    box, steps = _box(spec, g, sigma), spec.step_lines()
+    box, lines = _box(spec, g, sigma), spec.step_lines()
+    steps = [lines[k] for k in spec.electron_steps]  # the limiting potential follows the electron steps
     parts = [(steps, [])]
     line = spec.barrier_line()
     if line is not None:
@@ -438,8 +532,9 @@ def hurdle_range(spec: ElectroSpec, g: dict[str, float], potential_V: float,
     the smallest of them reaches."""
     box, steps = _box(spec, g, sigma), spec.step_lines(potential_V)
     zero = (np.zeros(len(box)), 0.0)
-    per_route = [[zero, *(steps[k] for k in take), *((spec.barrier_line(),) if chem else ())]
-                 for _, take, chem in spec.routes()]
+    walls = {c.step: spec.chemical_barrier_line(c.step) for c in spec.chemical_steps if c.barrier}
+    per_route = [[zero, *(steps[k] for k in take), *(walls[k] for k in take if k in walls),
+                  *((spec.barrier_line(),) if chem else ())] for _, take, chem in spec.routes()]
     lo = min(_min_of_max(terms, box) for terms in per_route)
     hi = max(_max_of_min(list(pick), box) for pick in itertools.product(*per_route))
     return lo, hi
@@ -469,6 +564,7 @@ def predict(spec: ElectroSpec, job: dict, results: list[dict], n_potentials: int
             p.limiting_range = limiting_range(spec, g)
             p.descriptor = float(sum(w * g[a] for a, w in spec.descriptor.items()))
             p.barrier_eV = spec.barrier(g)
+            p.chemical_eV = spec.chemical_hurdles(g)
         preds.append(p)
 
     ref = next((p for p in preds if p.is_reference), None)
@@ -517,6 +613,8 @@ def diagram(spec: ElectroSpec, g: dict[str, float], potential_V: float) -> list[
     n = spec.electrons
     names = (["start"] if spec.direction == "reduction" else ["*"]) + spec.adsorbates + \
         (["*"] if spec.direction == "reduction" else ["end"])
-    moved = [v - (n - k) * potential_V for k, v in enumerate(lv)] if spec.direction == "reduction" else \
-        [v - k * potential_V for k, v in enumerate(lv)]
+    electron = set(spec.electron_steps)
+    moved_by = [sum(1 for j in range(k) if j in electron) for k in range(len(lv))]  # electrons moved so far
+    moved = [v - (n - e) * potential_V for e, v in zip(moved_by, lv)] if spec.direction == "reduction" else \
+        [v - e * potential_V for e, v in zip(moved_by, lv)]
     return [{"state": s, "level": float(v), "step": k} for k, (s, v) in enumerate(zip(names, moved))]

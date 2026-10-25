@@ -1,0 +1,72 @@
+# Preferential oxidation of CO in hydrogen. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (platinum) reaches half of the best possible result at 125 C under the screen protocol.
+
+id: prox
+name: Preferential CO oxidation (PROX)
+version: 1
+status: draft-illustrative-parameters
+summary: Burns the last traces of carbon monoxide in hydrogen so fuel cells keep their platinum clean.
+category: Clean air
+description: >
+  A little oxygen added to hydrogen-rich gas burns the CO to CO2; burning hydrogen to water competes for the same
+  oxygen. First order in CO and in oxygen for the desired path, and in oxygen for the competing one.
+
+reference_temperature_K: 398.15
+water: H2O
+oxygen: O2
+
+species:
+  CO:  {formula: CO}
+  O2:  {formula: O2}
+  H2:  {formula: H2}
+  CO2: {formula: CO2}
+  H2O: {formula: H2O}
+  N2:  {formula: N2}
+
+pathways:
+  co_ox:
+    equation: CO + 0.5 O2 -> CO2
+    role: desired
+    rate: {key: CO, orders: {CO: 1, O2: 1}, ln_k_ref: 3.471, Ea_kJ: 80}
+  h2_ox:
+    equation: H2 + 0.5 O2 -> H2O
+    role: side
+    note: "Hydrogen burning; it spends the oxygen and the fuel."
+    rate: {key: O2, orders: {O2: 1}, ln_k_ref: -3.000, Ea_kJ: 50}
+
+metrics:
+  co_conversion:
+    kind: conversion
+    species: [CO]
+    description: "Share of the carbon monoxide burned."
+    target: {min: 0.99, label: Target}
+  co_out:
+    kind: outlet
+    species: [CO]
+    description: "Carbon monoxide left; fuel cells tolerate about 10 ppm."
+    target: {max: 10.0, label: Fuel-cell limit}
+  co_per_o2:
+    kind: consumption_ratio
+    numerator: [CO]
+    denominator: [O2]
+    description: "CO burned per O2 used: 2 means every oxygen went to CO."
+
+screening:
+  descriptor: {O: 1}
+  pathways: [co_ox]
+  metric: co_conversion
+  reference: {formula: Pt, name: Platinum}
+  optimum_shift_eV: 0.2
+  # the weak side waits on O2 splitting into two atoms the descriptor counts: 0.9 eV of barrier per eV of
+  # splitting energy (Nørskov et al., J. Catal. 2002), and that energy moves twice as fast as the descriptor
+  slope_weak: 1.8
+  peak_gas: {O2: 0.5}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Pt, Ru, Rh, Pd, Ir, Au, Cu, Co]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    CO burns on the same oxygen-binding volcano as in exhaust (Falsig et al., Angew. Chem. 2008), with platinum on
+    the tight side, so the top is set 0.2 eV weaker than platinum's binding, as in the CO oxidation pack, and the
+    weak side falls 1.8 eV per eV for O2 splitting. In hydrogen the oxygen also burns fuel, so selectivity matters
+    as much as rate (Kahlich et al., J. Catal. 1997).

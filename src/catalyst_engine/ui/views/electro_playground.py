@@ -22,8 +22,8 @@ ideal = s.ideal()
 st.markdown(f"<span class='ce-eq'>{s.equation}</span> &nbsp; :gray[{s.direction}, {s.electrons} electrons, "
             f"equilibrium at {s.equilibrium_V:.2f} V vs RHE]", unsafe_allow_html=True)
 if not s.on_design_page:
-    st.caption(f"{s.name} runs here on free energies you set. The Design page adds it once UMA's binding energies "
-               "on its catalysts pass their accuracy check (Manual, Methodology tab, limits).")
+    st.caption(f"{s.name} runs here on free energies you set. The Design page adds it once its checks pass"
+               + (f": {s.design_note}" if s.design_note else "") + " (Manual, Methodology tab, limits).")
 
 left, right = st.columns([2, 3], gap="large")
 with left:
@@ -39,11 +39,28 @@ with left:
     u_l, k = s.limiting_potential(g)
     eta = s.overpotential(g)
     m = st.columns(2)
-    m[0].metric("Limiting potential", f"{u_l:.2f} V vs RHE", border=True)
-    m[1].metric("Overpotential", f"{eta:.2f} V", border=True)
-    st.markdown(f"Limiting step: **{s.step_names()[k]}** ({s.steps(g)[k]:+.2f} eV at 0 V). "
-                + ("Every step is level at the equilibrium potential: this is the ideal catalyst." if eta < 0.005 else
-                   f"Lowering that step by {eta:.2f} eV, with the others kept level, would reach the ideal."))
+    m[0].metric("Limiting potential", f"{round(u_l, 2) + 0.0:.2f} V vs RHE", border=True)
+    m[1].metric("Overpotential", f"{round(eta, 2) + 0.0:.2f} V", border=True)
+    chem = s.chemical_hurdles(g)  # steps that move zero electrons: the potential leaves them alone
+    if not chem:
+        tail = ("Every step is level at the equilibrium potential: this is the ideal catalyst." if eta < 0.005 else
+                f"Lowering that step by {eta:.2f} eV, with the others kept level, would reach the ideal.")
+    elif eta <= -0.005:
+        tail = (f"The electron steps all run downhill from {u_l:.2f} V, before the equilibrium potential, because the "
+                "chemical step" + ("s hold" if len(chem) > 1 else " holds") + " the rest of the reaction's free energy.")
+    elif eta < 0.005:
+        tail = ("Every electron step runs downhill by the equilibrium potential." if max(chem.values()) >= 0.005 else
+                "Every step is level at the equilibrium potential: this is the ideal catalyst.")
+    else:
+        tail = f"That step sets the overpotential, {eta:.2f} V."
+    st.markdown(f"Limiting step: **{s.step_names()[k]}** ({s.steps(g)[k]:+.2f} eV at 0 V). {tail}")
+    if chem:
+        names = s.step_names()
+        st.markdown("Chemical steps, each hurdle its free energy or its barrier where that is higher, the same at every "
+                    "potential: "
+                    + "; ".join(f"{names[c]} **{round(h, 2) + 0.0:+.2f} eV**" for c, h in chem.items()) + ". "
+                    + ("An uphill one holds the surface back at every potential." if max(chem.values()) >= 0.005 else
+                       "Each runs downhill or level, so the electron steps set the pace."))
     if s.activation:
         a = s.activation
         b = s.barrier(g)

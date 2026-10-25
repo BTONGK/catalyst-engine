@@ -37,7 +37,12 @@ with library_tab:
                     st.markdown("<br>".join(f"<span class='ce-eq'>{pw.equation}</span>" for pw in wanted),
                                 unsafe_allow_html=True)
                     scr = p.spec.screening
-                    if scr is not None:
+                    if scr is not None and not scr.on_design_page:
+                        st.caption(f"Catalyst to beat: {scr.reference.name or scr.reference.formula} · runs in the "
+                                   "Catalyst playground; it joins the Design page once its ranking check passes "
+                                   "(Manual, Methodology tab, limits)")
+                        a, b = st.columns([3, 1])
+                    elif scr is not None:
                         st.caption(f"Catalyst to beat: {scr.reference.name or scr.reference.formula} · ranks materials "
                                    f"by their grip on {', '.join(ADSORBATES[a] for a in scr.descriptor)}")
                         a, b = st.columns([3, 1])

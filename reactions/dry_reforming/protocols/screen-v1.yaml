@@ -1,0 +1,16 @@
+id: drm-screen-v1
+pack: dry_reforming
+version: 1
+status: draft
+description: Equal parts methane and CO2, 10% each, in nitrogen, at 1 atm.
+analyzer:
+  name: Gas chromatograph
+  measured: [CH4, CO2, CO, H2]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Methane conversion against temperature
+    feed: {CH4: 10 %, CO2: 10 %, N2: balance}
+    ghsv_per_h: 20000
+    temperatures_C: [500, 550, 600, 650, 700, 750, 800, 850, 900]

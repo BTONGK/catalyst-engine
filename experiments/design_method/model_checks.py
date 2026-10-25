@@ -394,8 +394,9 @@ for pid in list_packs(PACKS_DIR):
     # equilibrium: packs whose species allow one independent reaction, every pathway reversible and screened
     reversible = all(pw_.equation and "<=>" in pw_.equation for pw_ in p.spec.pathways.values())
     if len(formulas) - np.linalg.matrix_rank(a) == 1 and reversible and set(p.spec.pathways) <= set(p.spec.screening.pathways):
-        gas = ct.Solution(thermo="ideal-gas", species=[s for s in ct.Species.list_from_file("gri30.yaml")
-                                                         if s.name in {p.spec.species[x].thermo_id for x in p.network.species}])
+        ids = {p.spec.species[x].thermo_id for x in p.network.species}
+        source = thermo.MECHANISM if all(thermo.has_transport(i) for i in ids) else thermo.EXTRA  # as the reactor takes it
+        gas = ct.Solution(thermo="ideal-gas", species=[s for s in ct.Species.list_from_file(source) if s.name in ids])
         hot = np.argsort(tk)[-3:]  # the hottest temperatures, where the fast catalyst sits at equilibrium
         gaps = []
         for j in hot:
@@ -689,6 +690,113 @@ cut = [abs(n["anatase_101_app"] - a["four"]) for n, a in zip(nh3_rows, ana_rows)
 values["cut_gap"] = r(max(cut), 1)
 values["v2o5_nh3_mat"] = next(x["v2o5"] for x in nh3_rows if x["mode"] == OX_MODES[mat])
 values["cut_gap_app"] = r(abs(app_row["anatase_101_app"] - values["anatase_app"]), 2)
+
+# ---------------------------------------------------------------- loading a reaction package, walked through
+# what the app does with one package, in order, on CO methanation: the numbers the Methodology tab's loading section
+# quotes. The thermodynamic databases first, across every package.
+def joined(names: list[str]) -> str:
+    return " and ".join(names) if len(names) < 3 else ", ".join(names[:-1]) + " and " + names[-1]
+
+
+gri = ct.Solution("gri30.yaml")
+nasa = {s.name: s for s in ct.Species.list_from_file("nasa_gas.yaml")}
+pack_gases = {sp.thermo_id for pid in list_packs(PACKS_DIR) for sp in load_pack(pid).spec.species.values()}
+db_gaps, db_all = {}, {}  # kJ/mol, the largest gap in g° between the databases from 300 to 1500 K, per shared gas
+for name in gri.species_names:
+    if name in nasa:
+        gaps = []
+        for tk_ in np.arange(300.0, 1501.0, 100.0):
+            gri.TP = tk_, gri.reference_pressure
+            g_gri = gri.standard_gibbs_RT[gri.species_index(name)] * R * tk_ / 1000.0
+            g_nasa = (nasa[name].thermo.h(tk_) - tk_ * nasa[name].thermo.s(tk_)) / 1e6  # J/kmol -> kJ/mol
+            gaps.append(abs(g_gri - g_nasa))
+        db_all[name] = max(gaps)
+        if name in pack_gases:
+            db_gaps[name] = max(gaps)
+worst_gas, worst_any = max(db_gaps, key=db_gaps.get), max(db_all, key=db_all.get)
+print("g° gaps between GRI-Mech and NASA Glenn (kJ/mol):", {k: round(v, 2) for k, v in sorted(db_all.items(),
+                                                                                        key=lambda kv: -kv[1])})
+sources = {}
+for pid in list_packs(PACKS_DIR):
+    ids_ = [sp.thermo_id for sp in load_pack(pid).spec.species.values()]
+    sources[pid] = "gri" if all(thermo.has_transport(i) for i in ids_) else "nasa"
+values.update(load_db_gri_n=len(gri.species_names), load_db_nasa_n=len(nasa), load_db_shared=len(db_gaps),
+              load_db_within=int(sum(v <= 0.1 for v in db_gaps.values())), load_db_worst=worst_gas,
+              load_db_worst_gap=r(db_gaps[worst_gas], 1), load_db_all_shared=len(db_all), load_db_any_worst=worst_any,
+              load_db_any_worst_gap=r(db_all[worst_any], 0), load_packs_n=len(sources),
+              load_packs_gri=sum(v == "gri" for v in sources.values()),
+              load_packs_nasa=sum(v == "nasa" for v in sources.values()))
+
+walk = load_pack("co_methanation")
+w_net, w_spec = walk.network, walk.spec
+w_pw = next(iter(w_spec.pathways))
+w_eq = w_spec.pathways[w_pw].equation
+w_stoich = {s: w_net.nu[0, i] for i, s in enumerate(w_net.species) if w_net.nu[0, i]}
+counts = {}
+for s, nu_ in w_stoich.items():
+    for el, n_el in element_counts(w_spec.species[s].formula).items():
+        side = "in" if nu_ < 0 else "out"
+        counts.setdefault(el, {"in": 0.0, "out": 0.0})[side] += abs(nu_) * n_el
+w_step = screening.design_step(walk)
+w_rows = walk.conditions(walk.protocol())[1]
+w_temps = sorted(w_step.kelvin())
+w_ids = {s: w_spec.species[s].thermo_id for s in w_stoich}
+w_thermo_stoich = {w_ids[s]: nu_ for s, nu_ in w_stoich.items()}
+t_hot = w_temps[-1]
+w_fast = screening.metric_curves(walk, w_step, [screening.fast_params(walk)], "co_conversion")[0]
+w_ref_one = w_step.model_copy(update={"temperatures_C": [w_net.t_ref - 273.15], "temperatures_F": None,
+                                      "temperatures_K": None})
+w_best, w_refv = screening.metric_curves(walk, w_ref_one, [screening.fast_params(walk), w_net.parameters()],
+                                         w_spec.screening.metric)[:, 0]
+w_moves = screening.peak_moves(walk, w_step, [473.15, 673.15, t_hot])
+y_w = w_step.feed_fractions(w_net.species, w_spec.water)
+values.update(
+    load_name=w_spec.name, load_id=walk.id, load_species=joined(w_net.species), load_species_n=len(w_net.species),
+    load_protocol_files=joined([f"protocols/{q.name}" for q in sorted((walk.path / "protocols").glob("*.yaml"))]),
+    load_equation=w_eq, load_pathway=w_pw,
+    load_balance=", ".join(f"{el} {c['in']:g} in and {c['out']:g} out" for el, c in sorted(counts.items())),
+    load_thermo=("GRI-Mech 3.0" if sources[walk.id] == "gri" else "NASA Glenn"),
+    load_T_ref_C=r(w_net.t_ref - 273.15, 0), load_T_hot_C=r(t_hot - 273.15, 0),
+    load_dG_ref=r(thermo.delta_g_kj(w_thermo_stoich, w_net.t_ref), 1),
+    load_drop_ref=r(-thermo.delta_g_kj(w_thermo_stoich, w_net.t_ref), 1),
+    load_drop_hot=r(-thermo.delta_g_kj(w_thermo_stoich, t_hot), 1),
+    load_K_ref=float(f"{thermo.equilibrium_constant_c(w_thermo_stoich, w_net.t_ref):.2g}"),
+    load_dG_hot=r(thermo.delta_g_kj(w_thermo_stoich, t_hot), 1),
+    load_K_hot=float(f"{thermo.equilibrium_constant_c(w_thermo_stoich, t_hot):.2g}"),
+    load_dn=r(sum(w_stoich.values()), 0),
+    load_Kp_ref=float(f"{math.exp(-thermo.delta_g_kj(w_thermo_stoich, w_net.t_ref) * 1000 / (R * w_net.t_ref)):.2g}"),
+    load_Kp_hot=float(f"{math.exp(-thermo.delta_g_kj(w_thermo_stoich, t_hot) * 1000 / (R * t_hot)):.2g}"),
+    load_Kp_ref_words=(lambda k: f"{k / 1e6:.0f} million" if k < 1e9 else f"{k / 1e9:.1f} billion")(
+        float(f"{math.exp(-thermo.delta_g_kj(w_thermo_stoich, w_net.t_ref) * 1000 / (R * w_net.t_ref)):.2g}")),
+    load_X_eq_hot=r(100 * float(w_fast[-1]), 1),
+    load_ln_k=w_net.defaults[f"{w_pw}.ln_k_ref"], load_k=r(math.exp(w_net.defaults[f"{w_pw}.ln_k_ref"]), 2),
+    load_Ea=w_net.defaults[f"{w_pw}.Ea_kJ"],
+    load_feed=joined([f"{100 * y_w[i]:g}% {s}" for i, s in enumerate(w_net.species) if y_w[i] > 0]),
+    load_ghsv=f"{w_step.ghsv_per_h:,.0f}", load_p_kPa=w_step.pressure_kPa,
+    load_T_n=len(w_temps), load_T_lo=r(w_temps[0] - 273.15, 0), load_T_hi=r(t_hot - 273.15, 0),
+    load_conditions=len(w_rows),
+    load_best_ref=r(100 * float(w_best), 1), load_refv_ref=r(100 * float(w_refv), 1),
+    load_share=r(100 * float(w_refv / w_best), 1),
+    load_peak_gas=joined([f"{n_:g} {g_}" for g_, n_ in w_spec.screening.peak_gas.items()]),
+    load_move_200=r(float(w_moves[0]), 2), load_move_400=r(float(w_moves[1]), 2), load_move_hot=r(float(w_moves[2]), 2),
+    load_reference=w_spec.screening.reference.name, load_descriptor=" + ".join(
+        f"{wt:g} {a}*" for a, wt in w_spec.screening.descriptor.items()),
+    load_slope_weak=w_spec.screening.slope_weak, load_slope_strong=w_spec.screening.slope_strong,
+    load_on_design=w_spec.screening.on_design_page)
+# what a screen then shows, from the 16-metal run of experiments/reaction_check at its table's temperature
+rc_path = REPO / "experiments" / "reaction_check" / "results" / "summary.json"
+if rc_path.exists():
+    rc_check = next(c for c in json.loads(rc_path.read_text())["thermal"]
+                    if c["pack"] == walk.id and c["role"] == "primary")
+    ru = next(x for x in rc_check["rows"] if x["metal"] == "Ru")
+    pt = next(x for x in rc_check["rows"] if x["metal"] == "Pt")
+    values.update(load_ref_desc=rc_check["anchor_descriptor_eV"], load_check_T=rc_check["temperature_K"],
+                  load_check_move=rc_check["peak_move_eV"],
+                  load_ru_desc=ru["descriptor_eV"], load_ru_shift=ru["shift_eV"],
+                  load_ru_weaker=r(ru["descriptor_eV"] - rc_check["anchor_descriptor_eV"], 3),
+                  load_ru_one_in=f"{float(f'{1 / ru['ratio']:.2g}'):,.0f}",
+                  load_pt_desc=pt["descriptor_eV"], load_pt_shift=pt["shift_eV"],
+                  load_pt_ratio=float(f"{pt['ratio']:.1g}"))
 
 values["generated"] = atom["generated"]
 values["atomistic_minutes"] = r(atom["seconds"] / 60, 0)

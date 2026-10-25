@@ -25,6 +25,7 @@ suggested_elements: [Ir, Ru, Mn, Co, Ni, Fe, Pt, Rh]
 # OH* and OOH* on oxides by 0.18-0.24 eV, beyond the 0.11 eV the error bar allows (experiments/oxide_check). The
 # Design page adds it once a mode passes that check (Manual, Methodology tab, limits).
 on_design_page: false
+design_note: its catalysts are oxides, where UMA's binding energies sit beyond the error bar
 basis: >
   Oxygen evolution climbs through OH*, O* and OOH*, one proton and electron at a time. OOH* sits a nearly fixed
   3.2 eV above OH* on every surface, against the ideal 2.46 eV, so the step that limits the potential is either
