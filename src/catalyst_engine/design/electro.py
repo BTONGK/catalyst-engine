@@ -57,6 +57,26 @@ class Intermediate(_Strict):
     label: str = ""
     correction_eV: float = 0.0  # zero-point energy minus T x entropy at 298 K
     water_eV: float = 0.0  # stabilization by hydrogen bonds from liquid water
+    layer_eV: float = 0.0  # stabilization by hydrogen bonds within the adsorbate layer at the working coverage
+
+    @property
+    def total_correction(self) -> float:
+        return self.correction_eV + self.water_eV + self.layer_eV
+
+
+class Activation(_Strict):
+    """A chemical step with a barrier that follows one intermediate's binding energy: E_a = slope x dE + intercept
+    (a Brønsted-Evans-Polanyi relation), paid at every potential; `bonus_eV` is what its looser transition state
+    earns over a proton transfer (Nørskov 2004: 0.13 eV for O2 splitting at 1 bar and 300 K)."""
+    label: str
+    from_: str = Field(alias="from")
+    slope: float
+    intercept: float
+    bonus_eV: float = 0.0
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    def barrier(self, binding: dict[str, float]) -> float:
+        return self.slope * binding[self.from_] + self.intercept
 
 
 class ElectroReference(_Strict):
@@ -77,6 +97,7 @@ class ElectroSpec(_Strict):
     intermediates: list[Intermediate]
     descriptor: dict[str, float]
     volcano_steps: list[list[float]] = Field(default_factory=list)  # each step's dG as a x + b in the descriptor
+    activation: Activation | None = None  # a chemical step's barrier, paid at every potential
     reference: ElectroReference
     task: str = "oc20"
     suggested_elements: list[str] = Field(default_factory=list)
@@ -95,6 +116,8 @@ class ElectroSpec(_Strict):
             raise ValueError(f"{self.id}: {self.electrons} electrons need {self.electrons - 1} intermediates")
         if any(len(ab) != 2 for ab in self.volcano_steps):
             raise ValueError(f"{self.id}: each volcano step is [slope, intercept]")
+        if self.activation is not None and self.activation.from_ not in names:
+            raise ValueError(f"{self.id}: the activation barrier follows an intermediate of the path")
         return self
 
     @property
@@ -112,7 +135,7 @@ class ElectroSpec(_Strict):
 
     def free_energies(self, binding: dict[str, float]) -> dict[str, float]:
         """Each intermediate's free energy at U = 0 vs RHE from its binding energy (eV)."""
-        return {i.name: binding[i.name] + i.correction_eV + i.water_eV for i in self.intermediates}
+        return {i.name: binding[i.name] + i.total_correction for i in self.intermediates}
 
     def levels(self, g: dict[str, float]) -> list[float]:
         """Free energy along the path at U = 0: the start, each intermediate, the end."""
@@ -141,6 +164,17 @@ class ElectroSpec(_Strict):
     def uphill(self, g: dict[str, float], potential_V: float) -> float:
         """The largest step still uphill at a potential (eV); zero once every step runs downhill."""
         return max(0.0, max(self.steps_at(g, potential_V)))
+
+    def barrier(self, binding: dict[str, float]) -> float | None:
+        """The chemical step's barrier on a surface (eV), with its prefactor bonus taken off; None without one."""
+        if self.activation is None:
+            return None
+        return self.activation.barrier(binding) - self.activation.bonus_eV
+
+    def hurdle(self, g: dict[str, float], potential_V: float, barrier: float | None) -> float:
+        """The largest hurdle at a potential: the largest step still uphill, or the chemical barrier when that is
+        higher (Sabatier analysis with an activated step, Nørskov 2004, eq. 16)."""
+        return max(self.uphill(g, potential_V), barrier or 0.0)
 
     def volcano_limit(self, x: float) -> float:
         """The limiting potential of the drawn volcano at descriptor x, through the reaction's scaling lines."""
@@ -231,6 +265,8 @@ class ElectroPrediction:
     limiting_range: tuple[float, float] | None = None
     overpotential_V: float | None = None
     descriptor: float | None = None
+    barrier_eV: float | None = None  # the chemical step's barrier, where the reaction has one
+    hurdle_eV: float | None = None  # the largest hurdle at the comparison potential
     rate_ratio: float | None = None  # speed over the catalyst to beat at the comparison potential
     rate_range: tuple[float, float] | None = None
     rank: int | None = None
@@ -274,6 +310,7 @@ def predict(spec: ElectroSpec, job: dict, results: list[dict], n_potentials: int
             limits = [spec.limiting_potential(c)[0] for c in _cases(spec, g)]
             p.limiting_range = (min(limits), max(limits))
             p.descriptor = float(sum(w * g[a] for a, w in spec.descriptor.items()))
+            p.barrier_eV = spec.barrier(bind)
         preds.append(p)
 
     ref = next((p for p in preds if p.is_reference), None)
@@ -289,16 +326,18 @@ def predict(spec: ElectroSpec, job: dict, results: list[dict], n_potentials: int
     ideal_step = spec.total_eV / spec.electrons * (-1 if spec.direction == "reduction" else 1)
     shift = grid if spec.direction == "reduction" else -grid
     curves["ideal"] = np.maximum(0.0, ideal_step + shift).tolist()  # its largest uphill step (eV)
-    ref_up = np.array([spec.uphill(ref.free_energies, u) for u in grid])
-    ref_cmp = spec.uphill(ref.free_energies, u_cmp)
+    ref_up = np.array([spec.hurdle(ref.free_energies, u, ref.barrier_eV) for u in grid])
+    ref_cmp = spec.hurdle(ref.free_energies, u_cmp, ref.barrier_eV)
     for p in done:
-        up = np.array([spec.uphill(p.free_energies, u) for u in grid])
-        cases = [spec.uphill(c, u_cmp) for c in _cases(spec, p.free_energies)]
-        p.rate_ratio = float(np.exp((ref_cmp - spec.uphill(p.free_energies, u_cmp)) / K_T))
+        up = np.array([spec.hurdle(p.free_energies, u, p.barrier_eV) for u in grid])
+        p.hurdle_eV = spec.hurdle(p.free_energies, u_cmp, p.barrier_eV)
+        cases = [spec.hurdle(c, u_cmp, p.barrier_eV) for c in _cases(spec, p.free_energies)]
+        p.rate_ratio = float(np.exp((ref_cmp - p.hurdle_eV) / K_T))
         p.rate_range = (float(np.exp((ref_cmp - max(cases)) / K_T)), float(np.exp((ref_cmp - min(cases)) / K_T)))
         curves["materials"][p.material] = {"uphill": up.tolist(), "ratio": np.exp((ref_up - up) / K_T).tolist()}
     curves["reference"] = ref.material
-    ranked = sorted(done, key=lambda p: (p.overpotential_V, p.label))
+    # best first: the smallest hurdle at the comparison potential, then the smallest overpotential
+    ranked = sorted(done, key=lambda p: (round(p.hurdle_eV, 6), p.overpotential_V, p.label))
     for n, p in enumerate(ranked, start=1):
         p.rank = n
     preds.sort(key=lambda p: (p.rank is None, p.rank or 0, p.label))

@@ -49,15 +49,20 @@ def test_hydrogen_evolution_overpotential_is_the_size_of_the_hydrogen_free_energ
 def test_oxygen_reduction_on_platinum_follows_norskov_2004():
     """With the paper's Pt(111) binding energies (Table 2: dE_OH 1.05, dE_O 1.57 eV against H2O and H2) and the
     app's corrections, the free energies climb from the products to O2 + 2 H2 at 4.92 eV, every step runs
-    downhill at 0 V, the equilibrium potential levels the ends, and the O* to OH* step limits the potential."""
+    downhill at 0 V, the equilibrium potential levels the ends, and with the OH layer's hydrogen bonds the last
+    step, OH* to water, limits the potential at the paper's 0.78 V (Table 1, 1/3 monolayer with water)."""
     s = electro.load_electro("oxygen_reduction")
     g = s.free_energies({"OH": 1.05, "O": 1.57, "OOH": 1.05 + 3.2})
     levels = s.levels(g)
     assert levels[0] == pytest.approx(4.92) and levels[-1] == 0.0
     assert all(step < 0 for step in s.steps(g))
     u_l, k = s.limiting_potential(g)
-    assert s.step_names()[k] == "O → OH"
-    assert 0.5 < u_l < 0.6 and s.overpotential(g) == pytest.approx(1.23 - u_l)
+    assert s.step_names()[k] == "OH → *"
+    assert u_l == pytest.approx(0.80, abs=0.03) and s.overpotential(g) == pytest.approx(1.23 - u_l)
+    # O2 splitting on platinum runs below every step: its barrier, 1.8 x 1.57 - 2.89 eV, is negative
+    assert s.activation.barrier({"O": 1.57}) == pytest.approx(1.8 * 1.57 - 2.89)
+    barrier = s.barrier({"O": 1.57})
+    assert barrier < 0 and s.hurdle(g, 0.9, barrier) == pytest.approx(s.uphill(g, 0.9))
     at_eq = electro.diagram(s, g, 1.23)
     assert at_eq[0]["level"] == pytest.approx(0.0) and at_eq[-1]["level"] == 0.0
     # the free-energy diagram's steps at a potential are the steps shifted by it
@@ -132,6 +137,24 @@ def test_predictions_rank_by_overpotential_and_set_speeds_against_the_catalyst_t
     assert set(curves["materials"]) == {p.material for p in preds} and curves["reference"] == pt.material
     assert curves["ideal"][0] == 0.0  # the ideal runs downhill at every potential below equilibrium
     assert all(p.complete for p in preds)
+
+
+def test_weak_binders_pay_the_oxygen_splitting_barrier_so_platinum_leads_silver():
+    """A silver-like surface whose steps alone would beat platinum (limiting potential 1.0 V against 0.8 V) binds
+    O too weakly to split O2: its barrier, held at every potential, ranks it below platinum (Nørskov 2004)."""
+    s = electro.load_electro("oxygen_reduction")
+    folder = _electro_screen(s, {"Pt": {"OOH": 4.25, "O": 1.57, "OH": 1.05},
+                                 "Ag": {"OOH": 4.1, "O": 2.05, "OH": 1.25},
+                                 "Au": {"OOH": 4.69, "O": 2.75, "OH": 1.49}})
+    preds, curves = electro.predict(s, screening.read_job(folder), screening.read_results(folder))
+    assert [p.formula for p in preds] == ["Pt", "Ag", "Au"]
+    pt, ag, au = preds
+    assert ag.limiting_V > pt.limiting_V  # the steps alone favor silver
+    assert ag.barrier_eV == pytest.approx(1.8 * 2.05 - 2.89 - 0.13) and ag.hurdle_eV == pytest.approx(ag.barrier_eV)
+    assert au.barrier_eV > ag.barrier_eV and pt.barrier_eV < 0
+    assert ag.rate_ratio < 1e-6
+    up = curves["materials"][ag.material]["uphill"]
+    assert sum(abs(x - ag.barrier_eV) < 1e-9 for x in up) > len(up) // 3  # flat where the barrier is the hurdle
 
 
 def test_an_intermediate_that_splits_everywhere_leaves_a_material_without_a_limiting_potential():

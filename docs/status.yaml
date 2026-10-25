@@ -23,6 +23,15 @@ proof_sequence:
 recent:
   - date: 2026-10-24
     item: >
+      Oxygen reduction now carries two published terms from Nørskov 2004. The hydrogen bonds within a third of a
+      monolayer of OH* (−0.27 eV for OH* and OOH*) put platinum's limiting potential at 0.79 V against the paper's
+      0.78 V, with the same last step (OH* to water) limiting. The O2-splitting barrier, 1.8 × ΔE_O − 2.89 eV less
+      0.13 eV, holds at every potential, and the ranking now sorts by the largest hurdle at the comparison
+      potential, then by overpotential. The ten-metal example ranks Pt, Pd, Ir first; silver (barrier 1.01 eV)
+      falls to sixth and gold (2.01 eV) to last. The Results ranking shows each barrier and hurdle; the Methodology
+      and Manual explain both terms.
+  - date: 2026-10-24
+    item: >
       Electrocatalysis, as its own section of the app. A new sidebar group holds its Overview, Design an
       electrocatalyst, Electrocatalyst results, a Free-energy playground and its own Manual (electrochemistry
       basics, how-to, methodology, words); the thermal pages stay as they were. Hydrogen evolution, oxygen

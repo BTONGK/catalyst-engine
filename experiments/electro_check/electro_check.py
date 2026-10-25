@@ -13,8 +13,9 @@ Methodology tab:
   2. hydroxyl and oxygen: dE_OH and dE_O against water and hydrogen gas, Table 2 of Nørskov et al., J. Phys. Chem.
      B 2004 (RPBE, 1/4 monolayer on the close-packed face);
   3. hydroperoxyl: the OOH-OH gap against the universal 3.2 eV of Man et al., ChemCatChem 2011 (fit MAE 0.17 eV);
-  4. the whole pipeline on platinum: the app's limiting potential for oxygen reduction against the paper's 0.78 V,
-     and its hydrogen free energy against the near-zero value that makes platinum the best HER metal.
+  4. the whole pipeline on platinum: the app's limiting potential for oxygen reduction against the paper's 0.78 V
+     (Table 1: a third of a monolayer of OH with water), the O2-splitting barrier that sets weak binders back, and its
+     hydrogen free energy against the near-zero value that makes platinum the best HER metal.
 """
 
 from __future__ import annotations
@@ -43,7 +44,7 @@ PUBLISHED_OH_O = {"Ag": (0.72, 2.12), "Au": (1.49, 2.75), "Co": (-0.08, -0.22), 
                   "Ir": (0.63, 1.00), "Mo": (-0.61, -1.62), "Ni": (0.13, 0.34), "Pd": (0.92, 1.53), "Pt": (1.05, 1.57),
                   "Rh": (0.34, 0.44), "Ru": (-0.01, -0.05), "W": (-0.80, -2.06)}
 OOH_GAP, OOH_GAP_MAE = 3.20, 0.17  # Man et al. 2011: dE_OOH = dE_OH + 3.20 eV, MAE of the fit
-PT_ORR_LIMIT = 0.78  # Nørskov 2004: the highest potential where every ORR step on Pt(111) runs downhill (V vs RHE)
+PT_ORR_LIMIT = 0.78  # Nørskov 2004, Table 1: the highest potential where every ORR step on Pt(111) runs downhill (V vs RHE)
 
 
 def spearman(a: list[float], b: list[float]) -> float:
@@ -87,6 +88,9 @@ def main(folder: Path) -> None:
                          "limiting_step": spec.step_names()[pt.limiting_step],
                          "free_energies": {k: round(v, 3) for k, v in pt.free_energies.items()},
                          "ranking": [p.formula for p in preds if p.rank is not None],
+                         "limits": {p.formula: round(p.limiting_V, 3) for p in preds if p.limiting_V is not None},
+                         "barriers": {p.formula: round(p.barrier_eV, 3) for p in preds if p.barrier_eV is not None},
+                         "hurdles": {p.formula: round(p.hurdle_eV, 3) for p in preds if p.hurdle_eV is not None},
                          "incomplete": {p.formula: p.missing for p in preds if p.missing}}
 
     gaps_r = np.array([r["gap_rpbe"] for r in her])
@@ -114,6 +118,13 @@ def main(folder: Path) -> None:
         "pt_her_eta": pipeline["hydrogen_evolution"]["overpotential_V"],
         "orr_ranking": ", ".join(pipeline["oxygen_reduction"]["ranking"]),
         "her_ranking": ", ".join(pipeline["hydrogen_evolution"]["ranking"]),
+        "orr_top3": ", ".join(pipeline["oxygen_reduction"]["ranking"][:3]),
+        "orr_barriers": ", ".join(f"{m} {v:+.2f}" for m, v in sorted(pipeline["oxygen_reduction"]["barriers"].items(),
+                                                                     key=lambda kv: kv[1])),
+        "ag_barrier": pipeline["oxygen_reduction"]["barriers"].get("Ag"),
+        "au_barrier": pipeline["oxygen_reduction"]["barriers"].get("Au"),
+        "pt_barrier": pipeline["oxygen_reduction"]["barriers"].get("Pt"),
+        "ag_orr_limit": pipeline["oxygen_reduction"]["limits"].get("Ag"),
         "orr_incomplete": ", ".join(f"{m} ({', '.join(a)})" for m, a in pipeline["oxygen_reduction"]["incomplete"].items()) or "none",
         "screen": folder.name, "task": job["task"], "generated": job["request"]["created"][:10],
     }

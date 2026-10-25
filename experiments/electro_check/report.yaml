@@ -14,12 +14,15 @@ abstract: >
   computational hydrogen electrode of Nørskov et al. 2004: each intermediate's free energy at 0 V vs RHE from its
   binding energy and published corrections, a potential that tilts every step by one electron-volt per volt, the
   limiting potential where the last step turns downhill, the overpotential as its distance from equilibrium, and a
-  Sabatier speed at the user's potential. Against published tables for ten close-packed metals, UMA's catalysis
+  Sabatier speed at the user's potential, in which the O2-splitting barrier that Nørskov 2004 ties to oxygen
+  binding holds back the weak binders of oxygen reduction. Against published tables for ten close-packed metals, UMA's catalysis
   mode reproduces hydrogen free energies within {her_mae_rpbe:.2f} eV, hydroxyl within {orr_oh_mae:.2f} eV and
   oxygen within {orr_o_mae:.2f} eV, orders the metals as measured exchange currents do (rank correlation
   {her_spearman:.2f}), and puts the OOH–OH gap at {ooh_gap_mean:.2f} eV against the universal {ooh_gap_published:.1f}.
-  The picture is thermodynamic: barriers between steps, the water layer's structure and the surface's fate at the
-  working potential stay outside it, sized in the closing section. Read the ranking as a shortlist of what to test.
+  With the paper's water and hydroxyl-layer terms the pipeline puts platinum's oxygen-reduction limiting potential
+  at {pt_orr_limit:.2f} V against the published {pt_orr_limit_published:.2f} V, and ranks {orr_top3} first.
+  Proton-transfer barriers, the field of the double layer and the surface's fate at the working potential stay
+  outside, sized in the closing section. Read the ranking as a shortlist of what to test.
 how_to_read: >
   Each step gives what the app does, the equation with the same idea in words, the assumptions it rests on
   (numbered A1, A2 …), how it was checked and a verdict. Every number on this page comes from
@@ -63,19 +66,21 @@ sections:
       plus a zero-point and entropy correction taken from platinum (H* +0.24, OH* +0.35, O* +0.05, OOH* +0.40 eV;
       Nørskov 2004 and 2005) and, for OH* and OOH* on metals, the stabilization by hydrogen bonds from liquid
       water measured on platinum (−0.33 eV for OH*, Nørskov 2004 Table 1, taken the same for OOH*, which binds
-      through one oxygen the same way). On oxides the intermediates fill the surface and the water term stays at
+      through one oxygen the same way). At the working potential OH* covers a third of platinum's surface and
+      the neighbors hydrogen-bond within that layer, a further −0.27 eV for OH* and OOH* (Nørskov 2004, Table 1 at a
+      third of a monolayer against Table 2 at a quarter; the same 0.78 V limiting potential the paper reports). On oxides the intermediates fill the surface and the water term stays at
       zero (Man 2011). A proton and an electron at 0 V vs RHE carry the free energy of half an H2 molecule at any
       pH; the free energy of the whole reaction is the measured one, electrons times the equilibrium potential
       (4.92 eV for the oxygen reactions), which keeps DFT's energy of O2 out of the method.
     equations:
-      - tex: '\Delta G_i(0) = \Delta E_i + \Delta\text{ZPE}_i - T\Delta S_i + \Delta G_{\text{water},i}'
-        words: a free energy is the binding energy plus the zero-point motion gained, the entropy lost and the hydrogen bonds from water, each a published constant.
+      - tex: '\Delta G_i(0) = \Delta E_i + \Delta\text{ZPE}_i - T\Delta S_i + \Delta G_{\text{water},i} + \Delta G_{\text{layer},i}'
+        words: a free energy is the binding energy plus the zero-point motion gained, the entropy lost, the hydrogen bonds from water and those from its neighbors in the layer, each a published constant.
     assumptions:
       - id: A2
         short: Platinum's corrections apply to every surface
         text: >
-          Zero-point energies, entropies and the water term vary little from metal to metal and are taken as
-          constants. A surface that solvates or vibrates its intermediates differently shifts off its drawn position.
+          Zero-point energies, entropies, the water term and the layer term vary little from metal to metal and are
+          taken as constants; the layer term assumes platinum's third of a monolayer of OH* on every metal. A surface that solvates or vibrates its intermediates differently shifts off its drawn position.
         effect: An error of a tenth of an eV or so in a free energy, the same for every metal and so cancelling against the catalyst to beat.
       - id: A3
         short: The hydrogen electrode fixes the proton's energy
@@ -138,42 +143,56 @@ sections:
       - text: >
           The whole pipeline on platinum: for oxygen reduction the app's limiting potential is {pt_orr_limit:.2f} V
           vs RHE, with the {pt_orr_step} step limiting, against the paper's {pt_orr_limit_published:.2f} V from a
-          water-covered surface at a third of a monolayer; for hydrogen evolution platinum's overpotential reads
+          water-covered surface at a third of a monolayer, where the same step limits; for hydrogen evolution platinum's overpotential reads
           {pt_her_eta:.2f} V. With the paper's own platinum binding energies the app's arithmetic reproduces its
           step free energies (tests/test_electro.py).
     verdict: >
-      The arithmetic is exact and tested; the absolute platinum value rests on coverage and the water term (A1,
-      A2), the order of materials on the binding energies checked above.
+      The arithmetic is exact and tested, and platinum lands within a few hundredths of a volt of the paper; the
+      absolute values for other metals rest on platinum's water and layer terms (A1, A2), the order of materials
+      on the binding energies checked above.
 
   - title: Speed at a potential, and the volcano
     status: checked
     does: >
-      At a potential the rate follows the largest step still uphill, as the Sabatier analysis of Nørskov et al.
-      2004 takes it: rate ~ exp(−max(0, ΔG_i(U)) / kT) at 25 °C, so each material's speed against the catalyst to
-      beat is the exponential of the difference of their largest uphill steps. Where both run every step
-      downhill the speeds meet. The volcano on the Results page draws the limiting potential against one
+      At a potential the rate follows the largest hurdle, as the Sabatier analysis of Nørskov et al. 2004 takes
+      it: rate ~ exp(−hurdle / kT) at 25 °C, so each material's speed against the catalyst to beat is the
+      exponential of the difference of their hurdles. The hurdle is the largest step still uphill or, for oxygen
+      reduction, the barrier to split O2 when that is higher. That barrier follows oxygen binding through the
+      Brønsted–Evans–Polanyi line of Nørskov 2004 (Table 2): E_a = 1.8 ΔE_O − 2.89 eV, less 0.13 eV that its
+      looser transition state gains over a proton transfer. It stays the same at every potential, so a surface
+      that binds oxygen weakly reaches a ceiling of speed that potential leaves in place. The ranking sorts by
+      the hurdle at the comparison potential, then by overpotential. Where both run every step downhill the
+      speeds meet. The volcano on the Results page draws the limiting potential against one
       descriptor through the reaction's scaling lines (OOH* = OH* + 3.2 eV and O* = 2 OH* for oxygen reduction;
       the O*–OH* gap with OOH* = OH* + 3.2 eV for oxygen evolution; H* alone for hydrogen evolution); each
       material's dot uses its own computed intermediates, so a dot off the line is a surface that breaks the scaling.
     equations:
-      - tex: '\frac{r}{r_\text{ref}}(U) = \exp\!\left(\frac{\max(0, \Delta G_\text{max,ref}(U)) - \max(0, \Delta G_\text{max}(U))}{k_B T}\right)'
-        words: at a potential, a material runs faster or slower than the catalyst to beat by the difference of their largest uphill steps; a tenth of an eV is about fifty times at room temperature.
+      - tex: 'h(U) = \max\left(0,\ \max_i \Delta G_i(U),\ E_a\right), \qquad E_a = 1.8\,\Delta E_\text{O} - 2.89\ \text{eV} - 0.13\ \text{eV}'
+        words: the hurdle is the largest step still uphill at the potential, or the O2-splitting barrier set by oxygen binding when that is higher.
+      - tex: '\frac{r}{r_\text{ref}}(U) = \exp\!\left(\frac{h_\text{ref}(U) - h(U)}{k_B T}\right)'
+        words: at a potential, a material runs faster or slower than the catalyst to beat by the difference of their hurdles; a tenth of an eV is about fifty times at room temperature.
     assumptions:
       - id: A5
-        short: The largest uphill step sets the rate
+        short: The largest uphill step or the O2-splitting barrier sets the rate
         text: >
-          The thermodynamic step stands for the whole barrier between two states; extra kinetic barriers, such as
-          O–O bond formation on oxides or O2 activation on gold and silver, stay outside this picture.
-        effect: Materials with a kinetic barrier beyond the thermodynamic step run slower than drawn; silver and gold rank above platinum for oxygen reduction here, as in Nørskov 2004's own table before its authors set them aside.
+          Each proton transfer's thermodynamic step stands for its barrier, and O2 splitting follows one line fitted
+          on close-packed metals. O–O bond formation on oxides carries a barrier of its own beyond that picture.
+        effect: "A surface off the splitting line, such as an alloy or an oxide, carries its own barrier; read its oxygen-reduction speed as a ceiling. On the example metals the barrier is {orr_barriers} eV."
     checks:
       - text: >
           Ranking the {her_j0_n} metals with measured exchange currents by how near zero UMA puts H* agrees with
           the measurements at a rank correlation of {her_spearman:.2f}; the published RPBE values reach
           {her_spearman_published:.2f} on the same metals. The example screen ranks the metals for hydrogen
           evolution as {her_ranking}, and for oxygen reduction as {orr_ranking}.
+      - text: >
+          The O2-splitting barrier on the example metals sits at {pt_barrier:+.2f} eV on platinum, below its uphill
+          steps, and at {ag_barrier:+.2f} eV on silver and {au_barrier:+.2f} eV on gold, which binds oxygen most
+          weakly. Silver's steps alone reach {ag_orr_limit:.2f} V; its barrier sets it back to sixth, and gold to
+          last, the order Nørskov 2004 draws once it adds the barrier. Platinum and palladium lead,
+          as measured on rotating-disk electrodes (Kulkarni 2018).
     verdict: >
-      Speeds and the volcano follow the field's own thermodynamic analysis; the limits below say where kinetics
-      and stability change the order.
+      Speeds and the volcano follow the field's own analysis, the O2-splitting barrier included; the limits below
+      say where other barriers and stability change the order.
 
 trust:
   title: When to trust a result
@@ -188,7 +207,8 @@ trust:
         - Absolute limiting potentials and overpotentials, which rest on platinum's corrections and a bare patch (A1, A2).
         - Speed ratios beyond about a hundredfold.
         - Oxides, which run in UMA's materials mode at about 0.2 eV typical miss (thermal Manual, Methodology limits).
-        - Materials that need to activate a molecule through a barrier, or that change form at the working potential (A4, A5).
+        - Alloys and oxides for oxygen reduction, whose O2 splitting may sit off the metals' line (A5).
+        - Materials that change form at the working potential (A4).
     - heading: Outside this method
       points:
         - The parts listed in the next section, each with its size.
@@ -199,17 +219,18 @@ limits:
     The computational hydrogen electrode is the field's standard first pass and ranks candidates well; each
     part below stays out for a measured reason, with its size and what to do meanwhile.
   rows:
-    - part: Barriers between the steps
+    - part: Proton-transfer barriers and O–O bond formation
       why: >
-        The method carries each step's thermodynamics and takes the largest uphill step as the whole barrier.
-        O–O bond formation on oxides and O2 activation on weak binders add barriers beyond it.
-      size: Several tenths of an eV on the metals that bind oxygen weakly (gold, silver); material by material.
+        The method takes each proton transfer's thermodynamic step as its barrier, and carries one chemical
+        barrier, O2 splitting, through the line Nørskov 2004 fitted on metals. O–O bond formation in oxygen
+        evolution on oxides adds a barrier of its own.
+      size: Material by material; each proton transfer's barrier sits inside its step here, and O–O bond formation on oxides adds tenths of an eV.
       meanwhile: Read overpotentials as thermodynamic floors and the order as a shortlist; confirm the top few on a rotating-disk electrode.
     - part: The water layer and the double-layer field
       why: >
-        Water's hydrogen bonds to OH* and OOH* enter as a constant from platinum; the field couples to each
-        adsorbate's dipole.
-      size: About 0.3 eV for OH* on platinum, applied as a constant; 0.015 eV of field coupling, left out.
+        Water's hydrogen bonds to OH* and OOH*, and those within the OH layer, enter as constants from platinum;
+        the field couples to each adsorbate's dipole.
+      size: 0.33 eV from water and 0.27 eV from the layer for OH* on platinum, applied as constants; 0.015 eV of field coupling, left out.
       meanwhile: Compare like with like; a constant cancels against the catalyst to beat.
     - part: The surface's fate at the working potential
       why: >
@@ -218,7 +239,9 @@ limits:
       size: A changed surface works through other sites than the ones computed.
       meanwhile: Check a candidate's Pourbaix diagram at the working potential and pH before making it.
     - part: Coverage
-      why: One intermediate on a bare patch stands for the working surface.
+      why: >
+        One intermediate on a bare patch stands for the working surface; the layer term adds platinum's third of a
+        monolayer of OH* to every metal.
       size: "The oxygen offset against published quarter-monolayer values, {orr_o_offset:+.2f} eV, shared by every metal."
       meanwhile: The offset cancels against the catalyst to beat; read absolute values as rough.
     - part: Carbon dioxide and nitrogen reduction

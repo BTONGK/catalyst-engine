@@ -48,10 +48,11 @@ preface:
         - >
           The app computes each intermediate's binding energy on each material's surface with Meta's UMA model,
           turns it into a free energy with published corrections, and reads the limiting potential, the
-          overpotential and a speed at your potential off the staircase. That is the thermodynamic picture, the
-          one the field uses to rank candidates.
+          overpotential and a speed at your potential off the staircase. For oxygen reduction it adds the
+          barrier to split O2, which follows how strongly the surface holds oxygen. That is the picture the field
+          uses to rank candidates.
         - >
-          Barriers between the steps, the exact structure of the water layer, and the way a surface oxidizes or
+          Barriers of the proton transfers, the exact structure of the water layer, and the way a surface oxidizes or
           dissolves at a working potential stay outside it. The Methodology tab sizes each of those and says what
           to do meanwhile.
 
@@ -152,6 +153,7 @@ help:
   - {q: "The Design page says the atomistic model needs setting up.", a: "UMA runs in its own Python, separate from the app. Point the CE_UMA_PYTHON setting at that Python and CE_UMA_CHECKPOINT at the model file (uma-s-1p1.pt), then reopen the app. On this computer both are already in place."}
   - {q: "The Materials Project search asks for a key.", a: "Sign in for free at materialsproject.org, copy your API key from your dashboard, and save it in the file ~/.config/.pmgrc.yaml as a line reading PMG_MAPI_KEY: your-key. Pure metals work in the meantime."}
   - {q: "A material shows as incomplete.", a: "An intermediate broke apart or drifted off at every site tried on that surface, so its path stays open. The Details tab shows each site. A molecule that splits binds too strongly to stay whole; one that drifts off binds too weakly to stay."}
-  - {q: "The best material is one I would leave on the shelf.", a: "The ranking is thermodynamic: it counts the steps of the path and leaves out barriers between them and the surface's fate at the working potential. Silver above platinum for oxygen reduction is the textbook case. Treat the top of the list as the shortlist to test, and read the Methodology tab's limits."}
-  - {q: "Platinum's limiting potential reads lower than in the papers.", a: "The app's platinum surface carries one intermediate on a bare patch with a constant water term; the published 0.78 V comes from a surface covered with water and a third of a monolayer of hydroxyl. The order of the metals is what the check confirms; absolute values rest on platinum's corrections."}
+  - {q: "The best material is one I would leave on the shelf.", a: "The ranking counts the steps of the path and, for oxygen reduction, the barrier to split O2; the surface's fate at the working potential sits outside it. Check a candidate's Pourbaix diagram at your potential and pH, treat the top of the list as the shortlist to test, and read the Methodology tab's limits."}
+  - {q: "Silver's steps look promising for oxygen reduction, yet it ranks low.", a: "Silver holds oxygen weakly, so splitting O2 on it costs about 1 eV, and that barrier stays at every potential. Its steps alone would reach about 0.6 V; the barrier slows it far below platinum. The Ranking tab shows each material's barrier beside its largest hurdle."}
+  - {q: "How close is platinum's limiting potential to the papers?", a: "The app puts platinum at about 0.79 V vs RHE, against the published 0.78 V, with the same last step (OH* to water) limiting. It carries the paper's water term and the hydrogen bonds within a third of a monolayer of hydroxyl as constants; other metals' absolute values rest on those constants, and the order of the metals is what the check confirms."}
   - {q: "Which potential should I compare at?", a: "The potential your device would run at: about -0.1 V for hydrogen evolution, 0.9 V for a fuel-cell cathode, 1.5 V for an electrolyzer anode. Limiting potentials and overpotentials read the same whatever you pick."}

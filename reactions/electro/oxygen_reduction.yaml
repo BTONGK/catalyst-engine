@@ -12,11 +12,19 @@ equilibrium_V: 1.23
 compare_V: 0.90
 # in order along the reduction path; correction_eV = zero-point energy minus T x entropy at 298 K (Nørskov 2004,
 # Appendix 1); water_eV = the hydrogen bonds from liquid water, measured on Pt(111) for OH (Nørskov 2004,
-# Table 1) and taken the same for OOH, which binds through one oxygen the same way (Man et al. 2011)
+# Table 1: 0.78 -> 0.45 eV); layer_eV = the hydrogen bonds within the OH layer at a third of a monolayer, the
+# coverage it takes on Pt(111) at the working potential (Nørskov 2004, Table 1 at 1/3 against Table 2 at 1/4:
+# 0.78 against 1.05 eV). Both are taken the same for OOH, which binds through one oxygen the same way (Man et
+# al. 2011); oxygen gains 0.04 eV from the layer, left at zero.
 intermediates:
-  - {name: OOH, label: "hydroperoxyl (OOH*)", correction_eV: 0.40, water_eV: -0.33}
+  - {name: OOH, label: "hydroperoxyl (OOH*)", correction_eV: 0.40, water_eV: -0.33, layer_eV: -0.27}
   - {name: O, label: "adsorbed oxygen (O*)", correction_eV: 0.05, water_eV: 0.0}
-  - {name: OH, label: "hydroxyl (OH*)", correction_eV: 0.35, water_eV: -0.33}
+  - {name: OH, label: "hydroxyl (OH*)", correction_eV: 0.35, water_eV: -0.33, layer_eV: -0.27}
+# the chemical step before the first electron: O2 has to split or activate on the surface. Its barrier follows the
+# oxygen binding energy (Nørskov 2004, Table 2 footnote, from the universality relation of Nørskov et al. 2002):
+# E_a = 1.8 dE_O - 2.89 eV, and the step's looser transition state earns it 0.13 eV over a proton transfer at
+# 1 bar and 300 K. A surface that binds oxygen weakly (gold, silver) pays this barrier at every potential.
+activation: {label: "O2 splitting", from: O, slope: 1.8, intercept: -2.89, bonus_eV: 0.13}
 descriptor: {OH: 1}
 # the four steps as lines in x = OH* free energy, with OOH* = OH* + 3.2 eV and O* = 2 x OH* (the scaling
 # relations for metals and oxides; Man et al. 2011, Kulkarni et al. 2018)
@@ -29,5 +37,7 @@ basis: >
   electron. At the equilibrium potential, 1.23 V, an ideal surface would hold each one so that every step is
   level; a real surface holds oxygen and hydroxyl too tightly or too loosely, and the step that stays uphill
   longest sets the limiting potential (Nørskov et al. 2004). Hydroxyl binding is the descriptor because the
-  other two scale with it. Platinum, the fuel-cell cathode, sits near the top of the volcano and about 0.4 V
-  short of the ideal.
+  other two scale with it. Before the first electron, O2 has to split or activate on the surface, a chemical
+  step whose barrier grows as oxygen binds more weakly (Nørskov 2004): it caps gold and silver, which the
+  free energies alone would place well. Platinum, the fuel-cell cathode, sits near the top of the volcano and
+  about 0.4 V short of the ideal.

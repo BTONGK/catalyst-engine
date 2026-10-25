@@ -243,7 +243,8 @@ def results_body(folder: Path, choice: str) -> None:
                     delta_color="off", delta_arrow="off", border=True,
                     help=f"Where every step runs downhill; {better} is better for this reaction.")
         m[2].metric(f"Predicted speed vs {ref_name} at {u_cmp:.2f} V", fmt_ratio(best.rate_ratio), border=True,
-                    help="From the largest step still uphill at that potential, for each material (Sabatier analysis).")
+                    help="From the largest hurdle at that potential for each material: its largest step still uphill, "
+                         "or a chemical barrier where the reaction has one (Sabatier analysis).")
         m[3].metric("Supply", best.supply, border=True)
     missing = [p for p in preds if p.missing]
     if missing:
@@ -263,6 +264,9 @@ def results_body(folder: Path, choice: str) -> None:
                 "Limiting potential (V vs RHE)": None if p.limiting_V is None else round(p.limiting_V, 2),
                 "Likely range (V)": "" if p.limiting_range is None else f"{p.limiting_range[0]:.2f} to {p.limiting_range[1]:.2f}",
                 "Limiting step": "" if p.limiting_step is None else s.step_names()[p.limiting_step],
+                **({f"{s.activation.label} barrier (eV)": None if p.barrier_eV is None else round(p.barrier_eV, 2),
+                    f"Largest hurdle at {u_cmp:.2f} V (eV)": None if p.hurdle_eV is None else round(p.hurdle_eV, 2)}
+                   if s.activation else {}),
                 f"Speed vs {ref_name} at {u_cmp:.2f} V": "Reference" if p.is_reference else fmt_ratio(p.rate_ratio),
                 "Speed range": "" if p.is_reference or p.rate_range is None else fmt_range(*p.rate_range),
                 "Speed ratio": p.rate_ratio,
@@ -280,14 +284,18 @@ def results_body(folder: Path, choice: str) -> None:
                                     "Material": st.column_config.TextColumn(width="medium"),
                                     "Stability (eV/atom)": st.column_config.NumberColumn("Stability", width="small")})
         st.caption(f"Overpotential: the extra voltage past {s.equilibrium_V:.2f} V before the last step of the path "
-                   "runs downhill; the ranking sorts by it. Likely range: from the model's typical error in each "
+                   "runs downhill. "
+                   + (f"The ranking sorts by the largest hurdle at {u_cmp:.2f} V, then by overpotential. The hurdle is "
+                      f"the largest step still uphill there, or the {s.activation.label.lower()} barrier when that is "
+                      "higher; that barrier follows the "
+                      f"{s.activation.from_}* binding (Nørskov et al. 2004) and sets the order for weak binders. "
+                      if s.activation else "The ranking sorts by it. ")
+                   + "Likely range: from the model's typical error in each "
                    f"binding energy (±{electro.SIGMA_EV:.2f} eV). Free energies: each intermediate at 0 V vs RHE, "
                    "against water and hydrogen gas; the ideal catalyst would hold them at "
                    + ", ".join(f"{s.total_eV / s.electrons * (k + 1):.2f}" for k in range(len(s.adsorbates)))
-                   + " eV. Speed: from the largest step still uphill at the comparison potential. This is the "
-                   "thermodynamic picture: a surface that needs a barrier beyond its steps to activate a molecule, or "
-                   "one that oxidizes or dissolves at the working potential, ranks higher here than in a cell; silver "
-                   "and gold in oxygen reduction are the textbook case (Manual, Methodology tab).")
+                   + " eV. Speed: from the largest hurdle at the comparison potential. Surface oxidation and "
+                   "dissolution at the working potential sit outside this picture (Manual, Methodology tab).")
     with tabs[1]:
         if not curves["materials"]:
             st.caption("Curves appear once the catalyst to beat is done.")
@@ -320,8 +328,11 @@ def results_body(folder: Path, choice: str) -> None:
                 color="#94a3b8", strokeDash=[2, 3]).encode(x="U:Q", tooltip="what:N")
             st.altair_chart((line + rules).properties(height=380), width="stretch")
             st.caption(f"Each line is a material's predicted speed relative to {ref_name} at the same potential: "
-                       "the speed falls by about 50× for every 0.1 eV of the largest step still uphill. Where every "
-                       "step of both runs downhill the lines meet at 1. The dashed green line is the ideal catalyst, "
+                       "the speed falls by about 50× for every 0.1 eV of the largest hurdle. Where every "
+                       "step of both runs downhill the lines meet at 1"
+                       + (f", and a line stays flat wherever the {s.activation.label.lower()} barrier is the larger "
+                          "hurdle, since that barrier holds at every potential" if s.activation else "")
+                       + ". The dashed green line is the ideal catalyst, "
                        "whose steps all turn downhill at the equilibrium potential. Dotted lines mark the "
                        "comparison and equilibrium potentials.")
     with tabs[2]:
@@ -371,7 +382,9 @@ def results_body(folder: Path, choice: str) -> None:
             f"- Care level: {req['thoroughness']}; UMA mode: {req['task']}\n"
             f"- Folder: `{folder}`")
         with st.expander("How the predictions are made"):
-            corr = "; ".join(f"{i.name}*: {i.correction_eV:+.2f} eV" + (f" and {i.water_eV:+.2f} eV from water" if i.water_eV else "")
+            corr = "; ".join(f"{i.name}*: {i.correction_eV:+.2f} eV"
+                             + (f", {i.water_eV:+.2f} eV from water" if i.water_eV else "")
+                             + (f", {i.layer_eV:+.2f} eV from its neighbors in the layer" if i.layer_eV else "")
                              for i in s.intermediates)
             st.markdown(
                 f"1. **Binding.** For each material, the app cuts its densest crystal face, places "
@@ -384,9 +397,14 @@ def results_body(folder: Path, choice: str) -> None:
                 f"3. **Potential.** Every step moves one electron, so a potential U shifts each step by "
                 f"{'−' if s.direction == 'reduction' else '+'}eU. The limiting potential is where the last step turns "
                 "downhill; the overpotential is its distance from the equilibrium potential.\n"
-                f"4. **Speed.** At the comparison potential the rate follows the largest step still uphill, "
-                "exp(−ΔG/kT) at 25 °C (Sabatier analysis), so speeds are relative to the catalyst to beat.\n\n"
-                "Barriers between the steps, the structure of the water layer and the surface's change of "
+                f"4. **Speed.** At the comparison potential the rate follows the largest hurdle, exp(−ΔG/kT) at "
+                "25 °C (Sabatier analysis), so speeds are relative to the catalyst to beat. "
+                + (f"The hurdle is the largest step still uphill, or the {s.activation.label.lower()} barrier when "
+                   f"that is higher: E_a = {s.activation.slope:g} × ΔE({s.activation.from_}*) "
+                   f"{'−' if s.activation.intercept < 0 else '+'} {abs(s.activation.intercept):g} eV, less "
+                   f"{s.activation.bonus_eV:g} eV for its looser transition state (Nørskov et al. 2004).\n\n"
+                   if s.activation else "\n\n")
+                + "Barriers of the proton transfers, the structure of the water layer and the surface's change of "
                 "coverage with potential stay outside this picture (Manual, Methodology tab). Read the ranking as "
                 "a shortlist.")
 

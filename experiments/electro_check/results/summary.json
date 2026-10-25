@@ -24,12 +24,18 @@
   "ooh_gap_sd": 0.25,
   "ooh_gap_published": 3.2,
   "ooh_gap_published_mae": 0.17,
-  "pt_orr_limit": 0.569,
+  "pt_orr_limit": 0.79,
   "pt_orr_limit_published": 0.78,
-  "pt_orr_step": "O \u2192 OH",
+  "pt_orr_step": "OH \u2192 *",
   "pt_her_eta": 0.084,
-  "orr_ranking": "Ag, Pt, Pd, Cu, Ir, Au, Rh, Ni, Ru, Co",
+  "orr_ranking": "Pt, Pd, Ir, Rh, Cu, Ag, Ni, Ru, Co, Au",
   "her_ranking": "Ir, Pt, Rh, Pd, Cu, Ru, Ni, Co, Au, Ag",
+  "orr_top3": "Pt, Pd, Ir",
+  "orr_barriers": "Co -3.94, Ru -3.38, Ni -2.86, Rh -2.08, Ir -1.25, Cu -1.16, Pd -0.53, Pt -0.18, Ag +1.01, Au +2.01",
+  "ag_barrier": 1.012,
+  "au_barrier": 2.007,
+  "pt_barrier": -0.178,
+  "ag_orr_limit": 0.613,
   "orr_incomplete": "none",
   "screen": "20261024-121244-example-oxygen-reduction-on-ten-metals",
   "task": "oc20",
@@ -287,26 +293,62 @@
  },
  "pipeline": {
   "oxygen_reduction": {
-   "limiting_V": 0.569,
-   "overpotential_V": 0.661,
-   "limiting_step": "O \u2192 OH",
+   "limiting_V": 0.79,
+   "overpotential_V": 0.44,
+   "limiting_step": "OH \u2192 *",
    "free_energies": {
-    "OOH": 4.121,
+    "OOH": 3.851,
     "O": 1.629,
-    "OH": 1.06
+    "OH": 0.79
    },
    "ranking": [
-    "Ag",
     "Pt",
     "Pd",
-    "Cu",
     "Ir",
-    "Au",
     "Rh",
+    "Cu",
+    "Ag",
     "Ni",
     "Ru",
-    "Co"
+    "Co",
+    "Au"
    ],
+   "limits": {
+    "Pt": 0.79,
+    "Pd": 0.657,
+    "Ir": 0.513,
+    "Rh": 0.196,
+    "Cu": 0.093,
+    "Ag": 0.613,
+    "Ni": -0.165,
+    "Ru": -0.253,
+    "Co": -0.571,
+    "Au": 0.447
+   },
+   "barriers": {
+    "Pt": -0.178,
+    "Pd": -0.528,
+    "Ir": -1.245,
+    "Rh": -2.075,
+    "Cu": -1.164,
+    "Ag": 1.012,
+    "Ni": -2.861,
+    "Ru": -3.383,
+    "Co": -3.943,
+    "Au": 2.007
+   },
+   "hurdles": {
+    "Pt": 0.11,
+    "Pd": 0.243,
+    "Ir": 0.387,
+    "Rh": 0.704,
+    "Cu": 0.807,
+    "Ag": 1.012,
+    "Ni": 1.065,
+    "Ru": 1.153,
+    "Co": 1.471,
+    "Au": 2.007
+   },
    "incomplete": {}
   },
   "hydrogen_evolution": {
@@ -328,6 +370,31 @@
     "Au",
     "Ag"
    ],
+   "limits": {
+    "Ir": -0.034,
+    "Pt": -0.084,
+    "Rh": -0.141,
+    "Pd": -0.158,
+    "Cu": -0.198,
+    "Ru": -0.207,
+    "Ni": -0.269,
+    "Co": -0.296,
+    "Au": -0.573,
+    "Ag": -0.624
+   },
+   "barriers": {},
+   "hurdles": {
+    "Ir": 0.0,
+    "Pt": 0.0,
+    "Rh": 0.041,
+    "Pd": 0.058,
+    "Cu": 0.098,
+    "Ru": 0.107,
+    "Ni": 0.169,
+    "Co": 0.196,
+    "Au": 0.473,
+    "Ag": 0.524
+   },
    "incomplete": {}
   }
  }
