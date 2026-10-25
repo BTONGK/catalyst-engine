@@ -406,7 +406,7 @@ def test_the_shipped_example_lands_in_an_empty_screens_folder_and_ranks_like_the
     screening.add_examples()
     screens = screening.list_screens()
     assert len(screens) == len(list(screening.EXAMPLES.iterdir())) >= 1
-    folder = next(f for f in screens if "co-oxidation" in f.name)  # the thermal example; electro ones ship too
+    folder = screens[0]
     job = screening.read_job(folder)
     preds, _ = screening.predict(load_pack(job["request"]["pack"]), job, screening.read_results(folder))
     assert all(p.complete for p in preds)
@@ -475,9 +475,6 @@ def test_results_page_shows_a_finished_screen():
 def test_results_page_shows_the_example_with_its_reference_leading_and_no_rounding_alarm():
     screening.add_examples()
     at = AppTest.from_file(str(VIEWS / "results.py"), default_timeout=120).run()
-    assert not at.exception, at.exception
-    co = next(f.name for f in screening.list_screens() if "co-oxidation" in f.name)
-    at.selectbox(key="results_pick").set_value(co).run()
     assert not at.exception, at.exception
     assert any("the catalyst to beat, leads" in m.value for m in at.markdown)
     assert len(at.warning) == 0  # its slowest curves touch zero to within 1e-16

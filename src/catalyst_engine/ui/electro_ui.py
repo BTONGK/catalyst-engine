@@ -1,8 +1,10 @@
-"""The electrochemistry side of the Design and Results pages: pick an electrochemical reaction and an operating
+"""The electrocatalysis section's Design and Results pages: pick an electrochemical reaction and an operating
 potential, screen materials, and read limiting potentials, overpotentials, free-energy diagrams and the volcano."""
 
 from __future__ import annotations
 
+import time
+from datetime import datetime
 from pathlib import Path
 
 import altair as alt
@@ -11,7 +13,7 @@ import pandas as pd
 import streamlit as st
 
 from catalyst_engine.design import electro, screening
-from catalyst_engine.design.spec import ADSORBATES
+from catalyst_engine.design.electro import ADSORBATES
 from catalyst_engine.ui import common, screen_ui
 
 LEVELS = {"Quick": "quick", "Standard": "standard", "Thorough": "thorough"}
@@ -62,16 +64,26 @@ def descriptor_text(s: electro.ElectroSpec) -> str:
     return " ".join(parts) + " free energy"
 
 
+def screen_label(folder: Path) -> str:
+    req = screening.read_job(folder)["request"]
+    state = screening.read_status(folder).get("state", "")
+    when = datetime.fromisoformat(req["created"]).strftime("%b %d, %H:%M")
+    return f"{req['name']}  ·  {when}  ·  {state}"
+
+
 # ---------------------------------------------------------------- design page
 
 def design_page(advanced: bool, status: dict) -> None:
     ids = electro.list_electro()
     specs = {i: spec(i) for i in ids}
-    cands: dict[str, dict] = st.session_state.setdefault("design_electro_candidates", {})
+    cands: dict[str, dict] = st.session_state.setdefault("electro_candidates", {})
 
     with st.container(border=True):
         st.markdown("### 1. What should the electrode do?")
-        if st.session_state.get("electro_pack") not in ids:
+        wanted = st.session_state.pop("electro_pack_wanted", None)
+        if wanted in ids:
+            st.session_state["electro_pack"] = wanted
+        elif st.session_state.get("electro_pack") not in ids:
             st.session_state["electro_pack"] = ids[0]
         pid = st.selectbox("Reaction", ids, format_func=lambda i: f"{specs[i].name}  ·  {specs[i].category}",
                            key="electro_pack")
@@ -121,8 +133,8 @@ def design_page(advanced: bool, status: dict) -> None:
             c = st.columns(2)
             task = c[0].selectbox("UMA mode", list(TASKS), index=list(TASKS).index(s.task), format_func=TASKS.get,
                                   key=f"electro_task_adv_{pid}",
-                                  help="Catalysis mode suits metal surfaces; materials mode suits oxides (Manual, "
-                                       "Methodology). Each reaction starts on the mode that suits its catalyst to beat.")
+                                  help="Catalysis mode suits metal surfaces; materials mode suits oxides. Each "
+                                       "reaction starts on the mode that suits its catalyst to beat (Manual, Methodology).")
             ref_choice = c[1].selectbox(
                 "Catalyst to beat", [""] + list(cands), key=f"electro_ref_{pid}",
                 format_func=lambda k: f"{s.reference.name or s.reference.formula} (this reaction's)" if not k
@@ -154,8 +166,8 @@ def design_page(advanced: bool, status: dict) -> None:
                 except Exception as exc:  # a Materials Project problem or a bad entry; the page stays usable
                     st.error(str(exc))
                 else:
-                    st.session_state["results_screen"] = folder.name
-                    st.switch_page("views/results.py")
+                    st.session_state["electro_results_screen"] = folder.name
+                    st.switch_page("views/electro_results.py")
         if not cands:
             st.caption("Add at least one material in step 3 to start.")
 
@@ -164,13 +176,42 @@ def design_page(advanced: bool, status: dict) -> None:
 
 @st.cache_data(show_spinner=False)
 def _predictions(folder_name: str, stamp: float):
-    f = screening.screens_dir() / folder_name
+    f = electro.screens_dir() / folder_name
     job = screening.read_job(f)
     return electro.predict(spec(job["request"]["pack"]), job, screening.read_results(f))
 
 
-def results_body(folder: Path, job: dict, choice: str, state: str) -> None:
+def progress_panel(folder: Path) -> str:
+    status = screening.read_status(folder)
+    state = status.get("state", "queued")
+    if state in screening.RUNNING:
+        done, total = status.get("done", 0), max(status.get("total", 0), 1)
+        elapsed = time.time() - status.get("started", time.time())
+        left = elapsed / done * (total - done) if done else None
+        st.progress(min(done / total, 1.0), text=f"{status.get('message', 'Working')}  ·  {done} of {total} steps")
+        st.caption(f"Running for {elapsed / 60:.0f} min" + (f", about {left / 60:.0f} min to go" if left else "")
+                   + ". This page refreshes by itself; you can leave and come back.")
+        if st.button("Stop this screen", icon=":material/stop_circle:"):
+            screening.cancel(folder)
+            st.rerun()
+    elif state == "finished":
+        took = status.get("finished", 0) - status.get("started", 0)
+        st.success(f"Finished in {took / 60:.0f} min.", icon=":material/check_circle:")
+    elif state == "cancelled":
+        st.info("You stopped this screen. The results below cover what finished.", icon=":material/stop_circle:")
+    else:
+        st.error(f"The screen stopped: {status.get('message', '')}", icon=":material/error:")
+        log = folder / "log.txt"
+        if log.exists():
+            with st.expander("Last lines of the log"):
+                st.code("\n".join(log.read_text().splitlines()[-25:]))
+    return state
+
+
+def results_body(folder: Path, choice: str) -> None:
+    job = screening.read_job(folder)
     req = job["request"]
+    state = progress_panel(folder)
     s = spec(req["pack"])
     ref_entry = next((m for m in req["materials"] if m.get("is_reference")), {})
     ref_name = ref_entry.get("ref_name") or s.reference.name or s.reference.formula
@@ -207,7 +248,7 @@ def results_body(folder: Path, job: dict, choice: str, state: str) -> None:
     missing = [p for p in preds if p.missing]
     if missing:
         st.info("On " + ", ".join(f"{p.formula} ({', '.join(p.missing)})" for p in missing) + " an intermediate "
-                "broke apart or drifted off at every site tried, so that material has no limiting potential. "
+                "broke apart or drifted off at every site tried, so that material's path stays open. "
                 "A molecule that splits binds the surface too strongly to stay whole; one that drifts off binds "
                 "too weakly to stay. The Details tab lists each site.", icon=":material/info:")
 
@@ -246,7 +287,7 @@ def results_body(folder: Path, job: dict, choice: str, state: str) -> None:
                    + " eV. Speed: from the largest step still uphill at the comparison potential. This is the "
                    "thermodynamic picture: a surface that needs a barrier beyond its steps to activate a molecule, or "
                    "one that oxidizes or dissolves at the working potential, ranks higher here than in a cell; silver "
-                   "and gold in oxygen reduction are the textbook case (Manual, Methodology step 10).")
+                   "and gold in oxygen reduction are the textbook case (Manual, Methodology tab).")
     with tabs[1]:
         if not curves["materials"]:
             st.caption("Curves appear once the catalyst to beat is done.")
@@ -254,7 +295,7 @@ def results_body(folder: Path, job: dict, choice: str, state: str) -> None:
             order = [p for p in preds if p.material in curves["materials"]]
             default = [p.material for p in order if not p.is_reference][:5]
             show = st.multiselect("Materials to show", [p.material for p in order], default=default,
-                                  format_func={p.material: p.formula for p in order}.get, key=f"res_show_{choice}")
+                                  format_func={p.material: p.formula for p in order}.get, key=f"eres_show_{choice}")
             u = np.array(curves["U_V"])
             ref_up = np.array(curves["materials"][curves["reference"]]["uphill"])
             frames = [pd.DataFrame({"U": u, "ratio": np.exp((ref_up - np.array(curves["ideal"])) / electro.K_T),
@@ -290,32 +331,13 @@ def results_body(folder: Path, job: dict, choice: str, state: str) -> None:
         else:
             c = st.columns([1, 1])
             pick = c[0].selectbox("Material", [p.material for p in done],
-                                  format_func={p.material: p.label for p in done}.get, key=f"res_fed_{choice}")
+                                  format_func={p.material: p.label for p in done}.get, key=f"eres_fed_{choice}")
             p = next(q for q in done if q.material == pick)
             options = {"0 V": 0.0, f"equilibrium, {s.equilibrium_V:.2f} V": s.equilibrium_V,
                        f"its limiting potential, {p.limiting_V:.2f} V": p.limiting_V,
                        f"the comparison potential, {u_cmp:.2f} V": u_cmp}
-            at = c[1].multiselect("Draw at", list(options), default=list(options)[:3], key=f"res_fed_u_{choice}_{pick}")
-            segs, links = [], []
-            for label in at:
-                rows_ = electro.diagram(s, p.free_energies, options[label])
-                for r in rows_:
-                    segs.append({"x": r["step"], "x2": r["step"] + 0.8, "y": r["level"], "Potential": label,
-                                 "State": r["state"]})
-                for a, b in zip(rows_, rows_[1:]):
-                    links.append({"x": a["step"] + 0.8, "x2": b["step"], "y": a["level"], "y2": b["level"], "Potential": label})
-            names_ = [s_ for s_ in options if s_ in at]
-            scale = alt.Scale(domain=names_, range=PALETTE[:len(names_)])
-            x_axis = alt.X("x:Q", title="Along the reaction path", axis=alt.Axis(
-                values=[k + 0.4 for k in range(s.electrons + 1)],
-                labelExpr="[" + ",".join(f"'{r['state']}'" for r in electro.diagram(s, p.free_energies, 0.0)) + "][round(datum.value - 0.4)]"))
-            seg = alt.Chart(pd.DataFrame(segs)).mark_rule(strokeWidth=4).encode(
-                x=x_axis, x2="x2:Q", y=alt.Y("y:Q", title="Free energy (eV)"),
-                color=alt.Color("Potential:N", scale=scale, legend=alt.Legend(orient="bottom", title=None)),
-                tooltip=["State:N", "Potential:N", alt.Tooltip("y:Q", format=".2f", title="eV")])
-            link = alt.Chart(pd.DataFrame(links)).mark_rule(strokeDash=[3, 3], strokeWidth=1.5).encode(
-                x="x:Q", x2="x2:Q", y="y:Q", y2="y2:Q", color=alt.Color("Potential:N", scale=scale, legend=None))
-            st.altair_chart((seg + link).properties(height=360), width="stretch")
+            at = c[1].multiselect("Draw at", list(options), default=list(options)[:3], key=f"eres_fed_u_{choice}_{pick}")
+            diagram_chart(s, p.free_energies, {k: options[k] for k in options if k in at})
             step_text = "; ".join(f"{n}: {v:+.2f} eV" for n, v in zip(s.step_names(), p.steps))
             st.caption(f"The free energy of each state along the path on {p.formula} at 0 V vs RHE: {step_text}. "
                        f"Raising the potential tilts a reduction's path downhill (lowering an oxidation's), "
@@ -329,30 +351,7 @@ def results_body(folder: Path, job: dict, choice: str, state: str) -> None:
                                  "lo": p.descriptor - s.sigma_descriptor, "hi": p.descriptor + s.sigma_descriptor,
                                  "Kind": "Catalyst to beat" if p.is_reference else "Candidate"}
                                 for p in preds if p.complete])
-            x_lo, x_hi = float(pts["lo"].min()) - 0.3, float(pts["hi"].max()) + 0.3
-            if s.volcano_steps:
-                x, y = electro.volcano_line(s, x_lo, x_hi)
-                line_df = pd.DataFrame({"x": x, "U": y})
-            x_title = descriptor_text(s) + " (eV)"
-            x_enc = alt.X("x:Q", scale=alt.Scale(domain=[x_lo, x_hi], nice=False), title=x_title)
-            y_vals = list(pts["U"]) + ([s.equilibrium_V] + (list(line_df["U"]) if s.volcano_steps else []))
-            y_enc = alt.Y("U:Q", title=f"Limiting potential (V vs RHE), {better} is better",
-                          scale=alt.Scale(domain=[min(y_vals) - 0.15, max(y_vals) + 0.15], nice=False))
-            layers = []
-            if s.volcano_steps:
-                layers.append(alt.Chart(line_df).mark_line(color="#94a3b8", strokeWidth=2, clip=True).encode(x=x_enc, y=y_enc))
-            layers.append(alt.Chart(pd.DataFrame({"U": [s.equilibrium_V]})).mark_rule(color=common.ACCENT, strokeDash=[6, 4]).encode(y="U:Q"))
-            layers.append(alt.Chart(pts).mark_rule(color="#cbd5e1", strokeWidth=3, clip=True).encode(x="lo:Q", x2="hi:Q", y="U:Q"))
-            layers.append(alt.Chart(pts).mark_point(size=120, opacity=0.95, filled=True, clip=True).encode(
-                x=x_enc, y=y_enc,
-                color=alt.Color("Kind:N", scale=alt.Scale(domain=["Catalyst to beat", "Candidate"],
-                                                          range=[common.REFERENCE_GRAY, common.ACCENT]),
-                                legend=alt.Legend(orient="bottom", title=None)),
-                tooltip=["Material", alt.Tooltip("x:Q", format=".2f", title="descriptor (eV)"),
-                         alt.Tooltip("U:Q", format=".2f", title="limiting potential (V)")]))
-            layers.append(alt.Chart(pts).mark_text(dy=-12, fontSize=12, color="#475569", clip=True).encode(
-                x=x_enc, y=y_enc, text="Material:N"))
-            st.altair_chart(alt.layer(*layers).properties(height=420), width="stretch")
+            volcano_chart(s, pts, better)
             st.caption(f"Each dot is a material's own limiting potential against its {descriptor_text(s)}; bars show "
                        "the descriptor's likely range, and the dashed green line is the equilibrium potential, the "
                        "ceiling for a reduction and the floor for an oxidation. "
@@ -390,3 +389,60 @@ def results_body(folder: Path, job: dict, choice: str, state: str) -> None:
                 "Barriers between the steps, the structure of the water layer and the surface's change of "
                 "coverage with potential stay outside this picture (Manual, Methodology tab). Read the ranking as "
                 "a shortlist.")
+
+
+# ---------------------------------------------------------------- charts shared with the playground
+
+def diagram_chart(s: electro.ElectroSpec, g: dict[str, float], potentials: dict[str, float]) -> None:
+    """The free-energy staircase of one surface at one or more potentials."""
+    segs, links = [], []
+    for label, u in potentials.items():
+        rows_ = electro.diagram(s, g, u)
+        for r in rows_:
+            segs.append({"x": r["step"], "x2": r["step"] + 0.8, "y": r["level"], "Potential": label, "State": r["state"]})
+        for a, b in zip(rows_, rows_[1:]):
+            links.append({"x": a["step"] + 0.8, "x2": b["step"], "y": a["level"], "y2": b["level"], "Potential": label})
+    if not segs:
+        st.caption("Pick at least one potential to draw.")
+        return
+    names_ = list(potentials)
+    scale = alt.Scale(domain=names_, range=PALETTE[:len(names_)])
+    states = [r["state"] for r in electro.diagram(s, g, 0.0)]
+    x_axis = alt.X("x:Q", title="Along the reaction path", axis=alt.Axis(
+        values=[k + 0.4 for k in range(s.electrons + 1)],
+        labelExpr="[" + ",".join(f"'{st_}'" for st_ in states) + "][round(datum.value - 0.4)]"))
+    seg = alt.Chart(pd.DataFrame(segs)).mark_rule(strokeWidth=4).encode(
+        x=x_axis, x2="x2:Q", y=alt.Y("y:Q", title="Free energy (eV)"),
+        color=alt.Color("Potential:N", scale=scale, legend=alt.Legend(orient="bottom", title=None)),
+        tooltip=["State:N", "Potential:N", alt.Tooltip("y:Q", format=".2f", title="eV")])
+    link = alt.Chart(pd.DataFrame(links)).mark_rule(strokeDash=[3, 3], strokeWidth=1.5).encode(
+        x="x:Q", x2="x2:Q", y="y:Q", y2="y2:Q", color=alt.Color("Potential:N", scale=scale, legend=None))
+    st.altair_chart((seg + link).properties(height=360), width="stretch")
+
+
+def volcano_chart(s: electro.ElectroSpec, pts: pd.DataFrame, better: str) -> None:
+    """The limiting-potential volcano: the scaling line, the equilibrium potential and each material's own dot."""
+    x_lo, x_hi = float(pts["lo"].min()) - 0.3, float(pts["hi"].max()) + 0.3
+    line_df = None
+    if s.volcano_steps:
+        x, y = electro.volcano_line(s, x_lo, x_hi)
+        line_df = pd.DataFrame({"x": x, "U": y})
+    x_enc = alt.X("x:Q", scale=alt.Scale(domain=[x_lo, x_hi], nice=False), title=descriptor_text(s) + " (eV)")
+    y_vals = list(pts["U"]) + [s.equilibrium_V] + (list(line_df["U"]) if line_df is not None else [])
+    y_enc = alt.Y("U:Q", title=f"Limiting potential (V vs RHE), {better} is better",
+                  scale=alt.Scale(domain=[min(y_vals) - 0.15, max(y_vals) + 0.15], nice=False))
+    layers = []
+    if line_df is not None:
+        layers.append(alt.Chart(line_df).mark_line(color="#94a3b8", strokeWidth=2, clip=True).encode(x=x_enc, y=y_enc))
+    layers.append(alt.Chart(pd.DataFrame({"U": [s.equilibrium_V]})).mark_rule(color=common.ACCENT, strokeDash=[6, 4]).encode(y="U:Q"))
+    layers.append(alt.Chart(pts).mark_rule(color="#cbd5e1", strokeWidth=3, clip=True).encode(x="lo:Q", x2="hi:Q", y="U:Q"))
+    layers.append(alt.Chart(pts).mark_point(size=120, opacity=0.95, filled=True, clip=True).encode(
+        x=x_enc, y=y_enc,
+        color=alt.Color("Kind:N", scale=alt.Scale(domain=["Catalyst to beat", "Candidate"],
+                                                  range=[common.REFERENCE_GRAY, common.ACCENT]),
+                        legend=alt.Legend(orient="bottom", title=None)),
+        tooltip=["Material", alt.Tooltip("x:Q", format=".2f", title="descriptor (eV)"),
+                 alt.Tooltip("U:Q", format=".2f", title="limiting potential (V)")]))
+    layers.append(alt.Chart(pts).mark_text(dy=-12, fontSize=12, color="#475569", clip=True).encode(
+        x=x_enc, y=y_enc, text="Material:N"))
+    st.altair_chart(alt.layer(*layers).properties(height=420), width="stretch")

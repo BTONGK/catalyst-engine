@@ -3,8 +3,9 @@
     uv run python experiments/electro_check/electro_check.py [screen folder]
 
 Reads a finished electrochemical screen of pure metals that holds H, O, OH and OOH (the shipped example,
-examples/screens/*oxygen-reduction*, unless a folder is given), scores its binding energies against three published
-sources and writes results/electro.json for the Manual's Methodology tab:
+examples/electro/screens/*oxygen-reduction*, unless a folder is given), scores its binding energies against three
+published sources and writes results/summary.json, the numbers behind report.yaml on the electrocatalysis Manual's
+Methodology tab:
 
   1. hydrogen: dG_H = dE_H + 0.24 eV against the RPBE and PBE values of Table S2 in "Revisiting trends in the
      exchange current for hydrogen evolution" (arXiv:2109.04219; 3 x 3 close-packed slabs, 1/9 monolayer), and the
@@ -116,9 +117,12 @@ def main(folder: Path) -> None:
         "orr_incomplete": ", ".join(f"{m} ({', '.join(a)})" for m, a in pipeline["oxygen_reduction"]["incomplete"].items()) or "none",
         "screen": folder.name, "task": job["task"], "generated": job["request"]["created"][:10],
     }
-    out = {"values": values, "tables": {"her": her, "orr_metals": orr, "ooh": ooh}, "pipeline": pipeline}
+    values["gate"] = 0.11  # the typical miss the thermal error budget allows (experiments/design_method)
+    values["sigma"] = electro.SIGMA_EV
+    out = {"generated": values["generated"], "values": values, "tables": {"her": her, "orr_metals": orr, "ooh": ooh},
+           "pipeline": pipeline}
     (HERE / "results").mkdir(exist_ok=True)
-    (HERE / "results" / "electro.json").write_text(json.dumps(out, indent=1))
+    (HERE / "results" / "summary.json").write_text(json.dumps(out, indent=1))
     print(json.dumps(values, indent=1))
 
 
@@ -126,5 +130,5 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         target = Path(sys.argv[1])
     else:
-        target = next(p for p in sorted(screening.EXAMPLES.iterdir()) if "oxygen-reduction" in p.name)
+        target = next(p for p in sorted(electro.EXAMPLES.iterdir()) if "oxygen-reduction" in p.name)
     main(target)

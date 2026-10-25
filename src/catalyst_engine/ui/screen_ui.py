@@ -1,5 +1,5 @@
-"""Pieces the Design and Results pages share between thermal and electrochemical screens: the candidate list,
-the 3D structures tab and the table of every site tried."""
+"""Pieces of the electrocatalysis pages that mirror the thermal Design and Results pages: the candidate list, the
+3D structures tab and the table of every site tried."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ import streamlit as st
 from ase.io import read
 
 from catalyst_engine.design import elements, materials
-from catalyst_engine.design.spec import ADSORBATES
+from catalyst_engine.design.electro import ADSORBATES
 from catalyst_engine.ui import common, viewer
 
 METALS = elements.METALS

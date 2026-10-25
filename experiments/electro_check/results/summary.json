@@ -1,4 +1,5 @@
 {
+ "generated": "2026-10-24",
  "values": {
   "her_n": 10,
   "her_mae_rpbe": 0.038,
@@ -32,7 +33,9 @@
   "orr_incomplete": "none",
   "screen": "20261024-121244-example-oxygen-reduction-on-ten-metals",
   "task": "oc20",
-  "generated": "2026-10-24"
+  "generated": "2026-10-24",
+  "gate": 0.11,
+  "sigma": 0.15
  },
  "tables": {
   "her": [

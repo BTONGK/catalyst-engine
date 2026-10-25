@@ -3,7 +3,8 @@ screens compute.
 
 An electrochemical reaction is a file in reactions/electro/<id>.yaml: its intermediates in order along the path,
 each one's free-energy corrections, the descriptor, the catalyst to beat and the lines of its volcano. The engine
-core never names one.
+core never names one. Electrochemical screens live in their own folder, <data dir>/electro/screens/, apart from
+the thermal screens, and the shipped examples in examples/electro/screens/.
 
 The method (Nørskov et al., J. Phys. Chem. B 2004):
   1. each intermediate's free energy against liquid water and H2 at U = 0 V vs RHE is its binding energy from the
@@ -24,6 +25,8 @@ from __future__ import annotations
 
 import itertools
 import json
+import os
+import shutil
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -34,10 +37,13 @@ import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from catalyst_engine.design import elements, screening
-from catalyst_engine.design.spec import ADSORBATES
+from catalyst_engine.design.spec import ADSORBATES as THERMAL_ADSORBATES
 from catalyst_engine.packs import PACKS_DIR, read_yaml
 
 ELECTRO_DIR = PACKS_DIR / "electro"
+EXAMPLES = Path(__file__).resolve().parents[3] / "examples" / "electro" / "screens"
+# the intermediates the worker can place, in plain words: the thermal set plus hydroperoxyl
+ADSORBATES = {**THERMAL_ADSORBATES, "OOH": "hydroperoxyl"}
 K_T = 8.617333e-5 * 298.15  # eV at 25 C
 SIGMA_EV = 0.15  # uncertainty of each binding energy, as the thermal screens take it
 
@@ -165,6 +171,24 @@ def is_electro(job: dict) -> bool:
     return job.get("request", {}).get("kind") == "electro"
 
 
+def screens_dir() -> Path:
+    return Path(os.environ.get("CE_DATA_DIR", Path(__file__).resolve().parents[3] / "data")) / "electro" / "screens"
+
+
+def list_screens() -> list[Path]:
+    root = screens_dir()
+    return sorted((p for p in root.iterdir() if (p / "job.json").exists()), reverse=True) if root.is_dir() else []
+
+
+def add_examples() -> None:
+    """Copy the shipped example screens into an empty electrochemistry screens folder."""
+    root = screens_dir()
+    if EXAMPLES.is_dir() and not (root.is_dir() and any(root.iterdir())):
+        for src in sorted(EXAMPLES.iterdir()):
+            if (src / "job.json").exists():
+                shutil.copytree(src, root / src.name)
+
+
 def create_screen(spec: ElectroSpec, name: str, conditions: dict, materials: list[dict],
                   thoroughness: str = "standard", task: str | None = None, slab: dict | None = None) -> Path:
     """Write an electrochemical screen folder; the worker runs it exactly as a thermal one. `conditions` holds
@@ -173,7 +197,7 @@ def create_screen(spec: ElectroSpec, name: str, conditions: dict, materials: lis
         raise ValueError("include the reference catalyst")
     task = task or spec.task
     stamp = datetime.now()
-    folder = screening.screens_dir() / f"{stamp:%Y%m%d-%H%M%S}-{screening._slug(name)}"
+    folder = screens_dir() / f"{stamp:%Y%m%d-%H%M%S}-{screening._slug(name)}"
     folder.mkdir(parents=True)
     request = {"name": name, "kind": "electro", "pack": spec.id, "pack_name": spec.name,
                "created": stamp.isoformat(timespec="seconds"), "conditions": conditions, "thoroughness": thoroughness,

@@ -1,0 +1,253 @@
+# The electrocatalysis methodology: how this section turns binding energies into potentials, and the check behind it.
+# Rendered on the electrocatalysis Manual's Methodology tab; {name} fills from results/summary.json.
+
+kind: electro
+summary: results/summary.json
+title: "How the app designs an electrocatalyst: method and checks"
+byline: >
+  Computed on {generated} from the shipped example screen ({screen}), UMA-S 1.1 in the {task} mode; text in
+  experiments/electro_check/report.yaml.
+abstract: >
+  The electrocatalysis section ranks candidate materials for an electrochemical reaction by the potential each
+  one needs, against a catalyst already in use. It takes the five atom-scale steps of the thermal app as they are
+  (a crystal, a surface, the sites, a relaxation with Meta's UMA model, a binding energy) and then applies the
+  computational hydrogen electrode of Nørskov et al. 2004: each intermediate's free energy at 0 V vs RHE from its
+  binding energy and published corrections, a potential that tilts every step by one electron-volt per volt, the
+  limiting potential where the last step turns downhill, the overpotential as its distance from equilibrium, and a
+  Sabatier speed at the user's potential. Against published tables for ten close-packed metals, UMA's catalysis
+  mode reproduces hydrogen free energies within {her_mae_rpbe:.2f} eV, hydroxyl within {orr_oh_mae:.2f} eV and
+  oxygen within {orr_o_mae:.2f} eV, orders the metals as measured exchange currents do (rank correlation
+  {her_spearman:.2f}), and puts the OOH–OH gap at {ooh_gap_mean:.2f} eV against the universal {ooh_gap_published:.1f}.
+  The picture is thermodynamic: barriers between steps, the water layer's structure and the surface's fate at the
+  working potential stay outside it, sized in the closing section. Read the ranking as a shortlist of what to test.
+how_to_read: >
+  Each step gives what the app does, the equation with the same idea in words, the assumptions it rests on
+  (numbered A1, A2 …), how it was checked and a verdict. Every number on this page comes from
+  results/summary.json, written by experiments/electro_check/electro_check.py.
+
+sections:
+  - title: Binding energies, shared with the thermal app
+    status: checked
+    does: >
+      The first five steps are the thermal app's own: a crystal from ASE's reference table or the Materials
+      Project, its close-packed face cut and relaxed, the top, bridge and hollow sites, each intermediate placed
+      and relaxed with UMA after the app's nudge, and a binding energy set against the surface beneath it. Their
+      checks (lattice, face, slab size, sites, convergence, the hand-built benchmark) are on the thermal Manual's
+      Methodology tab and carry over unchanged. Two things differ here. The gas references are water and hydrogen
+      for every intermediate (H = ½ H2; O = H2O − H2; OH = H2O − ½ H2; OOH = 2 H2O − 3/2 H2), which is the
+      hydrogen electrode's own convention. And hydroperoxyl, OOH*, joins the worker's list for the oxygen
+      reactions, placed through one oxygen with its O–O bond leaning away from the surface; a molecule whose
+      O–O bond stretches past half again its length reads as split.
+    equations:
+      - tex: '\Delta E_\text{OOH} = E(\text{OOH}^*) - E(^*) - \left(2E_{\text{H}_2\text{O}} - \tfrac{3}{2}E_{\text{H}_2}\right)'
+        words: hydroperoxyl's binding energy counts the surface, two water molecules and one and a half hydrogen molecules, so that a proton and electron can stand in for half a hydrogen molecule at every step.
+    assumptions:
+      - id: A1
+        short: One intermediate on a bare patch stands for the working surface
+        text: >
+          The worker relaxes one intermediate on a clean 7 Å patch, about a ninth of a monolayer. A working
+          electrode carries other intermediates and water beside it.
+        effect: Crowding weakens binding; the published values at a quarter monolayer lean weaker than the app's, which the oxygen offset below reflects.
+    checks:
+      - text: >
+          Hydroperoxyl on {ooh_n} metals keeps its O–O bond at every top site and splits on the bridge and hollow
+          sites of the strong binders, as it should: the Details tab of the example screen lists each site.
+          Every material of the example reaches a complete path ({orr_incomplete} incomplete).
+    verdict: >
+      The atom-scale steps carry their thermal checks over; the new intermediate behaves as its chemistry says.
+
+  - title: Free energies on the hydrogen electrode
+    status: checked
+    does: >
+      Each intermediate's free energy at 0 V on the reversible hydrogen electrode scale is its binding energy
+      plus a zero-point and entropy correction taken from platinum (H* +0.24, OH* +0.35, O* +0.05, OOH* +0.40 eV;
+      Nørskov 2004 and 2005) and, for OH* and OOH* on metals, the stabilization by hydrogen bonds from liquid
+      water measured on platinum (−0.33 eV for OH*, Nørskov 2004 Table 1, taken the same for OOH*, which binds
+      through one oxygen the same way). On oxides the intermediates fill the surface and the water term stays at
+      zero (Man 2011). A proton and an electron at 0 V vs RHE carry the free energy of half an H2 molecule at any
+      pH; the free energy of the whole reaction is the measured one, electrons times the equilibrium potential
+      (4.92 eV for the oxygen reactions), which keeps DFT's energy of O2 out of the method.
+    equations:
+      - tex: '\Delta G_i(0) = \Delta E_i + \Delta\text{ZPE}_i - T\Delta S_i + \Delta G_{\text{water},i}'
+        words: a free energy is the binding energy plus the zero-point motion gained, the entropy lost and the hydrogen bonds from water, each a published constant.
+    assumptions:
+      - id: A2
+        short: Platinum's corrections apply to every surface
+        text: >
+          Zero-point energies, entropies and the water term vary little from metal to metal and are taken as
+          constants. A surface that solvates or vibrates its intermediates differently shifts off its drawn position.
+        effect: An error of a tenth of an eV or so in a free energy, the same for every metal and so cancelling against the catalyst to beat.
+      - id: A3
+        short: The hydrogen electrode fixes the proton's energy
+        text: >
+          The potential moves each electron transfer by exactly eU. The field of the double layer couples to the
+          adsorbates' dipoles by about 0.015 eV on platinum (Nørskov 2004), which the method leaves out.
+        effect: Intermediates with large dipoles shift with the potential by more than eU.
+    checks:
+      - text: >
+          Hydrogen on {her_n} close-packed metals: UMA's free energy of H* (the catalysis mode, with the 0.24 eV
+          correction) against the published RPBE values sits {her_mae_rpbe:.2f} eV off on average (at most
+          {her_max_rpbe:.2f} eV, mean offset {her_offset_rpbe:+.2f} eV) and {her_mae_pbe:.2f} eV off the PBE values.
+          Platinum's H* sits at {her_pt:+.2f} eV, within a tenth of zero, where the best hydrogen catalysts sit.
+        see: Hydrogen free energy, UMA against published DFT and measured exchange currents
+        table:
+          table: her
+          columns: {metal: Metal, uma: "UMA, catalysis (eV)", rpbe: "Published RPBE (eV)", pbe: "Published PBE (eV)", gap_rpbe: "Gap to RPBE (eV)", log_j0: "Measured log j0 (A/cm²)"}
+      - text: >
+          Hydroxyl and oxygen on {orr_n} metals against Nørskov 2004 (RPBE, a quarter monolayer): OH* sits
+          {orr_oh_mae:.2f} eV off on average (at most {orr_oh_max:.2f}, offset {orr_oh_offset:+.2f}) and O*
+          {orr_o_mae:.2f} eV (at most {orr_o_max:.2f}, offset {orr_o_offset:+.2f}); the order of the metals agrees
+          at rank correlations of {orr_oh_spearman:.2f} and {orr_o_spearman:.2f}.
+        see: Hydroxyl and oxygen binding, UMA against Nørskov 2004
+        table:
+          table: orr_metals
+          columns: {metal: Metal, uma_oh: "UMA OH* (eV)", pub_oh: "Published OH* (eV)", gap_oh: "Gap (eV)", uma_o: "UMA O* (eV)", pub_o: "Published O* (eV)", gap_o: "Gap (eV) "}
+      - text: >
+          Hydroperoxyl on {ooh_n} metals: UMA puts OOH* {ooh_gap_mean:.2f} ± {ooh_gap_sd:.2f} eV above OH*, against
+          the universal {ooh_gap_published:.1f} eV of Man et al. 2011 (their fit scatters by {ooh_gap_published_mae:.2f} eV).
+          That gap fixes the floor of the oxygen-evolution overpotential, so the drawn volcano holds for these surfaces.
+        see: The OOH–OH gap on each metal
+        table:
+          table: ooh
+          columns: {metal: Metal, oh: "OH* (eV)", ooh: "OOH* (eV)", gap: "OOH − OH (eV)"}
+    verdict: >
+      Hydrogen and hydroxyl sit within the {gate:.2f} eV the thermal error budget allows, and oxygen just beyond
+      it with an offset every metal shares, so the error bar of ±{sigma:.2f} eV per binding energy carries over
+      to hydrogen evolution unchanged and to the oxygen reactions as the order of a shortlist.
+
+  - title: Potential, limiting potential and overpotential
+    status: checked
+    does: >
+      Every step along the path transfers one proton and electron, so at a potential U a reduction's steps fall
+      by eU and an oxidation's rise by eU. The limiting potential is where the largest step levels out, the last
+      to turn downhill; the overpotential is its distance from the equilibrium potential. Both read the same at
+      any pH, because every step moves with pH the same way. The ranking sorts by overpotential, and the likely
+      range comes from moving each intermediate's free energy up and down by the error bar and taking the widest
+      limiting potential that results.
+    equations:
+      - tex: '\Delta G_i(U) = \Delta G_i(0) \mp eU, \qquad U_L = \mp \max_i \Delta G_i(0), \qquad \eta = |U_L - U_\text{eq}|'
+        words: each step tilts by the potential (down for a reduction, up for an oxidation); the limiting potential is where the largest step levels out, and the overpotential is how far that sits from equilibrium.
+    assumptions:
+      - id: A4
+        short: The surface keeps its form across the potential range
+        text: >
+          The clean metal or oxide face the thermal screens cut stands for the electrode at every potential drawn.
+          Real metals grow an oxide above about 0.8 V, crowd with hydrogen below 0 V, and some dissolve.
+        effect: A surface that changes at the working potential works through another surface than the one computed.
+    checks:
+      - text: >
+          The whole pipeline on platinum: for oxygen reduction the app's limiting potential is {pt_orr_limit:.2f} V
+          vs RHE, with the {pt_orr_step} step limiting, against the paper's {pt_orr_limit_published:.2f} V from a
+          water-covered surface at a third of a monolayer; for hydrogen evolution platinum's overpotential reads
+          {pt_her_eta:.2f} V. With the paper's own platinum binding energies the app's arithmetic reproduces its
+          step free energies (tests/test_electro.py).
+    verdict: >
+      The arithmetic is exact and tested; the absolute platinum value rests on coverage and the water term (A1,
+      A2), the order of materials on the binding energies checked above.
+
+  - title: Speed at a potential, and the volcano
+    status: checked
+    does: >
+      At a potential the rate follows the largest step still uphill, as the Sabatier analysis of Nørskov et al.
+      2004 takes it: rate ~ exp(−max(0, ΔG_i(U)) / kT) at 25 °C, so each material's speed against the catalyst to
+      beat is the exponential of the difference of their largest uphill steps. Where both run every step
+      downhill the speeds meet. The volcano on the Results page draws the limiting potential against one
+      descriptor through the reaction's scaling lines (OOH* = OH* + 3.2 eV and O* = 2 OH* for oxygen reduction;
+      the O*–OH* gap with OOH* = OH* + 3.2 eV for oxygen evolution; H* alone for hydrogen evolution); each
+      material's dot uses its own computed intermediates, so a dot off the line is a surface that breaks the scaling.
+    equations:
+      - tex: '\frac{r}{r_\text{ref}}(U) = \exp\!\left(\frac{\max(0, \Delta G_\text{max,ref}(U)) - \max(0, \Delta G_\text{max}(U))}{k_B T}\right)'
+        words: at a potential, a material runs faster or slower than the catalyst to beat by the difference of their largest uphill steps; a tenth of an eV is about fifty times at room temperature.
+    assumptions:
+      - id: A5
+        short: The largest uphill step sets the rate
+        text: >
+          The thermodynamic step stands for the whole barrier between two states; extra kinetic barriers, such as
+          O–O bond formation on oxides or O2 activation on gold and silver, stay outside this picture.
+        effect: Materials with a kinetic barrier beyond the thermodynamic step run slower than drawn; silver and gold rank above platinum for oxygen reduction here, as in Nørskov 2004's own table before its authors set them aside.
+    checks:
+      - text: >
+          Ranking the {her_j0_n} metals with measured exchange currents by how near zero UMA puts H* agrees with
+          the measurements at a rank correlation of {her_spearman:.2f}; the published RPBE values reach
+          {her_spearman_published:.2f} on the same metals. The example screen ranks the metals for hydrogen
+          evolution as {her_ranking}, and for oxygen reduction as {orr_ranking}.
+    verdict: >
+      Speeds and the volcano follow the field's own thermodynamic analysis; the limits below say where kinetics
+      and stability change the order.
+
+trust:
+  title: When to trust a result
+  groups:
+    - heading: Firm
+      points:
+        - Hydrogen free energies and the order of metals for hydrogen evolution.
+        - The order of metals by hydroxyl and oxygen binding, and which step limits each one.
+        - The shape of a free-energy diagram and the tilt with potential.
+    - heading: Use with care
+      points:
+        - Absolute limiting potentials and overpotentials, which rest on platinum's corrections and a bare patch (A1, A2).
+        - Speed ratios beyond about a hundredfold.
+        - Oxides, which run in UMA's materials mode at about 0.2 eV typical miss (thermal Manual, Methodology limits).
+        - Materials that need to activate a molecule through a barrier, or that change form at the working potential (A4, A5).
+    - heading: Outside this method
+      points:
+        - The parts listed in the next section, each with its size.
+
+limits:
+  title: What this section leaves out, and why
+  text: >
+    The computational hydrogen electrode is the field's standard first pass and ranks candidates well; each
+    part below stays out for a measured reason, with its size and what to do meanwhile.
+  rows:
+    - part: Barriers between the steps
+      why: >
+        The method carries each step's thermodynamics and takes the largest uphill step as the whole barrier.
+        O–O bond formation on oxides and O2 activation on weak binders add barriers beyond it.
+      size: Several tenths of an eV on the metals that bind oxygen weakly (gold, silver); material by material.
+      meanwhile: Read overpotentials as thermodynamic floors and the order as a shortlist; confirm the top few on a rotating-disk electrode.
+    - part: The water layer and the double-layer field
+      why: >
+        Water's hydrogen bonds to OH* and OOH* enter as a constant from platinum; the field couples to each
+        adsorbate's dipole.
+      size: About 0.3 eV for OH* on platinum, applied as a constant; 0.015 eV of field coupling, left out.
+      meanwhile: Compare like with like; a constant cancels against the catalyst to beat.
+    - part: The surface's fate at the working potential
+      why: >
+        Metals oxidize above about 0.8 V, crowd with hydrogen below 0 V, and some dissolve; the app computes the
+        clean face.
+      size: A changed surface works through other sites than the ones computed.
+      meanwhile: Check a candidate's Pourbaix diagram at the working potential and pH before making it.
+    - part: Coverage
+      why: One intermediate on a bare patch stands for the working surface.
+      size: "The oxygen offset against published quarter-monolayer values, {orr_o_offset:+.2f} eV, shared by every metal."
+      meanwhile: The offset cancels against the catalyst to beat; read absolute values as rough.
+    - part: Carbon dioxide and nitrogen reduction
+      why: >
+        Their intermediates (COOH*, CHO*, NNH*) need gas references beyond water and hydrogen, and DFT's energy
+        for CO2 and N2 carries a known error of several tenths of an eV that the method corrects by hand, reaction
+        by reaction.
+      size: 0.3 to 0.5 eV in the gas references before any surface error.
+      meanwhile: The three shipped reactions cover water electrolysis and fuel cells; a reaction file in reactions/electro/ shows the form a new one takes.
+
+reproduce:
+  text: >
+    Two scripts produce every number on this page. The first runs UMA on ten metals (the shipped example screen,
+    about 45 minutes on this Mac); the second scores it against the published tables in seconds.
+  code: |
+    # 1. the example screen: Design an electrocatalyst -> oxygen reduction, the ten suggested metals, Standard care
+    #    (or copy examples/electro/screens/*oxygen-reduction* into data/electro/screens/)
+    # 2. the check -> results/summary.json
+    uv run python experiments/electro_check/electro_check.py
+    # 3. the unit checks named on this page
+    uv run pytest tests/test_electro.py
+  versions:
+    - "UMA-S 1.1 (uma-s-1p1.pt) with fairchem-core 2.23 and PyTorch 2.13, on CPU."
+    - "Published tables: Nørskov 2004 Table 2; arXiv:2109.04219 Tables S2 and S3-1; Man 2011 Figure 2."
+
+references:
+  - {cite: "Nørskov, J. K., Rossmeisl, J., Logadottir, A., Lindqvist, L., Kitchin, J. R., Bligaard, T. & Jónsson, H. Origin of the overpotential for oxygen reduction at a fuel-cell cathode. J. Phys. Chem. B 108, 17886 (2004).", url: "https://doi.org/10.1021/jp047349j"}
+  - {cite: "Nørskov, J. K., Bligaard, T., Logadottir, A., Kitchin, J. R., Chen, J. G., Pandelov, S. & Stimming, U. Trends in the exchange current for hydrogen evolution. J. Electrochem. Soc. 152, J23 (2005).", url: "https://doi.org/10.1149/1.1856988"}
+  - {cite: "Man, I. C. et al. Universality in oxygen evolution electrocatalysis on oxide surfaces. ChemCatChem 3, 1159 (2011).", url: "https://doi.org/10.1002/cctc.201000397"}
+  - {cite: "Revisiting trends in the exchange current for hydrogen evolution (2021); arXiv:2109.04219, with its Tables S2 and S3 of hydrogen free energies and measured exchange currents.", url: "https://arxiv.org/abs/2109.04219"}
+  - {cite: "Kulkarni, A., Siahrostami, S., Patel, A. & Nørskov, J. K. Understanding catalytic activity trends in the oxygen reduction reaction. Chem. Rev. 118, 2302 (2018).", url: "https://doi.org/10.1021/acs.chemrev.7b00488"}
+  - {cite: "Wood, B. M. et al. UMA: A Family of Universal Models for Atoms. NeurIPS 2025; arXiv:2506.23971.", url: "https://arxiv.org/abs/2506.23971"}

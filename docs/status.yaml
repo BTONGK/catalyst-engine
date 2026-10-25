@@ -23,15 +23,17 @@ proof_sequence:
 recent:
   - date: 2026-10-24
     item: >
-      Electrocatalysis in the design app. A "Kind of catalysis" switch at the top of Design a catalyst runs
-      electrochemical screens beside the thermal ones: hydrogen evolution, oxygen reduction and oxygen evolution,
-      on the same UMA binding energies, through the computational hydrogen electrode (Nørskov 2004). Results give
-      each material's overpotential, limiting potential and limiting step, its speed against the catalyst to beat
-      at a chosen potential, a free-energy diagram at any potential, the scaling-relation volcano and the 3D
-      structures. The worker gained hydroperoxyl (OOH*). A check against three published tables (hydrogen free
-      energies on ten metals with measured exchange currents, Nørskov's hydroxyl and oxygen energies, the
-      universal 3.2 eV OOH–OH gap) is step 10 of the Methodology tab, and a ten-metal oxygen-reduction screen
-      ships as the example.
+      Electrocatalysis, as its own section of the app. A new sidebar group holds its Overview, Design an
+      electrocatalyst, Electrocatalyst results, a Free-energy playground and its own Manual (electrochemistry
+      basics, how-to, methodology, words); the thermal pages stay as they were. Hydrogen evolution, oxygen
+      reduction and oxygen evolution run on the same UMA binding energies through the computational hydrogen
+      electrode (Nørskov 2004): each material's overpotential, limiting potential and limiting step, its speed
+      against the catalyst to beat at a chosen potential, free-energy diagrams at any potential, the
+      scaling-relation volcano and 3D structures. The worker gained hydroperoxyl (OOH*). Against three published
+      tables on ten metals, UMA's catalysis mode reproduces hydrogen free energies within 0.04 eV (order vs
+      measured exchange currents 0.78), hydroxyl within 0.08 and oxygen within 0.13 eV, and the OOH–OH gap at
+      3.33 eV against the universal 3.2. A ten-metal oxygen-reduction screen and its hydrogen-evolution twin ship
+      as the section's examples.
   - date: 2026-10-23
     item: >
       Oxide accuracy check. Four UMA modes scored on 720 molecules on oxide surfaces against OC22's DFT, and five

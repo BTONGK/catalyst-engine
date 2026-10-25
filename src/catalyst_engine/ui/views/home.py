@@ -21,8 +21,8 @@ with st.container(horizontal=True):
 st.markdown("#### How it works")
 steps = [
     (":material/science:", "1. Pick a reaction",
-     "Choose what the catalyst should do, such as cleaning exhaust, making ammonia or methanol, or evolving hydrogen "
-     "at an electrode, and set the temperature, pressure and gas mix of your process, or the electrode potential."),
+     "Choose what the catalyst should do, such as cleaning exhaust or making ammonia or methanol, and set the "
+     "temperature, pressure and gas mix of your process."),
     (":material/grid_view:", "2. Choose materials",
      "Tick pure metals, or search the Materials Project's 150,000+ crystals for alloys and oxides made of the "
      "elements you name."),
@@ -47,8 +47,6 @@ with left:
         "- **Its performance curve:** conversion or yield across your temperature range, in a reactor at your "
         "pressure, gas mix and flow.\n"
         "- **Its light-off temperature:** where it reaches half of the best possible result.\n"
-        "- **For an electrocatalyst:** its overpotential and limiting potential, the free-energy diagram behind them, "
-        "and its speed against the catalyst to beat at your potential.\n"
         "- **A ranking** with a likely range for every number, so close calls show as close.\n"
         "- **How easy its elements are to source:** abundant, uncommon, scarce or precious.\n"
         "- **Its 3D structure:** the crystal, the surface, and each molecule in its best spot.")
@@ -59,7 +57,6 @@ with left:
         "| Binding energies | UMA, Meta FAIR Chemistry's machine-learned model, trained on millions of quantum "
         "chemistry (DFT) calculations; it runs on this computer |\n"
         "| Activity | The Sabatier volcano: the best catalyst holds the key molecule just right, firmly enough to react and lightly enough to let go |\n"
-        "| Electrode potentials | The computational hydrogen electrode (Nørskov 2004): binding energies become the potential each step needs |\n"
         "| Performance curves | The app's reactor model, with equilibrium limits from Cantera's thermodynamic data |")
     st.caption("The Manual's Methodology tab gives every equation and assumption, and the check behind each step.")
 

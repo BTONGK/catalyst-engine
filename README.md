@@ -18,14 +18,6 @@ reaction's Sabatier volcano, runs each one through the reactor model across the 
 the surfaces in 3D. The Manual page (from `docs/manual.yaml`, with screenshots in `docs/manual/`) walks through
 every step, has a plain-language primer on catalysis, and a Methodology tab: a method paper that states every assumption and the check behind each step (`experiments/design_method/`).
 
-The Design page's **Kind of catalysis** switch runs thermal screens (a gas on a surface, judged by conversion in a
-reactor) or electrochemical ones (a reaction at an electrode in water, judged by the potential it needs). The
-electrochemical side (`design/electro.py`, reactions in `reactions/electro/`) applies the computational hydrogen
-electrode to the same UMA binding energies: each intermediate's free energy with published corrections, the
-limiting potential, the overpotential, a Sabatier speed at a chosen potential, free-energy diagrams and the
-scaling-relation volcano. Hydrogen evolution, oxygen reduction and oxygen evolution ship; `experiments/electro_check/`
-scores UMA against the published tables behind them.
-
 The Design page opens in its simple form. Its **Advanced** switch adds:
 
 - **Catalyst form:** powder, or a coated honeycomb (monolith) with its cells per square inch and wall; the reactor
@@ -41,6 +33,15 @@ check against published DFT (`experiments/zeolite_check/`); they join the app on
 `experiments/oxide_check/` scores UMA-S 1.1's and 1.2.1's modes on molecules on oxide surfaces against OC22's DFT
 and measured ammonia on anatase; of the modes the app offers, the materials mode comes closest, and every mode stays
 beyond the error bar there.
+
+**Electrocatalysis** is its own section of the app, after the thermal pages in the sidebar: Overview, Design an
+electrocatalyst, Electrocatalyst results, Free-energy playground and its own Manual (basics, how-to, methodology,
+words). It applies the computational hydrogen electrode (`design/electro.py`) to the same UMA binding energies:
+reactions as data in `reactions/electro/` (hydrogen evolution, oxygen reduction, oxygen evolution), published
+free-energy corrections, limiting potentials, overpotentials, Sabatier speeds at a chosen potential, free-energy
+diagrams and the scaling-relation volcano. Its screens live in `data/electro/screens/` with examples in
+`examples/electro/screens/`; `experiments/electro_check/` scores UMA against the published tables behind it and
+feeds the section's Methodology tab. The thermal pages are untouched by it.
 
 Pages, as grouped in the sidebar:
 

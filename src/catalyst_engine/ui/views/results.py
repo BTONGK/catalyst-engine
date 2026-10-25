@@ -9,11 +9,12 @@ import altair as alt
 import numpy as np
 import pandas as pd
 import streamlit as st
+from ase.io import read
 
-from catalyst_engine.design import electro, screening
+from catalyst_engine.design import screening
 from catalyst_engine.design.spec import ADSORBATES
 from catalyst_engine.packs import list_packs
-from catalyst_engine.ui import common, electro_ui, screen_ui
+from catalyst_engine.ui import common, viewer
 
 PALETTE = ["#0f766e", "#7c3aed", "#ea580c", "#2563eb", "#db2777", "#65a30d", "#0891b2", "#a16207"]
 
@@ -43,18 +44,16 @@ st.session_state["results_screen"] = choice
 folder = screening.screens_dir() / choice
 job = screening.read_job(folder)
 req = job["request"]
-is_electro = electro.is_electro(job)
-if not is_electro:
-    if req["pack"] not in list_packs():
-        st.error(f"This screen used the reaction '{req['pack_name']}'. Add it back on the Reactions page to see the results.")
-        st.stop()
-    pack = common.pack(req["pack"])
-    spec = pack.spec.screening
-    metric = pack.spec.metrics[spec.metric]
-    ref_entry = next((m for m in req["materials"] if m.get("is_reference")), {})
-    ref_name = ref_entry.get("ref_name") or spec.reference.name or spec.reference.formula
-    chosen_face = {m["id"] for m in req["materials"] if m.get("facet")}
-    t_cmp = req["design_temperature_C"]
+if req["pack"] not in list_packs():
+    st.error(f"This screen used the reaction '{req['pack_name']}'. Add it back on the Reactions page to see the results.")
+    st.stop()
+pack = common.pack(req["pack"])
+spec = pack.spec.screening
+metric = pack.spec.metrics[spec.metric]
+ref_entry = next((m for m in req["materials"] if m.get("is_reference")), {})
+ref_name = ref_entry.get("ref_name") or spec.reference.name or spec.reference.formula
+chosen_face = {m["id"] for m in req["materials"] if m.get("facet")}
+t_cmp = req["design_temperature_C"]
 
 
 def fmt_ratio(r: float | None) -> str:
@@ -126,9 +125,6 @@ def progress_panel() -> str:
 
 def body() -> None:
     state = progress_panel()
-    if is_electro:
-        electro_ui.results_body(folder, job, choice, state)
-        return
     results_file = folder / "results.jsonl"
     stamp = results_file.stat().st_mtime if results_file.exists() else 0.0
     preds, curves = predictions(choice, stamp)
@@ -313,9 +309,66 @@ def body() -> None:
                        + (", and triangles on the bottom edge mark materials slower still (hover for the number). "
                           if pts["Off the scale"].any() else ". ") + " ".join(spec.basis.split()))
     with tabs[3]:
-        screen_ui.structures_tab(folder, preds, chosen_face, choice)
+        done = [p for p in preds if p.slab is not None]
+        if not done:
+            st.caption("Structures appear as each material finishes.")
+        else:
+            a, b = st.columns([1, 2], gap="large")
+            with a:
+                pick = st.selectbox("Material", [p.material for p in done],
+                                    format_func={p.material: p.label for p in done}.get, key=f"res_3d_{choice}")
+                p = next(q for q in done if q.material == pick)
+                zeolite = p.slab.get("kind") == "framework"
+                bare = "Empty site" if zeolite else "Clean surface"
+                views = {bare: (p.slab["structure"], 0)}
+                best_view = bare
+                for ads, bnd in p.binding.items():
+                    for site in bnd["sites"]:
+                        tag = f"{ads} on the {site['site']} site ({site['E']:+.2f} eV)" + (f", {site['note']}" if site["note"] else "")
+                        views[tag] = (site["structure"], site["n_ads"])
+                        if best_view == bare and site["structure"] == bnd["structure"]:
+                            best_view = tag
+                view = st.radio("Show", list(views), index=list(views).index(best_view), key=f"res_view_{choice}_{pick}")
+                if zeolite:
+                    st.caption(f"Zeolite site: the framework's whole cell, {p.slab['n_atoms']} atoms, every atom free to "
+                               "move. Larger spheres are the molecule. The view shows eight copies of the cell, so each "
+                               "molecule shows up in every copy. Drag to rotate, scroll to zoom.")
+                else:
+                    facet = tuple(p.slab.get("facet"))
+                    face = (f"the face you chose, Miller indices {facet}" if p.material in chosen_face
+                            else f"the close-packed face, Miller indices {facet}")
+                    st.caption(f"Surface: {face} in the crystal's own cell, {p.slab['n_atoms']} atoms, bottom half "
+                               "held fixed. Larger spheres are the molecule. The view repeats the computed patch 2 × 2, "
+                               "so each molecule shows up four times. Drag to rotate, scroll to zoom.")
+                for ads, bnd in p.binding.items():
+                    if bnd["E"] is not None:
+                        st.markdown(f"**{ADSORBATES[ads].capitalize()} ({ads})**: binds at {bnd['E']:+.2f} eV on the "
+                                    f"{bnd['site']} site, best of {bnd['tried']} tried.")
+            with b:
+                path, n_ads = views[view]
+                atoms = read(folder / path)
+                viewer.show(atoms, n_highlight=n_ads, height=440, surface=not zeolite, span=18.0 if zeolite else 9.0)
+                st.html(f"<div style='font-size:0.85rem'>{viewer.element_colors(atoms.get_chemical_symbols())}</div>")
     with tabs[4]:
-        screen_ui.sites_and_downloads(preds, rows, choice)
+        site_rows = []
+        for p in preds:
+            for ads, bnd in p.binding.items():
+                for s in bnd["sites"]:
+                    site_rows.append({"Material": p.label, "Molecule": ads, "Site": s["site"], "Binding (eV)": round(s["E"], 3),
+                                      "Settled": "yes" if s["converged"] else "stopped at the step limit",
+                                      "Note": s["note"] or "kept"})
+        if site_rows:
+            st.markdown("**Every site tried**")
+            st.dataframe(pd.DataFrame(site_rows), hide_index=True, width="stretch")
+            st.caption("Desorbed: the molecule drifted off the surface. Dissociated: it broke apart. Both are left out "
+                       "of the lowest binding energy. The surface beneath settled lower: the surface relaxed further "
+                       "under the molecule, so its binding energy is set against that surface with the molecule lifted "
+                       "off, and counts only the bond.")
+            c = st.columns(2)
+            c[0].download_button("Download the ranking (CSV)", pd.DataFrame(rows).to_csv(index=False),
+                                 file_name=f"{choice}-ranking.csv", icon=":material/download:")
+            c[1].download_button("Download every site (CSV)", pd.DataFrame(site_rows).to_csv(index=False),
+                                 file_name=f"{choice}-sites.csv", icon=":material/download:")
         cond = req["conditions"]
         st.markdown("**Settings**")
         st.markdown(

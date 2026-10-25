@@ -16,7 +16,7 @@ if newest_source > getattr(catalyst_engine, "LOADED_AT", 0):
     st.cache_data.clear()
     st.cache_resource.clear()
 
-from catalyst_engine.design import screening  # noqa: E402  (imported after the freshness check above)
+from catalyst_engine.design import electro, screening  # noqa: E402  (imported after the freshness check above)
 from catalyst_engine.ui import common  # noqa: E402
 
 VIEWS = Path(__file__).parent / "views"
@@ -24,6 +24,7 @@ VIEWS = Path(__file__).parent / "views"
 st.set_page_config(page_title="Catalyst engine", page_icon=":material/science:", layout="wide")
 common.style()
 screening.add_examples()
+electro.add_examples()
 
 nav = st.navigation(
     {
@@ -52,6 +53,13 @@ nav = st.navigation(
         ],
         "Project": [
             st.Page(VIEWS / "overview.py", title="Project status", icon=":material/dashboard:"),
+        ],
+        "Electrocatalysis": [
+            st.Page(VIEWS / "electro_home.py", title="Overview", icon=":material/bolt:"),
+            st.Page(VIEWS / "electro_design.py", title="Design an electrocatalyst", icon=":material/add_circle:"),
+            st.Page(VIEWS / "electro_results.py", title="Electrocatalyst results", icon=":material/leaderboard:"),
+            st.Page(VIEWS / "electro_playground.py", title="Free-energy playground", icon=":material/tune:"),
+            st.Page(VIEWS / "electro_manual.py", title="Manual", icon=":material/menu_book:"),
         ],
     },
     expanded=True,

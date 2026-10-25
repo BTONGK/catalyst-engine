@@ -676,28 +676,6 @@ values["cut_gap"] = r(max(cut), 1)
 values["v2o5_nh3_mat"] = next(x["v2o5"] for x in nh3_rows if x["mode"] == OX_MODES[mat])
 values["cut_gap_app"] = r(abs(app_row["anatase_101_app"] - values["anatase_app"]), 2)
 
-# ---------------------------------------------------------------- electrocatalysis: the hydrogen electrode on metals
-el = json.loads((REPO / "experiments" / "electro_check" / "results" / "electro.json").read_text())
-values.update(el["values"])
-tables.update(el["tables"])
-gate = values["oxide_gate"]  # the typical miss the error bar allows, as the oxide check set it
-values["electro_verdict"] = (
-    f"The catalysis mode reproduces published RPBE free energies of hydrogen within {values['her_mae_rpbe']:.2f} eV "
-    f"and hydroxyl and oxygen within {values['orr_oh_mae']:.2f} and {values['orr_o_mae']:.2f} eV on average, orders the "
-    f"metals as the measured exchange currents do ({values['her_spearman']:.2f}), and puts the OOH–OH gap at "
-    f"{values['ooh_gap_mean']:.2f} eV against the universal {values['ooh_gap_published']:.1f}. "
-    + (f"Hydrogen and hydroxyl stay within the {gate:.2f} eV the error bar allows, "
-       if max(values["her_mae_rpbe"], values["orr_oh_mae"]) <= gate else
-       f"Hydrogen or hydroxyl land beyond the {gate:.2f} eV the error bar allows, ")
-    + (f"and so does oxygen. " if values["orr_o_mae"] <= gate else
-       f"and oxygen sits just beyond it with an offset of {values['orr_o_offset']:+.2f} eV that every metal shares, so it "
-       "cancels against the catalyst to beat. ")
-    + "Hydrogen-evolution rankings carry the same error bar as the thermal screens. Read oxygen-reduction and "
-    "oxygen-evolution overpotentials as the order of a shortlist, with the absolute values resting on platinum's "
-    "corrections; the thermodynamic picture ranks silver above platinum for oxygen reduction, as Nørskov 2004's own "
-    "table does before its authors set copper, silver and gold aside for their O2 activation barrier and their "
-    "fate in acid.")
-
 values["generated"] = atom["generated"]
 values["atomistic_minutes"] = r(atom["seconds"] / 60, 0)
 (HERE / "results").mkdir(exist_ok=True)

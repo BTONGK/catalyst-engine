@@ -52,8 +52,7 @@ intro:
     flow: true
     text: >
       Nine steps turn a crystal into a ranking. Steps 1 to 5 work at the scale of atoms; steps 6 to 9 turn energies
-      into rates, curves and error bars. Step 10 is the electrochemistry switch: the same atoms, then potentials in
-      place of temperatures.
+      into rates, curves and error bars.
 
 steps:
   - title: Candidate crystals
@@ -585,91 +584,6 @@ steps:
       - text: The error budget below adds up the parts this page measures.
     verdict: "σ = {sigma_assumed:.2f} eV covers the parts measured here, {sigma_combined:.2f} eV combined, with room for the DFT functional's own error."
 
-  - title: Electrocatalysis, the computational hydrogen electrode
-    takes: Binding energies of H, O, OH and OOH (steps 1 to 5)
-    gives: A limiting potential, an overpotential and a speed at a chosen potential, per material
-    tool: The computational hydrogen electrode (Nørskov et al. 2004)
-    status: checked
-    does: >
-      The Design page's electrochemistry switch runs the same five atom-scale steps and then, in place of the
-      volcano and the reactor, the computational hydrogen electrode. Each intermediate's free energy at 0 V on the
-      reversible hydrogen electrode (RHE) scale is its binding energy against water and hydrogen gas plus a
-      zero-point and entropy correction (H* +0.24, OH* +0.35, O* +0.05, OOH* +0.40 eV) and, for OH* and OOH* on
-      metals, the hydrogen bonds from liquid water measured on platinum (−0.33 eV). A proton and an electron at 0 V
-      vs RHE carry the free energy of half an H2 molecule at any pH, so every step along the path transfers one
-      electron and the potential tilts the whole path: a reduction's steps fall by eU, an oxidation's rise by eU.
-      The last step to turn downhill sets the limiting potential, its distance from the equilibrium potential is
-      the overpotential, and at any potential the rate follows the largest step still uphill, as the Sabatier
-      analysis of Nørskov et al. 2004 takes it. The three shipped reactions are hydrogen evolution (H*), oxygen
-      reduction (OOH*, O*, OH*) and oxygen evolution (OH*, O*, OOH*); their files in reactions/electro/ hold the
-      corrections and the scaling lines that draw each volcano.
-    equations:
-      - tex: '\Delta G_i(U) = \Delta G_i(0) \mp eU, \qquad U_L = \mp \max_i \Delta G_i(0), \qquad \eta = |U_L - U_\text{eq}|'
-        words: each electron-transfer step tilts by the potential (down for a reduction, up for an oxidation); the limiting potential is where the largest step levels out, and the overpotential is how far that sits from equilibrium.
-      - tex: '\frac{r}{r_\text{ref}}(U) = \exp\!\left(\frac{\max(0, \Delta G_\text{max,ref}(U)) - \max(0, \Delta G_\text{max}(U))}{k_B T}\right)'
-        words: at a potential, a material runs faster or slower than the catalyst to beat by the difference of their largest uphill steps, at 25 °C.
-    assumptions:
-      - id: A20
-        short: The hydrogen electrode fixes the proton's energy
-        text: >
-          A proton and electron at 0 V vs RHE have the free energy of half an H2 molecule, and the potential moves
-          each electron transfer by exactly eU. The field of the double layer couples to the adsorbates'
-          dipoles by about 0.015 eV (Nørskov 2004), which the method leaves out.
-        effect: Intermediates with large dipoles shift with the potential by more than eU.
-      - id: A21
-        short: One set of corrections for every surface
-        text: >
-          Zero-point energies, entropies and the water term come from platinum and apply to every material; the
-          worker's clean-surface reference and its single adsorbate stand for low coverage.
-        effect: A surface that solvates or vibrates its intermediates differently from platinum, or one that crowds with them at the working potential, shifts off its drawn position.
-      - id: A22
-        short: The largest uphill step sets the rate
-        text: >
-          The thermodynamic step stands for the whole barrier between two states, so the limiting potential and the
-          Sabatier rate carry the whole kinetics; the surface keeps its metallic or oxide form across the potential
-          range, with the same face the thermal screens cut.
-        effect: Materials with a kinetic barrier beyond the thermodynamic step (O–O bond formation on oxides, for one) run slower than drawn; a surface that oxidizes or dissolves at the working potential works through another surface.
-    checks:
-      - text: >
-          Hydrogen on {her_n} close-packed metals: UMA's free energy of H* (the catalysis mode, with the 0.24 eV
-          correction) against the published RPBE values sits {her_mae_rpbe:.2f} eV off on average (at most
-          {her_max_rpbe:.2f} eV, mean offset {her_offset_rpbe:+.2f} eV) and {her_mae_pbe:.2f} eV off the PBE values.
-          Ranking the {her_j0_n} metals with measured exchange currents by how near zero UMA puts H* agrees with
-          the measurements at a rank correlation of {her_spearman:.2f}; the published RPBE values reach
-          {her_spearman_published:.2f} on the same metals. Platinum's H* sits at {her_pt:+.2f} eV.
-        see: Hydrogen free energy, UMA against published DFT and measured exchange currents
-        table:
-          table: her
-          columns: {metal: Metal, uma: "UMA, catalysis (eV)", rpbe: "Published RPBE (eV)", pbe: "Published PBE (eV)", gap_rpbe: "Gap to RPBE (eV)", log_j0: "Measured log j0 (A/cm²)"}
-      - text: >
-          Hydroxyl and oxygen on {orr_n} metals against Nørskov 2004 (RPBE, a quarter monolayer): OH* sits
-          {orr_oh_mae:.2f} eV off on average (at most {orr_oh_max:.2f}, offset {orr_oh_offset:+.2f}) and O*
-          {orr_o_mae:.2f} eV (at most {orr_o_max:.2f}, offset {orr_o_offset:+.2f}); the order of the metals agrees
-          at rank correlations of {orr_oh_spearman:.2f} and {orr_o_spearman:.2f}. The worker's single adsorbate on
-          its 7 Å patch sits nearer a ninth of a monolayer, and the published oxygen values at a quarter
-          monolayer lean toward weaker binding, which the offset reflects.
-        see: Hydroxyl and oxygen binding, UMA against Nørskov 2004
-        table:
-          table: orr_metals
-          columns: {metal: Metal, uma_oh: "UMA OH* (eV)", pub_oh: "Published OH* (eV)", gap_oh: "Gap (eV)", uma_o: "UMA O* (eV)", pub_o: "Published O* (eV)", gap_o: "Gap (eV) "}
-      - text: >
-          Hydroperoxyl on {ooh_n} metals: UMA puts OOH* {ooh_gap_mean:.2f} ± {ooh_gap_sd:.2f} eV above OH*, against
-          the universal {ooh_gap_published:.1f} eV of Man et al. 2011 (their fit scatters by {ooh_gap_published_mae:.2f} eV).
-          That gap is what fixes the floor of the oxygen-evolution overpotential, so the drawn volcano holds for
-          these surfaces.
-        see: The OOH–OH gap on each metal
-        table:
-          table: ooh
-          columns: {metal: Metal, oh: "OH* (eV)", ooh: "OOH* (eV)", gap: "OOH − OH (eV)"}
-      - text: >
-          The whole pipeline on platinum: for oxygen reduction the app's limiting potential is {pt_orr_limit:.2f} V
-          vs RHE, with the {pt_orr_step} step limiting, against the paper's {pt_orr_limit_published:.2f} V from a
-          water-covered surface at a third of a monolayer; for hydrogen evolution platinum's overpotential reads
-          {pt_her_eta:.2f} V. The example screen ranks the metals for oxygen reduction as {orr_ranking}, with
-          {orr_incomplete} incomplete because an intermediate split, and for hydrogen evolution as {her_ranking}.
-    verdict: >
-      {electro_verdict}
-
 example:
   title: "A worked example: CO oxidation on 14 materials"
   text: >
@@ -821,25 +735,6 @@ limits:
       why: Each needs its own model and its own data.
       size: Specific to each catalyst and plant.
       meanwhile: Bench tests and the Lab data page.
-    - part: Electrocatalysis, kinetic barriers and the working surface
-      why: >
-        The computational hydrogen electrode (step 10) carries the thermodynamics of each step and leaves out the
-        barriers between them, the structure of the water layer and the double-layer field, and the change of the
-        surface itself with potential: oxides that form on a metal above about 0.8 V, hydrogen that crowds a
-        surface below 0 V, and dissolution.
-      size: >
-        About 0.3 eV of hydrogen bonding for OH* on platinum (Nørskov 2004), applied as a constant; 0.015 eV of
-        field coupling, left out; the OOH–OH gap scatters by {ooh_gap_published_mae:.2f} eV across surfaces (Man 2011).
-      meanwhile: >
-        Read limiting potentials as the order of a shortlist and the overpotentials as thermodynamic floors; the
-        Pourbaix diagram of a candidate tells whether its surface survives the working potential.
-    - part: Electrocatalysis for carbon dioxide and nitrogen reduction
-      why: >
-        Their intermediates (COOH*, CHO*, NNH*) need gas references beyond water and hydrogen, and DFT's energy
-        for CO2 and N2 carries a known error of several tenths of an eV that the method corrects by hand, reaction
-        by reaction.
-      size: 0.3 to 0.5 eV in the gas references before any surface error.
-      meanwhile: The three shipped reactions, hydrogen evolution and the oxygen pair, cover water electrolysis and fuel cells; the reaction files in reactions/electro/ show the form a new one takes.
   checks:
     - text: >
         Ammonia in copper chabazite (Materials Project mp-aaaabamv, the 12-site cell, Si/Al 5 or 11), built by the
@@ -897,8 +792,6 @@ reproduce:
     /opt/miniconda3/bin/python3 experiments/design_method/atomistic_checks.py
     # 1b. the oxide check -> experiments/oxide_check/results/oxide.json (OC22 download and extraction in its scripts)
     for m in single nh3 anatase101; do /opt/miniconda3/bin/python3 experiments/oxide_check/oxide_check.py $m; done
-    # 1c. the electrochemistry check -> experiments/electro_check/results/electro.json (from the shipped example)
-    uv run python experiments/electro_check/electro_check.py
     # 2. everything else -> results/summary.json
     uv run python experiments/design_method/model_checks.py
     # 3. the unit checks named on this page
@@ -932,10 +825,5 @@ references:
   - {cite: "Nystrom, S., Hoffman, A. & Hibbitts, D. Tuning Brønsted Acid Strength by Altering Site Proximity in CHA Framework Zeolites. ACS Catal. 8, 7842 (2018).", url: "https://doi.org/10.1021/acscatal.8b02049"}
   - {cite: "Isapour et al., with Feng, Y., Grönbeck, H., Skoglundh, M. & Härelind, H. Ammonia in H- and Cu-SSZ-13 by DRIFTS, NH3-TPD and DFT (PBE+U+D3). RSC Adv. 16, 28182 (2026).", url: "https://doi.org/10.1039/d6ra03025d"}
   - {cite: "Koust, S., Adamsen, K. C., Kolsbjerg, E. L., Li, Z., Hammer, B., Wendt, S. & Lauritsen, J. V. NH3 adsorption on anatase-TiO2(101). Preprint, Aarhus University (2018).", url: "https://pure.au.dk/ws/files/181268137/preprint_koust.pdf"}
-  - {cite: "Nørskov, J. K., Rossmeisl, J., Logadottir, A., Lindqvist, L., Kitchin, J. R., Bligaard, T. & Jónsson, H. Origin of the overpotential for oxygen reduction at a fuel-cell cathode. J. Phys. Chem. B 108, 17886 (2004).", url: "https://doi.org/10.1021/jp047349j"}
-  - {cite: "Nørskov, J. K., Bligaard, T., Logadottir, A., Kitchin, J. R., Chen, J. G., Pandelov, S. & Stimming, U. Trends in the exchange current for hydrogen evolution. J. Electrochem. Soc. 152, J23 (2005).", url: "https://doi.org/10.1149/1.1856988"}
-  - {cite: "Man, I. C. et al. Universality in oxygen evolution electrocatalysis on oxide surfaces. ChemCatChem 3, 1159 (2011).", url: "https://doi.org/10.1002/cctc.201000397"}
-  - {cite: "Revisiting trends in the exchange current for hydrogen evolution (2021); arXiv:2109.04219, with its Tables S2 and S3 of hydrogen free energies and measured exchange currents.", url: "https://arxiv.org/abs/2109.04219"}
-  - {cite: "Kulkarni, A., Siahrostami, S., Patel, A. & Nørskov, J. K. Understanding catalytic activity trends in the oxygen reduction reaction. Chem. Rev. 118, 2302 (2018).", url: "https://doi.org/10.1021/acs.chemrev.7b00488"}
   - {cite: "Goodwin, D. G. et al. Cantera: an object-oriented software toolkit for chemical kinetics, thermodynamics and transport processes (version 3.2).", url: "https://cantera.org"}
   - {cite: "Smith, G. P. et al. GRI-Mech 3.0.", url: "http://combustion.berkeley.edu/gri-mech/"}

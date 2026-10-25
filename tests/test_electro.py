@@ -1,6 +1,5 @@
-"""Electrocatalysis: the computational hydrogen electrode on the thermal screens' binding energies, the three
-shipped reactions, the ranking, the worker's hydroperoxyl, and the electrochemistry side of the Design and Results
-pages. No network and no atomistic model."""
+"""Electrocatalysis: the computational hydrogen electrode on the worker's binding energies, the three shipped
+reactions, the ranking, the worker's hydroperoxyl, and the section's own pages. No network and no atomistic model."""
 
 import json
 from pathlib import Path
@@ -167,30 +166,56 @@ def test_the_worker_places_hydroperoxyl_whole_and_reads_its_bonds():
 
 # ---------------------------------------------------------------- the pages
 
-def test_design_page_switches_to_electrocatalysis_and_adds_metals():
-    at = AppTest.from_file(str(VIEWS / "design.py"), default_timeout=120).run()
-    assert not at.exception, at.exception
-    at.segmented_control(key="design_kind").set_value("electro").run()
+def test_the_electro_design_page_adds_metals_and_switches_reactions():
+    at = AppTest.from_file(str(VIEWS / "electro_design.py"), default_timeout=120).run()
     assert not at.exception, at.exception
     assert any("What should the electrode do?" in m.value for m in at.markdown)
     assert any(s.label == "Compare catalysts at (V vs RHE)" for s in at.slider)
     next(b for b in at.button if b.label == "Add these metals").click().run()
     assert not at.exception, at.exception
-    assert len(at.session_state["design_electro_candidates"]) > 0
-    assert "design_candidates" not in at.session_state or not at.session_state["design_candidates"]
+    assert len(at.session_state["electro_candidates"]) > 0
     at.selectbox(key="electro_pack").set_value("oxygen_evolution").run()
     assert not at.exception, at.exception
     assert any("Iridium oxide" in m.value for m in at.markdown)
+    at.toggle(key="electro_advanced").set_value(True).run()
+    assert not at.exception, at.exception
+    assert at.selectbox(key="electro_task_adv_oxygen_evolution").value == "omat"
 
 
-def test_results_page_shows_an_electrochemical_screen():
+def test_the_electro_results_page_shows_a_screen():
     s = electro.load_electro("oxygen_reduction")
     _electro_screen(s, {"Pt": {"OOH": 4.1, "O": 1.6, "OH": 1.0}, "Pd": {"OOH": 4.2, "O": 1.7, "OH": 1.1},
                         "Au": {"OOH": 4.8, "O": 2.8, "OH": 1.5}})
-    at = AppTest.from_file(str(VIEWS / "results.py"), default_timeout=120).run()
+    assert electro.list_screens() and electro.screens_dir().name == "screens"
+    assert electro.screens_dir().parent.name == "electro"  # apart from the thermal screens
+    at = AppTest.from_file(str(VIEWS / "electro_results.py"), default_timeout=120).run()
     assert not at.exception, at.exception
     assert any(m.label == "Overpotential" for m in at.metric)
     assert [t.label for t in at.tabs][:4] == ["Ranking", "Activity vs potential", "Free-energy diagram", "Volcano"]
     table = at.dataframe[0].value
     assert "Overpotential (V)" in table.columns and "OH* (eV)" in table.columns
     assert any("the catalyst to beat, leads" in m.value or "Best candidate" in m.value for m in at.markdown)
+
+
+def test_the_shipped_electro_examples_land_apart_from_the_thermal_screens():
+    electro.add_examples()
+    screens = electro.list_screens()
+    assert len(screens) == len([p for p in electro.EXAMPLES.iterdir() if (p / "job.json").exists()]) >= 2
+    assert not screening.list_screens()  # the thermal screens folder stays empty
+    for folder in screens:
+        job = screening.read_job(folder)
+        s = electro.load_electro(job["request"]["pack"])
+        preds, _ = electro.predict(s, job, screening.read_results(folder))
+        assert all(p.complete for p in preds) and next(p for p in preds if p.is_reference).formula == "Pt"
+
+
+def test_the_playground_and_manual_render_and_the_ideal_catalyst_has_zero_overpotential():
+    at = AppTest.from_file(str(VIEWS / "electro_playground.py"), default_timeout=120).run()
+    assert not at.exception, at.exception
+    next(b for b in at.button if b.label == "Set the ideal catalyst").click().run()
+    assert not at.exception, at.exception
+    assert next(m.value for m in at.metric if m.label == "Overpotential") == "0.00 V"
+    at = AppTest.from_file(str(VIEWS / "electro_manual.py"), default_timeout=120).run()
+    assert not at.exception, at.exception
+    assert any("Electrochemistry basics" in t.label for t in at.tabs)
+    assert any("computational hydrogen electrode" in m.value.lower() for m in at.markdown)
