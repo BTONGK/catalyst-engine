@@ -46,9 +46,16 @@ screening:
   metric: co_conversion
   reference: {formula: Pt, name: Platinum}
   optimum_shift_eV: 0.2
+  # the weak side waits on O2 splitting into two atoms the descriptor counts: 0.9 eV of barrier per eV of
+  # splitting energy (Nørskov et al., J. Catal. 2002), and that energy moves twice as fast as the descriptor
+  slope_weak: 1.8
   peak_gas: {O2: 0.5}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Pt, Pd, Rh, Ir, Ru, Au, Ag, Cu, Ni, Co]
   basis: >
     Oxygen binding sets CO oxidation activity on metals (Falsig et al., Angew. Chem. 2008): metals that hold
     oxygen too tightly stay covered, metals that hold it too loosely leave O2 unsplit. Platinum sits a little on
-    the tight side, so the top of the volcano is set 0.2 eV weaker than platinum's binding.
+    the tight side, so the top of the volcano is set 0.2 eV weaker than platinum's binding. On the weak side the
+    rate waits on O2 splitting into two O atoms. That barrier rises 0.9 eV per eV of splitting energy on metals
+    (Nørskov et al., J. Catal. 2002), and the splitting energy counts both atoms, so it moves twice as fast as one
+    atom's binding: the weak side falls 1.8 eV per eV of oxygen binding, the slope Nørskov et al. (J. Phys. Chem. B
+    2004) use for O2 splitting.

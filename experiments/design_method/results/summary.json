@@ -43,16 +43,21 @@
   "seg_n": 4,
   "face_fix_max_shift": 0.83,
   "face_fix_max_material": "CuPt",
-  "uma_mae_id": 0.052,
-  "uma_mae_ood": 0.07,
+  "uma_mae_id": 0.0515,
+  "uma_mae_ood": 0.0688,
   "uma_adsorbml": 66.8,
   "uma_structures_million": 459,
   "setup_quadrature": 0.066,
-  "uma_sigma_est": 0.088,
-  "sigma_combined": 0.11,
+  "uma_sigma_est": 0.086,
+  "sigma_combined": 0.108,
   "sigma_assumed": 0.15,
-  "volcano_spearman_slopes_min": 0.93,
-  "volcano_spearman_all_min": 0.82,
+  "volcano_spearman_slopes_min": 0.94,
+  "volcano_settings_n": 30,
+  "volcano_slopes_weak": "0.5 to 2",
+  "volcano_slopes_strong": "0.5 to 1",
+  "slope_weak_example": 1.8,
+  "slope_strong_example": 1.0,
+  "volcano_spearman_all_min": 0.76,
   "volcano_leaders": "Ag, Pt",
   "volcano_top3_base": "Pt, PdPt, Pd",
   "kT_design": 0.039,
@@ -60,22 +65,25 @@
   "factor_01": 12.9,
   "factor_01_400": 5.6,
   "sigma_factor": 46.6,
+  "sigma_factor_weak": 1010.0,
   "example_leader": "Pt",
-  "example_ranking": "Pt, PdPt, Pd, CuPd, Ag, CuPt, Cu3Au, Cu, Ir, Au, Rh, Ni, Ru, Co",
+  "example_ranking": "Pt, PdPt, Pd, CuPd, CuPt, Cu3Au, Cu, Ir, Ag, Rh, Ni, Au, Ru, Co",
   "example_within_error": "PdPt",
-  "peak_follow_min": 0.55,
+  "peak_follow_min": 0.39,
   "peak_follow_max": 1.06,
-  "peak_follow_app": 0.55,
-  "peak_follow_low": 0.5,
+  "peak_follow_app": 0.39,
+  "peak_follow_low": 0.35,
+  "peak_follow_high": 1.1,
+  "peak_follow_covers": "covers",
   "peak_gas_change_200": 0.26,
   "peak_check_T": 180,
   "peak_move_largest": 0.34,
   "peak_move_co": 0.13,
-  "example_leader_spans": "Ag from 50 to 80 \u00b0C; Pt from 90 to 350 \u00b0C",
+  "example_leader_spans": "Pt from 50 to 350 \u00b0C",
   "example_t_lo": 50.0,
   "example_t_hi": 350.0,
-  "example_pdpt_hot": 0.45,
-  "example_rh_hot": "1 in 170 million",
+  "example_pdpt_hot": 0.61,
+  "example_rh_hot": "1 in 130 million",
   "example_rh_design": "1 in 520 billion",
   "example_peak_hot": 0.38,
   "reactor_exact_max_gap": 4e-05,
@@ -154,40 +162,7 @@
   "cut_gap": 1.2,
   "v2o5_nh3_mat": -0.52,
   "cut_gap_app": 0.16,
-  "her_n": 10,
-  "her_mae_rpbe": 0.038,
-  "her_mae_pbe": 0.136,
-  "her_max_rpbe": 0.094,
-  "her_offset_rpbe": -0.015,
-  "her_spearman": 0.78,
-  "her_spearman_published": 0.82,
-  "her_j0_n": 9,
-  "her_pt": -0.084,
-  "orr_n": 10,
-  "orr_oh_mae": 0.08,
-  "orr_o_mae": 0.128,
-  "orr_oh_max": 0.241,
-  "orr_o_max": 0.293,
-  "orr_oh_offset": 0.013,
-  "orr_o_offset": -0.077,
-  "orr_oh_spearman": 0.99,
-  "orr_o_spearman": 1.0,
-  "ooh_n": 10,
-  "ooh_gap_mean": 3.33,
-  "ooh_gap_sd": 0.25,
-  "ooh_gap_published": 3.2,
-  "ooh_gap_published_mae": 0.17,
-  "pt_orr_limit": 0.569,
-  "pt_orr_limit_published": 0.78,
-  "pt_orr_step": "O \u2192 OH",
-  "pt_her_eta": 0.084,
-  "orr_ranking": "Ag, Pt, Pd, Cu, Ir, Au, Rh, Ni, Ru, Co",
-  "her_ranking": "Ir, Pt, Rh, Pd, Cu, Ru, Ni, Co, Au, Ag",
-  "orr_incomplete": "none",
-  "screen": "20261024-121244-example-oxygen-reduction-on-ten-metals",
-  "task": "oc20",
   "generated": "2026-10-23",
-  "electro_verdict": "The catalysis mode reproduces published RPBE free energies of hydrogen within 0.04 eV and hydroxyl and oxygen within 0.08 and 0.13 eV on average, orders the metals as the measured exchange currents do (0.78), and puts the OOH\u2013OH gap at 3.33 eV against the universal 3.2. Hydrogen and hydroxyl stay within the 0.11 eV the error bar allows, and oxygen sits just beyond it with an offset of -0.08 eV that every metal shares, so it cancels against the catalyst to beat. Hydrogen-evolution rankings carry the same error bar as the thermal screens. Read oxygen-reduction and oxygen-evolution overpotentials as the order of a shortlist, with the absolute values resting on platinum's corrections; the thermodynamic picture ranks silver above platinum for oxygen reduction, as N\u00f8rskov 2004's own table does before its authors set copper, silver and gold aside for their O2 activation barrier and their fate in acid.",
   "atomistic_minutes": 76.0
  },
  "tables": {
@@ -1145,46 +1120,14 @@
   "volcano_sensitivity": [
    {
     "optimum_shift_eV": 0.0,
-    "slope_weak": 0.9,
+    "slope_weak": 1.8,
     "slope_strong": 1.0,
     "leader": "Pt",
     "top3": "Pt, PdPt, Pd",
-    "spearman": 0.952
+    "spearman": 0.982
    },
    {
     "optimum_shift_eV": 0.0,
-    "slope_weak": 0.5,
-    "slope_strong": 0.5,
-    "leader": "Pt",
-    "top3": "Pt, PdPt, Pd",
-    "spearman": 0.952
-   },
-   {
-    "optimum_shift_eV": 0.0,
-    "slope_weak": 1.0,
-    "slope_strong": 1.0,
-    "leader": "Pt",
-    "top3": "Pt, PdPt, Pd",
-    "spearman": 0.952
-   },
-   {
-    "optimum_shift_eV": 0.0,
-    "slope_weak": 0.5,
-    "slope_strong": 1.0,
-    "leader": "Pt",
-    "top3": "Pt, PdPt, Pd",
-    "spearman": 0.996
-   },
-   {
-    "optimum_shift_eV": 0.0,
-    "slope_weak": 1.0,
-    "slope_strong": 0.5,
-    "leader": "Pt",
-    "top3": "Pt, PdPt, Pd",
-    "spearman": 0.886
-   },
-   {
-    "optimum_shift_eV": 0.1,
     "slope_weak": 0.9,
     "slope_strong": 1.0,
     "leader": "Pt",
@@ -1192,7 +1135,31 @@
     "spearman": 0.996
    },
    {
-    "optimum_shift_eV": 0.1,
+    "optimum_shift_eV": 0.0,
+    "slope_weak": 2.0,
+    "slope_strong": 1.0,
+    "leader": "Pt",
+    "top3": "Pt, PdPt, Pd",
+    "spearman": 0.982
+   },
+   {
+    "optimum_shift_eV": 0.0,
+    "slope_weak": 1.8,
+    "slope_strong": 0.5,
+    "leader": "Pt",
+    "top3": "Pt, PdPt, Pd",
+    "spearman": 0.934
+   },
+   {
+    "optimum_shift_eV": 0.0,
+    "slope_weak": 1.0,
+    "slope_strong": 1.0,
+    "leader": "Pt",
+    "top3": "Pt, PdPt, Pd",
+    "spearman": 0.996
+   },
+   {
+    "optimum_shift_eV": 0.0,
     "slope_weak": 0.5,
     "slope_strong": 0.5,
     "leader": "Pt",
@@ -1201,7 +1168,7 @@
    },
    {
     "optimum_shift_eV": 0.1,
-    "slope_weak": 1.0,
+    "slope_weak": 1.8,
     "slope_strong": 1.0,
     "leader": "Pt",
     "top3": "Pt, PdPt, Pd",
@@ -1209,139 +1176,187 @@
    },
    {
     "optimum_shift_eV": 0.1,
-    "slope_weak": 0.5,
+    "slope_weak": 0.9,
     "slope_strong": 1.0,
     "leader": "Pt",
-    "top3": "Pt, PdPt, Ag",
+    "top3": "Pt, PdPt, Pd",
     "spearman": 0.96
    },
    {
     "optimum_shift_eV": 0.1,
-    "slope_weak": 1.0,
-    "slope_strong": 0.5,
-    "leader": "Pt",
-    "top3": "Pt, PdPt, Pd",
-    "spearman": 0.912
-   },
-   {
-    "optimum_shift_eV": 0.2,
-    "slope_weak": 0.9,
+    "slope_weak": 2.0,
     "slope_strong": 1.0,
     "leader": "Pt",
     "top3": "Pt, PdPt, Pd",
-    "spearman": 1.0
+    "spearman": 0.987
    },
    {
-    "optimum_shift_eV": 0.2,
-    "slope_weak": 0.5,
+    "optimum_shift_eV": 0.1,
+    "slope_weak": 1.8,
     "slope_strong": 0.5,
     "leader": "Pt",
     "top3": "Pt, PdPt, Pd",
-    "spearman": 1.0
+    "spearman": 0.956
    },
    {
-    "optimum_shift_eV": 0.2,
+    "optimum_shift_eV": 0.1,
     "slope_weak": 1.0,
     "slope_strong": 1.0,
     "leader": "Pt",
     "top3": "Pt, PdPt, Pd",
-    "spearman": 1.0
-   },
-   {
-    "optimum_shift_eV": 0.2,
-    "slope_weak": 0.5,
-    "slope_strong": 1.0,
-    "leader": "Pt",
-    "top3": "Pt, Ag, PdPt",
-    "spearman": 0.93
-   },
-   {
-    "optimum_shift_eV": 0.2,
-    "slope_weak": 1.0,
-    "slope_strong": 0.5,
-    "leader": "Pt",
-    "top3": "Pt, PdPt, Pd",
-    "spearman": 0.93
-   },
-   {
-    "optimum_shift_eV": 0.3,
-    "slope_weak": 0.9,
-    "slope_strong": 1.0,
-    "leader": "Pt",
-    "top3": "Pt, Ag, PdPt",
     "spearman": 0.96
    },
    {
-    "optimum_shift_eV": 0.3,
+    "optimum_shift_eV": 0.1,
     "slope_weak": 0.5,
     "slope_strong": 0.5,
     "leader": "Pt",
-    "top3": "Pt, Ag, PdPt",
-    "spearman": 0.974
+    "top3": "Pt, PdPt, Pd",
+    "spearman": 0.96
    },
    {
-    "optimum_shift_eV": 0.3,
-    "slope_weak": 1.0,
+    "optimum_shift_eV": 0.2,
+    "slope_weak": 1.8,
     "slope_strong": 1.0,
     "leader": "Pt",
-    "top3": "Pt, Ag, PdPt",
-    "spearman": 0.974
+    "top3": "Pt, PdPt, Pd",
+    "spearman": 1.0
    },
    {
-    "optimum_shift_eV": 0.3,
-    "slope_weak": 0.5,
+    "optimum_shift_eV": 0.2,
+    "slope_weak": 0.9,
     "slope_strong": 1.0,
-    "leader": "Ag",
-    "top3": "Ag, Pt, PdPt",
-    "spearman": 0.855
+    "leader": "Pt",
+    "top3": "Pt, PdPt, Pd",
+    "spearman": 0.943
    },
    {
-    "optimum_shift_eV": 0.3,
-    "slope_weak": 1.0,
+    "optimum_shift_eV": 0.2,
+    "slope_weak": 2.0,
+    "slope_strong": 1.0,
+    "leader": "Pt",
+    "top3": "Pt, PdPt, Pd",
+    "spearman": 0.996
+   },
+   {
+    "optimum_shift_eV": 0.2,
+    "slope_weak": 1.8,
     "slope_strong": 0.5,
     "leader": "Pt",
     "top3": "Pt, PdPt, Pd",
     "spearman": 0.982
    },
    {
+    "optimum_shift_eV": 0.2,
+    "slope_weak": 1.0,
+    "slope_strong": 1.0,
+    "leader": "Pt",
+    "top3": "Pt, PdPt, Pd",
+    "spearman": 0.943
+   },
+   {
+    "optimum_shift_eV": 0.2,
+    "slope_weak": 0.5,
+    "slope_strong": 0.5,
+    "leader": "Pt",
+    "top3": "Pt, PdPt, Pd",
+    "spearman": 0.943
+   },
+   {
+    "optimum_shift_eV": 0.3,
+    "slope_weak": 1.8,
+    "slope_strong": 1.0,
+    "leader": "Pt",
+    "top3": "Pt, PdPt, Pd",
+    "spearman": 0.969
+   },
+   {
+    "optimum_shift_eV": 0.3,
+    "slope_weak": 0.9,
+    "slope_strong": 1.0,
+    "leader": "Pt",
+    "top3": "Pt, Ag, PdPt",
+    "spearman": 0.824
+   },
+   {
+    "optimum_shift_eV": 0.3,
+    "slope_weak": 2.0,
+    "slope_strong": 1.0,
+    "leader": "Pt",
+    "top3": "Pt, PdPt, Pd",
+    "spearman": 0.974
+   },
+   {
+    "optimum_shift_eV": 0.3,
+    "slope_weak": 1.8,
+    "slope_strong": 0.5,
+    "leader": "Pt",
+    "top3": "Pt, PdPt, Pd",
+    "spearman": 0.987
+   },
+   {
+    "optimum_shift_eV": 0.3,
+    "slope_weak": 1.0,
+    "slope_strong": 1.0,
+    "leader": "Pt",
+    "top3": "Pt, Ag, PdPt",
+    "spearman": 0.864
+   },
+   {
+    "optimum_shift_eV": 0.3,
+    "slope_weak": 0.5,
+    "slope_strong": 0.5,
+    "leader": "Pt",
+    "top3": "Pt, Ag, PdPt",
+    "spearman": 0.864
+   },
+   {
+    "optimum_shift_eV": 0.4,
+    "slope_weak": 1.8,
+    "slope_strong": 1.0,
+    "leader": "Pt",
+    "top3": "Pt, Ag, PdPt",
+    "spearman": 0.873
+   },
+   {
     "optimum_shift_eV": 0.4,
     "slope_weak": 0.9,
     "slope_strong": 1.0,
     "leader": "Ag",
     "top3": "Ag, Pt, PdPt",
-    "spearman": 0.93
+    "spearman": 0.763
    },
    {
     "optimum_shift_eV": 0.4,
-    "slope_weak": 0.5,
-    "slope_strong": 0.5,
-    "leader": "Ag",
-    "top3": "Ag, Pt, PdPt",
-    "spearman": 0.93
-   },
-   {
-    "optimum_shift_eV": 0.4,
-    "slope_weak": 1.0,
+    "slope_weak": 2.0,
     "slope_strong": 1.0,
-    "leader": "Ag",
-    "top3": "Ag, Pt, PdPt",
-    "spearman": 0.93
-   },
-   {
-    "optimum_shift_eV": 0.4,
-    "slope_weak": 0.5,
-    "slope_strong": 1.0,
-    "leader": "Ag",
-    "top3": "Ag, Pt, Au",
-    "spearman": 0.82
-   },
-   {
-    "optimum_shift_eV": 0.4,
-    "slope_weak": 1.0,
-    "slope_strong": 0.5,
     "leader": "Pt",
     "top3": "Pt, PdPt, Ag",
-    "spearman": 0.982
+    "spearman": 0.903
+   },
+   {
+    "optimum_shift_eV": 0.4,
+    "slope_weak": 1.8,
+    "slope_strong": 0.5,
+    "leader": "Pt",
+    "top3": "Pt, PdPt, Pd",
+    "spearman": 0.974
+   },
+   {
+    "optimum_shift_eV": 0.4,
+    "slope_weak": 1.0,
+    "slope_strong": 1.0,
+    "leader": "Ag",
+    "top3": "Ag, Pt, PdPt",
+    "spearman": 0.763
+   },
+   {
+    "optimum_shift_eV": 0.4,
+    "slope_weak": 0.5,
+    "slope_strong": 0.5,
+    "leader": "Ag",
+    "top3": "Ag, Pt, PdPt",
+    "spearman": 0.763
    }
   ],
   "example_ranking": [
@@ -1387,16 +1402,6 @@
    },
    {
     "rank": 5,
-    "material": "Ag",
-    "descriptor_eV": 2.24,
-    "shift_eV": 0.215,
-    "rate_ratio": 0.00407,
-    "range_low": 0.00013,
-    "range_high": 0.13,
-    "metric_at_design": 0.003
-   },
-   {
-    "rank": 6,
     "material": "CuPt",
     "descriptor_eV": 1.266,
     "shift_eV": 0.313,
@@ -1406,7 +1411,7 @@
     "metric_at_design": 0.0
    },
    {
-    "rank": 7,
+    "rank": 6,
     "material": "Cu3Au",
     "descriptor_eV": 1.074,
     "shift_eV": 0.505,
@@ -1416,7 +1421,7 @@
     "metric_at_design": 0.0
    },
    {
-    "rank": 8,
+    "rank": 7,
     "material": "Cu",
     "descriptor_eV": 1.031,
     "shift_eV": 0.548,
@@ -1426,7 +1431,7 @@
     "metric_at_design": 0.0
    },
    {
-    "rank": 9,
+    "rank": 8,
     "material": "Ir",
     "descriptor_eV": 0.986,
     "shift_eV": 0.592,
@@ -1436,17 +1441,17 @@
     "metric_at_design": 0.0
    },
    {
-    "rank": 10,
-    "material": "Au",
-    "descriptor_eV": 2.793,
-    "shift_eV": 0.713,
-    "rate_ratio": 1.18e-08,
-    "range_low": 3.7e-10,
-    "range_high": 3.8e-07,
+    "rank": 9,
+    "material": "Ag",
+    "descriptor_eV": 2.24,
+    "shift_eV": 0.63,
+    "rate_ratio": 9.9e-08,
+    "range_low": 9.8e-11,
+    "range_high": 0.0001,
     "metric_at_design": 0.0
    },
    {
-    "rank": 11,
+    "rank": 10,
     "material": "Rh",
     "descriptor_eV": 0.525,
     "shift_eV": 1.054,
@@ -1456,13 +1461,23 @@
     "metric_at_design": 0.0
    },
    {
-    "rank": 12,
+    "rank": 11,
     "material": "Ni",
     "descriptor_eV": 0.089,
     "shift_eV": 1.49,
     "rate_ratio": 2.67e-17,
     "range_low": 5.7e-19,
     "range_high": 1.2e-15,
+    "metric_at_design": 0.0
+   },
+   {
+    "rank": 12,
+    "material": "Au",
+    "descriptor_eV": 2.793,
+    "shift_eV": 1.626,
+    "rate_ratio": 8.35e-19,
+    "range_low": 8.3e-22,
+    "range_high": 8.4e-16,
     "metric_at_design": 0.0
    },
    {
@@ -1506,10 +1521,16 @@
     "follow": 1.06
    },
    {
-    "case": "Adsorption with a barrier, slopes 0.9 and 1.0 (the app's)",
+    "case": "Adsorption with a barrier, slopes 0.9 and 1.0",
     "peak_moved_eV": -0.143,
     "gas_change_eV": -0.258,
     "follow": 0.55
+   },
+   {
+    "case": "Adsorption with a barrier, slopes 1.8 and 1.0 (the pack's)",
+    "peak_moved_eV": -0.101,
+    "gas_change_eV": -0.258,
+    "follow": 0.39
    }
   ],
   "peak_moves": [
@@ -2250,252 +2271,6 @@
     "intact": true,
     "match": false,
     "far": "-0.24 to -0.19"
-   }
-  ],
-  "her": [
-   {
-    "metal": "Ag",
-    "uma": 0.624,
-    "rpbe": 0.565,
-    "pbe": 0.416,
-    "gap_rpbe": 0.059,
-    "gap_pbe": 0.208,
-    "log_j0": -6.42
-   },
-   {
-    "metal": "Au",
-    "uma": 0.573,
-    "rpbe": 0.574,
-    "pbe": 0.418,
-    "gap_rpbe": -0.001,
-    "gap_pbe": 0.155,
-    "log_j0": -6.6
-   },
-   {
-    "metal": "Co",
-    "uma": -0.296,
-    "rpbe": -0.202,
-    "pbe": -0.355,
-    "gap_rpbe": -0.094,
-    "gap_pbe": 0.059,
-    "log_j0": -5.32
-   },
-   {
-    "metal": "Cu",
-    "uma": 0.198,
-    "rpbe": 0.188,
-    "pbe": 0.04,
-    "gap_rpbe": 0.01,
-    "gap_pbe": 0.158,
-    "log_j0": -5.37
-   },
-   {
-    "metal": "Ir",
-    "uma": -0.034,
-    "rpbe": -0.081,
-    "pbe": -0.208,
-    "gap_rpbe": 0.047,
-    "gap_pbe": 0.174,
-    "log_j0": -3.58
-   },
-   {
-    "metal": "Ni",
-    "uma": -0.269,
-    "rpbe": -0.231,
-    "pbe": -0.388,
-    "gap_rpbe": -0.038,
-    "gap_pbe": 0.119,
-    "log_j0": -5.21
-   },
-   {
-    "metal": "Pd",
-    "uma": -0.158,
-    "rpbe": -0.123,
-    "pbe": -0.286,
-    "gap_rpbe": -0.035,
-    "gap_pbe": 0.128,
-    "log_j0": -3.0
-   },
-   {
-    "metal": "Pt",
-    "uma": -0.084,
-    "rpbe": -0.038,
-    "pbe": -0.192,
-    "gap_rpbe": -0.046,
-    "gap_pbe": 0.108,
-    "log_j0": -3.1
-   },
-   {
-    "metal": "Rh",
-    "uma": -0.141,
-    "rpbe": -0.116,
-    "pbe": -0.27,
-    "gap_rpbe": -0.025,
-    "gap_pbe": 0.129,
-    "log_j0": -3.41
-   },
-   {
-    "metal": "Ru",
-    "uma": -0.207,
-    "rpbe": -0.18,
-    "pbe": -0.33,
-    "gap_rpbe": -0.027,
-    "gap_pbe": 0.123,
-    "log_j0": null
-   }
-  ],
-  "orr_metals": [
-   {
-    "metal": "Ag",
-    "uma_oh": 0.863,
-    "pub_oh": 0.72,
-    "uma_o": 2.24,
-    "pub_o": 2.12,
-    "gap_oh": 0.143,
-    "gap_o": 0.12
-   },
-   {
-    "metal": "Au",
-    "uma_oh": 1.567,
-    "pub_oh": 1.49,
-    "uma_o": 2.793,
-    "pub_o": 2.75,
-    "gap_oh": 0.077,
-    "gap_o": 0.043
-   },
-   {
-    "metal": "Co",
-    "uma_oh": -0.321,
-    "pub_oh": -0.08,
-    "uma_o": -0.513,
-    "pub_o": -0.22,
-    "gap_oh": -0.241,
-    "gap_o": -0.293
-   },
-   {
-    "metal": "Cu",
-    "uma_oh": 0.343,
-    "pub_oh": 0.37,
-    "uma_o": 1.031,
-    "pub_o": 1.2,
-    "gap_oh": -0.027,
-    "gap_o": -0.169
-   },
-   {
-    "metal": "Ir",
-    "uma_oh": 0.763,
-    "pub_oh": 0.63,
-    "uma_o": 0.986,
-    "pub_o": 1.0,
-    "gap_oh": 0.133,
-    "gap_o": -0.014
-   },
-   {
-    "metal": "Ni",
-    "uma_oh": 0.085,
-    "pub_oh": 0.13,
-    "uma_o": 0.089,
-    "pub_o": 0.34,
-    "gap_oh": -0.045,
-    "gap_o": -0.251
-   },
-   {
-    "metal": "Pd",
-    "uma_oh": 0.907,
-    "pub_oh": 0.92,
-    "uma_o": 1.385,
-    "pub_o": 1.53,
-    "gap_oh": -0.013,
-    "gap_o": -0.145
-   },
-   {
-    "metal": "Pt",
-    "uma_oh": 1.04,
-    "pub_oh": 1.05,
-    "uma_o": 1.579,
-    "pub_o": 1.57,
-    "gap_oh": -0.01,
-    "gap_o": 0.009
-   },
-   {
-    "metal": "Rh",
-    "uma_oh": 0.446,
-    "pub_oh": 0.34,
-    "uma_o": 0.525,
-    "pub_o": 0.44,
-    "gap_oh": 0.106,
-    "gap_o": 0.085
-   },
-   {
-    "metal": "Ru",
-    "uma_oh": -0.003,
-    "pub_oh": -0.01,
-    "uma_o": -0.202,
-    "pub_o": -0.05,
-    "gap_oh": 0.007,
-    "gap_o": -0.152
-   }
-  ],
-  "ooh": [
-   {
-    "metal": "Ag",
-    "oh": 0.863,
-    "ooh": 4.185,
-    "gap": 3.321
-   },
-   {
-    "metal": "Au",
-    "oh": 1.567,
-    "ooh": 4.673,
-    "gap": 3.107
-   },
-   {
-    "metal": "Co",
-    "oh": -0.321,
-    "ooh": 3.494,
-    "gap": 3.814
-   },
-   {
-    "metal": "Cu",
-    "oh": 0.343,
-    "ooh": 3.704,
-    "gap": 3.361
-   },
-   {
-    "metal": "Ir",
-    "oh": 0.763,
-    "ooh": 3.861,
-    "gap": 3.097
-   },
-   {
-    "metal": "Ni",
-    "oh": 0.085,
-    "ooh": 3.737,
-    "gap": 3.652
-   },
-   {
-    "metal": "Pd",
-    "oh": 0.907,
-    "ooh": 4.062,
-    "gap": 3.155
-   },
-   {
-    "metal": "Pt",
-    "oh": 1.04,
-    "ooh": 4.051,
-    "gap": 3.011
-   },
-   {
-    "metal": "Rh",
-    "oh": 0.446,
-    "ooh": 3.696,
-    "gap": 3.251
-   },
-   {
-    "metal": "Ru",
-    "oh": -0.003,
-    "ooh": 3.488,
-    "gap": 3.491
    }
   ]
  }

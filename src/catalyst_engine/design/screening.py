@@ -43,8 +43,10 @@ EV_KJ = 96.485  # kJ/mol per eV
 K_B = 8.617333e-5  # eV/K
 RUNNING = ("queued", "loading", "running")
 # share of the peak gas's free-energy change the volcano's top follows: the model (adsorption near equilibrium at
-# the top), and the low case for adsorption slow enough to set the rate (experiments/design_method/model_checks.py)
-PEAK_FOLLOW = (1.0, 0.5)
+# the top), and the span the likely range covers, which brackets an exact two-step cycle over every mechanism
+# experiments/design_method/model_checks.py solves, the splitting packs' steeper sticking barrier included
+PEAK_FOLLOW = 1.0
+PEAK_FOLLOW_SPAN = (0.35, 1.1)
 NONMETALS = {"H", "B", "C", "N", "O", "F", "Si", "P", "S", "Cl", "Se", "Br", "I", "Te"}
 # the honeycomb the design page starts from: 400 cells per square inch with 0.17 mm of wall and coat, a 1.1 mm square
 # channel (Metkar 2012, Table 9-1)
@@ -233,17 +235,25 @@ def peak_moves(pack: Pack, step: StepSpec, temperatures_K) -> np.ndarray:
 
 
 def shift_cases(pack: Pack, descriptor: float, reference: float, move: float) -> tuple[float, float, float]:
-    """Extra barrier over the reference with the top moved by `move`: the model, and the lowest and highest over
-    the descriptor's error bar and a top that follows its gas fully or halfway."""
+    """Extra barrier over the reference with the top moved by `move`: the model, and the exact lowest and highest
+    over the descriptor's error bar and a top that follows its gas by any share in PEAK_FOLLOW_SPAN."""
     spec = pack.spec.screening
     sigma = spec.sigma_descriptor
-    cases = [spec.barrier_shift(d, reference, f * move) for d in (descriptor - sigma, descriptor, descriptor + sigma)
-             for f in PEAK_FOLLOW]
-    for f in PEAK_FOLLOW:
-        top = reference + spec.optimum_shift_eV + f * move
-        if descriptor - sigma < top < descriptor + sigma:
-            cases.append(spec.barrier_shift(top, reference, f * move))
-    return spec.barrier_shift(descriptor, reference, move), min(cases), max(cases)
+    anchor = reference + spec.optimum_shift_eV
+    t0, t1 = sorted(anchor + f * move for f in PEAK_FOLLOW_SPAN)
+    x0, x1 = descriptor - sigma, descriptor + sigma
+    # the extra barrier is piecewise linear in (descriptor, top), creased where the top meets the descriptor or the
+    # reference, so its ends over the box sit at the box's corners or where a crease crosses the box
+    points = [(x, t) for x in (x0, x1) for t in (t0, t1)]
+    lo, hi = max(x0, t0), min(x1, t1)
+    if lo <= hi:
+        points += [(lo, lo), (hi, hi)]
+    if t0 <= reference <= t1:
+        points += [(x0, reference), (x1, reference)]
+        if x0 <= reference <= x1:
+            points.append((reference, reference))
+    cases = [spec.barrier_shift(x, reference, top - anchor) for x, top in points]
+    return spec.barrier_shift(descriptor, reference, PEAK_FOLLOW * move), min(cases), max(cases)
 
 
 def shifted_params(pack: Pack, shift_eV, base: dict[str, float] | None = None) -> dict:

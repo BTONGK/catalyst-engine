@@ -386,6 +386,25 @@ def test_the_leader_can_change_with_temperature_and_the_anchor_keeps_the_fixed_v
     assert all(lo <= mid <= hi for lo, mid, hi in zip(hot["lo"], hot["mid"], hot["hi"]))
 
 
+def test_the_likely_range_holds_every_case_of_the_error_bar_and_the_peak_move_exactly():
+    # brute force over the descriptor's error bar and every share of the peak's move in the span: the grid stays
+    # inside the exact ends and reaches each within the grid's own spacing
+    n = 41
+    for pid in SCREENABLE:
+        spec = load_pack(pid).spec.screening
+        s = spec.sigma_descriptor
+        for ref in (0.0, 1.5):
+            for d in (ref - 0.6, ref - 0.1, ref + spec.optimum_shift_eV, ref + 0.5):
+                for move in (-0.3, 0.0, 0.2):
+                    model, lo, hi = screening.shift_cases(load_pack(pid), d, ref, move)
+                    grid = [spec.barrier_shift(x, ref, f * move) for x in np.linspace(d - s, d + s, n)
+                            for f in np.linspace(*screening.PEAK_FOLLOW_SPAN, n)]
+                    tol = (max(spec.slope_weak, spec.slope_strong) * 2 * s
+                           + (spec.slope_weak + spec.slope_strong) * abs(move) * np.ptp(screening.PEAK_FOLLOW_SPAN)) / (n - 1)
+                    assert lo - 1e-12 <= min(grid) <= lo + tol and hi - tol <= max(grid) <= hi + 1e-12
+                    assert lo <= model <= hi
+
+
 def test_a_barrier_shift_per_temperature_matches_one_shift_for_all():
     pack = load_pack(CO)
     step = screening.design_step(pack)

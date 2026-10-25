@@ -1,5 +1,5 @@
 # Project status shown on the app's Project status page. Updated at the end of every phase.
-updated: 2026-10-23
+updated: 2026-10-25
 focus_pack: scr_hot   # the app opens on this reaction
 
 headline: >
@@ -21,11 +21,45 @@ proof_sequence:
     status: planned
 
 recent:
+  - date: 2026-10-25
+    item: >
+      Audit fixes applied, after a second pass over every computation in both sections. Oxygen reduction follows
+      Nørskov 2004's faster-route rule: once O2 splits with its barrier at or below zero, the route that skips OOH*
+      sets the limiting potential, and the speed takes the faster route's hurdle. The ten-metal example ranks Pt,
+      Pd, Ag, Ir, Rh, Cu, Au, Ni, Ru, Co, opening as the paper does (Pt and Pd, then Ir and Rh, with Cu, Ag and Au
+      set aside), and a limits row explains why silver and gold rank above their standing in acid (peroxide and
+      dissolution). Oxygen evolution moves from the Design page to the playground until an oxide check passes
+      (UMA's oxide energies sit 0.18–0.24 eV from OC22's DFT, beyond the 0.11 eV gate). Electro likely ranges are
+      exact (linear programming over every free energy's ±0.15 eV), the potential's sign, platinum's limiting step
+      and the hydrogen coverage read right everywhere, the playground's ideal catalyst for reductions was backwards
+      and is fixed, and a negative zero in hydrogen ranges reads 0.00. Thermal: the weak side falls 1.8 eV per eV
+      where a molecule splits into two atoms the descriptor counts (CO and engine oxidation, ammonia synthesis,
+      methanation), from Nørskov 2002's 0.9 line; in the CO-oxidation example silver moves from 5th to 9th and
+      platinum leads across 50–350 °C. The likely range spans a peak moving 0.35 to 1.1 times as far as its gas,
+      the bracket the exact two-step cycle needs with the new slopes, and finds its ends exactly. The UMA rerun from
+      scratch matches all 361 stored numbers within 0.003 eV. Both Methodology tabs gain a section on what the
+      review checked and changed; stale text on the benchmark and literature pages is rewritten.
+  - date: 2026-10-24
+    item: >
+      Audit of the electrocatalysis and thermal sections against their sources, with the checks rerun. The code
+      computes what the write-ups describe, the tests pass (149), and the electro check, the thermal model checks
+      and the SCR literature replication reproduce their committed numbers (the UMA surface rerun matches so far).
+      Electrocatalysis: the O2-splitting barrier joins the OOH* path by the larger of the two, where Nørskov 2004
+      (Figure 8) keeps the faster of the two routes, which ranks the ten-metal oxygen-reduction example Pt, Pd,
+      Ag, Ir, Au, Rh, Cu, Ni, Ru, Co; oxygen evolution runs on oxide energies 0.18–0.24 eV from OC22's DFT, beyond
+      the 0.11 eV gate, and its Design page pre-ticks pure metals; six passages state the potential's sign
+      reversed (the code has it right); platinum's 0.79 V reproduces the paper's own Table 2 adjustment, with OH*
+      to water limiting where the paper has O* to OH*; the hydrogen reference sits at a full monolayer on 7 of the
+      10 metals; the likely range skips the volcano top (platinum's hydrogen range reaches 0.00 V and shows
+      −0.07 V). Thermal: the weak-binding side of each volcano rises 0.9 eV per eV, and where a molecule splits
+      into two atoms the descriptor counts, the splitting line gives about 1.8, which moves silver from 5th to 9th
+      in the CO-oxidation example and gives platinum the lead from 50 °C.
   - date: 2026-10-24
     item: >
       Oxygen reduction now carries two published terms from Nørskov 2004. The hydrogen bonds within a third of a
       monolayer of OH* (−0.27 eV for OH* and OOH*) put platinum's limiting potential at 0.79 V against the paper's
-      0.78 V, with the same last step (OH* to water) limiting. The O2-splitting barrier, 1.8 × ΔE_O − 2.89 eV less
+      0.78 V, with OH* to water limiting where the paper has O* to OH*, its two last steps nearly equal (0.45 and
+      0.43 eV). The O2-splitting barrier, 1.8 × ΔE_O − 2.89 eV less
       0.13 eV, holds at every potential, and the ranking now sorts by the largest hurdle at the comparison
       potential, then by overpotential. The ten-metal example ranks Pt, Pd, Ir first; silver (barrier 1.01 eV)
       falls to sixth and gold (2.01 eV) to last. The Results ranking shows each barrier and hurdle; the Methodology
@@ -181,9 +215,10 @@ next_steps:
   - step: Set each reaction's volcano slopes from published scaling relations
     owner: Claude
     why: >
-      Every pack uses generic slopes (0.9 and 1.0 eV per eV), which push metals that bind strongly, such as Rh, Ru,
-      Ni and Co, far below what practice shows. Reaction-specific slopes and a CO-coverage term for CO oxidation
-      bring the ranking closer to published activity.
+      Four packs now take the splitting slope of 1.8 on the weak side; the strong side keeps a generic 1.0 eV per
+      eV in every pack, which pushes metals that bind strongly, such as Rh, Ru, Ni and Co, far below what practice
+      shows (rhodium at 1 in 520 billion of platinum's speed for CO oxidation). Reaction-specific strong-side slopes
+      and a CO-coverage term for CO oxidation bring the ranking closer to published activity.
   - step: Review the pack parameters and protocols, and set the batch-1 design space
     owner: You
     why: >
@@ -283,12 +318,12 @@ findings:
       balanced on a ridge and read −5.25 eV for ammonia. Nudged and relaxed with BFGS it reads −0.65 eV, and its
       surface still rearranges toward a spin-free packing. Run iron, cobalt and nickel in the materials mode as well.
     source: experiments/design_method/atomistic_checks.py, stability section (2026-10-23); Methodology tab, step 4.
-  - title: The catalyst to beat changes with temperature
+  - title: The volcano's peak moves with temperature
     detail: >
-      With the peak following the gas, the example's CO oxidation screen hands the lead from Ag (50–80 °C) to Pt
-      (90–350 °C). Across that range the peak moves 0.38 eV toward stronger binding; PdPt climbs to 0.45 times
-      platinum's speed at 350 °C, and rhodium from 1 in 520 billion to 1 in 170 million. The order at 180 °C stays
-      as before. A pair that binds alike stays tied at every temperature: on hot SCR, V2O5's layered face and
+      With the peak following the gas, the example's CO oxidation screen moves its peak 0.38 eV toward stronger
+      binding from 50 to 350 °C. Platinum keeps the lead throughout; PdPt climbs to 0.61 times platinum's speed at
+      350 °C, and rhodium from 1 in 520 billion to 1 in 130 million. With the weak side at 0.9, silver led from 50
+      to 80 °C; the splitting slope of 1.8 (2026-10-25) drops it to 9th. A pair that binds alike stays tied at every temperature: on hot SCR, V2O5's layered face and
       copper metal hold ammonia within 0.01 eV of each other, so V2O5 keeps a hair's lead from 0 to 350 °C. The
       copper that beats vanadia below 300 °C in practice sits as single ions in a zeolite, which UMA describes
       0.38 eV or more away from published DFT (Methodology tab, limits).
@@ -296,10 +331,10 @@ findings:
   - title: For CO oxidation the example screen keeps platinum on top, with PdPt inside its error bar
     detail: >
       Fourteen materials, 56 relaxations, 12 minutes on this Mac (recomputed after the surface and relaxation fixes).
-      PdPt, now with a mixed Pd/Pt surface, runs at 0.14 times platinum's rate (likely range 0.003 to 6.3 times); Pd, CuPd and Ag
+      PdPt, now with a mixed Pd/Pt surface, runs at 0.14 times platinum's rate (likely range 0.003 to 6.3 times); Pd, CuPd and CuPt
       follow. Metals that bind oxygen much more strongly (Rh, Ru, Ni, Co) land a billion times slower or more,
-      further below platinum than experiments place them: the volcano slopes are generic, and the next step sets
-      them per reaction.
+      further below platinum than experiments place them: the strong side's slope is generic, and the next step
+      sets it per reaction.
     source: Example screen, examples/screens/; Manual, Methodology tab (2026-10-23).
   - title: Measure at the turbine's concentration
     detail: >

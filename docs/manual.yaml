@@ -224,7 +224,7 @@ steps:
       - The curve is this reaction's volcano. Each dot is a material, placed by its computed binding energy.
       - Dots near the peak hold the key molecule just right. Left of the peak, the surface holds too strongly; right of it, too weakly.
       - The bars on each dot show the uncertainty of the computed binding energy.
-      - Slide "Draw the volcano at" to another temperature. Heat moves the peak toward materials that hold the key molecule more strongly, so the dots climb or sink, and the leader can change. A blue note above the tabs names the leader in each part of your range.
+      - Slide "Draw the volcano at" to another temperature. Heat moves the peak toward materials that hold the key molecule more strongly, so the dots climb or sink, and the leader can change. When it does, a blue note above the tabs names the leader in each part of your range.
     get: Why each material ranks where it does, which direction to move to improve it, and where across your temperatures each one leads.
   - phase: Read the results
     title: Look at the 3D structures
@@ -339,7 +339,7 @@ glossary:
       - {term: Catalyst to beat (reference), means: "The known catalyst every candidate is compared with. Its result anchors the volcano, so model errors shared by all materials cancel."}
       - {term: Key molecule (descriptor), means: "The atom or molecule whose binding energy places a material on the volcano."}
       - {term: Best possible, means: "The result of an ideal, infinitely fast catalyst: the reaction's equilibrium or full conversion."}
-      - {term: Likely range, means: "The spread of a prediction from the uncertainty of the binding energy (about 0.15 eV)."}
+      - {term: Likely range, means: "The spread of a prediction from the uncertainty of the binding energy (about 0.15 eV) and, away from the reaction's anchor temperature and feed, from how far the volcano's peak moves. The app finds the slowest and fastest case exactly."}
       - {term: How careful (care level), means: "How many surface spots the app tries per molecule and how tightly the atoms settle."}
       - {term: Reaction pack, means: "One reaction's file: its molecules, reactions, how to judge results, and how to rank materials."}
       - {term: UMA, means: "Universal Model for Atoms, Meta FAIR Chemistry's AI model of how atoms push and pull, trained on DFT results."}

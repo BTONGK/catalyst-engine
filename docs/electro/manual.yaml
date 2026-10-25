@@ -12,8 +12,8 @@ preface:
     - title: Potentials, and why they are measured against hydrogen
       paragraphs:
         - >
-          Every electrochemical reaction has an equilibrium potential: the voltage where it would run neither
-          forward nor backward. Hydrogen evolution sits at 0 V and the oxygen reactions at 1.23 V. The app states
+          Every electrochemical reaction has an equilibrium potential: the voltage where its forward and backward
+          reactions balance. Hydrogen evolution sits at 0 V and the oxygen reactions at 1.23 V. The app states
           every potential against the reversible hydrogen electrode (RHE), a scale on which hydrogen's own reaction
           sits at 0 V whatever the pH, so the numbers read the same in acid and in alkali.
         - >
@@ -27,33 +27,41 @@ preface:
           and OH* for oxygen reduction. Each intermediate has a free energy on a given surface, and the path from
           start to finish is a staircase of those energies.
         - >
-          Raising the potential tilts the staircase: every step that moves an electron falls (for a reduction) or
-          rises (for an oxidation) by one electron-volt per volt. The ideal catalyst has every step the same size,
-          so the whole staircase levels out at the equilibrium potential. A real surface holds some intermediate
+          Changing the potential tilts the staircase by one electron-volt per volt on every step that moves an
+          electron. A reduction, such as oxygen reduction, runs further downhill as the potential drops; an
+          oxidation, such as oxygen evolution, as it rises. The ideal catalyst has every step the same size, so the
+          whole staircase levels out together at the equilibrium potential. A real surface holds some intermediate
           too tightly or too loosely, one step stays uphill longer than the rest, and that step sets the limiting
-          potential: the voltage where the last step turns downhill.
+          potential: the voltage at which every step finally runs downhill.
+        - >
+          Some reactions have more than one path. Oxygen reduction can turn O2 into OOH* first, or split O2 on the
+          surface into two O* first and go on from there. Splitting is a chemical step with an energy barrier, and
+          that barrier grows as the surface holds oxygen more weakly. Both routes run side by side, and the faster
+          one carries the current.
       points:
         - Overpotential = the distance between the limiting potential and the equilibrium potential.
         - The limiting step is the one to fix; a better material changes how it holds that intermediate.
+        - At a given potential, a route runs at the pace of its largest hurdle; every tenth of an eV of hurdle slows it about fiftyfold at room temperature.
     - title: The volcano and the scaling relations
       paragraphs:
         - >
-          Surfaces that hold one intermediate tightly tend to hold the others tightly too: the free energies scale
-          together. For oxygen reactions OOH* sits a nearly fixed 3.2 eV above OH* on almost every surface, so one
-          number, the OH* free energy, places a material on a volcano of limiting potential. The top of the volcano
-          is as good as the scaling allows; a surface that breaks the scaling can climb higher, which is where new
-          catalysts come from.
+          Surfaces that hold one intermediate tightly tend to hold the others tightly too: the energies scale
+          together. For the oxygen reactions, OOH* sits a nearly fixed 3.2 eV above OH* in binding energy on almost
+          every surface (Man 2011), where the ideal catalyst would put it 2.46 eV above, so one number, such as the
+          OH* free energy, places a material on a volcano of limiting potential. The top of the volcano is as good as
+          the scaling allows; a surface that breaks the scaling can climb higher, which is where new catalysts come
+          from.
     - title: What the app computes, and what it leaves out
       paragraphs:
         - >
           The app computes each intermediate's binding energy on each material's surface with Meta's UMA model,
           turns it into a free energy with published corrections, and reads the limiting potential, the
-          overpotential and a speed at your potential off the staircase. For oxygen reduction it adds the
-          barrier to split O2, which follows how strongly the surface holds oxygen. That is the picture the field
-          uses to rank candidates.
+          overpotential and a speed at your potential off the staircase. For oxygen reduction it follows both
+          routes, the one through OOH* and the one that splits O2 first, whose barrier follows how strongly the
+          surface holds oxygen, and takes the faster. That is the picture the field uses to rank candidates.
         - >
-          Barriers of the proton transfers, the exact structure of the water layer, and the way a surface oxidizes or
-          dissolves at a working potential stay outside it. The Methodology tab sizes each of those and says what
+          Barriers of the proton transfers, the exact structure of the water layer, the way a surface oxidizes or
+          dissolves at a working potential, and hydrogen peroxide as a side product stay outside it. The Methodology tab sizes each of those and says what
           to do meanwhile.
 
 title: How to use this section
@@ -63,7 +71,7 @@ intro: >
   computer and runs in the background.
 needs:
   - This app running on a computer with the atomistic model (UMA) set up; the Home page shows a green check when it is.
-  - "Optional: a free Materials Project API key, to search 150,000+ crystals for alloys and oxides. Pure metals work right away."
+  - "Optional: a free Materials Project API key, to search 150,000+ crystals for alloys. Pure metals work right away."
 steps:
   - phase: Set up the design
     title: Pick a reaction and a potential
@@ -71,26 +79,26 @@ steps:
     image: step-design.png
     do:
       - Click "Design an electrocatalyst" in the menu on the left.
-      - "In part 1, pick hydrogen evolution (making hydrogen), oxygen reduction (a fuel-cell cathode) or oxygen evolution (an electrolyzer anode). The page shows the reaction, its intermediates, the catalyst to beat and the free energy it ranks by; \"Why this works\" explains the choice."
-      - "In part 2, set the potential to compare catalysts at, in volts vs RHE. The text under the slider says how far that is from the equilibrium potential. Each material's limiting potential and overpotential read the same whatever you choose here; the speed numbers depend on it."
+      - "In part 1, pick hydrogen evolution (making hydrogen) or oxygen reduction (a fuel-cell cathode). The page shows the reaction, its intermediates and routes, the catalyst to beat and the free energy that places each material on the volcano; \"Why this works\" explains the choice. Oxygen evolution (an electrolyzer anode) runs in the Free-energy playground until UMA passes its oxide check."
+      - "In part 2, set the potential to compare catalysts at, in volts vs RHE. The text under the slider says how far that is from the equilibrium potential. Each material's limiting potential and overpotential read the same whatever you choose here; the speeds, and the ranking that sorts by them, depend on it."
     get: The reaction, the catalyst every material is compared with, and the operating potential.
   - phase: Set up the design
     title: Choose materials and start
     page: Design an electrocatalyst → 3 and 4
     do:
-      - "Part 3: tick pure metals and press \"Add these metals\", or search the Materials Project by element and kind (alloys or oxides) and add the rows you tick. Remove a material by ticking its Remove box."
+      - "Part 3: tick pure metals and press \"Add these metals\", or search the Materials Project by element and kind and add the rows you tick. Remove a material by ticking its Remove box. Metals and alloys are what the checks cover; oxides carry a larger error in every UMA mode (Methodology, limits)."
       - "Part 4: pick the care level (Quick, Standard, Thorough), name the screen and press \"Start the screen\". The estimate under the button says how long it will take."
-      - "Oxygen evolution starts in UMA's materials mode, the one that suits oxides such as its catalyst to beat, iridium oxide. Advanced lets you change the mode, the faces, the slab size and the catalyst to beat."
+      - "Each reaction starts in UMA's catalysis mode, the one checked on metal surfaces. Advanced lets you change the mode, the faces, the slab size and the catalyst to beat."
     get: A screen running in the background; the Results page opens on it.
   - phase: Read the results
     title: Read the ranking
     page: Electrocatalyst results → Ranking
     image: step-results.png
     do:
-      - The headline shows the best candidate's overpotential (smaller is better), its limiting potential, its speed against the catalyst to beat at your potential, and its supply.
-      - "The Ranking tab lists every material with its overpotential, limiting potential and likely range, the step that limits it, its speed and speed range, each intermediate's free energy, its stability and its supply."
+      - The headline shows the top-ranked candidate's overpotential (smaller is better), its limiting potential, its speed against the catalyst to beat at your potential, and its supply.
+      - "The Ranking tab sorts by speed at your potential, then by overpotential. It lists every material with its overpotential, limiting potential and likely range, the step and route that limit it, the faster route at your potential, its speed and speed range, each intermediate's free energy, its stability and its supply."
       - "Read the ranking as a shortlist. Materials whose likely ranges overlap are a close call."
-    get: A ranking by overpotential, with the numbers behind it.
+    get: A ranking by predicted speed, with the numbers behind it.
   - phase: Read the results
     title: Read the diagram, the activity and the volcano
     page: Electrocatalyst results → other tabs
@@ -104,7 +112,7 @@ steps:
     title: Try the free-energy playground
     page: Free-energy playground
     do:
-      - Pick a reaction and move each intermediate's free energy by hand; the limiting potential, the overpotential, the diagram and the dot on the volcano follow.
+      - Pick a reaction and move each intermediate's free energy by hand; the limiting potential, the overpotential, the route, the diagram and the dot on the volcano follow. Oxygen evolution runs here on free energies you enter, such as published DFT values.
       - Press "Set the ideal catalyst" to see the level staircase every real surface is measured against.
     get: A feel for which step costs the most voltage, before you run a screen.
 pages:
@@ -115,24 +123,27 @@ pages:
   - {page: Manual, use: "This guide, the electrochemistry basics, the methodology and the words used"}
 tips:
   - Start with Quick care and a handful of metals; rerun the top three on Thorough.
-  - Include the catalyst to beat's neighbours. Platinum for hydrogen and oxygen reduction, iridium and ruthenium oxides for oxygen evolution, so the screen has known points to sit against.
+  - Include the catalyst to beat's neighbours, such as palladium and iridium beside platinum, so the screen has known points to sit against.
   - Read the limiting step. Two materials with the same overpotential but different limiting steps call for different fixes.
   - A material whose intermediate split on every site binds too strongly to stay whole; it belongs on the strong-binding leg, with the Details tab showing where it broke.
   - Weigh supply and stability too. A surface that dissolves at the working potential works for a day; the Methodology tab says what the app leaves out.
+  - A weak binder of oxygen high in an oxygen-reduction ranking, such as silver, needs a stability check at your pH and a check for hydrogen peroxide (Methodology, limits).
 glossary:
   - group: Electrochemistry words
     terms:
       - {term: Electrocatalyst, means: "A catalyst that drives a reaction with electricity at an electrode in water, such as splitting water into hydrogen and oxygen."}
       - {term: Electrode, means: "The solid conductor where the reaction happens; the cathode takes electrons in, the anode gives them out."}
       - {term: Potential (V vs RHE), means: "The voltage of the electrode against the reversible hydrogen electrode, a scale on which hydrogen's own reaction sits at 0 V at any pH."}
-      - {term: Equilibrium potential, means: "The voltage where a reaction neither runs forward nor back: 0 V for hydrogen evolution, 1.23 V for the oxygen reactions."}
+      - {term: Equilibrium potential, means: "The voltage where a reaction's forward and backward rates balance: 0 V for hydrogen evolution, 1.23 V for the oxygen reactions."}
       - {term: Overpotential, means: "The extra voltage past the equilibrium potential a catalyst needs before the reaction runs. Smaller is better; it is paid as wasted energy."}
-      - {term: Limiting potential, means: "The potential where the last step of the reaction path turns downhill on a given surface."}
+      - {term: Limiting potential, means: "The potential at which every step of the reaction's better route runs downhill on a given surface."}
+      - {term: Route, means: "One way through a reaction's steps. Oxygen reduction has two: OOH* forms first, or O2 splits first; the faster carries the current."}
+      - {term: Hurdle, means: "At a given potential, a route's largest step still uphill, or its chemical barrier when that is higher. Each tenth of an eV slows the route about fiftyfold."}
       - {term: Limiting step, means: "The step that stays uphill longest as the potential changes; the one a better material has to fix."}
       - {term: Intermediate, means: "A molecule fragment stuck to the surface part-way along the reaction path, such as OH* in oxygen reduction. The star marks a surface species."}
       - {term: Free-energy diagram, means: "The staircase of each intermediate's energy along the path; the potential tilts the whole staircase."}
       - {term: Computational hydrogen electrode, means: "The method that turns computed binding energies into electrode potentials by treating a proton and electron as half a hydrogen molecule (Nørskov 2004)."}
-      - {term: Scaling relation, means: "The rule that intermediates' free energies move together from surface to surface; OOH* sits about 3.2 eV above OH* on almost every one."}
+      - {term: Scaling relation, means: "The rule that intermediates' energies move together from surface to surface; OOH* sits about 3.2 eV above OH* in binding energy on almost every one."}
       - {term: Volcano, means: "The peaked curve of limiting potential against one intermediate's free energy that the scaling relations draw."}
       - {term: Exchange current, means: "The rate at which a reaction runs forward and back at its equilibrium potential; the measured yardstick for hydrogen evolution catalysts."}
       - {term: Hydrogen evolution (HER), means: "2 H+ + 2 e- -> H2, the cathode of water splitting."}
@@ -143,17 +154,17 @@ glossary:
       - {term: Screen, means: "One run over a list of materials for one reaction and one operating potential."}
       - {term: Catalyst to beat (reference), means: "The known catalyst every candidate is compared with; speeds are relative to it."}
       - {term: Key free energy (descriptor), means: "The intermediate's free energy that places a material on the volcano."}
-      - {term: Likely range, means: "The spread of a prediction from the uncertainty of each binding energy (about 0.15 eV)."}
+      - {term: Likely range, means: "The lowest and highest value a prediction takes when every binding energy moves within its error bar, ±0.15 eV, at once."}
       - {term: How careful (care level), means: "How many surface spots the app tries per intermediate and how tightly the atoms settle."}
       - {term: UMA, means: "Universal Model for Atoms, Meta FAIR Chemistry's AI model of how atoms push and pull, trained on DFT results."}
-      - {term: UMA mode, means: "Catalysis (trained on surfaces with molecules) suits metals; materials (trained on bulk crystals) suits oxides."}
+      - {term: UMA mode, means: "Catalysis (trained on surfaces with molecules) suits metals and is the one checked here; materials (trained on bulk crystals) comes closest on oxides, still beyond the error bar."}
       - {term: DFT, means: "Density functional theory, the standard quantum-physics method for computing atoms' energies."}
       - {term: Materials Project, means: "A free online database of over 150,000 computed crystals, at materialsproject.org."}
 help:
   - {q: "The Design page says the atomistic model needs setting up.", a: "UMA runs in its own Python, separate from the app. Point the CE_UMA_PYTHON setting at that Python and CE_UMA_CHECKPOINT at the model file (uma-s-1p1.pt), then reopen the app. On this computer both are already in place."}
   - {q: "The Materials Project search asks for a key.", a: "Sign in for free at materialsproject.org, copy your API key from your dashboard, and save it in the file ~/.config/.pmgrc.yaml as a line reading PMG_MAPI_KEY: your-key. Pure metals work in the meantime."}
   - {q: "A material shows as incomplete.", a: "An intermediate broke apart or drifted off at every site tried on that surface, so its path stays open. The Details tab shows each site. A molecule that splits binds too strongly to stay whole; one that drifts off binds too weakly to stay."}
-  - {q: "The best material is one I would leave on the shelf.", a: "The ranking counts the steps of the path and, for oxygen reduction, the barrier to split O2; the surface's fate at the working potential sits outside it. Check a candidate's Pourbaix diagram at your potential and pH, treat the top of the list as the shortlist to test, and read the Methodology tab's limits."}
-  - {q: "Silver's steps look promising for oxygen reduction, yet it ranks low.", a: "Silver holds oxygen weakly, so splitting O2 on it costs about 1 eV, and that barrier stays at every potential. Its steps alone would reach about 0.6 V; the barrier slows it far below platinum. The Ranking tab shows each material's barrier beside its largest hurdle."}
-  - {q: "How close is platinum's limiting potential to the papers?", a: "The app puts platinum at about 0.79 V vs RHE, against the published 0.78 V, with the same last step (OH* to water) limiting. It carries the paper's water term and the hydrogen bonds within a third of a monolayer of hydroxyl as constants; other metals' absolute values rest on those constants, and the order of the metals is what the check confirms."}
+  - {q: "The best material is one I would leave on the shelf.", a: "The ranking counts the steps of each route and, for oxygen reduction, the barrier to split O2 on the route that splits it; the surface's fate at the working potential sits outside it. Check a candidate's Pourbaix diagram at your potential and pH, treat the top of the list as the shortlist to test, and read the Methodology tab's limits."}
+  - {q: "Silver ranks near the top for oxygen reduction. Should I trust it?", a: "Silver holds oxygen weakly, so splitting O2 on it costs about 1 eV, and its current takes the route through OOH*, where forming OOH* is its largest hurdle. On free energies alone that puts it third, as it does on Nørskov 2004's own numbers. Two things outside the free-energy picture weigh on it: in acid it dissolves above 0.80 V, and the route through OOH* can make hydrogen peroxide in place of water. The paper sets copper, silver and gold aside for this when it compares with experiment. Read silver as a lead for alkaline cells, where it keeps its metal surface up to about 1.17 V vs RHE, and measure how many electrons it moves per O2."}
+  - {q: "How close is platinum's limiting potential to the papers?", a: "The app puts platinum at 0.79 V vs RHE, against the published 0.78 V. In the paper the last two steps on platinum sit 0.45 and 0.43 eV uphill at 1.23 V, essentially the same, and the first of them (O* to OH*) limits; on UMA's binding energies the second (OH* to water) limits, by a few hundredths of an eV. The app carries the paper's water term and its hydroxyl-layer term as constants; other metals' absolute values rest on those constants, and the order of the metals is what the checks confirm."}
   - {q: "Which potential should I compare at?", a: "The potential your device would run at: about -0.1 V for hydrogen evolution, 0.9 V for a fuel-cell cathode, 1.5 V for an electrolyzer anode. Limiting potentials and overpotentials read the same whatever you pick."}

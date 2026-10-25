@@ -6,9 +6,12 @@ model: uma-s-1p1 (fairchem-core 2.23) on this Mac's CPU
 summary: results/summary.json
 
 verdict: >
-  UMA is ready to rank candidates. It reproduces textbook metal chemistry and puts the ammonia sites on
-  titania and vanadia in the right order. Its oxide energies shift with the mode, so each catalyst family
-  gets a short calibration against known values.
+  UMA is ready to rank metal catalysts. It reproduces textbook metal chemistry, and the app's automatic pipeline
+  matches this hand-built benchmark within 0.04 eV (Manual, Methodology, step 5). On oxides it puts the ammonia
+  sites on titania and vanadia in the right order, and the materials mode lands within 0.07 eV of measured ammonia
+  on titania; against OC22's DFT its typical miss on oxides is 0.21 eV in the materials mode and 0.70 eV in the
+  catalysis mode, beyond the app's error bar (the oxide check in the Methodology), so oxides screen in the
+  materials mode as a first pass.
 
 # The case and mode shown as a headline number on the page
 headline: {case: "NH3 on TiO2 (Ti site)", mode: omat, label: "Ammonia on titania", compare: "measured 1.23 ± 0.1"}
@@ -31,8 +34,7 @@ findings:
 
 implications:
   - Rank candidates with UMA, using the materials mode for oxides and the catalysis mode for metals.
-  - Run both modes and carry the gap between them (typically 0.3–0.5 eV on oxides) into the shared model as uncertainty.
-  - Calibrate each catalyst family against a few measured or DFT values.
+  - Give oxides a check of their own. The later oxide check (experiments/oxide_check/) scored every mode against OC22's DFT, and each sits beyond the app's error bar, so supports and promoters stay out of the app until a model passes.
   - Use ammonia binding at acid sites as the descriptor and keep nitric oxide binding on vanadia out of the inputs.
 
 next_test: >

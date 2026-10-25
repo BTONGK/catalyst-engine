@@ -1,5 +1,6 @@
-"""Results of electrochemical screens: progress while one runs, then the ranking by overpotential, the activity
-against potential, the free-energy diagram, the volcano and the 3D views."""
+"""Results of electrochemical screens: progress while one runs, then the ranking by predicted speed at the comparison
+potential (overpotential breaks ties), the activity against potential, the free-energy diagram, the volcano and the
+3D views."""
 
 from __future__ import annotations
 

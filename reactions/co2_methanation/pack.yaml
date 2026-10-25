@@ -45,9 +45,15 @@ screening:
   metric: co2_conversion
   reference: {formula: Ni, name: Nickel}
   optimum_shift_eV: 0.0
+  # the weak side waits on CO splitting into two atoms the descriptor counts: 0.9 eV of barrier per eV of
+  # splitting energy (Nørskov et al., J. Catal. 2002), and that energy moves twice as fast as the descriptor
+  slope_weak: 1.8
   peak_gas: {CO2: 0.5, H2O: -0.5, H2: 0.5}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Ni, Ru, Co, Fe, Rh, Pd, Pt, Cu, Mo]
   basis: >
     How strongly a metal holds carbon and oxygen, the two halves of a split CO, sets methanation rates (Bligaard
     et al., J. Catal. 2004): iron holds them too tightly, platinum and palladium too loosely, and nickel,
     ruthenium and cobalt sit near the top. The descriptor averages the C and O binding; the top is set at nickel's.
+    On the weak side the rate waits on CO splitting into C and O. That barrier rises 0.9 eV per eV of splitting
+    energy on metals (Nørskov et al., J. Catal. 2002), and the splitting energy adds the C and O binding, twice the
+    descriptor, so the weak side falls 1.8 eV per eV of descriptor.

@@ -49,20 +49,31 @@ def test_hydrogen_evolution_overpotential_is_the_size_of_the_hydrogen_free_energ
 def test_oxygen_reduction_on_platinum_follows_norskov_2004():
     """With the paper's Pt(111) binding energies (Table 2: dE_OH 1.05, dE_O 1.57 eV against H2O and H2) and the
     app's corrections, the free energies climb from the products to O2 + 2 H2 at 4.92 eV, every step runs
-    downhill at 0 V, the equilibrium potential levels the ends, and with the OH layer's hydrogen bonds the last
-    step, OH* to water, limits the potential at the paper's 0.78 V (Table 1, 1/3 monolayer with water)."""
+    downhill at 0 V, and the equilibrium potential levels the ends. O2 splits freely on platinum (barrier below
+    zero), so the splitting route sets the limiting potential: with the OH layer's hydrogen bonds, OH* to water
+    limits at 0.80 V. With the paper's own +0.01 eV for O* in place of the app's +0.05, the same arithmetic gives
+    the paper's 0.78 V with O* to OH* limiting (Table 2: dG1 0.45, dG2 0.43 eV at 1.23 V)."""
     s = electro.load_electro("oxygen_reduction")
     g = s.free_energies({"OH": 1.05, "O": 1.57, "OOH": 1.05 + 3.2})
     levels = s.levels(g)
     assert levels[0] == pytest.approx(4.92) and levels[-1] == 0.0
     assert all(step < 0 for step in s.steps(g))
     u_l, k = s.limiting_potential(g)
-    assert s.step_names()[k] == "OH → *"
-    assert u_l == pytest.approx(0.80, abs=0.03) and s.overpotential(g) == pytest.approx(1.23 - u_l)
-    # O2 splitting on platinum runs below every step: its barrier, 1.8 x 1.57 - 2.89 eV, is negative
+    assert s.step_names()[k] == "OH → *" and s.limiting_route(g) == "O2 splits first"
+    assert u_l == pytest.approx(0.80, abs=1e-9) and s.overpotential(g) == pytest.approx(1.23 - u_l)
+    # the OOH route alone stops where OOH* forms: 4.92 - (4.25 + 0.18) eV
+    assert -max(s.steps(g)) == pytest.approx(4.92 - 4.43)
+    # O2 splitting on platinum runs below every step: its barrier, 1.8 x 1.57 - 2.89 eV less 0.13, is negative
     assert s.activation.barrier({"O": 1.57}) == pytest.approx(1.8 * 1.57 - 2.89)
-    barrier = s.barrier({"O": 1.57})
-    assert barrier < 0 and s.hurdle(g, 0.9, barrier) == pytest.approx(s.uphill(g, 0.9))
+    assert s.barrier(g) == pytest.approx(1.8 * 1.57 - 2.89 - 0.13) and s.barrier(g) < 0
+    hurdles = s.route_hurdles(g, 0.9)
+    assert s.hurdle(g, 0.9) == pytest.approx(hurdles["O2 splits first"]) == pytest.approx(0.90 - 0.80)
+    assert s.route_at(g, 0.9) == "O2 splits first" and hurdles["OOH* forms first"] == pytest.approx(0.90 - 0.49)
+    paper = {"OOH": g["OOH"], "O": 1.57 + 0.01, "OH": 1.05 - 0.25}  # the Table 2 footnote's adjustments
+    st = s.steps_at(paper, 1.23)
+    assert st[2] == pytest.approx(0.45, abs=0.005) and st[3] == pytest.approx(0.43, abs=0.005)
+    u_paper, k_paper = s.limiting_potential(paper)
+    assert u_paper == pytest.approx(0.78, abs=0.005) and s.step_names()[k_paper] == "O → OH"
     at_eq = electro.diagram(s, g, 1.23)
     assert at_eq[0]["level"] == pytest.approx(0.0) and at_eq[-1]["level"] == 0.0
     # the free-energy diagram's steps at a potential are the steps shifted by it
@@ -85,6 +96,76 @@ def test_oxygen_evolution_volcano_peaks_where_man_2011_puts_it():
     assert s.levels(g)[-1] == pytest.approx(4.92)
     assert s.limiting_potential(g)[0] == pytest.approx(max(s.steps(g)))
     assert s.overpotential(g) > 0
+    # its catalysts are oxides, where UMA misses DFT beyond the error bar: the playground keeps it, the Design page waits
+    assert not s.on_design_page and electro.load_electro("oxygen_reduction").on_design_page
+
+
+def test_the_paper_s_table_2_comes_out_of_the_app_s_arithmetic():
+    """Nørskov 2004, Table 2, with its footnote's adjustments (G_OH = dE_OH - 0.25, G_O = dE_O + 0.01 eV): the app's
+    last two steps at 1.23 V are the table's dG1 and dG2, and its splitting barrier the table's E_a."""
+    s = electro.load_electro("oxygen_reduction")
+    table = {"Pt": (1.05, 1.57, 0.45, 0.43, -0.06), "Au": (1.49, 2.75, -0.29, -0.01, 2.06),
+             "Ni": (0.13, 0.34, 0.76, 1.35, -2.28), "W": (-0.80, -2.06, 2.23, 2.28, -6.60)}
+    for d_oh, d_o, dg1, dg2, ea in table.values():
+        g = {"OOH": 4.0, "O": d_o + 0.01, "OH": d_oh - 0.25}
+        st = s.steps_at(g, 1.23)
+        assert st[2] == pytest.approx(dg1, abs=0.006) and st[3] == pytest.approx(dg2, abs=0.006)
+        assert s.activation.barrier({"O": d_o}) == pytest.approx(ea, abs=0.006)
+
+
+def test_the_volcano_follows_the_paper_s_scaling_and_both_routes():
+    """With dE_OH = 0.5 dE_O + 0.05 and dE_OOH = 0.5 dE_O + 3.18 eV (Nørskov 2004, Fig. 8) and the app's corrections,
+    the line peaks at 0.68 V where OH* sits at 0.68 eV; to its left O2 splits freely, to its right OOH* formation
+    limits. Each line reproduces the full arithmetic on a surface built from those relations."""
+    s = electro.load_electro("oxygen_reduction")
+    assert s.volcano_limit(0.68) == pytest.approx(0.68)
+    assert s.volcano_limit(0.40) == pytest.approx(0.40) and s.volcano_limit(0.90) == pytest.approx(1.36 - 0.90)
+    for x in (0.2, 0.5, 0.64, 0.7, 1.0):
+        d_oh = x + 0.25
+        d_o = 2 * (d_oh - 0.05)
+        g = s.free_energies({"OH": d_oh, "O": d_o, "OOH": 0.5 * d_o + 3.18})
+        assert g["OH"] == pytest.approx(x)
+        assert s.volcano_limit(x) == pytest.approx(s.limiting_potential(g)[0], abs=1e-9)
+        assert (s.volcano_barrier[0] * x + s.volcano_barrier[1]) == pytest.approx(s.barrier(g), abs=1e-9)
+
+
+def test_the_ideal_catalyst_levels_every_step_at_the_equilibrium_potential():
+    """A reduction path runs down from the reactants, an oxidation path up; either way the ideal staircase has every
+    step the same size and zero overpotential."""
+    for pid in electro.list_electro():
+        s = electro.load_electro(pid)
+        ideal = s.ideal()
+        assert s.steps(ideal) == pytest.approx([s.steps(ideal)[0]] * s.electrons, abs=1e-12)
+        assert s.overpotential(ideal) == pytest.approx(0.0, abs=1e-12)
+    assert electro.load_electro("oxygen_reduction").ideal() == pytest.approx({"OOH": 3.69, "O": 2.46, "OH": 1.23})
+    assert electro.load_electro("oxygen_evolution").ideal() == pytest.approx({"OH": 1.23, "O": 2.46, "OOH": 3.69})
+
+
+def test_the_likely_ranges_are_the_exact_ends_over_the_error_box():
+    """Every intermediate moves within ±0.15 eV at once: a fine grid over that box stays inside the computed ranges
+    and comes within one grid spacing of their ends, the volcano top and the switch between routes included. The
+    exact ends can sit between grid points, at the potential where the O2-splitting barrier crosses zero."""
+    import itertools
+
+    import numpy as np
+    s = electro.load_electro("oxygen_reduction")
+    g = s.free_energies({"OH": 1.04, "O": 1.58, "OOH": 4.05})  # platinum-like: its barrier crosses zero in the box
+    lo, hi = electro.limiting_range(s, g)
+    h_lo, h_hi = electro.hurdle_range(s, g, 0.9)
+    n = 31
+    spacing = 2 * electro.SIGMA_EV / (n - 1)
+    axes = [np.linspace(g[a] - electro.SIGMA_EV, g[a] + electro.SIGMA_EV, n) for a in s.adsorbates]
+    ul, hu = [], []
+    for v in itertools.product(*axes):
+        gg = dict(zip(s.adsorbates, v))
+        ul.append(s.limiting_potential(gg)[0])
+        hu.append(s.hurdle(gg, 0.9))
+    tol = spacing + 1e-9
+    assert lo - 1e-9 <= min(ul) <= lo + tol and hi - tol <= max(ul) <= hi + 1e-9
+    assert h_lo - 1e-9 <= min(hu) <= h_lo + tol and h_hi - tol <= max(hu) <= h_hi + 1e-9
+    # hydrogen evolution: a surface 0.08 eV from the top reaches it within its error bar
+    her = electro.load_electro("hydrogen_evolution")
+    assert electro.limiting_range(her, {"H": -0.08}) == pytest.approx((-0.23, 0.0), abs=1e-9)
 
 
 # ---------------------------------------------------------------- predictions
@@ -139,9 +220,10 @@ def test_predictions_rank_by_overpotential_and_set_speeds_against_the_catalyst_t
     assert all(p.complete for p in preds)
 
 
-def test_weak_binders_pay_the_oxygen_splitting_barrier_so_platinum_leads_silver():
-    """A silver-like surface whose steps alone would beat platinum (limiting potential 1.0 V against 0.8 V) binds
-    O too weakly to split O2: its barrier, held at every potential, ranks it below platinum (Nørskov 2004)."""
+def test_the_faster_route_carries_the_current():
+    """Nørskov 2004, Fig. 8: the routes run side by side and the faster one dominates. Platinum splits O2 freely and
+    goes through O*; a silver-like surface binds O too weakly to split O2 (barrier 0.67 eV), so it goes through OOH*
+    and skips that barrier, at its OOH* step's cost; gold pays more on the same route."""
     s = electro.load_electro("oxygen_reduction")
     folder = _electro_screen(s, {"Pt": {"OOH": 4.25, "O": 1.57, "OH": 1.05},
                                  "Ag": {"OOH": 4.1, "O": 2.05, "OH": 1.25},
@@ -149,12 +231,14 @@ def test_weak_binders_pay_the_oxygen_splitting_barrier_so_platinum_leads_silver(
     preds, curves = electro.predict(s, screening.read_job(folder), screening.read_results(folder))
     assert [p.formula for p in preds] == ["Pt", "Ag", "Au"]
     pt, ag, au = preds
-    assert ag.limiting_V > pt.limiting_V  # the steps alone favor silver
-    assert ag.barrier_eV == pytest.approx(1.8 * 2.05 - 2.89 - 0.13) and ag.hurdle_eV == pytest.approx(ag.barrier_eV)
-    assert au.barrier_eV > ag.barrier_eV and pt.barrier_eV < 0
-    assert ag.rate_ratio < 1e-6
-    up = curves["materials"][ag.material]["uphill"]
-    assert sum(abs(x - ag.barrier_eV) < 1e-9 for x in up) > len(up) // 3  # flat where the barrier is the hurdle
+    assert pt.route == "O2 splits first" and pt.hurdle_eV == pytest.approx(0.90 - 0.80)
+    assert ag.barrier_eV == pytest.approx(1.8 * 2.05 - 2.89 - 0.13) and ag.route == "OOH* forms first"
+    assert ag.hurdle_eV == pytest.approx(4.1 + 0.18 - 4.92 + 0.90)  # its OOH* step, below the barrier
+    assert ag.limiting_route == "OOH* forms first" and ag.limiting_V == pytest.approx(4.92 - 4.28)
+    assert au.barrier_eV > ag.barrier_eV and pt.barrier_eV < 0 and au.hurdle_eV > ag.hurdle_eV
+    assert ag.rate_range[0] <= ag.rate_ratio <= ag.rate_range[1]
+    # at low potential every route of every surface runs downhill: the same top speed
+    assert curves["materials"][ag.material]["ratio"][0] == pytest.approx(1.0)
 
 
 def test_an_intermediate_that_splits_everywhere_leaves_a_material_without_a_limiting_potential():
@@ -197,12 +281,15 @@ def test_the_electro_design_page_adds_metals_and_switches_reactions():
     next(b for b in at.button if b.label == "Add these metals").click().run()
     assert not at.exception, at.exception
     assert len(at.session_state["electro_candidates"]) > 0
-    at.selectbox(key="electro_pack").set_value("oxygen_evolution").run()
+    shown = at.selectbox(key="electro_pack").options  # the reactions on the Design page, by their names
+    assert len(shown) == 2 and all(electro.load_electro(i).name in " ".join(shown)
+                                   for i in ("hydrogen_evolution", "oxygen_reduction"))
+    at.selectbox(key="electro_pack").set_value("hydrogen_evolution").run()
     assert not at.exception, at.exception
-    assert any("Iridium oxide" in m.value for m in at.markdown)
+    assert any("Platinum" in m.value for m in at.markdown)
     at.toggle(key="electro_advanced").set_value(True).run()
     assert not at.exception, at.exception
-    assert at.selectbox(key="electro_task_adv_oxygen_evolution").value == "omat"
+    assert at.selectbox(key="electro_task_adv_hydrogen_evolution").value == "oc20"
 
 
 def test_the_electro_results_page_shows_a_screen():
@@ -217,6 +304,8 @@ def test_the_electro_results_page_shows_a_screen():
     assert [t.label for t in at.tabs][:4] == ["Ranking", "Activity vs potential", "Free-energy diagram", "Volcano"]
     table = at.dataframe[0].value
     assert "Overpotential (V)" in table.columns and "OH* (eV)" in table.columns
+    assert "Faster route at 0.90 V" in table.columns and set(table["Faster route at 0.90 V"]) <= {
+        "O2 splits first", "OOH* forms first", electro.EITHER}
     assert any("the catalyst to beat, leads" in m.value or "Best candidate" in m.value for m in at.markdown)
 
 
@@ -238,6 +327,13 @@ def test_the_playground_and_manual_render_and_the_ideal_catalyst_has_zero_overpo
     next(b for b in at.button if b.label == "Set the ideal catalyst").click().run()
     assert not at.exception, at.exception
     assert next(m.value for m in at.metric if m.label == "Overpotential") == "0.00 V"
+    # every reaction file runs in the playground, oxygen evolution included
+    assert set(at.selectbox(key="epg_pack").options) == {electro.load_electro(i).name for i in electro.list_electro()}
+    for pid in ("oxygen_reduction", "oxygen_evolution"):
+        at.selectbox(key="epg_pack").set_value(pid).run()
+        assert not at.exception, at.exception
+        next(b for b in at.button if b.label == "Set the ideal catalyst").click().run()
+        assert next(m.value for m in at.metric if m.label == "Overpotential") == "0.00 V"
     at = AppTest.from_file(str(VIEWS / "electro_manual.py"), default_timeout=120).run()
     assert not at.exception, at.exception
     assert any("Electrochemistry basics" in t.label for t in at.tabs)

@@ -14,15 +14,17 @@ abstract: >
   volcano, a simulated reactor, a calibration against the catalyst to beat, and an error bar. This page states every
   assumption and tests each step on its own. The atom-scale steps hold up: more sites, tighter convergence and
   thicker slabs move a binding energy by {sites_max_gain:.2f}, {tolerance_max_gap:.3f} and {slab_thickness_max_gap:.3f} eV
-  at most, and the automatic pipeline reproduces an independent hand-built benchmark within {benchmark_max:.2f} eV. The
+  at most, and the automatic pipeline reproduces a benchmark built by hand with the same model within
+  {benchmark_max:.2f} eV. The
   reactor reproduces an exact solution within {reactor_exact_pct:.3f} percentage points of conversion, balances every atom and reaches the equilibrium
   Cantera computes on its own. One check caught a fault, now fixed: the rule that picks the surface chose open faces
   on two ordered alloys. Two steps carry most of the uncertainty: the atoms an alloy shows on its surface (binding
-  moves by up to {seg_max:.1f} eV when one element gathers on top) and the volcano, whose generic
-  slopes place metals that bind strongly far below where experiments find them. The volcano's peak moves with
+  moves by up to {seg_max:.1f} eV when one element gathers on top) and the volcano, whose generic strong-side
+  slope places metals that bind strongly far below where experiments find them. The volcano's peak moves with
   temperature and gas mix, following the free energy of the gas its key molecule comes from, so the leader can change
   across a temperature range; an exact two-step solution moves the peak {peak_follow_min:.2f} to {peak_follow_max:.2f}
-  times as far as that rule, and the likely range carries the difference. Read the ranking as a guide to the
+  times as far as that rule, and the likely range spans {peak_follow_low:.2f} to {peak_follow_high:.2f} times to
+  carry the difference. Read the ranking as a guide to the
   materials worth a closer look, and speed ratios beyond about tenfold as qualitative. A closing section lists the
   parts of a real catalyst the method leaves out (the support, promoters, zeolite sites, diffusion inside a coat),
   why each stays out, and how large each is. Oxides carry the largest error measured there: against OC22's DFT the
@@ -234,10 +236,10 @@ steps:
         effect: A molecule that would move into the surface or rearrange at working temperature looks stable where it started.
     checks:
       - text: >
-          Published: on the OC20 test set, UMA-S's adsorption energies sit {uma_mae_id:.3f} eV from DFT on average for
-          familiar surfaces and {uma_mae_ood:.3f} eV for new combinations of molecule and surface. In AdsorbML, which asks
-          for the best spot over many starts, UMA-S 1.1 lands within 0.1 eV of DFT's answer for {uma_adsorbml:.1f}% of
-          systems (Wood et al. 2025, Tables 4 and 17).
+          Published: on the OC20 test set, UMA-S 1.1's adsorption energies sit {uma_mae_id:.4f} eV from DFT on
+          average for molecules and surfaces like those it trained on, and {uma_mae_ood:.4f} eV where both the molecule
+          and the surface are new to it. In AdsorbML, which asks for the best spot over many starts, UMA-S 1.1 lands
+          within 0.1 eV of DFT's answer for {uma_adsorbml:.1f}% of systems (Wood et al. 2025, Tables 2 and 4).
       - text: >
           Re-relaxing each best structure to 0.01 eV/Å, five times tighter, moves its binding by at most
           {tolerance_max_gap:.3f} eV.
@@ -307,9 +309,10 @@ steps:
           table: gas
           columns: {quantity: Quantity, uma_eV: "UMA (eV)", reference_eV: "Reference (eV)", reference: Reference, difference: "Difference (eV)"}
       - text: >
-          An independent benchmark (the Model accuracy page) set up oxygen on {benchmark_n} metals by hand: 3×3 cells,
-          four layers, sites placed one by one. The app's automatic pipeline matches it within {benchmark_max:.2f} eV
-          (average {benchmark_mae:.2f} eV, R² {benchmark_r2:.4f}).
+          A benchmark built by hand with the same UMA model (the Model accuracy page) set up oxygen on {benchmark_n}
+          metals: 3×3 cells, four layers, sites placed one by one. The app's automatic pipeline matches it within
+          {benchmark_max:.2f} eV (average {benchmark_mae:.2f} eV, R² {benchmark_r2:.4f}). This checks the automation;
+          UMA's own error against DFT is the published figure in step 4.
         see: The app against the hand-built benchmark
         chart: {kind: parity, table: benchmark, x: E_benchmark, y: E_app, label: material, x_title: "Hand-built benchmark (eV)", y_title: "The app (eV)", caption: "Each dot is one metal; the dashed line marks perfect agreement."}
         table:
@@ -347,7 +350,7 @@ steps:
       - tex: 'd^*(T, p) = d_\text{ref} + \delta + \sum_g n_g \left[\mu_g(T, p_g) - \mu_g(T_0, p_g^0)\right], \qquad \mu_g = g^\circ_g(T) + k_B T \ln\frac{p_g}{p^\circ}'
         words: "the peak sits a distance δ from the catalyst to beat's own descriptor at the pack's anchor temperature T₀ and standard feed (δ from published work: 0.2 eV weaker than platinum for CO oxidation), and elsewhere moves with the free energy μ of the gas the key molecule comes from, n_g molecules per molecule bound (½ O₂ per oxygen atom); for CO oxidation it moves {peak_move_co:.2f} eV toward stronger binding per 100 °C of heat."
       - tex: 'h(d) = s_w \max(d - d^*, 0) + s_s \max(d^* - d, 0)'
-        words: how far below the peak a material sits, falling by s_w per eV on the weak side and s_s on the strong side (0.9 and 1.0 for every reaction today).
+        words: "how far below the peak a material sits, falling by s_w per eV on the weak side and s_s on the strong side (A11): {slope_weak_example:.1f} and {slope_strong_example:.1f} for CO oxidation."
       - tex: '\Delta E^\ddagger(T) = h(d) - h(d_\text{ref}), \qquad \frac{r}{r_\text{ref}} = \exp\!\left(-\frac{\Delta E^\ddagger(T)}{k_B T}\right)'
         words: "the extra energy barrier against the catalyst to beat, at each temperature, sets the speed ratio; at {design_T:.0f} °C each 0.1 eV of extra barrier slows the reaction {factor_01:.0f} times, at 400 °C {factor_01_400:.1f} times."
     assumptions:
@@ -361,8 +364,16 @@ steps:
         short: Barriers move in step with binding
         text: >
           The Brønsted–Evans–Polanyi relation: a change in binding changes the barrier in proportion (Bligaard et al.
-          2004). Every reaction uses the same generic slopes, 0.9 and 1.0 eV per eV.
-        effect: Wrong slopes stretch or squeeze the speed ratios, and far from the peak the error compounds into huge factors.
+          2004). On metals the barrier to split a molecule rises about 0.9 eV for each eV the split grows less
+          favorable (Nørskov et al. 2002). Where the weak side waits on a molecule splitting into two atoms the
+          descriptor counts (O2 into two O for CO oxidation and engine exhaust, N2 into two N for ammonia synthesis,
+          CO into C and O for methanation), the splitting energy moves twice as fast as the descriptor, so that side
+          falls 1.8 eV per eV, the slope Nørskov et al. (2004) use for O2 splitting; the other reactions keep the
+          generic 0.9. The strong side falls a generic 1.0 eV per eV in every pack.
+        effect: >
+          Wrong slopes stretch or squeeze the speed ratios, and far from the peak the error compounds into huge
+          factors. At the pack's own peak, every slope pair in the check below keeps the order's rank correlation at
+          {volcano_spearman_slopes_min:.2f} or higher.
       - id: A12
         short: One mechanism and prefactor for every material
         text: Every material runs the reaction by the same route with the same attempt frequency; only the barrier changes.
@@ -374,10 +385,12 @@ steps:
           there, the peak keeps one adsorption free energy for the key molecule against its gas, so it moves by that
           gas's change in free energy (the chemical potential of ab initio thermodynamics, Reuter and Scheffler 2001).
           The bound molecule's own heat and entropy stay out, and a gas missing from the inlet counts at standard
-          pressure. The likely range also covers a peak that moves only half as far.
+          pressure. The likely range lets the peak move anywhere from {peak_follow_low:.2f} to
+          {peak_follow_high:.2f} times as far as its gas, the span an exact two-step solution calls for (below).
         effect: >
-          Where adsorption itself is slow enough to set the rate, the real peak moves less, down to about half as far;
-          products building up along the bed shift it further. Far from the anchor, the move is an extrapolation.
+          Where sticking itself is slow enough to set the rate, the real peak moves less, down to
+          {peak_follow_min:.2f} times as far in the exact cycle; products building up along the bed shift it further.
+          Far from the anchor, the move is an extrapolation.
       - id: A14
         short: Errors shared by every material cancel
         text: The catalyst to beat runs in the same screen with the same settings, so constant offsets of the model and of DFT drop out of every comparison.
@@ -387,28 +400,32 @@ steps:
           The arithmetic is tested (tests/test_design.py): the catalyst to beat sits at exactly 1×, a material at the
           peak gains exactly h(d_ref), and each side rises at its slope.
       - text: >
-          Moving the peak anywhere from 0 to 0.4 eV and the slopes anywhere from 0.5 to 1.0 keeps the ranking's rank
-          correlation at {volcano_spearman_all_min:.2f} or higher (1 means the same order); the leader is always one of
-          {volcano_leaders}.
-        see: The ranking under 25 volcano settings
+          {volcano_settings_n} volcano settings, with the peak from 0 to 0.4 eV weaker than platinum and the slopes
+          from {volcano_slopes_weak} on the weak side and {volcano_slopes_strong} on the strong side, keep the example's
+          rank correlation with its own order at {volcano_spearman_all_min:.2f} or higher (1 means the same order); the
+          leader is always one of {volcano_leaders}.
+        see: The ranking under {volcano_settings_n} volcano settings
         table:
           table: volcano_sensitivity
           columns: {optimum_shift_eV: "Peak δ (eV)", slope_weak: Weak-side slope, slope_strong: Strong-side slope, leader: Leader, top3: Top three, spearman: Rank correlation}
       - text: >
-          Against experiment, this step carries the largest uncertainty in the app. With the generic slopes, the
-          example puts metals that bind oxygen strongly (Rh, Ru, Ni, Co) a trillion times or more below platinum for CO
-          oxidation, while supported rhodium, ruthenium and palladium are well-known, active CO oxidation catalysts. Two
-          causes are known: on platinum-group metals CO oxidation also depends on how strongly CO binds (Falsig et al.
-          2008), and the strong side's slope compounds far from the peak. The next version fits each reaction's
+          Against experiment, this step carries the largest uncertainty in the app. With these slopes the example puts
+          rhodium at {example_rh_design} of platinum's speed for CO oxidation at {design_T:.0f} °C, and nickel,
+          ruthenium and cobalt slower still, while supported rhodium, ruthenium and palladium are well-known, active CO
+          oxidation catalysts. Two causes are known: on platinum-group metals CO oxidation also depends on how strongly
+          CO binds (Falsig et al. 2008), and the strong side's generic slope compounds far from the peak. The next version fits each reaction's
           descriptor and slopes to published volcano data and checks them against measured activities.
       - text: >
           The moving peak against an exact solution. A two-step cycle (the gas sticks, the bound molecule reacts away),
           solved at steady state with collision-rate sticking and detailed balance against the gas, for oxygen at the
           CO oxidation feed: from {peak_check_T} °C to 200 °C hotter the gas's free energy falls {peak_gas_change_200:.2f}
           eV, and the cycle's peak moves {peak_follow_min:.2f} to {peak_follow_max:.2f} times as far depending on the
-          mechanism. Where sticking is free of a barrier the peak follows the gas fully, as the app assumes; with the
-          app's generic slopes read as a barrier to sticking it moves {peak_follow_app:.2f} times as far, which the likely
-          range covers with its half-move case.
+          mechanism. Where sticking is free of a barrier the peak follows the gas fully, as the app assumes; with CO
+          oxidation's slopes ({slope_weak_example:.1f} and {slope_strong_example:.1f}) read as a barrier to sticking it
+          moves {peak_follow_app:.2f} times as far. The likely range lets the peak move anywhere from
+          {peak_follow_low:.2f} to {peak_follow_high:.2f} times as far as its gas, so it {peak_follow_covers} every case in the
+          table, and takes the exact lowest and highest barrier over that span and the descriptor's error bar together
+          (step 9).
         see: The exact cycle's peak against the gas
         table:
           table: peak_cycle
@@ -569,12 +586,15 @@ steps:
     does: >
       Each binding energy carries an error bar of σ = {sigma_assumed:.2f} eV; a descriptor that averages several binding
       energies carries σ times the square root of the summed squared weights. The app moves each descriptor up and
-      down by its error bar, and at every temperature also lets the volcano's peak move fully or halfway with its
-      gas (step 6); it runs the volcano and the reactor for each case and shows the spread as the likely range. At
-      the anchor temperature the peak's two cases agree, so the range there comes from the binding energy alone.
+      down by its error bar, and at every temperature also lets the volcano's peak move anywhere from
+      {peak_follow_low:.2f} to {peak_follow_high:.2f} times as far as its gas (step 6). Over all those cases together it finds the
+      lowest and highest extra barrier exactly: the barrier is made of straight pieces, so its ends sit at the corners
+      of that box of cases or where a material meets the peak. The reactor then runs at both ends, and the spread is
+      the likely range. Where the peak sits still, at the anchor temperature with the standard feed, the range comes
+      from the binding energy alone.
     equations:
-      - tex: '\sigma_d = \sigma \sqrt{\textstyle\sum_a w_a^2}, \qquad \frac{r}{r_\text{ref}} \in \left[\, e^{-\Delta E^\ddagger(d + \sigma_d)/k_BT},\ e^{-\Delta E^\ddagger(d - \sigma_d)/k_BT} \,\right]'
-        words: "the range runs from the descriptor's error bar on one side to the other, over both cases of the peak's move (and includes the peak when it lies in between); at {design_T:.0f} °C, ±{sigma_assumed:.2f} eV spans a factor of {sigma_factor:.0f} either way."
+      - tex: '\sigma_d = \sigma \sqrt{\textstyle\sum_a w_a^2}, \qquad \frac{r}{r_\text{ref}} \in \left[\, e^{-\max \Delta E^\ddagger/k_BT},\ e^{-\min \Delta E^\ddagger/k_BT} \,\right] \ \text{over}\ \lvert \tilde d - d \rvert \le \sigma_d,\ f_\text{lo} \le f \le f_\text{hi}'
+        words: "the range runs between the slowest and the fastest case over the descriptor's error bar and every share f of the peak's move in the span; at {design_T:.0f} °C, ±{sigma_assumed:.2f} eV spans a factor of {sigma_factor:.0f} either way where the volcano falls 1 eV per eV, and about {sigma_factor_weak:.0f} on CO oxidation's weak side."
     assumptions:
       - id: A19
         short: One error bar for every material
@@ -582,6 +602,10 @@ steps:
         effect: An error shared by a whole family, such as oxides in one UMA mode, can exceed the bar.
     checks:
       - text: The error budget below adds up the parts this page measures.
+      - text: >
+          The exact ends hold against brute force: for every reaction pack, a grid of cases over the error bar and
+          the peak's span stays inside them and reaches each within the grid's own spacing (tests/test_design.py); a
+          301 × 301 grid comes within 0.0005 eV.
     verdict: "σ = {sigma_assumed:.2f} eV covers the parts measured here, {sigma_combined:.2f} eV combined, with room for the DFT functional's own error."
 
 example:
@@ -602,10 +626,10 @@ example:
       share of CO each material converts at 180 °C in the example's reactor.
     - "Order: {example_ranking}."
     - "Within the error bar of platinum: {example_within_error}."
-    - "Rh, Ru, Ni and Co sit far out on the strong-binding side, where step 6 flags the volcano as qualitative."
+    - "Rh, Ni, Ru and Co sit far out on the strong-binding side and gold on the weak side, where step 6 flags the volcano as qualitative."
     - >
-      Across the screen's {example_t_lo:.0f} to {example_t_hi:.0f} °C the peak moves {example_peak_hot:.2f} eV toward stronger binding, and the
-      lead passes along: {example_leader_spans}. PdPt climbs to {example_pdpt_hot:.2g} times platinum's speed at
+      Across the screen's {example_t_lo:.0f} to {example_t_hi:.0f} °C the peak moves {example_peak_hot:.2f} eV toward stronger binding;
+      the leader at each temperature: {example_leader_spans}. PdPt climbs to {example_pdpt_hot:.2g} times platinum's speed at
       {example_t_hi:.0f} °C, and rhodium rises from {example_rh_design} of platinum's speed at {design_T:.0f} °C to
       {example_rh_hot}: the direction practice shows for metals that bind strongly, at a size step 6's slopes keep
       qualitative.
@@ -616,7 +640,7 @@ budget:
     How large is the error on one binding energy? The parts measured or published, combined as independent errors
     (the square root of the sum of squares):
   rows:
-    - {source: UMA against DFT, size: "{uma_sigma_est:.3f}", basis: "Published average error {uma_mae_ood:.3f} eV on new molecule-surface combinations, as a standard deviation (× √(π/2))"}
+    - {source: UMA against DFT, size: "{uma_sigma_est:.3f}", basis: "Published average error {uma_mae_ood:.4f} eV where both molecule and surface are new to UMA (OC20 test), as a standard deviation (× √(π/2))"}
     - {source: Spots tried, size: "{sites_max_gain:.3f}", basis: Step 3}
     - {source: Convergence, size: "{tolerance_max_gap:.3f}", basis: Step 4}
     - {source: Slab thickness and coverage, size: "{slab_size_max_gap:.3f}", basis: "Step 2: thicker slabs, and how much the coverage effect differs between metals"}
@@ -782,6 +806,25 @@ limits:
         table: nh3
         columns: {mode: Mode, anatase_001: "Anatase (001) (eV)", anatase_101_app: "Anatase (101), app's cut (eV)", anatase_101_app_thick: "Same, thicker (eV)", v2o5: "V2O5 (eV)", far: "Drifted off (eV)"}
 
+audit:
+  title: What the latest review checked and changed
+  text: >
+    On 2026-10-25 every step on this page was traced back to its source and every check rerun. The atom-scale steps
+    held. The changes below came out of the review, and every number above already includes them.
+  checked:
+    - "Every UMA number on this page, rerun from scratch: all 361 match the stored results within 0.003 eV."
+    - "UMA's published accuracy, read again in the UMA paper: {uma_mae_id:.4f} and {uma_mae_ood:.4f} eV on OC20's test set (Table 2) and {uma_adsorbml:.1f}% in AdsorbML (Table 4)."
+    - "The reactor against its exact solution ({reactor_exact_pct:.3f} percentage points), the atom balance and Cantera's equilibrium (step 7), and the anchor at each pack's stated point (step 8)."
+    - "Each pack's volcano slopes against the Brønsted–Evans–Polanyi work they rest on (A11)."
+    - "The likely range against brute force over every case it covers (step 9)."
+  changed:
+    - "The volcano's weak side now falls 1.8 eV per eV for the four reactions whose weak side waits on a molecule splitting into two atoms the descriptor counts (CO oxidation, engine exhaust, ammonia synthesis, methanation), twice the generic 0.9 (A11). In the CO oxidation example silver moves from fifth to ninth, and platinum leads across the whole 50 to 350 °C."
+    - "The volcano check runs {volcano_settings_n} settings, with weak-side slopes from {volcano_slopes_weak} (step 6)."
+    - "The likely range lets the peak move anywhere from {peak_follow_low:.2f} to {peak_follow_high:.2f} times as far as its gas, the bracket the exact two-step cycle calls for with the new slopes, and finds its ends exactly (step 9). Before, it sampled a few cases with the peak moving fully or halfway."
+    - "The hand-built benchmark is described as what it is: the same UMA model with structures set up by hand, a check of the automation (step 5)."
+    - "UMA's published errors cite Tables 2 and 4 of the UMA paper with their exact values (step 4)."
+    - "Rhodium's place in the example comes straight from the computed figure, {example_rh_design} of platinum's speed (step 6)."
+
 reproduce:
   text: >
     Two scripts produce every number on this page. The first runs UMA ({atomistic_minutes:.0f} minutes on this Mac);
@@ -811,6 +854,8 @@ references:
   - {cite: "Hammer, B., Hansen, L. B. & Nørskov, J. K. Improved adsorption energetics within density-functional theory using revised Perdew-Burke-Ernzerhof functionals (RPBE). Phys. Rev. B 59, 7413 (1999).", url: "https://doi.org/10.1103/PhysRevB.59.7413"}
   - {cite: "Abild-Pedersen, F. et al. Scaling properties of adsorption energies for hydrogen-containing molecules on transition-metal surfaces. Phys. Rev. Lett. 99, 016105 (2007).", url: "https://doi.org/10.1103/PhysRevLett.99.016105"}
   - {cite: "Bligaard, T. et al. The Brønsted–Evans–Polanyi relation and the volcano curve in heterogeneous catalysis. J. Catal. 224, 206 (2004).", url: "https://doi.org/10.1016/j.jcat.2004.02.034"}
+  - {cite: "Nørskov, J. K. et al. Universality in heterogeneous catalysis. J. Catal. 209, 275 (2002).", url: "https://doi.org/10.1006/jcat.2002.3615"}
+  - {cite: "Nørskov, J. K. et al. Origin of the overpotential for oxygen reduction at a fuel-cell cathode. J. Phys. Chem. B 108, 17886 (2004).", url: "https://doi.org/10.1021/jp047349j"}
   - {cite: "Reuter, K. & Scheffler, M. Composition, structure, and stability of RuO2(110) as a function of oxygen pressure. Phys. Rev. B 65, 035406 (2001).", url: "https://doi.org/10.1103/PhysRevB.65.035406"}
   - {cite: "Medford, A. J. et al. From the Sabatier principle to a predictive theory of transition-metal heterogeneous catalysis. J. Catal. 328, 36 (2015).", url: "https://doi.org/10.1016/j.jcat.2014.12.033"}
   - {cite: "Falsig, H. et al. Trends in the catalytic CO oxidation activity of nanoparticles. Angew. Chem. Int. Ed. 47, 4835 (2008).", url: "https://doi.org/10.1002/anie.200801479"}

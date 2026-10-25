@@ -6,10 +6,25 @@
   "her_mae_pbe": 0.136,
   "her_max_rpbe": 0.094,
   "her_offset_rpbe": -0.015,
+  "her_low_n": 3,
+  "her_low_metals": "Ag, Au, Cu",
+  "her_low_mae": 0.023,
+  "her_low_max": 0.059,
+  "her_full_n": 7,
+  "her_full_mae": 0.045,
+  "her_full_offset": -0.031,
+  "her_full_words": "0.03 eV more strongly",
   "her_spearman": 0.78,
   "her_spearman_published": 0.82,
   "her_j0_n": 9,
   "her_pt": -0.084,
+  "table2_n": 13,
+  "table2_values": 39,
+  "table2_max_gap": 0.004,
+  "table2_pt_limit": 0.78,
+  "table2_pt_step": "O → OH",
+  "table2_pt_dg1": 0.45,
+  "table2_pt_dg2": 0.43,
   "orr_n": 10,
   "orr_oh_mae": 0.08,
   "orr_o_mae": 0.128,
@@ -17,31 +32,73 @@
   "orr_o_max": 0.293,
   "orr_oh_offset": 0.013,
   "orr_o_offset": -0.077,
+  "orr_o_words": "0.08 eV more strongly",
   "orr_oh_spearman": 0.99,
   "orr_o_spearman": 1.0,
   "ooh_n": 10,
   "ooh_gap_mean": 3.33,
   "ooh_gap_sd": 0.25,
-  "ooh_gap_published": 3.2,
-  "ooh_gap_published_mae": 0.17,
+  "ooh_gap_metals": 3.13,
+  "ooh_gap_oxides": 3.2,
+  "ooh_gap_oxides_mae": 0.17,
+  "ooh_vs_metals": 0.2,
+  "ooh_vs_oxides": 0.13,
   "pt_orr_limit": 0.79,
+  "pt_orr_lo": 0.539,
+  "pt_orr_hi": 0.864,
+  "pt_orr_step": "OH → *",
+  "pt_orr_route": "O2 splits first",
   "pt_orr_limit_published": 0.78,
-  "pt_orr_step": "OH \u2192 *",
-  "pt_her_eta": 0.084,
-  "orr_ranking": "Pt, Pd, Ir, Rh, Cu, Ag, Ni, Ru, Co, Au",
-  "her_ranking": "Ir, Pt, Rh, Pd, Cu, Ru, Ni, Co, Au, Ag",
-  "orr_top3": "Pt, Pd, Ir",
-  "orr_barriers": "Co -3.94, Ru -3.38, Ni -2.86, Rh -2.08, Ir -1.25, Cu -1.16, Pd -0.53, Pt -0.18, Ag +1.01, Au +2.01",
-  "ag_barrier": 1.012,
-  "au_barrier": 2.007,
   "pt_barrier": -0.178,
-  "ag_orr_limit": 0.613,
-  "orr_incomplete": "none",
+  "pt_hurdle": 0.11,
+  "range_grid_gap": 0.005,
+  "range_grid_inside": "inside",
+  "pt_line_V": 0.57,
+  "pt_o_tighter": 0.4,
+  "paper_pt_o_line": 2.0,
+  "paper_pt_o": 1.57,
+  "orr_compare_V": 0.9,
+  "orr_ranking": "Pt, Pd, Ag, Ir, Rh, Cu, Au, Ni, Ru, Co",
+  "orr_top3": "Pt, Pd, Ag",
+  "orr_ranking_paper": "Pt, Pd, Ag, Ir, Au, Cu, Rh, Ni, Ru, Co",
+  "orr_spearman_paper": 0.95,
+  "orr_set_aside": "Pt, Pd, Ir, Rh, Ni, Ru, Co",
+  "orr_set_aside_paper": "Pt, Pd, Ir, Rh, Ni, Ru, Co",
+  "orr_follows_paper": "which opens with Pt and Pd, then Ir and Rh, as the paper reports from experiment",
+  "orr_set_aside_both": "both orders read Pt, Pd, Ir, Rh, Ni, Ru, Co",
+  "orr_paper_follows_paper": true,
+  "ag_rank": 3,
+  "au_rank": 7,
+  "cu_rank": 6,
+  "ag_rank_paper": 3,
+  "au_rank_paper": 5,
+  "ag_route": "OOH* forms first",
+  "ag_hurdle": 0.345,
+  "ag_barrier": 1.012,
+  "ag_limit": 0.555,
+  "ag_step": "start → OOH",
+  "ag_paper_hurdle": 0.43,
+  "au_barrier": 2.007,
+  "au_hurdle": 0.833,
+  "orr_barriers": "Co -3.94, Ru -3.38, Ni -2.86, Rh -2.08, Ir -1.25, Cu -1.16, Pd -0.53, Pt -0.18, Ag +1.01, Au +2.01",
+  "orr_complete_n": 10,
+  "orr_materials_n": 10,
+  "her_ranking": "Ir, Pt, Rh, Pd, Cu, Ru, Ni, Co, Au, Ag",
+  "pt_her_eta": 0.084,
+  "pt_her_lo": -0.234,
+  "pt_her_hi": 0.0,
+  "gate": 0.11,
+  "sigma": 0.15,
+  "oxide_omat_o": 0.18,
+  "oxide_omat_oh": 0.21,
+  "oxide_omat_ooh": 0.24,
+  "oxide_omat_lo": 0.18,
+  "oxide_omat_hi": 0.24,
+  "oxide_oc20_lo": 0.57,
+  "oxide_oc20_hi": 0.7,
   "screen": "20261024-121244-example-oxygen-reduction-on-ten-metals",
   "task": "oc20",
-  "generated": "2026-10-24",
-  "gate": 0.11,
-  "sigma": 0.15
+  "generated": "2026-10-24"
  },
  "tables": {
   "her": [
@@ -50,6 +107,7 @@
     "uma": 0.624,
     "rpbe": 0.565,
     "pbe": 0.416,
+    "coverage": "1/9 monolayer",
     "gap_rpbe": 0.059,
     "gap_pbe": 0.208,
     "log_j0": -6.42
@@ -59,6 +117,7 @@
     "uma": 0.573,
     "rpbe": 0.574,
     "pbe": 0.418,
+    "coverage": "1/9 monolayer",
     "gap_rpbe": -0.001,
     "gap_pbe": 0.155,
     "log_j0": -6.6
@@ -68,6 +127,7 @@
     "uma": -0.296,
     "rpbe": -0.202,
     "pbe": -0.355,
+    "coverage": "full monolayer",
     "gap_rpbe": -0.094,
     "gap_pbe": 0.059,
     "log_j0": -5.32
@@ -77,6 +137,7 @@
     "uma": 0.198,
     "rpbe": 0.188,
     "pbe": 0.04,
+    "coverage": "1/9 monolayer",
     "gap_rpbe": 0.01,
     "gap_pbe": 0.158,
     "log_j0": -5.37
@@ -86,6 +147,7 @@
     "uma": -0.034,
     "rpbe": -0.081,
     "pbe": -0.208,
+    "coverage": "full monolayer",
     "gap_rpbe": 0.047,
     "gap_pbe": 0.174,
     "log_j0": -3.58
@@ -95,6 +157,7 @@
     "uma": -0.269,
     "rpbe": -0.231,
     "pbe": -0.388,
+    "coverage": "full monolayer",
     "gap_rpbe": -0.038,
     "gap_pbe": 0.119,
     "log_j0": -5.21
@@ -104,6 +167,7 @@
     "uma": -0.158,
     "rpbe": -0.123,
     "pbe": -0.286,
+    "coverage": "full monolayer",
     "gap_rpbe": -0.035,
     "gap_pbe": 0.128,
     "log_j0": -3.0
@@ -113,6 +177,7 @@
     "uma": -0.084,
     "rpbe": -0.038,
     "pbe": -0.192,
+    "coverage": "full monolayer",
     "gap_rpbe": -0.046,
     "gap_pbe": 0.108,
     "log_j0": -3.1
@@ -122,6 +187,7 @@
     "uma": -0.141,
     "rpbe": -0.116,
     "pbe": -0.27,
+    "coverage": "full monolayer",
     "gap_rpbe": -0.025,
     "gap_pbe": 0.129,
     "log_j0": -3.41
@@ -131,9 +197,155 @@
     "uma": -0.207,
     "rpbe": -0.18,
     "pbe": -0.33,
+    "coverage": "full monolayer",
     "gap_rpbe": -0.027,
     "gap_pbe": 0.123,
     "log_j0": null
+   }
+  ],
+  "table2": [
+   {
+    "metal": "Ag",
+    "d_oh": 0.72,
+    "d_o": 2.12,
+    "dg1": -0.43,
+    "dg1_app": -0.43,
+    "dg2": 0.76,
+    "dg2_app": 0.76,
+    "ea": 0.93,
+    "ea_app": 0.926
+   },
+   {
+    "metal": "Au",
+    "d_oh": 1.49,
+    "d_o": 2.75,
+    "dg1": -0.29,
+    "dg1_app": -0.29,
+    "dg2": -0.01,
+    "dg2_app": -0.01,
+    "ea": 2.06,
+    "ea_app": 2.06
+   },
+   {
+    "metal": "Co",
+    "d_oh": -0.08,
+    "d_o": -0.22,
+    "dg1": 1.11,
+    "dg1_app": 1.11,
+    "dg2": 1.56,
+    "dg2_app": 1.56,
+    "ea": -3.29,
+    "ea_app": -3.286
+   },
+   {
+    "metal": "Cu",
+    "d_oh": 0.37,
+    "d_o": 1.2,
+    "dg1": 0.14,
+    "dg1_app": 0.14,
+    "dg2": 1.11,
+    "dg2_app": 1.11,
+    "ea": -0.73,
+    "ea_app": -0.73
+   },
+   {
+    "metal": "Fe",
+    "d_oh": -0.88,
+    "d_o": -0.9,
+    "dg1": 0.99,
+    "dg1_app": 0.99,
+    "dg2": 2.36,
+    "dg2_app": 2.36,
+    "ea": -4.51,
+    "ea_app": -4.51
+   },
+   {
+    "metal": "Ir",
+    "d_oh": 0.63,
+    "d_o": 1.0,
+    "dg1": 0.6,
+    "dg1_app": 0.6,
+    "dg2": 0.85,
+    "dg2_app": 0.85,
+    "ea": -1.09,
+    "ea_app": -1.09
+   },
+   {
+    "metal": "Mo",
+    "d_oh": -0.61,
+    "d_o": -1.62,
+    "dg1": 1.98,
+    "dg1_app": 1.98,
+    "dg2": 2.09,
+    "dg2_app": 2.09,
+    "ea": -5.81,
+    "ea_app": -5.806
+   },
+   {
+    "metal": "Ni",
+    "d_oh": 0.13,
+    "d_o": 0.34,
+    "dg1": 0.76,
+    "dg1_app": 0.76,
+    "dg2": 1.35,
+    "dg2_app": 1.35,
+    "ea": -2.28,
+    "ea_app": -2.278
+   },
+   {
+    "metal": "Pd",
+    "d_oh": 0.92,
+    "d_o": 1.53,
+    "dg1": 0.36,
+    "dg1_app": 0.36,
+    "dg2": 0.56,
+    "dg2_app": 0.56,
+    "ea": -0.14,
+    "ea_app": -0.136
+   },
+   {
+    "metal": "Pt",
+    "d_oh": 1.05,
+    "d_o": 1.57,
+    "dg1": 0.45,
+    "dg1_app": 0.45,
+    "dg2": 0.43,
+    "dg2_app": 0.43,
+    "ea": -0.06,
+    "ea_app": -0.064
+   },
+   {
+    "metal": "Rh",
+    "d_oh": 0.34,
+    "d_o": 0.44,
+    "dg1": 0.87,
+    "dg1_app": 0.87,
+    "dg2": 1.14,
+    "dg2_app": 1.14,
+    "ea": -2.1,
+    "ea_app": -2.098
+   },
+   {
+    "metal": "Ru",
+    "d_oh": -0.01,
+    "d_o": -0.05,
+    "dg1": 1.01,
+    "dg1_app": 1.01,
+    "dg2": 1.49,
+    "dg2_app": 1.49,
+    "ea": -2.98,
+    "ea_app": -2.98
+   },
+   {
+    "metal": "W",
+    "d_oh": -0.8,
+    "d_o": -2.06,
+    "dg1": 2.23,
+    "dg1_app": 2.23,
+    "dg2": 2.28,
+    "dg2_app": 2.28,
+    "ea": -6.6,
+    "ea_app": -6.598
    }
   ],
   "orr_metals": [
@@ -289,75 +501,351 @@
     "ooh": 3.488,
     "gap": 3.491
    }
+  ],
+  "orr_routes": [
+   {
+    "metal": "Pt",
+    "rank": 1,
+    "limit": 0.79,
+    "lo": 0.539,
+    "hi": 0.864,
+    "limiting_route": "O2 splits first",
+    "step": "OH → *",
+    "barrier": -0.178,
+    "hurdle": 0.11,
+    "route": "O2 splits first",
+    "paper_hurdle": 0.1
+   },
+   {
+    "metal": "Pd",
+    "rank": 2,
+    "limit": 0.657,
+    "lo": 0.478,
+    "hi": 0.792,
+    "limiting_route": "Either route",
+    "step": "OH → *",
+    "barrier": -0.528,
+    "hurdle": 0.243,
+    "route": "Either route",
+    "paper_hurdle": 0.23
+   },
+   {
+    "metal": "Ag",
+    "rank": 3,
+    "limit": 0.555,
+    "lo": 0.405,
+    "hi": 0.705,
+    "limiting_route": "OOH* forms first",
+    "step": "start → OOH",
+    "barrier": 1.012,
+    "hurdle": 0.345,
+    "route": "OOH* forms first",
+    "paper_hurdle": 0.43
+   },
+   {
+    "metal": "Ir",
+    "rank": 4,
+    "limit": 0.513,
+    "lo": 0.223,
+    "hi": 0.593,
+    "limiting_route": "Either route",
+    "step": "OH → *",
+    "barrier": -1.245,
+    "hurdle": 0.387,
+    "route": "Either route",
+    "paper_hurdle": 0.52
+   },
+   {
+    "metal": "Rh",
+    "rank": 5,
+    "limit": 0.196,
+    "lo": 0.046,
+    "hi": 0.346,
+    "limiting_route": "Either route",
+    "step": "OH → *",
+    "barrier": -2.075,
+    "hurdle": 0.704,
+    "route": "Either route",
+    "paper_hurdle": 0.81
+   },
+   {
+    "metal": "Cu",
+    "rank": 6,
+    "limit": 0.093,
+    "lo": -0.057,
+    "hi": 0.243,
+    "limiting_route": "Either route",
+    "step": "OH → *",
+    "barrier": -1.164,
+    "hurdle": 0.807,
+    "route": "Either route",
+    "paper_hurdle": 0.78
+   },
+   {
+    "metal": "Au",
+    "rank": 7,
+    "limit": 0.067,
+    "lo": -0.083,
+    "hi": 0.217,
+    "limiting_route": "OOH* forms first",
+    "step": "start → OOH",
+    "barrier": 2.007,
+    "hurdle": 0.833,
+    "route": "OOH* forms first",
+    "paper_hurdle": 0.715
+   },
+   {
+    "metal": "Ni",
+    "rank": 8,
+    "limit": -0.165,
+    "lo": -0.315,
+    "hi": -0.015,
+    "limiting_route": "Either route",
+    "step": "OH → *",
+    "barrier": -2.861,
+    "hurdle": 1.065,
+    "route": "Either route",
+    "paper_hurdle": 1.02
+   },
+   {
+    "metal": "Ru",
+    "rank": 9,
+    "limit": -0.253,
+    "lo": -0.403,
+    "hi": -0.103,
+    "limiting_route": "Either route",
+    "step": "OH → *",
+    "barrier": -3.383,
+    "hurdle": 1.153,
+    "route": "Either route",
+    "paper_hurdle": 1.16
+   },
+   {
+    "metal": "Co",
+    "rank": 10,
+    "limit": -0.571,
+    "lo": -0.721,
+    "hi": -0.421,
+    "limiting_route": "Either route",
+    "step": "OH → *",
+    "barrier": -3.943,
+    "hurdle": 1.471,
+    "route": "Either route",
+    "paper_hurdle": 1.23
+   }
   ]
  },
  "pipeline": {
   "oxygen_reduction": {
-   "limiting_V": 0.79,
-   "overpotential_V": 0.44,
-   "limiting_step": "OH \u2192 *",
-   "free_energies": {
-    "OOH": 3.851,
-    "O": 1.629,
-    "OH": 0.79
-   },
+   "compare_V": 0.9,
    "ranking": [
     "Pt",
     "Pd",
+    "Ag",
     "Ir",
     "Rh",
     "Cu",
-    "Ag",
+    "Au",
     "Ni",
     "Ru",
-    "Co",
-    "Au"
+    "Co"
    ],
-   "limits": {
-    "Pt": 0.79,
-    "Pd": 0.657,
-    "Ir": 0.513,
-    "Rh": 0.196,
-    "Cu": 0.093,
-    "Ag": 0.613,
-    "Ni": -0.165,
-    "Ru": -0.253,
-    "Co": -0.571,
-    "Au": 0.447
-   },
-   "barriers": {
-    "Pt": -0.178,
-    "Pd": -0.528,
-    "Ir": -1.245,
-    "Rh": -2.075,
-    "Cu": -1.164,
-    "Ag": 1.012,
-    "Ni": -2.861,
-    "Ru": -3.383,
-    "Co": -3.943,
-    "Au": 2.007
-   },
-   "hurdles": {
-    "Pt": 0.11,
-    "Pd": 0.243,
-    "Ir": 0.387,
-    "Rh": 0.704,
-    "Cu": 0.807,
-    "Ag": 1.012,
-    "Ni": 1.065,
-    "Ru": 1.153,
-    "Co": 1.471,
-    "Au": 2.007
+   "materials": {
+    "Pt": {
+     "rank": 1,
+     "limiting_V": 0.79,
+     "overpotential_V": 0.44,
+     "range": [
+      0.539,
+      0.864
+     ],
+     "limiting_step": "OH → *",
+     "limiting_route": "O2 splits first",
+     "route": "O2 splits first",
+     "hurdle_eV": 0.11,
+     "barrier_eV": -0.178,
+     "free_energies": {
+      "OOH": 4.231,
+      "O": 1.629,
+      "OH": 0.79
+     }
+    },
+    "Pd": {
+     "rank": 2,
+     "limiting_V": 0.657,
+     "overpotential_V": 0.573,
+     "range": [
+      0.478,
+      0.792
+     ],
+     "limiting_step": "OH → *",
+     "limiting_route": "Either route",
+     "route": "Either route",
+     "hurdle_eV": 0.243,
+     "barrier_eV": -0.528,
+     "free_energies": {
+      "OOH": 4.242,
+      "O": 1.435,
+      "OH": 0.657
+     }
+    },
+    "Ag": {
+     "rank": 3,
+     "limiting_V": 0.555,
+     "overpotential_V": 0.675,
+     "range": [
+      0.405,
+      0.705
+     ],
+     "limiting_step": "start → OOH",
+     "limiting_route": "OOH* forms first",
+     "route": "OOH* forms first",
+     "hurdle_eV": 0.345,
+     "barrier_eV": 1.012,
+     "free_energies": {
+      "OOH": 4.365,
+      "O": 2.29,
+      "OH": 0.613
+     }
+    },
+    "Ir": {
+     "rank": 4,
+     "limiting_V": 0.513,
+     "overpotential_V": 0.717,
+     "range": [
+      0.223,
+      0.593
+     ],
+     "limiting_step": "OH → *",
+     "limiting_route": "Either route",
+     "route": "Either route",
+     "hurdle_eV": 0.387,
+     "barrier_eV": -1.245,
+     "free_energies": {
+      "OOH": 4.041,
+      "O": 1.036,
+      "OH": 0.513
+     }
+    },
+    "Rh": {
+     "rank": 5,
+     "limiting_V": 0.196,
+     "overpotential_V": 1.034,
+     "range": [
+      0.046,
+      0.346
+     ],
+     "limiting_step": "OH → *",
+     "limiting_route": "Either route",
+     "route": "Either route",
+     "hurdle_eV": 0.704,
+     "barrier_eV": -2.075,
+     "free_energies": {
+      "OOH": 3.876,
+      "O": 0.575,
+      "OH": 0.196
+     }
+    },
+    "Cu": {
+     "rank": 6,
+     "limiting_V": 0.093,
+     "overpotential_V": 1.137,
+     "range": [
+      -0.057,
+      0.243
+     ],
+     "limiting_step": "OH → *",
+     "limiting_route": "Either route",
+     "route": "Either route",
+     "hurdle_eV": 0.807,
+     "barrier_eV": -1.164,
+     "free_energies": {
+      "OOH": 3.884,
+      "O": 1.081,
+      "OH": 0.093
+     }
+    },
+    "Au": {
+     "rank": 7,
+     "limiting_V": 0.067,
+     "overpotential_V": 1.163,
+     "range": [
+      -0.083,
+      0.217
+     ],
+     "limiting_step": "start → OOH",
+     "limiting_route": "OOH* forms first",
+     "route": "OOH* forms first",
+     "hurdle_eV": 0.833,
+     "barrier_eV": 2.007,
+     "free_energies": {
+      "OOH": 4.853,
+      "O": 2.843,
+      "OH": 1.317
+     }
+    },
+    "Ni": {
+     "rank": 8,
+     "limiting_V": -0.165,
+     "overpotential_V": 1.395,
+     "range": [
+      -0.315,
+      -0.015
+     ],
+     "limiting_step": "OH → *",
+     "limiting_route": "Either route",
+     "route": "Either route",
+     "hurdle_eV": 1.065,
+     "barrier_eV": -2.861,
+     "free_energies": {
+      "OOH": 3.917,
+      "O": 0.139,
+      "OH": -0.165
+     }
+    },
+    "Ru": {
+     "rank": 9,
+     "limiting_V": -0.253,
+     "overpotential_V": 1.483,
+     "range": [
+      -0.403,
+      -0.103
+     ],
+     "limiting_step": "OH → *",
+     "limiting_route": "Either route",
+     "route": "Either route",
+     "hurdle_eV": 1.153,
+     "barrier_eV": -3.383,
+     "free_energies": {
+      "OOH": 3.668,
+      "O": -0.152,
+      "OH": -0.253
+     }
+    },
+    "Co": {
+     "rank": 10,
+     "limiting_V": -0.571,
+     "overpotential_V": 1.801,
+     "range": [
+      -0.721,
+      -0.421
+     ],
+     "limiting_step": "OH → *",
+     "limiting_route": "Either route",
+     "route": "Either route",
+     "hurdle_eV": 1.471,
+     "barrier_eV": -3.943,
+     "free_energies": {
+      "OOH": 3.674,
+      "O": -0.463,
+      "OH": -0.571
+     }
+    }
    },
    "incomplete": {}
   },
   "hydrogen_evolution": {
-   "limiting_V": -0.084,
-   "overpotential_V": 0.084,
-   "limiting_step": "H \u2192 *",
-   "free_energies": {
-    "H": -0.084
-   },
+   "compare_V": -0.1,
    "ranking": [
     "Ir",
     "Pt",
@@ -370,30 +858,177 @@
     "Au",
     "Ag"
    ],
-   "limits": {
-    "Ir": -0.034,
-    "Pt": -0.084,
-    "Rh": -0.141,
-    "Pd": -0.158,
-    "Cu": -0.198,
-    "Ru": -0.207,
-    "Ni": -0.269,
-    "Co": -0.296,
-    "Au": -0.573,
-    "Ag": -0.624
-   },
-   "barriers": {},
-   "hurdles": {
-    "Ir": 0.0,
-    "Pt": 0.0,
-    "Rh": 0.041,
-    "Pd": 0.058,
-    "Cu": 0.098,
-    "Ru": 0.107,
-    "Ni": 0.169,
-    "Co": 0.196,
-    "Au": 0.473,
-    "Ag": 0.524
+   "materials": {
+    "Ir": {
+     "rank": 1,
+     "limiting_V": -0.034,
+     "overpotential_V": 0.034,
+     "range": [
+      -0.184,
+      0.0
+     ],
+     "limiting_step": "H → *",
+     "limiting_route": "The electron steps",
+     "route": "The electron steps",
+     "hurdle_eV": 0.0,
+     "barrier_eV": null,
+     "free_energies": {
+      "H": -0.034
+     }
+    },
+    "Pt": {
+     "rank": 2,
+     "limiting_V": -0.084,
+     "overpotential_V": 0.084,
+     "range": [
+      -0.234,
+      0.0
+     ],
+     "limiting_step": "H → *",
+     "limiting_route": "The electron steps",
+     "route": "The electron steps",
+     "hurdle_eV": 0.0,
+     "barrier_eV": null,
+     "free_energies": {
+      "H": -0.084
+     }
+    },
+    "Rh": {
+     "rank": 3,
+     "limiting_V": -0.141,
+     "overpotential_V": 0.141,
+     "range": [
+      -0.291,
+      0.0
+     ],
+     "limiting_step": "H → *",
+     "limiting_route": "The electron steps",
+     "route": "The electron steps",
+     "hurdle_eV": 0.041,
+     "barrier_eV": null,
+     "free_energies": {
+      "H": -0.141
+     }
+    },
+    "Pd": {
+     "rank": 4,
+     "limiting_V": -0.158,
+     "overpotential_V": 0.158,
+     "range": [
+      -0.308,
+      -0.008
+     ],
+     "limiting_step": "H → *",
+     "limiting_route": "The electron steps",
+     "route": "The electron steps",
+     "hurdle_eV": 0.058,
+     "barrier_eV": null,
+     "free_energies": {
+      "H": -0.158
+     }
+    },
+    "Cu": {
+     "rank": 5,
+     "limiting_V": -0.198,
+     "overpotential_V": 0.198,
+     "range": [
+      -0.348,
+      -0.048
+     ],
+     "limiting_step": "start → H",
+     "limiting_route": "The electron steps",
+     "route": "The electron steps",
+     "hurdle_eV": 0.098,
+     "barrier_eV": null,
+     "free_energies": {
+      "H": 0.198
+     }
+    },
+    "Ru": {
+     "rank": 6,
+     "limiting_V": -0.207,
+     "overpotential_V": 0.207,
+     "range": [
+      -0.357,
+      -0.057
+     ],
+     "limiting_step": "H → *",
+     "limiting_route": "The electron steps",
+     "route": "The electron steps",
+     "hurdle_eV": 0.107,
+     "barrier_eV": null,
+     "free_energies": {
+      "H": -0.207
+     }
+    },
+    "Ni": {
+     "rank": 7,
+     "limiting_V": -0.269,
+     "overpotential_V": 0.269,
+     "range": [
+      -0.419,
+      -0.119
+     ],
+     "limiting_step": "H → *",
+     "limiting_route": "The electron steps",
+     "route": "The electron steps",
+     "hurdle_eV": 0.169,
+     "barrier_eV": null,
+     "free_energies": {
+      "H": -0.269
+     }
+    },
+    "Co": {
+     "rank": 8,
+     "limiting_V": -0.296,
+     "overpotential_V": 0.296,
+     "range": [
+      -0.446,
+      -0.146
+     ],
+     "limiting_step": "H → *",
+     "limiting_route": "The electron steps",
+     "route": "The electron steps",
+     "hurdle_eV": 0.196,
+     "barrier_eV": null,
+     "free_energies": {
+      "H": -0.296
+     }
+    },
+    "Au": {
+     "rank": 9,
+     "limiting_V": -0.573,
+     "overpotential_V": 0.573,
+     "range": [
+      -0.723,
+      -0.423
+     ],
+     "limiting_step": "start → H",
+     "limiting_route": "The electron steps",
+     "route": "The electron steps",
+     "hurdle_eV": 0.473,
+     "barrier_eV": null,
+     "free_energies": {
+      "H": 0.573
+     }
+    },
+    "Ag": {
+     "rank": 10,
+     "limiting_V": -0.624,
+     "overpotential_V": 0.624,
+     "range": [
+      -0.774,
+      -0.474
+     ],
+     "limiting_step": "start → H",
+     "limiting_route": "The electron steps",
+     "route": "The electron steps",
+     "hurdle_eV": 0.524,
+     "barrier_eV": null,
+     "free_energies": {
+      "H": 0.624
+     }
+    }
    },
    "incomplete": {}
   }

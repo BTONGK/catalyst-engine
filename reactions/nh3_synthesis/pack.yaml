@@ -42,9 +42,15 @@ screening:
   metric: n2_conversion
   reference: {formula: Ru, name: Ruthenium}
   optimum_shift_eV: 0.0
+  # the weak side waits on N2 splitting into two atoms the descriptor counts: 0.9 eV of barrier per eV of
+  # splitting energy (Nørskov et al., J. Catal. 2002), and that energy moves twice as fast as the descriptor
+  slope_weak: 1.8
   peak_gas: {N2: 0.5}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Ru, Fe, Co, Mo, Os, Ni, Re, W, Rh]
   basis: >
     Nitrogen binding sets ammonia synthesis rates (Logadottir et al., J. Catal. 2001; Jacobsen et al., JACS
     2001): metals such as Mo hold nitrogen too tightly, metals such as Ni barely split N2, ruthenium and osmium
-    sit near the top, and alloys such as CoMo bind in between their parents. The top is set at ruthenium's.
+    sit near the top, and alloys such as CoMo bind in between their parents. The top is set at ruthenium's. On
+    the weak side the rate waits on N2 splitting into two N atoms. That barrier rises 0.9 eV per eV of splitting
+    energy on metals (Nørskov et al., J. Catal. 2002), and the splitting energy counts both atoms, so the weak side
+    falls 1.8 eV per eV of nitrogen binding.

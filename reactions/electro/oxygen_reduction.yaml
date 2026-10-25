@@ -1,5 +1,5 @@
-# Oxygen reduction: the fuel-cell cathode, O2 + 4 (H+ + e-) -> 2 H2O, through OOH*, O* and OH*
-# (the associative path; Nørskov et al., J. Phys. Chem. B 2004).
+# Oxygen reduction: the fuel-cell cathode, O2 + 4 (H+ + e-) -> 2 H2O, through OOH*, O* and OH*, or with O2 split into
+# two O* first (Nørskov et al., J. Phys. Chem. B 2004: the associative and dissociative mechanisms).
 
 id: oxygen_reduction
 name: Oxygen reduction (ORR)
@@ -10,34 +10,40 @@ direction: reduction
 electrons: 4
 equilibrium_V: 1.23
 compare_V: 0.90
-# in order along the reduction path; correction_eV = zero-point energy minus T x entropy at 298 K (Nørskov 2004,
-# Appendix 1); water_eV = the hydrogen bonds from liquid water, measured on Pt(111) for OH (Nørskov 2004,
-# Table 1: 0.78 -> 0.45 eV); layer_eV = the hydrogen bonds within the OH layer at a third of a monolayer, the
-# coverage it takes on Pt(111) at the working potential (Nørskov 2004, Table 1 at 1/3 against Table 2 at 1/4:
-# 0.78 against 1.05 eV). Both are taken the same for OOH, which binds through one oxygen the same way (Man et
-# al. 2011); oxygen gains 0.04 eV from the layer, left at zero.
+# In order along the path, each from Nørskov 2004.
+# OH*: zero-point energy minus T x entropy +0.35 eV (Table 3); the hydrogen bonds from liquid water, -0.33 eV
+#   (Table 1, Pt(111): 0.78 -> 0.45 eV with water); those within the OH layer at the third of a monolayer it covers
+#   on Pt(111) at the working potential, -0.27 eV (Table 1 at a third against Table 2 at a quarter: 0.78 against
+#   1.05 eV). Together they are the paper's own -0.25 eV (Table 2 footnote).
+# O*: +0.05 eV (Table 3); water's effect on O* is negligible (the paper's own finding). The footnote's +0.01 eV adds a
+#   0.04 eV step from a quarter monolayer down to low coverage, which the worker's ninth of a monolayer already holds.
+# OOH*: the paper's single figure for it, +0.18 eV (Fig. 8 caption: dG_assoc(U) = dE_OOH + eU - 4.92 eV + 0.18 eV).
 intermediates:
-  - {name: OOH, label: "hydroperoxyl (OOH*)", correction_eV: 0.40, water_eV: -0.33, layer_eV: -0.27}
-  - {name: O, label: "adsorbed oxygen (O*)", correction_eV: 0.05, water_eV: 0.0}
+  - {name: OOH, label: "hydroperoxyl (OOH*)", correction_eV: 0.18}
+  - {name: O, label: "adsorbed oxygen (O*)", correction_eV: 0.05}
   - {name: OH, label: "hydroxyl (OH*)", correction_eV: 0.35, water_eV: -0.33, layer_eV: -0.27}
-# the chemical step before the first electron: O2 has to split or activate on the surface. Its barrier follows the
-# oxygen binding energy (Nørskov 2004, Table 2 footnote, from the universality relation of Nørskov et al. 2002):
-# E_a = 1.8 dE_O - 2.89 eV, and the step's looser transition state earns it 0.13 eV over a proton transfer at
-# 1 bar and 300 K. A surface that binds oxygen weakly (gold, silver) pays this barrier at every potential.
-activation: {label: "O2 splitting", from: O, slope: 1.8, intercept: -2.89, bonus_eV: 0.13}
+route: "OOH* forms first"
+# The second route (the paper's eqs. 4-5 against 18-22): O2 splits on the surface into two O*, which then take the
+# path's last two steps. Its barrier follows the oxygen binding energy (Table 2 footnote, from the universality
+# relation of Nørskov et al. 2002): E_a = 1.8 dE_O - 2.89 eV, and its looser transition state earns it 0.13 eV over
+# a proton transfer at 1 bar and 300 K. The two routes run side by side and the faster carries the current (Fig. 8
+# caption: "the higher of these two activities will dominate").
+activation: {label: "O2 splitting", route: "O2 splits first", from: O, joins_at: O, slope: 1.8, intercept: -2.89, bonus_eV: 0.13}
 descriptor: {OH: 1}
-# the four steps as lines in x = OH* free energy, with OOH* = OH* + 3.2 eV and O* = 2 x OH* (the scaling
-# relations for metals and oxides; Man et al. 2011, Kulkarni et al. 2018)
-volcano_steps: [[1, -1.72], [1, -3.2], [-1, 0], [-1, 0]]
+# The volcano in x = OH* free energy, through the paper's own scaling on metals (Fig. 8 caption): dE_OH = 0.5 dE_O +
+# 0.05 eV and dE_OOH = 0.5 dE_O + 3.18 eV. With the corrections above, OOH* = x + 3.56 eV and O* = 2x + 0.45 eV, so
+# the four steps at 0 V are x - 1.36, x - 3.11, -x - 0.45 and -x eV, and the splitting barrier is 3.6x - 2.30 eV.
+volcano_steps: [[1, -1.36], [1, -3.11], [-1, -0.45], [-1, 0]]
+volcano_barrier: [3.6, -2.30]
 reference: {formula: Pt, name: Platinum}
 task: oc20
 suggested_elements: [Pt, Pd, Ir, Rh, Ru, Ni, Co, Cu, Ag, Au]
 basis: >
-  Oxygen reduction runs through three adsorbed intermediates, OOH*, O* and OH*, each made by one proton and
-  electron. At the equilibrium potential, 1.23 V, an ideal surface would hold each one so that every step is
-  level; a real surface holds oxygen and hydroxyl too tightly or too loosely, and the step that stays uphill
-  longest sets the limiting potential (Nørskov et al. 2004). Hydroxyl binding is the descriptor because the
-  other two scale with it. Before the first electron, O2 has to split or activate on the surface, a chemical
-  step whose barrier grows as oxygen binds more weakly (Nørskov 2004): it caps gold and silver, which the
-  free energies alone would place well. Platinum, the fuel-cell cathode, sits near the top of the volcano and
+  Oxygen reduction takes four protons and electrons, along one of two routes. On the first, O2 picks up a proton
+  and electron to form OOH*, which splits into O* and water; on the second, O2 splits on the surface into two O*
+  first, a chemical step whose barrier grows as oxygen binds more weakly. From O* both routes go on through OH* to
+  water, and the faster of the two carries the current (Nørskov et al. 2004). An ideal surface would make every
+  step level at the equilibrium potential, 1.23 V; a real surface holds oxygen and hydroxyl too tightly or too
+  loosely, and the step that stays uphill longest sets the limiting potential. Hydroxyl binding is the descriptor
+  because the other two follow it on most metals. Platinum splits O2 freely and sits near the top of the volcano,
   about 0.4 V short of the ideal.

@@ -230,7 +230,7 @@ def methodology(paper: dict) -> None:
             for c in s["checks"]:
                 st.markdown(f"- {fill(c['text'])}")
                 if c.get("table") or c.get("chart"):
-                    with st.expander(c.get("see", "See the numbers")):
+                    with st.expander(fill(c.get("see", "See the numbers"))):
                         if c.get("chart"):
                             method_chart(c["chart"], tables)
                         if c.get("table"):
@@ -268,10 +268,21 @@ def methodology(paper: dict) -> None:
         for row in lim["rows"]))
     for c in lim.get("checks", []):
         st.markdown(f"- {fill(c['text'])}")
-        with st.expander(c.get("see", "See the numbers")):
+        with st.expander(fill(c.get("see", "See the numbers"))):
             method_table(c["table"], tables)
 
-    st.markdown(f"#### {n_intro + 7}. Reproduce this page")
+    n = n_intro + 7
+    if audit := paper.get("audit"):
+        st.markdown(f"#### {n}. {audit['title']}")
+        st.write(fill(audit["text"]))
+        a, b = st.columns(2, gap="large")
+        a.markdown("**Checked**")
+        a.markdown("\n".join(f"- {fill(p)}" for p in audit["checked"]))
+        b.markdown("**Changed in the latest review**")
+        b.markdown("\n".join(f"- {fill(p)}" for p in audit["changed"]))
+        n += 1
+
+    st.markdown(f"#### {n}. Reproduce this page")
     st.write(fill(paper["reproduce"]["text"]))
     st.code(paper["reproduce"]["code"].strip(), language="bash")
     st.markdown("\n".join(f"- {fill(v)}" for v in paper["reproduce"]["versions"]))

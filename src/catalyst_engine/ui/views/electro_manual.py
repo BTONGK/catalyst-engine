@@ -108,7 +108,7 @@ with method_tab:
                 for c in s["checks"]:
                     st.markdown(f"- {fill(c['text'])}")
                     if c.get("table"):
-                        with st.expander(c.get("see", "See the numbers")):
+                        with st.expander(fill(c.get("see", "See the numbers"))):
                             method_table(c["table"], tables)
                 if s.get("verdict"):
                     st.markdown(f":{color}[**Verdict.**] {fill(s['verdict'])}")
@@ -130,7 +130,18 @@ with method_tab:
             f"| **{row['part']}** | {fill(row['why'])} | {fill(row['size'])} | {fill(row['meanwhile'])} |"
             for row in lim["rows"]))
 
-        st.markdown("#### 5. Reproduce this page")
+        n = 5
+        if audit := paper.get("audit"):
+            st.markdown(f"#### {n}. {audit['title']}")
+            st.write(fill(audit["text"]))
+            a, b = st.columns(2, gap="large")
+            a.markdown("**Checked**")
+            a.markdown("\n".join(f"- {fill(p)}" for p in audit["checked"]))
+            b.markdown("**Changed in the latest review**")
+            b.markdown("\n".join(f"- {fill(p)}" for p in audit["changed"]))
+            n += 1
+
+        st.markdown(f"#### {n}. Reproduce this page")
         st.write(fill(paper["reproduce"]["text"]))
         st.code(paper["reproduce"]["code"].strip(), language="bash")
         st.markdown("\n".join(f"- {fill(v)}" for v in paper["reproduce"]["versions"]))

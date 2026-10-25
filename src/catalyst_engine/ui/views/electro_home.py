@@ -19,19 +19,22 @@ with st.container(horizontal=True):
     common.link("views/electro_playground.py", "Try the free-energy playground", ":material/tune:")
 
 st.markdown("#### How it works")
+ids = [i for i in electro.list_electro() if electro_ui.spec(i).on_design_page]
+specs = [electro_ui.spec(i) for i in ids]
 steps = [
     (":material/bolt:", "1. Pick a reaction",
-     "Choose what the electrode should do: evolve hydrogen, reduce oxygen in a fuel cell, or evolve oxygen in an "
-     "electrolyzer. Set the potential to compare catalysts at, in volts on the hydrogen-electrode scale."),
+     "Choose what the electrode should do, such as evolve hydrogen in an electrolyzer or reduce oxygen in a fuel "
+     "cell. Set the potential to compare catalysts at, in volts on the hydrogen-electrode scale."),
     (":material/grid_view:", "2. Choose materials",
-     "Tick pure metals, or search the Materials Project's 150,000+ crystals for alloys and oxides made of the "
-     "elements you name."),
+     "Tick pure metals, or search the Materials Project's 150,000+ crystals for alloys made of the elements "
+     "you name."),
     (":material/memory:", "3. Let the computer work",
      "An AI model from Meta (UMA) places each intermediate of the reaction path on every material's surface and "
      "computes how strongly it binds. A screen of ten metals takes under an hour on this computer."),
     (":material/leaderboard:", "4. Read the results",
-     "A ranking by overpotential against the catalyst to beat, each material's speed across potentials, its "
-     "free-energy diagram, the volcano, and 3D structures you can turn with the mouse."),
+     "A ranking by predicted speed at your potential against the catalyst to beat, with each material's "
+     "overpotential and likely range, its free-energy diagram, the volcano, and 3D structures you can turn with "
+     "the mouse."),
 ]
 for col, (icon, title, text) in zip(st.columns(len(steps), gap="medium"), steps):
     with col.container(border=True, height="stretch"):
@@ -44,10 +47,12 @@ with left:
     st.markdown(
         "- **The free energy of each intermediate** on its surface (eV), computed atom by atom and corrected to "
         "room temperature in water.\n"
-        "- **Its limiting potential:** the voltage where the last step of the path turns downhill.\n"
+        "- **Its limiting potential:** the voltage where every step of the reaction path runs downhill. Where a "
+        "reaction has two routes, as oxygen reduction does, the better route counts.\n"
         "- **Its overpotential:** how far that sits from the equilibrium potential; smaller is better.\n"
-        "- **Which step limits it,** so you know what a better material has to change.\n"
-        "- **Its speed against the catalyst to beat** at your potential, with a likely range.\n"
+        "- **Which step limits it, and by which route,** so you know what a better material has to change.\n"
+        "- **Its speed against the catalyst to beat** at your potential, with the exact likely range when every "
+        "binding energy moves within its error bar.\n"
         "- **Its place on the volcano,** and whether it breaks the scaling relations that cap most surfaces.\n"
         "- **How easy its elements are to source,** and its 3D structure with every intermediate in place.")
     st.markdown("#### Where the numbers come from")
@@ -59,9 +64,12 @@ with left:
         "| Free energies | Published zero-point, entropy and water corrections (Nørskov et al. 2004, 2005) |\n"
         "| Potentials | The computational hydrogen electrode: a proton and electron at 0 V count as half a hydrogen "
         "molecule, and the potential tilts every step by one electron-volt per volt |\n"
-        "| Speed | Sabatier analysis: the largest step still uphill at a potential sets the rate |")
-    st.caption("The Manual's Methodology tab gives every equation and assumption, and the check against published "
-               "tables behind each number.")
+        "| Speed | Sabatier analysis: on each route the largest hurdle at a potential, a step still uphill or a "
+        "chemical barrier such as splitting O2, and the faster route sets the rate (Nørskov et al. 2004) |\n"
+        "| Likely ranges | Every binding energy moved within UMA's typical error, ±0.15 eV, all at once; the exact "
+        "highest and lowest values by linear programming |")
+    st.caption("The Manual's Methodology tab gives every equation and assumption, the check against published "
+               "tables behind each number, and what stays outside the method with its size.")
 
 with right:
     status = common.engine_status()
@@ -78,14 +86,17 @@ with right:
         else:
             st.markdown(":orange[:material/key:] **Materials Project** needs a free API key to search crystals; "
                         "pure metals work right away")
-        ids = electro.list_electro()
         st.markdown(f":green[:material/check_circle:] **{len(ids)} electrochemical reactions** ready to design for")
 
     st.markdown("#### Reactions ready now")
-    specs = [electro_ui.spec(i) for i in ids]
     for s in specs:
         st.markdown(f":blue-badge[{s.name}] :gray[{s.equation} · equilibrium {s.equilibrium_V:.2f} V vs RHE · "
                     f"catalyst to beat {s.reference.name or s.reference.formula}]")
+    waiting = [electro_ui.spec(i) for i in electro.list_electro() if i not in ids]
+    if waiting:
+        st.markdown(":gray-badge[In the playground] " + ", ".join(s.name for s in waiting)
+                    + " :gray[· its catalysts are oxides, where UMA's binding energies sit beyond the error bar; the "
+                      "Design page adds it once a check passes]")
     st.caption("A new reaction is a file in reactions/electro/; the Manual's Methodology tab shows the form.")
 
 st.markdown("#### Your latest electrochemical screens")

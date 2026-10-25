@@ -23,4 +23,5 @@ basis: >
   Soc. 2005): the best catalysts hold hydrogen at a free energy near zero, so each proton and electron lands on
   the surface and leaves it as H2 at the same potential. Platinum sits near that point. The free energy of H*
   is its binding energy plus 0.24 eV for zero-point motion and lost entropy (Nørskov 2005), and the limiting
-  potential is minus the size of the H* free energy: a material 0.3 eV off platinum needs about 0.3 V more.
+  potential is minus the size of the H* free energy: a material whose H* sits 0.3 eV from zero, on either side,
+  needs 0.3 V more than the ideal catalyst.

@@ -197,7 +197,8 @@ values["face_fix_max_material"] = max((x for x in face_rows if x["face_before"] 
                                       key=lambda x: abs(x["E_after"] - x["E_before"]))["material"]
 
 # ---------------------------------------------------------------- the error bar
-values.update(uma_mae_id=0.052, uma_mae_ood=0.070, uma_adsorbml=66.8, uma_structures_million=459)
+# UMA-S 1.1, the app's model (Wood et al. 2025): OC20 test adsorption energies, Table 2; AdsorbML success, Table 4
+values.update(uma_mae_id=0.0515, uma_mae_ood=0.0688, uma_adsorbml=66.8, uma_structures_million=459)
 setup = [values["sites_max_gain"], values["tolerance_max_gap"], values["slab_size_max_gap"], values["strain_error_est"]]
 values["setup_quadrature"] = r(math.sqrt(sum(s * s for s in setup)), 3)
 values["uma_sigma_est"] = r(values["uma_mae_ood"] * math.sqrt(math.pi / 2), 3)  # SD of a normal error with that MAE
@@ -224,8 +225,12 @@ def spearman(a: list[str], b: list[str]) -> float:
 
 base = ranking(spec)
 rows = []
+# the pack's slopes first, then the per-molecule slope a splitting barrier would have, the steepest weak side the
+# 0.9 line allows (a slope of 1 per eV of splitting energy, doubled), a gentler strong side, and two symmetric pairs
+pairs = [(spec.slope_weak, spec.slope_strong)]
+pairs += [x for x in ((0.9, 1.0), (2.0, 1.0), (spec.slope_weak, 0.5), (1.0, 1.0), (0.5, 0.5)) if x not in pairs]
 for opt in (0.0, 0.1, 0.2, 0.3, 0.4):
-    for weak, strong in ((0.9, 1.0), (0.5, 0.5), (1.0, 1.0), (0.5, 1.0), (1.0, 0.5)):
+    for weak, strong in pairs:
         s = spec.model_copy(update={"optimum_shift_eV": opt, "slope_weak": weak, "slope_strong": strong})
         order = ranking(s)
         rows.append({"optimum_shift_eV": opt, "slope_weak": weak, "slope_strong": strong, "leader": order[0],
@@ -233,6 +238,10 @@ for opt in (0.0, 0.1, 0.2, 0.3, 0.4):
 tables["volcano_sensitivity"] = rows
 slope_rows = [x for x in rows if x["optimum_shift_eV"] == spec.optimum_shift_eV]
 values["volcano_spearman_slopes_min"] = r(min(x["spearman"] for x in slope_rows), 2)
+values["volcano_settings_n"] = len(rows)
+values["volcano_slopes_weak"] = " to ".join(f"{w:g}" for w in (min(w for w, _ in pairs), max(w for w, _ in pairs)))
+values["volcano_slopes_strong"] = " to ".join(f"{s:g}" for s in (min(s for _, s in pairs), max(s for _, s in pairs)))
+values["slope_weak_example"], values["slope_strong_example"] = spec.slope_weak, spec.slope_strong
 values["volcano_spearman_all_min"] = r(min(x["spearman"] for x in rows), 2)
 values["volcano_leaders"] = ", ".join(sorted({x["leader"] for x in rows}))
 values["volcano_top3_base"] = ", ".join(base[:3])
@@ -242,6 +251,7 @@ values["design_T"] = t_design
 values["factor_01"] = r(math.exp(0.1 / (screening.K_B * (t_design + 273.15))), 1)
 values["factor_01_400"] = r(math.exp(0.1 / (screening.K_B * 673.15)), 1)
 values["sigma_factor"] = r(math.exp(spec.sigma_eV / (screening.K_B * (t_design + 273.15))), 1)
+values["sigma_factor_weak"] = r(math.exp(spec.slope_weak * spec.sigma_eV / (screening.K_B * (t_design + 273.15))), -1)
 values["example_leader"] = next(p.formula for p in preds if p.rank == 1)
 values["example_ranking"] = ", ".join(p.formula for p in preds if p.rank)
 overlap = [p for p in done if not p.is_reference and p.rate_range[0] <= 1 <= p.rate_range[1]]
@@ -277,10 +287,12 @@ def cycle_peak(t_k: float, alpha: float, beta: float, e1: float, offset: float) 
 t0 = co_pack.network.t_ref
 gas_change = float(np.diff(screening.gas_potential(co_pack, std, [t0, t0 + 200.0]))[0])
 cycle_rows = []
+sw, ss = co_pack.spec.screening.slope_weak, co_pack.spec.screening.slope_strong
 for case, alpha, beta, e1 in (("Adsorption free of barrier, removal slope 0.5", 0.0, 0.5, 0.0),
                               ("Adsorption free of barrier, removal slope 0.9", 0.0, 0.9, 0.0),
                               ("Adsorption with a barrier, slopes 0.5 and 0.5", 0.5, 0.5, 0.3),
-                              ("Adsorption with a barrier, slopes 0.9 and 1.0 (the app's)", 0.9, 1.0, 0.6)):
+                              ("Adsorption with a barrier, slopes 0.9 and 1.0", 0.9, 1.0, 0.6),
+                              (f"Adsorption with a barrier, slopes {sw:.1f} and {ss:.1f} (the pack's)", sw, ss, 0.6)):
     moved = cycle_peak(t0 + 200.0, alpha, beta, e1, -1.0) - cycle_peak(t0, alpha, beta, e1, -1.0)
     cycle_rows.append({"case": case, "peak_moved_eV": r(moved, 3), "gas_change_eV": r(gas_change, 3),
                        "follow": r(moved / gas_change, 2)})
@@ -288,7 +300,9 @@ tables["peak_cycle"] = cycle_rows
 values["peak_follow_min"] = min(x["follow"] for x in cycle_rows)
 values["peak_follow_max"] = max(x["follow"] for x in cycle_rows)
 values["peak_follow_app"] = cycle_rows[-1]["follow"]
-values["peak_follow_low"] = screening.PEAK_FOLLOW[1]
+values["peak_follow_low"], values["peak_follow_high"] = screening.PEAK_FOLLOW_SPAN
+values["peak_follow_covers"] = ("covers" if screening.PEAK_FOLLOW_SPAN[0] <= values["peak_follow_min"]
+                                and values["peak_follow_max"] <= screening.PEAK_FOLLOW_SPAN[1] else "falls short of")
 values["peak_gas_change_200"] = r(-gas_change, 2)
 values["peak_check_T"] = round(t0 - 273.15)
 
