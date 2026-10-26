@@ -32,8 +32,8 @@ def test_every_shipped_reaction_loads_with_one_intermediate_per_electron_transfe
         assert len(s.electron_steps) == s.electrons
         assert s.total_eV == pytest.approx(s.electrons * s.equilibrium_V)
         assert s.reference.formula
-        # a reaction kept to the playground says what it waits for
-        assert s.on_design_page or s.design_note
+        # each reaction says what its check found, or what it awaits
+        assert s.check_note and s.check in ("passed", "missed", "awaiting")
 
 
 def test_a_file_whose_electron_count_and_path_disagree_stops_the_load():
@@ -173,8 +173,8 @@ def test_oxygen_evolution_volcano_peaks_where_man_2011_puts_it():
     assert s.levels(g)[-1] == pytest.approx(4.92)
     assert s.limiting_potential(g)[0] == pytest.approx(max(s.steps(g)))
     assert s.overpotential(g) > 0
-    # its catalysts are oxides, where UMA misses DFT beyond the error bar: the playground keeps it, the Design page waits
-    assert not s.on_design_page and electro.load_electro("oxygen_reduction").on_design_page
+    # its catalysts are oxides, where UMA misses DFT beyond the error bar: its check misses, as the Design page shows
+    assert s.check == "missed" and electro.load_electro("oxygen_reduction").check == "passed"
 
 
 def test_the_paper_s_table_2_comes_out_of_the_app_s_arithmetic():
@@ -361,12 +361,9 @@ def test_the_electro_design_page_adds_metals_and_switches_reactions():
     next(b for b in at.button if b.label == "Add these metals").click().run()
     assert not at.exception, at.exception
     assert len(at.session_state["electro_candidates"]) > 0
-    shown = at.selectbox(key="electro_pack").options  # the reactions on the Design page, by their names
-    on_page = [i for i in electro.list_electro() if electro.load_electro(i).on_design_page]
-    assert len(shown) == len(on_page) and {"hydrogen_evolution", "oxygen_reduction"} <= set(on_page)
-    assert all(electro.load_electro(i).name in " ".join(shown) for i in on_page)
-    kept = [i for i in electro.list_electro() if i not in on_page]  # the playground keeps the rest
-    assert kept and all(electro.load_electro(i).name not in " ".join(shown) for i in kept)
+    shown = at.selectbox(key="electro_pack").options  # every reaction file, by name, with its check's verdict
+    assert len(shown) == len(electro.list_electro())
+    assert all(electro.load_electro(i).name in " ".join(shown) for i in electro.list_electro())
     at.selectbox(key="electro_pack").set_value("hydrogen_evolution").run()
     assert not at.exception, at.exception
     assert any("Platinum" in m.value for m in at.markdown)
@@ -390,6 +387,7 @@ def test_the_electro_results_page_shows_a_screen():
     assert "Faster route at 0.90 V" in table.columns and set(table["Faster route at 0.90 V"]) <= {
         "O2 splits first", "OOH* forms first", electro.EITHER}
     assert any("the catalyst to beat, leads" in m.value or "Best candidate" in m.value for m in at.markdown)
+    assert any("Ranking checked" in m.value for m in at.success)  # oxygen reduction passed its check
 
 
 def test_the_shipped_electro_examples_land_apart_from_the_thermal_screens():

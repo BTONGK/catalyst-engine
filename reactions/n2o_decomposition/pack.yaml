@@ -46,6 +46,10 @@ screening:
   optimum_shift_eV: 0.0
   peak_gas: {O2: 0.5}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Rh, Ru, Ir, Pd, Pt, Co, Ni, Cu, Fe, Mn]
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: awaiting
+  check_note: >
+    Its ranking awaits a table of rates measured on several metals in one laboratory.
   basis: >
     Each N2O leaves an oxygen atom behind, so oxygen binding sets the balance: tight binders split N2O easily but
     clog with oxygen, loose binders release oxygen but split N2O slowly. Rhodium and ruthenium rank among the

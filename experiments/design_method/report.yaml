@@ -202,19 +202,19 @@ loading:
         best possible run together as one batch. Against the exact answer for a first-order reaction, the outlet
         agrees within {reactor_exact_pct:.2g} percentage points (step 7).
       example: "For each metal: the CO conversion at each temperature, its low and high cases, and the best possible for this feed."
-    - title: Rank the candidates and choose where the reaction appears
+    - title: Rank the candidates and show the check's verdict
       when: screen
       does: >
         The Design page lists the candidates fastest first at your design temperature, each with its likely range:
         its descriptor anywhere within the error bar and the top following its gas by any share from
-        {peak_follow_low:.0%} to {peak_follow_high:.0%} (step 9). A new shipped reaction joins the Design page once its
-        ranking check passes (on_design_page: true in pack.yaml; section {sec_reaction_check}); until then it sits in
-        the Reactions library and the playground, where its rates run as written. A reaction you build on the
-        Reactions page goes to the Design page at once, and its ranking rests on the descriptor and the catalyst to
-        beat you chose.
+        {peak_follow_low:.0%} to {peak_follow_high:.0%} (step 9). Every reaction in the library appears on the Design
+        page with its ranking check's verdict beside it (check and check_note in pack.yaml; section
+        {sec_reaction_check}): checked against a measured table, missed its check, or awaiting a table. The results
+        repeat the verdict above the ranking. A reaction you build on the Reactions page awaits its check, and its
+        ranking rests on the descriptor and the catalyst to beat you chose.
       example: >
-        {load_name} joined the Design page through its check: rho {rc_co_methanation_primary_rho:.2f} over
-        {rc_co_methanation_primary_n} metals against Bligaard's measured table.
+        {load_name} shows as checked: rho {rc_co_methanation_primary_rho:.2f} over {rc_co_methanation_primary_n}
+        metals against Bligaard's measured table.
 
 steps:
   - title: Candidate crystals
@@ -827,12 +827,12 @@ reaction_check:
     table: rc_thermal_metals
     columns: {reaction: Reaction, table: Table, metal: Metal, descriptor_eV: "Descriptor (eV)", shift_eV: "Extra barrier (eV)", predicted_rank: Predicted rank, published: Measured value, published_rank: Measured rank}
   result: >
-    {rc_thermal_passed} of the {rc_thermal_scored} scored reactions pass: {rc_thermal_passed_names}, now on the Design
-    page. {rc_thermal_failed_names} sit in the Reactions library and the playground, with a row in the limits
-    (section {sec_limits}). The other new packages await a measured table of their own and wait in the playground
-    meanwhile. The Design page also holds {rc_design_waiting_n} reactions from before this check began, each awaiting
-    a measured table: {rc_design_waiting_names}. Hot SCR's rate laws reproduce published bench data (the Literature
-    check page); its ranking across materials awaits a table like the ones above.
+    {rc_thermal_passed} of the {rc_thermal_scored} scored reactions pass: {rc_thermal_passed_names}, marked as
+    checked on the Design page. {rc_thermal_failed_names} miss, and the Design page marks each one so, with a row in
+    the limits (section {sec_limits}). The other {rc_awaiting_n} of the {rc_packs_n} packages await a measured table
+    of their own, and the Design page marks them as awaiting their check; the limits name them. Hot SCR's rate laws
+    reproduce published bench data (the Literature check page); its ranking across materials awaits a table like the
+    ones above.
   sizes:
     text: >
       The rule scores order. The sizes of the speed ratios run wider than the measured ones: in the tables that give
@@ -872,7 +872,7 @@ trust:
       points:
         - Binding energies, and their order among metals on their close-packed faces.
         - >
-          The order of metals for {rc_design_checked_names}, which matches a laboratory's measured order (section
+          The order of metals for {rc_checked_names}, which matches a laboratory's measured order (section
           {sec_reaction_check}).
         - Which materials sit near the volcano's peak and which sit far from it.
         - Equilibrium limits, atom balance and the shape of the performance curves.
@@ -883,8 +883,9 @@ trust:
           rates exist, the predicted spread across metals runs {rc_span_factor_lo:.1f} to {rc_span_factor_hi:.0f}
           times as many powers of ten as the measured one (section {sec_reaction_check}).
         - >
-          Reactions on the Design page from before the reaction check, until a measured table scores them: section
-          {sec_reaction_check} names them.
+          The order of metals for the {rc_missed_n} reactions that missed their check ({rc_missed_names}) and the
+          {rc_awaiting_n} that await one: the Design page marks each, and section {sec_reaction_check} gives the
+          scores.
         - Alloys, whose surface atoms may differ from the bulk (step 2).
         - Oxides. The materials mode tracks oxide DFT about {oxide_mat_factor:.0f} times closer than the catalysis
           mode and matches measured ammonia on titania; its typical miss, {oxide_mat_mae_ood:.2f} eV, still sits
@@ -990,23 +991,24 @@ limits:
         puts copper second and silver last, where the measurements put silver second for propane and copper near the
         bottom for both. Lee's numbers come from a master's thesis (University of Delaware, 2017), a public record
         examined by its committee and outside journal review, read from its bar charts at the figures' own pixels
-        (experiments/reaction_check/read_bars.py). Ammonia synthesis and water-gas shift sat on the Design page before
-        the check and moved to the playground.
+        (experiments/reaction_check/read_bars.py).
       size: "rho from {rc_thermal_failed_rho_lo:.2f} to {rc_thermal_failed_rho_hi:.2f}, against the {rc_min_rho} the rule asks."
       meanwhile: >
-        The playground runs them with their rates as written. A descriptor with a second adsorbate, or a face beyond the
-        close-packed one, may lift them; each change takes the check again before the Design page.
+        The Design page runs them, marked as missing their check, and the verdict heads each screen's results: read
+        their rankings as candidates for the lab to test. A descriptor with a second adsorbate, or a face beyond the
+        close-packed one, may lift them; each change takes the check again.
     - part: Reactions awaiting a measured table
       why: >
         The rule asks for one laboratory's activities on at least {rc_min_metals} metals under one set of conditions.
-        For {rc_playground_untabled_n} of the new packages such a table remains to be found: {rc_playground_untabled_names}.
-        Ethylene hydrogenation has one, Bond's Table 7.3, whose temperature column the text reached here leaves
-        unconfirmed; read as the temperature of equal rate, it gives rho {rc_ethylene_hydrogenation_indicative_rho:.2f}
-        over {rc_ethylene_hydrogenation_indicative_n} metals, shown as indicative.
-      size: "{rc_playground_untabled_n} packages in the playground, and {rc_design_waiting_n} on the Design page from before the check."
+        For {rc_untabled_n} packages such a table remains to be found: {rc_untabled_names}. Ethylene hydrogenation has
+        one, Bond's Table 7.3, whose temperature column the text reached here leaves unconfirmed; read as the
+        temperature of equal rate, it gives rho {rc_ethylene_hydrogenation_indicative_rho:.2f} over
+        {rc_ethylene_hydrogenation_indicative_n} metals, shown as indicative.
+      size: "{rc_awaiting_n} of the {rc_packs_n} packages, each marked on the Design page as awaiting its check."
       meanwhile: >
         A table of five or more metals from one laboratory, added to experiments/reaction_check/data/published.yaml,
-        puts a package through the check; a pass sets on_design_page to true.
+        puts a package through the check, and the verdict goes into the package's pack.yaml (check and check_note),
+        which the Design page reads.
     - part: Methane combustion's catalyst to beat
       why: >
         The methane package sets its top at palladium, the catalyst of natural-gas engine converters. Lee's thesis
@@ -1098,9 +1100,10 @@ audit:
     - "The hand-built benchmark is described as what it is: the same UMA model with structures set up by hand, a check of the automation (step 5)."
     - "UMA's published errors cite Tables 2 and 4 of the UMA paper with their exact values (step 4)."
     - "Rhodium's place in the example comes straight from the computed figure, {example_rh_design} of platinum's speed (step 6)."
-    - "A new shipped reaction joins the Design page once its ranking check passes; {rc_thermal_failed_names} wait in the playground, and ammonia synthesis and water-gas shift moved there from the Design page (section {sec_reaction_check})."
+    - "Every reaction now appears on the Design page, its ranking check's verdict beside it in the list and above its results: {rc_checked_n} checked ({rc_checked_names}), {rc_missed_n} missed and {rc_awaiting_n} awaiting a measured table (section {sec_reaction_check}). Before, a reaction joined the Design page only once its check passed, and the playground held the rest."
+    - "Each rank correlation keeps six decimals until the page rounds it, so ammonia cracking reads {rc_nh3_decomposition_primary_rho:.2f}, its exact 0.9048; rounded first to three decimals, it read 0.91."
     - "This page gained the loading walk-through (section {sec_loading}) and the reaction check (section {sec_reaction_check})."
-    - "Ten more packages joined the library and the playground, {load_packs_n} in all. Two of them, propane and propylene combustion, met a measured table the same day, Lee's thesis, declared in PASS_RULE.md before either package existed and read from its bar charts by experiments/reaction_check/read_bars.py; both miss the rule (rho {rc_propane_combustion_primary_rho:.2f} and {rc_propylene_combustion_primary_rho:.2f}). A rate read as zero now leaves its table's spread out of the size comparison, in place of stopping the check."
+    - "Ten more packages joined the library, {load_packs_n} in all. Two of them, propane and propylene combustion, met a measured table the same day, Lee's thesis, declared in PASS_RULE.md before either package existed and read from its bar charts by experiments/reaction_check/read_bars.py; both miss the rule (rho {rc_propane_combustion_primary_rho:.2f} and {rc_propylene_combustion_primary_rho:.2f}). A rate read as zero now leaves its table's spread out of the size comparison, in place of stopping the check."
 
 reproduce:
   text: >

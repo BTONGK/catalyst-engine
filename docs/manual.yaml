@@ -152,6 +152,7 @@ steps:
       - Click "Design a catalyst" in the menu on the left.
       - In part 1, open the "Reaction" list and pick what the catalyst should do. The list groups reactions into clean air, hydrogen and energy, and chemicals and fuels.
       - Read the short summary under it, the reaction itself, the catalyst to beat, and the key molecule the app ranks by. "Why this works" explains the choice.
+      - "Beside each reaction the list shows its ranking check: \"checked\" (the app's order of metals agreed with a laboratory's measured order, by a rule written down before the results), \"missed its check\" (the two orders differed), or \"awaiting its check\" (a measured table to score it is still to come). The same verdict sits under the reaction and above its results, with what the check found. Read every ranking as a shortlist to test, and a checked one with the most confidence (Manual, Methodology tab, the reaction check)."
       - Your reaction is elsewhere? Add it on the Reactions page (step 11) and it appears in this list.
     get: The reaction, and the catalyst every material is compared with.
   - phase: Set up the design
@@ -264,7 +265,7 @@ steps:
       - "Part 2: choose how to judge a result - the conversion of a gas going in, or the yield of a product."
       - "Part 3: pick the key molecule (the app suggests one), the catalyst to beat, and the metals to suggest first."
       - "Part 4: the standard gas mix, pressure, flow and temperature range, plus the temperature where the catalyst to beat converts half of what it could. A paper or a datasheet usually gives this."
-      - Press "Add this reaction". It appears in the library and on the Design page right away.
+      - Press "Add this reaction". It appears in the library and on the Design page right away, marked as awaiting its check.
     get: A new reaction, ready to design for.
   - phase: Go further
     title: Explore materials
@@ -342,6 +343,7 @@ glossary:
       - {term: Likely range, means: "The spread of a prediction from the uncertainty of the binding energy (about 0.15 eV) and, away from the reaction's anchor temperature and feed, from how far the volcano's peak moves. The app finds the slowest and fastest case exactly."}
       - {term: How careful (care level), means: "How many surface spots the app tries per molecule and how tightly the atoms settle."}
       - {term: Reaction pack, means: "One reaction's file: its molecules, reactions, how to judge results, and how to rank materials."}
+      - {term: Ranking check, means: "The app's order of metals for a reaction set against one laboratory's measured order, under a rule written down before the results. Its verdict, checked, missed or awaiting, sits beside the reaction on the Design page and above its results."}
       - {term: UMA, means: "Universal Model for Atoms, Meta FAIR Chemistry's AI model of how atoms push and pull, trained on DFT results."}
       - {term: DFT, means: "Density functional theory, the standard quantum-physics method for computing atoms' energies."}
       - {term: Materials Project, means: "A free online database of over 150,000 computed crystals, at materialsproject.org."}

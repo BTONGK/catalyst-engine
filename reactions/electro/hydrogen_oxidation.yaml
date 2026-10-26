@@ -20,10 +20,11 @@ volcano_steps: [[1, 0], [-1, 0]]
 reference: {formula: Pt, name: Platinum}
 task: oc20
 suggested_elements: [Pt, Pd, Ir, Rh, Ru, Ni, Co, Cu, Mo, W, Au]
-# On the Design page since the reaction check (experiments/reaction_check: PASS_RULE.md, results/summary.json):
-#   its limiting potentials order the 12 metals of
-#   arXiv:2109.04219's RPBE table with rho 0.92 (p < 0.001), through H*, which the hydrogen-evolution check covers.
-on_design_page: true
+# the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+check: passed
+check_note: >
+  Its limiting potentials order the 12 metals of arXiv:2109.04219's RPBE table with rho 0.92 (p < 0.001), through
+  H*, which the hydrogen-evolution check covers.
 basis: >
   Hydrogen oxidation runs hydrogen evolution backwards: H2 meets the surface and gives up one proton and electron,
   leaving H* behind, and H* gives up the second. Both steps turn downhill together when H* sits at a free energy

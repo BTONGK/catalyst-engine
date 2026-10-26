@@ -11,20 +11,24 @@ electrons: 4
 equilibrium_V: -0.332       # from dissolved hydrazine, from tabulated formation free energies (N2H4(aq) +128.1 kJ/mol)
 compare_V: 0.10
 # Corrections: N2H* takes Skúlason 2012's +0.80 eV; HNNH2* and HNNH* take UMA's own vibrations on Pt(111)
-#   (results/corrections.json), whose check on OH* and OOH* missed by 0.16-0.20 eV (PASS_RULE.md), so those two serve
-#   the playground's starting point only.
+#   (results/corrections.json), whose check on OH* and OOH* missed by 0.16-0.20 eV (PASS_RULE.md), so the pages mark
+#   those two as UMA's own.
 # shift: each intermediate starts against N2 and H2; this reaction's zero is dissolved hydrazine, 1.328 eV above
 #   N2 + 2 H2.
 intermediates:
-  - {name: HNNH2, label: "hydrazinyl (N2H3*)", correction_eV: 1.65, shift_eV: -1.328}
-  - {name: HNNH, label: "diazene (HNNH*)", correction_eV: 1.25, shift_eV: -1.328}
+  - {name: HNNH2, label: "hydrazinyl (N2H3*)", correction_eV: 1.65, shift_eV: -1.328, correction_from: uma}
+  - {name: HNNH, label: "diazene (HNNH*)", correction_eV: 1.25, shift_eV: -1.328, correction_from: uma}
   - {name: NNH, label: "N2H* (NNH*)", correction_eV: 0.80, shift_eV: -1.328}
 descriptor: {NNH: 1}
 reference: {formula: Pt, name: Platinum}
 task: oc20
 suggested_elements: [Pt, Pd, Ni, Co, Ir, Rh, Ru, Cu, Ag, Au]
-on_design_page: false
-design_note: UMA's N2H3* binding misses Herron 2015's DFT table by 0.204 eV in typical size, just past the 0.20 eV the rule allows; the limiting potentials order the metals with rho 0.26; and the zero-point and entropy corrections for HNNH* and N2H3* rest on UMA alone
+# the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+check: missed
+check_note: >
+  UMA's N2H3* binding misses Herron 2015's DFT table by 0.204 eV in typical size, just past the 0.20 eV the rule
+  allows; its limiting potentials order the metals with rho 0.26; and the zero-point and entropy corrections for
+  HNNH* and N2H3* rest on UMA alone.
 basis: >
   Hydrazine gives up its four hydrogens one proton and electron at a time and leaves as N2, so it releases four
   electrons per molecule with nitrogen gas as the only product. Its equilibrium potential sits 0.33 V below the

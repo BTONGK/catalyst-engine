@@ -46,9 +46,10 @@ screening:
   optimum_shift_eV: 0.0
   peak_gas: {O2: 0.5}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Pd, Pt, Rh, Ir, Ru, Co, Ni, Cu, Ag]
-  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
-  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
-  on_design_page: false
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: awaiting
+  check_note: >
+    Its ranking awaits a table of rates measured on several metals in one laboratory.
   basis: >
     Lean methane burns fastest on palladium, where an oxygen-covered surface pulls the first hydrogen off methane.
     That step's barrier follows how strongly the surface oxygen takes up hydrogen, which tracks oxygen binding

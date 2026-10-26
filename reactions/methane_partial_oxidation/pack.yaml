@@ -60,9 +60,10 @@ screening:
   optimum_shift_eV: 0.0
   peak_gas: {CH4: 0.5, H2: -1.0, O2: 0.25}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Rh, Pt, Ru, Ir, Ni, Pd, Co]
-  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
-  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
-  on_design_page: false
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: awaiting
+  check_note: >
+    Its ranking awaits a table of rates measured on several metals in one laboratory.
   basis: >
     Partial oxidation turns methane and a little oxygen into syngas within milliseconds on rhodium and platinum,
     with rhodium the more selective (Hickman and Schmidt, Science 1993). Breaking methane's C-H bonds and clearing

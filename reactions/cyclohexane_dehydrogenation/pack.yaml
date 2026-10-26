@@ -45,9 +45,10 @@ screening:
   optimum_shift_eV: 0.0
   peak_gas: {}   # the reaction's gases hold none its adsorbates exchange with; the top holds still
   suggested_elements: [Pt, Pd, Rh, Ir, Ni, Ru, Re, Co, Cu]
-  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
-  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
-  on_design_page: false
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: awaiting
+  check_note: >
+    Its ranking awaits a table of rates measured on several metals in one laboratory.
   basis: >
     Pulling hydrogen off the ring and letting benzene go both run through carbon-metal bonds, so the metal-carbon
     bond strength sorts the metals, as for the reverse reaction, benzene hydrogenation (Toulhoat and Raybaud, J.

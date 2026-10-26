@@ -18,6 +18,11 @@ volcano_steps: [[1, 0], [-1, 0]]
 reference: {formula: Pt, name: Platinum}
 task: oc20
 suggested_elements: [Pt, Pd, Ir, Rh, Ni, Co, Cu, Mo, W, Au]
+# the electrocatalysis check's verdict (experiments/electro_check); tests/test_checks.py ties them
+check: passed
+check_note: >
+  UMA's hydrogen binding sits 0.04 eV from arXiv:2109.04219's RPBE values on average over 10 metals, and its order
+  follows measured exchange currents with rho 0.78 over 9 metals, beside 0.82 for the published DFT.
 basis: >
   Hydrogen binding sets the exchange current for hydrogen evolution on metals (Nørskov et al., J. Electrochem.
   Soc. 2005): the best catalysts hold hydrogen at a free energy near zero, so each proton and electron lands on

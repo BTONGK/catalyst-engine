@@ -61,9 +61,10 @@ screening:
   slope_weak: 1.8
   peak_gas: {O2: 0.5}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Ag, Cu, Au, Pd, Pt, Ni, Co]
-  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
-  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
-  on_design_page: false
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: awaiting
+  check_note: >
+    Its ranking awaits a table of rates measured on several metals in one laboratory.
   basis: >
     Silver is the industrial catalyst: the oxygen it holds adds to ethylene's double bond through a surface
     oxametallacycle, and silver holds oxygen firmly enough to split O2 yet loosely enough to pass it on (van Santen

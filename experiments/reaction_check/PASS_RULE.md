@@ -146,3 +146,22 @@ measured. A search after the 20:03 note reached one laboratory's measurements fo
   rendering the page at 600 dpi adds no detail. Each bar is read at the image's own pixels instead: the height of
   the bar's top above the x axis, as a share of the frame's height, times the axis's top value. Bars whose tops sit
   within one native pixel of each other share a rank.
+
+## Where each verdict shows (2026-10-26, written after the results, on the user's choice)
+
+- Every reaction now appears on its Design page, with its verdict beside it in the list, under the choice, and above
+  each screen's results: "checked" for a reaction that passes the rule above, "missed its check" for one that misses
+  it, and "awaiting its check" for one whose measured table, intermediate table or published correction is still to
+  come. This replaces the placement lines above (a pass joins the Design page, and the rest stay in the playground).
+- The rule, its thresholds and every score stay as written above; only the place a reaction shows moves, so every
+  verdict stays as the rule gave it. Each reaction file carries its verdict (check) and what the check found
+  (check_note), and tests/test_checks.py holds both to results/summary.json.
+- Electrochemical verdicts: a reaction misses when an intermediate on its path misses its table, when its ranking is
+  scored on 6 or more metals and misses, or when it runs where the metals turn to oxides. It awaits when what remains
+  is a table or a published correction still to come. Each intermediate whose correction comes from UMA's own
+  vibrations carries correction_from: uma in its file, and the results page names it.
+- Hydrogen evolution and oxygen reduction take "checked" from experiments/electro_check; oxygen evolution takes
+  "missed its check" from the oxide check.
+- Each rho now keeps six decimals until a page rounds it. Pass decisions always used the exact value; four displayed
+  values move by 0.01: ammonia cracking 0.91 to 0.90, hydrogen peroxide production and oxidation 0.84 to 0.85, and
+  CO electro-oxidation 0.96 to 0.97.

@@ -21,11 +21,11 @@ volcano_steps: [[1, -1.39], [-1, 0]]
 reference: {formula: Pt, name: Platinum}
 task: oc20
 suggested_elements: [Pt, Pd, Au, Ag, Hg, Cu, Ni, Co, Rh, Ir]
-# On the Design page since the reaction check (experiments/reaction_check: PASS_RULE.md, results/summary.json):
-#   its limiting potentials order 11 metals of
-#   Nørskov 2004's Table 2 (O* through the Fig. 8 relation) with rho 0.84 (p 0.001), through OOH*, which the
-#   oxygen-reduction check covers.
-on_design_page: true
+# the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+check: passed
+check_note: >
+  Its limiting potentials order 11 metals of Nørskov 2004's Table 2 (O* through the Fig. 8 relation) with rho 0.85
+  (p < 0.001), through OOH*, which the oxygen-reduction check covers.
 basis: >
   Hydrogen peroxide forms when oxygen reduction stops after two electrons: O2 takes a proton and electron to
   become OOH*, and OOH* takes a second to leave as H2O2. Both steps turn downhill together when OOH* sits halfway

@@ -52,6 +52,13 @@
   and its methodology in `experiments/electro_check/report.yaml` (kind: electro) with numbers from
   `electro_check.py`; rerun that script after changing the worker. `spec.ADSORBATES` stays the thermal set;
   `electro.ADSORBATES` adds OOH and the nitrogen and carbon intermediates (COOH, OCHO, NNH, CHO, CH3O and the
-  rest); a reaction through them joins the Design page once each passes its check in experiments/reaction_check.
+  rest).
+- Every reaction (each pack with a screening block, each electro file) appears on its Design page with its ranking
+  check's verdict: `check` (passed, missed or awaiting) and `check_note` (what the check found, in plain words) in the
+  pack's `screening` block or the electro file, shown beside the reaction and above each screen's results.
+  `experiments/reaction_check/reaction_check.py` computes the verdicts (electro_check for HER, ORR and OER), and
+  `tests/test_checks.py` holds each file's verdict and quoted rho to `results/summary.json`: after rerunning a check,
+  update the files it changes. An electro intermediate whose zero-point and entropy correction comes from UMA's own
+  vibrations carries `correction_from: uma`, which the results page names.
 - The Manual page reads `docs/manual.yaml`; its step screenshots are `docs/manual/step-*.png`. Retake them when a
   page they show changes.

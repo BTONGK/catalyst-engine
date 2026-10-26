@@ -56,6 +56,10 @@ screening:
   optimum_shift_eV: 0.0
   peak_gas: {CO2: 1, CO: -1}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Cu, Zn, Ni, Ga, Pd, In, Co, Ag, Au]
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: awaiting
+  check_note: >
+    Its ranking awaits a table of rates measured on several metals in one laboratory.
   basis: >
     Oxygen binding is one of the two descriptors that place methanol catalysts on a volcano (Studt et al., Nature
     Chem. 2014, which found Ni-Ga from it); copper, the industrial catalyst, sits near the top. The top is set at

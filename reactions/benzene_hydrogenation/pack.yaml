@@ -44,10 +44,11 @@ screening:
   optimum_shift_eV: 0.0
   peak_gas: {}   # the reaction's gases hold none its adsorbates exchange with; the top holds still
   suggested_elements: [Os, Co, Pt, Ir, Ni, Ru, Re, Rh, Pd, Cu]
-  # The reaction check (experiments/reaction_check) scores this ranking against Toulhoat and Raybaud's measured
-  # rates (metals on alumina): rho 0.57 over 8 metals, p 0.076, short of the rule; platinum ranks second there and
-  # sixth here. The playground keeps it until a check passes (Manual, Methodology tab, limits).
-  on_design_page: false
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: missed
+  check_note: >
+    Against Toulhoat and Raybaud's measured rates (metals on alumina) its ranking scores rho 0.57 over 8 metals (p
+    0.076), short of the 0.6 the rule asks; platinum ranks second there and sixth here.
   basis: >
     Benzene hydrogenation follows the strength of the metal-carbon bond (Toulhoat and Raybaud, J. Catal. 2003):
     metals that hold carbon weakly, copper and palladium, barely activate the ring, and the strongest binders hold

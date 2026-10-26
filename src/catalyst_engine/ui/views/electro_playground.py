@@ -21,9 +21,6 @@ s = electro_ui.spec(pid)
 ideal = s.ideal()
 st.markdown(f"<span class='ce-eq'>{s.equation}</span> &nbsp; :gray[{s.direction}, {s.electrons} electrons, "
             f"equilibrium at {s.equilibrium_V:.2f} V vs RHE]", unsafe_allow_html=True)
-if not s.on_design_page:
-    st.caption(f"{s.name} runs here on free energies you set. The Design page adds it once its checks pass"
-               + (f": {s.design_note}" if s.design_note else "") + " (Manual, Methodology tab, limits).")
 
 left, right = st.columns([2, 3], gap="large")
 with left:

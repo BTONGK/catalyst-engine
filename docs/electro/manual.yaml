@@ -83,7 +83,8 @@ steps:
     image: step-design.png
     do:
       - Click "Design an electrocatalyst" in the menu on the left.
-      - "In part 1, pick a reaction: hydrogen evolution (making hydrogen), hydrogen oxidation (a fuel-cell anode), oxygen reduction (a fuel-cell cathode), hydrogen peroxide production, reduction or oxidation, or formic acid oxidation through carboxyl (a direct formic-acid fuel cell's anode). The page shows the reaction, its intermediates and routes, the catalyst to beat and the free energy that places each material on the volcano; \"Why this works\" explains the choice. The other reactions, oxygen evolution (an electrolyzer anode) and those through nitrogen and carbon intermediates among them, run in the Free-energy playground until their checks pass (Methodology tab, the reaction check)."
+      - "In part 1, pick a reaction, such as hydrogen evolution (making hydrogen), oxygen reduction (a fuel-cell cathode), oxygen evolution (an electrolyzer anode), or one through nitrogen and carbon intermediates, such as nitrogen reduction to ammonia or CO2 reduction. The page shows the reaction, its intermediates and routes, the catalyst to beat and the free energy that places each material on the volcano; \"Why this works\" explains the choice."
+      - "Beside each reaction the list shows its check against published calculations: \"checked\", \"missed its check\" or \"awaiting its check\" (a published table or correction is still to come). The same verdict sits under the reaction and above its results, with what the check found. The checked rankings: hydrogen evolution, hydrogen oxidation (a fuel-cell anode), oxygen reduction, hydrogen peroxide production, reduction and oxidation, and formic acid oxidation through carboxyl (a direct formic-acid fuel cell's anode). Read every ranking as a shortlist to test, and a checked one with the most confidence (Methodology tab, the reaction check)."
       - "In part 2, set the potential to compare catalysts at, in volts vs RHE. The text under the slider says how far that is from the equilibrium potential. Each material's limiting potential and overpotential read the same whatever you choose here; the speeds, and the ranking that sorts by them, depend on it."
     get: The reaction, the catalyst every material is compared with, and the operating potential.
   - phase: Set up the design
@@ -158,6 +159,7 @@ glossary:
     terms:
       - {term: Screen, means: "One run over a list of materials for one reaction and one operating potential."}
       - {term: Catalyst to beat (reference), means: "The known catalyst every candidate is compared with; speeds are relative to it."}
+      - {term: Reaction check, means: "Each new intermediate's binding energy and the reaction's order of metals set against published calculations, under a rule written down before the results. Its verdict, checked, missed or awaiting, sits beside the reaction on the Design page and above its results."}
       - {term: Key free energy (descriptor), means: "The intermediate's free energy that places a material on the volcano."}
       - {term: Likely range, means: "The lowest and highest value a prediction takes when every binding energy moves within its error bar, ±0.15 eV, at once."}
       - {term: How careful (care level), means: "How many surface spots the app tries per intermediate and how tightly the atoms settle."}

@@ -26,8 +26,11 @@ descriptor: {N: 1}
 reference: {formula: Ru, name: Ruthenium}
 task: oc20
 suggested_elements: [Ru, Mo, Fe, Re, Rh, Os, Co, Ni, W, Pt]
-on_design_page: false
-design_note: UMA's N* binding misses Herron 2015's DFT table by 0.26 eV in typical size, beyond the 0.20 eV the rule allows
+# the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+check: missed
+check_note: >
+  UMA's N* binding misses Herron 2015's DFT table by 0.26 eV in typical size, beyond the 0.20 eV the rule allows;
+  its limiting potentials order Herron's metals with rho 0.76.
 basis: >
   Nitrogen reduction adds six protons and electrons one at a time. N2 takes the first to become N2H* and the
   second to become NNH2*; the third releases the first ammonia and leaves N*, and three more turn N* into the

@@ -12,7 +12,14 @@ surface empties more easily, and the optimum moves toward stronger binding (desi
 
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+
+# How far a reaction's ranking has been checked against published results (experiments/reaction_check, and
+# experiments/electro_check for the first electrochemical reactions): it passed, it missed, or a part of it awaits
+# published data. Every reaction appears on its Design page, which shows this beside it.
+CheckState = Literal["passed", "missed", "awaiting"]
 
 # Adsorbates the atomistic worker can place; their geometries and gas references live in uma_worker.py.
 ADSORBATES = {
@@ -80,8 +87,8 @@ class ScreeningSpec(_Strict):
     peak_gas: dict[str, float] = Field(default_factory=dict)
     suggested_elements: list[str] = Field(default_factory=list)
     basis: str = ""  # where the descriptor and the optimum come from, in plain words
-    # False keeps the reaction to the library and the playground until its ranking check passes
-    on_design_page: bool = True
+    check: CheckState = "awaiting"  # the ranking check's verdict; a reaction built in the app awaits one
+    check_note: str = ""  # what the check found, or what it awaits, in plain words
 
     @model_validator(mode="after")
     def _check(self) -> "ScreeningSpec":

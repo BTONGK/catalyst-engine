@@ -25,8 +25,11 @@ descriptor: {N: 1}
 reference: {formula: Pt, name: Platinum}
 task: oc20
 suggested_elements: [Pt, Ir, Pd, Rh, Ru, Cu, Ni, Co, Au, Ag]
-on_design_page: false
-design_note: UMA's N* binding misses Herron 2015's DFT table by 0.26 eV in typical size, beyond the 0.20 eV the rule allows
+# the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+check: missed
+check_note: >
+  UMA's N* binding misses Herron 2015's DFT table by 0.26 eV in typical size, beyond the 0.20 eV the rule allows;
+  its limiting potentials order Herron's metals with rho 0.85.
 basis: >
   Ammonia gives up its three hydrogens one proton and electron at a time, through NH2* and NH* to N*, and two N*
   then pair up and leave as N2. On platinum the last hydrogen, NH* to N*, is the hardest, which sets the onset

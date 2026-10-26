@@ -107,7 +107,7 @@ def routes_text(s: electro.ElectroSpec) -> str:
 
 
 def design_page(advanced: bool, status: dict) -> None:
-    ids = [i for i in electro.list_electro() if spec(i).on_design_page]
+    ids = electro.list_electro()
     specs = {i: spec(i) for i in ids}
     cands: dict[str, dict] = st.session_state.setdefault("electro_candidates", {})
 
@@ -118,8 +118,10 @@ def design_page(advanced: bool, status: dict) -> None:
             st.session_state["electro_pack"] = wanted
         elif st.session_state.get("electro_pack") not in ids:
             st.session_state["electro_pack"] = ids[0]
-        pid = st.selectbox("Reaction", ids, format_func=lambda i: f"{specs[i].name}  ·  {specs[i].category}",
-                           key="electro_pack")
+        pid = st.selectbox("Reaction", ids, format_func=lambda i: f"{specs[i].name}  ·  {specs[i].category}  ·  "
+                           f"{common.check_short(specs[i].check)}", key="electro_pack",
+                           help="Every electrochemical reaction file. Each one's check, against published DFT or "
+                                "measurements, shows beside it: checked, missed, or awaiting published data.")
         s = specs[pid]
         left, right = st.columns([3, 2], gap="large")
         with left:
@@ -133,6 +135,7 @@ def design_page(advanced: bool, status: dict) -> None:
             st.markdown(f"**Catalyst to beat:** {s.reference.name or s.reference.formula}")
             st.markdown(f"**Ranks materials by:** predicted speed at your potential, then overpotential. The "
                         f"{descriptor_text(s)} places each one on the volcano.")
+            common.check_line(s.check, s.check_note)
             with st.expander("Why this works"):
                 st.write(" ".join(s.basis.split()))
 
@@ -288,6 +291,7 @@ def results_body(folder: Path, choice: str) -> None:
                          + (", or the chemical barrier, on each route, with the faster route counting"
                             if s.activation else "") + " (Sabatier analysis).")
         m[3].metric("Supply", best.supply, border=True)
+        common.check_banner(s.check, s.check_note)
     missing = [p for p in preds if p.missing]
     if missing:
         st.info("On " + ", ".join(f"{p.formula} ({', '.join(p.missing)})" for p in missing) + " an intermediate "
@@ -438,7 +442,9 @@ def results_body(folder: Path, choice: str) -> None:
             f"- Care level: {req['thoroughness']}; UMA mode: {req['task']}\n"
             f"- Folder: `{folder}`")
         with st.expander("How the predictions are made"):
+            uma = [f"{i.name}*" for i in s.intermediates if i.correction_from == "uma"]
             corr = "; ".join(f"{i.name}*: {i.correction_eV:+.2f} eV"
+                             + (" from UMA" if i.correction_from == "uma" else "")
                              + (f", {i.water_eV:+.2f} eV from water" if i.water_eV else "")
                              + (f", {i.layer_eV:+.2f} eV from its neighbors in the layer" if i.layer_eV else "")
                              for i in s.intermediates)
@@ -450,8 +456,11 @@ def results_body(folder: Path, choice: str) -> None:
                 "Meta's UMA model relax each arrangement. The lowest energy is the binding energy, set against "
                 f"{gases_text(s)} molecules in the gas.\n"
                 f"2. **Free energies.** Each intermediate's free energy at 0 V vs RHE is its binding energy plus "
-                f"{'published' if s.on_design_page else 'the reaction file’s'} corrections for zero-point motion, "
-                f"entropy and hydrogen bonds ({corr})"
+                f"corrections for zero-point motion, entropy and hydrogen bonds ({corr}), "
+                + ("each from a published table" if not uma else
+                   f"published for the rest and, for {joined(uma)}, from UMA's own vibrations on Pt(111), which miss "
+                   "the published values by up to two tenths of an eV where both exist (Manual, Methodology tab, "
+                   "limits)")
                 + (", plus a shift from tabulated formation free energies that moves the gas reference to the "
                    "reaction's own zero" if any(i.shift_eV for i in s.intermediates) else "")
                 + ". A proton and electron at 0 V count as half a hydrogen molecule (the computational hydrogen "

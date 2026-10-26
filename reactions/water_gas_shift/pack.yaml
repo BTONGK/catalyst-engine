@@ -46,10 +46,11 @@ screening:
   optimum_shift_eV: 0.0
   peak_gas: {H2O: 1, H2: -1}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Cu, Au, Ag, Ni, Co, Fe, Pt, Pd, Zn]
-  # The reaction check (experiments/reaction_check) scores this ranking against Grenoble's order on alumina:
-  # rho -0.53 over 11 metals; the strong oxygen binders Re, Co and Ru lead there and trail here. The playground keeps
-  # it until a check passes (Manual, Methodology tab, limits).
-  on_design_page: false
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: missed
+  check_note: >
+    Against Grenoble's measured order (metals on alumina) its ranking scores rho −0.53 over 11 metals: rhenium,
+    cobalt and ruthenium, which bind oxygen strongly, lead there and trail here.
   basis: >
     Oxygen binding sets low-temperature shift activity (Schumacher et al., J. Catal. 2005): water has to split on
     the surface and the O left behind has to leave with CO. Copper, the industrial low-temperature catalyst, sits

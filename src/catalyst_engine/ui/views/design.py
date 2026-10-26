@@ -50,8 +50,10 @@ with st.container(border=True):
     elif st.session_state.get("design_pack") not in order:  # widget state clears when you visit another page
         last = st.session_state.get("design_pack_last")
         st.session_state["design_pack"] = last if last in order else order[0]
-    pid = st.selectbox("Reaction", order, format_func=lambda p: f"{names[p]}  ·  {common.pack(p).spec.category}",
-                       key="design_pack")
+    pid = st.selectbox("Reaction", order, format_func=lambda p: f"{names[p]}  ·  {common.pack(p).spec.category}  ·  "
+                       f"{common.check_short(common.pack(p).spec.screening.check)}", key="design_pack",
+                       help="Every reaction in the library. Each one's ranking check, against published "
+                            "measurements, shows beside it: checked, missed, or awaiting a published table.")
     st.session_state["design_pack_last"] = pid
     pack = common.pack(pid)
     spec = pack.spec.screening
@@ -65,6 +67,7 @@ with st.container(border=True):
         held = " and ".join(f"{ADSORBATES[a]} ({a})" for a in spec.descriptor)
         st.markdown(f"**Catalyst to beat:** {spec.reference.name or spec.reference.formula}")
         st.markdown(f"**Ranks materials by:** how strongly their surface holds {held}")
+        common.check_line(spec.check, spec.check_note)
         with st.expander("Why this works"):
             st.write(" ".join(spec.basis.split()))
     common.link("views/reactions.py", "Want another reaction? Add your own on the Reactions page", ":material/add_circle:")

@@ -25,8 +25,11 @@ descriptor: {COOH: 1}
 reference: {formula: Au, name: Gold}
 task: oc20
 suggested_elements: [Au, Ag, Zn, Cu, Pd, Pt, Ni, Sn, In, Cd]
-on_design_page: false
-design_note: UMA's CO* binding orders Elnabawy 2018's metals with rho 0.56, below the 0.6 the rule asks
+# the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+check: missed
+check_note: >
+  UMA's CO* binding orders Elnabawy 2018's metals with rho 0.56, below the 0.6 the rule asks; its limiting
+  potentials order the same metals with rho 0.80.
 basis: >
   CO2 takes a proton and electron to become carboxyl, COOH*, bound through its carbon; a second proton and
   electron split off water and leave CO*, which then has to leave the surface as gas. A surface that binds COOH*

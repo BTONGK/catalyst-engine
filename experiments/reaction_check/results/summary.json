@@ -164,7 +164,7 @@
     "N": 1.0
    },
    "n": 8,
-   "rho": 0.905,
+   "rho": 0.904762,
    "p": 0.00228,
    "published_best": "Ni",
    "predicted_top": [
@@ -272,7 +272,7 @@
     "O": 1.0
    },
    "n": 11,
-   "rho": -0.527,
+   "rho": -0.527273,
    "p": 0.953,
    "published_best": "Re",
    "predicted_top": [
@@ -406,7 +406,7 @@
     "O": 0.5
    },
    "n": 8,
-   "rho": 0.69,
+   "rho": 0.690476,
    "p": 0.0347,
    "published_best": "Ru",
    "predicted_top": [
@@ -515,7 +515,7 @@
     "O": 0.5
    },
    "n": 8,
-   "rho": 0.929,
+   "rho": 0.928571,
    "p": 0.00112,
    "published_best": "Ru",
    "predicted_top": [
@@ -705,7 +705,7 @@
     "C": 1.0
    },
    "n": 8,
-   "rho": 0.571,
+   "rho": 0.571429,
    "p": 0.0756,
    "published_best": "Co",
    "predicted_top": [
@@ -811,7 +811,7 @@
     "C": 0.25
    },
    "n": 6,
-   "rho": 0.943,
+   "rho": 0.942857,
    "p": 0.00833,
    "published_best": "Ru",
    "predicted_top": [
@@ -900,7 +900,7 @@
     "O": 0.5
    },
    "n": 6,
-   "rho": 0.174,
+   "rho": 0.173931,
    "p": 0.367,
    "published_best": "Pd",
    "predicted_top": [
@@ -989,7 +989,7 @@
     "O": 0.5
    },
    "n": 6,
-   "rho": 0.486,
+   "rho": 0.485714,
    "p": 0.178,
    "published_best": "Pd",
    "predicted_top": [
@@ -1076,7 +1076,7 @@
    "offset_eV": 0.196,
    "median_miss_eV": 0.257,
    "max_miss_eV": 0.711,
-   "rho": 0.923,
+   "rho": 0.923077,
    "p": 3.01e-05,
    "passes": false,
    "rows": [
@@ -1163,7 +1163,7 @@
    "offset_eV": 0.314,
    "median_miss_eV": 0.165,
    "max_miss_eV": 0.604,
-   "rho": 0.958,
+   "rho": 0.958042,
    "p": 3.18e-06,
    "passes": true,
    "rows": [
@@ -1250,7 +1250,7 @@
    "offset_eV": 0.518,
    "median_miss_eV": 0.086,
    "max_miss_eV": 0.436,
-   "rho": 0.853,
+   "rho": 0.853147,
    "p": 0.000393,
    "passes": true,
    "rows": [
@@ -1337,7 +1337,7 @@
    "offset_eV": 0.296,
    "median_miss_eV": 0.188,
    "max_miss_eV": 0.535,
-   "rho": 0.886,
+   "rho": 0.886166,
    "p": 0.000133,
    "passes": true,
    "rows": [
@@ -1424,7 +1424,7 @@
    "offset_eV": 0.462,
    "median_miss_eV": 0.183,
    "max_miss_eV": 0.743,
-   "rho": 0.758,
+   "rho": 0.757576,
    "p": 0.00746,
    "passes": true,
    "rows": [
@@ -1499,7 +1499,7 @@
    "offset_eV": 0.529,
    "median_miss_eV": 0.11,
    "max_miss_eV": 0.612,
-   "rho": 0.916,
+   "rho": 0.916084,
    "p": 4.19e-05,
    "passes": true,
    "rows": [
@@ -1586,7 +1586,7 @@
    "offset_eV": 0.739,
    "median_miss_eV": 0.204,
    "max_miss_eV": 0.689,
-   "rho": 0.846,
+   "rho": 0.846154,
    "p": 0.000472,
    "passes": false,
    "rows": [
@@ -1673,7 +1673,7 @@
    "offset_eV": 0.829,
    "median_miss_eV": 0.063,
    "max_miss_eV": 0.434,
-   "rho": 0.797,
+   "rho": 0.797203,
    "p": 0.00146,
    "passes": true,
    "rows": [
@@ -1760,7 +1760,7 @@
    "offset_eV": 0.772,
    "median_miss_eV": 0.047,
    "max_miss_eV": 0.278,
-   "rho": 0.951,
+   "rho": 0.951049,
    "p": 5.49e-06,
    "passes": true,
    "rows": [
@@ -1847,7 +1847,7 @@
    "offset_eV": 0.387,
    "median_miss_eV": 0.108,
    "max_miss_eV": 0.405,
-   "rho": 0.559,
+   "rho": 0.559441,
    "p": 0.0314,
    "passes": false,
    "rows": [
@@ -1934,7 +1934,7 @@
    "offset_eV": -1.368,
    "median_miss_eV": 0.076,
    "max_miss_eV": 0.169,
-   "rho": 0.738,
+   "rho": 0.738095,
    "p": 0.0229,
    "passes": true,
    "rows": [
@@ -1997,7 +1997,7 @@
    "offset_eV": -3.118,
    "median_miss_eV": 0.079,
    "max_miss_eV": 0.193,
-   "rho": 0.929,
+   "rho": 0.928571,
    "p": 0.00112,
    "passes": true,
    "rows": [
@@ -2060,7 +2060,7 @@
    "offset_eV": -0.546,
    "median_miss_eV": 0.093,
    "max_miss_eV": 0.208,
-   "rho": 0.929,
+   "rho": 0.928571,
    "p": 0.00112,
    "passes": true,
    "rows": [
@@ -2123,7 +2123,7 @@
    "offset_eV": -2.281,
    "median_miss_eV": 0.097,
    "max_miss_eV": 0.177,
-   "rho": 0.952,
+   "rho": 0.952381,
    "p": 0.00057,
    "passes": true,
    "rows": [
@@ -2186,7 +2186,7 @@
    "offset_eV": -0.968,
    "median_miss_eV": 0.108,
    "max_miss_eV": 0.319,
-   "rho": 0.976,
+   "rho": 0.97619,
    "p": 0.000198,
    "passes": true,
    "rows": [
@@ -2248,7 +2248,7 @@
    "direction": "oxidation",
    "source": "Herron et al. 2015",
    "n": 12,
-   "rho": 0.855,
+   "rho": 0.854642,
    "p": 0.000356,
    "ranking_passes": true,
    "intermediates_new": [
@@ -2263,6 +2263,7 @@
    "corrections_missing": [],
    "oxide": false,
    "passes": false,
+   "check": "missed",
    "rows": [
     {
      "metal": "Ag",
@@ -2356,7 +2357,7 @@
    "direction": "reduction",
    "source": "Elnabawy et al. 2018",
    "n": 12,
-   "rho": 0.797,
+   "rho": 0.797203,
    "p": 0.00146,
    "ranking_passes": true,
    "intermediates_new": [
@@ -2370,6 +2371,7 @@
    "corrections_missing": [],
    "oxide": false,
    "passes": false,
+   "check": "missed",
    "rows": [
     {
      "metal": "Au",
@@ -2463,7 +2465,7 @@
    "direction": "reduction",
    "source": "Elnabawy et al. 2018",
    "n": 12,
-   "rho": 0.842,
+   "rho": 0.84211,
    "p": 0.000498,
    "ranking_passes": true,
    "intermediates_new": [
@@ -2476,6 +2478,7 @@
    ],
    "oxide": false,
    "passes": false,
+   "check": "awaiting",
    "rows": [
     {
      "metal": "Au",
@@ -2593,6 +2596,7 @@
    ],
    "oxide": false,
    "passes": false,
+   "check": "missed",
    "rows": []
   },
   {
@@ -2625,6 +2629,7 @@
    ],
    "oxide": false,
    "passes": false,
+   "check": "missed",
    "rows": []
   },
   {
@@ -2633,7 +2638,7 @@
    "direction": "oxidation",
    "source": "Elnabawy et al. 2018",
    "n": 12,
-   "rho": 0.965,
+   "rho": 0.965035,
    "p": 1.74e-06,
    "ranking_passes": true,
    "intermediates_new": [
@@ -2647,6 +2652,7 @@
    "corrections_missing": [],
    "oxide": false,
    "passes": false,
+   "check": "missed",
    "rows": [
     {
      "metal": "Au",
@@ -2763,6 +2769,7 @@
    ],
    "oxide": false,
    "passes": false,
+   "check": "missed",
    "rows": []
   },
   {
@@ -2794,6 +2801,7 @@
    ],
    "oxide": false,
    "passes": false,
+   "check": "missed",
    "rows": []
   },
   {
@@ -2802,7 +2810,7 @@
    "direction": "oxidation",
    "source": "Elnabawy et al. 2018",
    "n": 12,
-   "rho": 0.842,
+   "rho": 0.84211,
    "p": 0.000498,
    "ranking_passes": true,
    "intermediates_new": [
@@ -2815,6 +2823,7 @@
    ],
    "oxide": false,
    "passes": false,
+   "check": "awaiting",
    "rows": [
     {
      "metal": "Au",
@@ -2908,7 +2917,7 @@
    "direction": "oxidation",
    "source": "Elnabawy et al. 2018",
    "n": 12,
-   "rho": 0.769,
+   "rho": 0.769231,
    "p": 0.00246,
    "ranking_passes": true,
    "intermediates_new": [
@@ -2919,6 +2928,7 @@
    "corrections_missing": [],
    "oxide": false,
    "passes": true,
+   "check": "passed",
    "rows": [
     {
      "metal": "Au",
@@ -3012,7 +3022,7 @@
    "direction": "oxidation",
    "source": "Nørskov et al. 2004, Table 2 (O* through Fig. 8)",
    "n": 11,
-   "rho": 0.845,
+   "rho": 0.845455,
    "p": 0.000913,
    "ranking_passes": true,
    "intermediates_new": [],
@@ -3021,6 +3031,7 @@
    "corrections_missing": [],
    "oxide": false,
    "passes": true,
+   "check": "passed",
    "rows": [
     {
      "metal": "Ag",
@@ -3107,7 +3118,7 @@
    "direction": "reduction",
    "source": "Nørskov et al. 2004, Table 2 (O* through Fig. 8)",
    "n": 11,
-   "rho": 0.845,
+   "rho": 0.845455,
    "p": 0.000913,
    "ranking_passes": true,
    "intermediates_new": [],
@@ -3116,6 +3127,7 @@
    "corrections_missing": [],
    "oxide": false,
    "passes": true,
+   "check": "passed",
    "rows": [
     {
      "metal": "Ag",
@@ -3202,7 +3214,7 @@
    "direction": "reduction",
    "source": "Nørskov et al. 2004, Table 2",
    "n": 13,
-   "rho": 0.973,
+   "rho": 0.972527,
    "p": 1.92e-07,
    "ranking_passes": true,
    "intermediates_new": [],
@@ -3211,6 +3223,7 @@
    "corrections_missing": [],
    "oxide": false,
    "passes": true,
+   "check": "passed",
    "rows": [
     {
      "metal": "Ag",
@@ -3311,7 +3324,7 @@
    "direction": "oxidation",
    "source": "Herron et al. 2015",
    "n": 10,
-   "rho": 0.262,
+   "rho": 0.2622,
    "p": 0.231,
    "ranking_passes": false,
    "intermediates_new": [
@@ -3329,6 +3342,7 @@
    ],
    "oxide": false,
    "passes": false,
+   "check": "missed",
    "rows": [
     {
      "metal": "Cu",
@@ -3408,7 +3422,7 @@
    "direction": "oxidation",
    "source": "arXiv:2109.04219, Table S2 (RPBE)",
    "n": 12,
-   "rho": 0.923,
+   "rho": 0.923077,
    "p": 3.01e-05,
    "ranking_passes": true,
    "intermediates_new": [],
@@ -3417,6 +3431,7 @@
    "corrections_missing": [],
    "oxide": false,
    "passes": true,
+   "check": "passed",
    "rows": [
     {
      "metal": "Ag",
@@ -3531,6 +3546,7 @@
    ],
    "oxide": false,
    "passes": false,
+   "check": "missed",
    "rows": []
   },
   {
@@ -3556,6 +3572,7 @@
    ],
    "oxide": false,
    "passes": false,
+   "check": "awaiting",
    "rows": []
   },
   {
@@ -3589,6 +3606,7 @@
    ],
    "oxide": false,
    "passes": false,
+   "check": "missed",
    "rows": []
   },
   {
@@ -3597,7 +3615,7 @@
    "direction": "reduction",
    "source": "Herron et al. 2015",
    "n": 12,
-   "rho": 0.76,
+   "rho": 0.760071,
    "p": 0.00281,
    "ranking_passes": true,
    "intermediates_new": [
@@ -3614,6 +3632,7 @@
    "corrections_missing": [],
    "oxide": false,
    "passes": false,
+   "check": "missed",
    "rows": [
     {
      "metal": "Ag",
@@ -3707,7 +3726,7 @@
    "direction": "oxidation",
    "source": "Nørskov et al. 2004, Table 2",
    "n": 13,
-   "rho": 0.973,
+   "rho": 0.972527,
    "p": 1.92e-07,
    "ranking_passes": true,
    "intermediates_new": [],
@@ -3716,6 +3735,7 @@
    "corrections_missing": [],
    "oxide": true,
    "passes": false,
+   "check": "missed",
    "rows": [
     {
      "metal": "Ag",
@@ -3911,28 +3931,28 @@
   "rc_nh3_synthesis_primary_T": 573,
   "rc_nh3_synthesis_primary_anchor": "Ru",
   "rc_nh3_decomposition_primary_n": 8,
-  "rc_nh3_decomposition_primary_rho": 0.905,
+  "rc_nh3_decomposition_primary_rho": 0.904762,
   "rc_nh3_decomposition_primary_p": 0.00228,
   "rc_nh3_decomposition_primary_best": "Ni",
   "rc_nh3_decomposition_primary_top": "Co, Ni, Rh",
   "rc_nh3_decomposition_primary_T": 853,
   "rc_nh3_decomposition_primary_anchor": "Ru",
   "rc_water_gas_shift_primary_n": 11,
-  "rc_water_gas_shift_primary_rho": -0.527,
+  "rc_water_gas_shift_primary_rho": -0.527273,
   "rc_water_gas_shift_primary_p": 0.953,
   "rc_water_gas_shift_primary_best": "Re",
   "rc_water_gas_shift_primary_top": "Ir, Pd, Pt",
   "rc_water_gas_shift_primary_T": 493.1,
   "rc_water_gas_shift_primary_anchor": "Cu",
   "rc_co_methanation_primary_n": 8,
-  "rc_co_methanation_primary_rho": 0.69,
+  "rc_co_methanation_primary_rho": 0.690476,
   "rc_co_methanation_primary_p": 0.0347,
   "rc_co_methanation_primary_best": "Ru",
   "rc_co_methanation_primary_top": "Re, Ru, Fe",
   "rc_co_methanation_primary_T": 550,
   "rc_co_methanation_primary_anchor": "Co",
   "rc_co_methanation_secondary_n": 8,
-  "rc_co_methanation_secondary_rho": 0.929,
+  "rc_co_methanation_secondary_rho": 0.928571,
   "rc_co_methanation_secondary_p": 0.00112,
   "rc_co_methanation_secondary_best": "Ru",
   "rc_co_methanation_secondary_top": "Ru, Fe, Ni",
@@ -3946,28 +3966,28 @@
   "rc_ethane_hydrogenolysis_primary_T": 478,
   "rc_ethane_hydrogenolysis_primary_anchor": "Os",
   "rc_benzene_hydrogenation_primary_n": 8,
-  "rc_benzene_hydrogenation_primary_rho": 0.571,
+  "rc_benzene_hydrogenation_primary_rho": 0.571429,
   "rc_benzene_hydrogenation_primary_p": 0.0756,
   "rc_benzene_hydrogenation_primary_best": "Co",
   "rc_benzene_hydrogenation_primary_top": "Co, Ru, Re",
   "rc_benzene_hydrogenation_primary_T": 303,
   "rc_benzene_hydrogenation_primary_anchor": "Os",
   "rc_ethylene_hydrogenation_indicative_n": 6,
-  "rc_ethylene_hydrogenation_indicative_rho": 0.943,
+  "rc_ethylene_hydrogenation_indicative_rho": 0.942857,
   "rc_ethylene_hydrogenation_indicative_p": 0.00833,
   "rc_ethylene_hydrogenation_indicative_best": "Ru",
   "rc_ethylene_hydrogenation_indicative_top": "Ru, Ni, Co",
   "rc_ethylene_hydrogenation_indicative_T": 250,
   "rc_ethylene_hydrogenation_indicative_anchor": "Rh",
   "rc_propane_combustion_primary_n": 6,
-  "rc_propane_combustion_primary_rho": 0.174,
+  "rc_propane_combustion_primary_rho": 0.173931,
   "rc_propane_combustion_primary_p": 0.367,
   "rc_propane_combustion_primary_best": "Pd",
   "rc_propane_combustion_primary_top": "Pd, Cu, Rh",
   "rc_propane_combustion_primary_T": 613.1,
   "rc_propane_combustion_primary_anchor": "Pt",
   "rc_propylene_combustion_primary_n": 6,
-  "rc_propylene_combustion_primary_rho": 0.486,
+  "rc_propylene_combustion_primary_rho": 0.485714,
   "rc_propylene_combustion_primary_p": 0.178,
   "rc_propylene_combustion_primary_best": "Pd",
   "rc_propylene_combustion_primary_top": "Pd, Cu, Rh",
@@ -3979,111 +3999,110 @@
   "rc_span_predicted_hi": 40.3,
   "rc_span_factor_lo": 1.3,
   "rc_span_factor_hi": 20.1,
-  "rc_design_checked_names": "CO methanation and Ammonia cracking",
-  "rc_design_checked_n": 2,
-  "rc_playground_untabled_names": "Selective acetylene hydrogenation, Ammonia oxidation to NO (Ostwald), Ammonia slip oxidation, Selective butadiene hydrogenation, Cyclohexane dehydrogenation, Dry reforming of methane, Ethane dehydrogenation, Ethanol steam reforming, Ethylene epoxidation, Formaldehyde oxidation, Formic acid dehydrogenation, Hydrogen cyanide synthesis (BMA), Catalytic hydrogen combustion, Methane combustion, Partial oxidation of methane, Methanol decomposition, Methanol steam reforming, Formaldehyde from methanol (silver process), NO reduction by CO, NO oxidation, Propane dehydrogenation, Preferential CO oxidation (PROX), Reverse water-gas shift and SO2 oxidation (contact process)",
-  "rc_playground_untabled_n": 24,
-  "rc_design_waiting_names": "CO2 methanation, CO oxidation, Methanol from CO2, N2O removal, Gas-engine oxidation catalyst (CO, HCHO, CH4, NO), High-temperature SCR of NOx with NH3 and Steam methane reforming",
-  "rc_design_waiting_n": 7,
-  "rc_design_n": 9,
-  "rc_playground_n": 31,
+  "rc_checked_names": "CO methanation and Ammonia cracking",
+  "rc_checked_n": 2,
+  "rc_missed_names": "Benzene hydrogenation, Ethane hydrogenolysis, Ammonia synthesis, Propane combustion, Propylene combustion and Water-gas shift",
+  "rc_missed_n": 6,
+  "rc_awaiting_n": 32,
+  "rc_untabled_names": "Selective acetylene hydrogenation, Ammonia oxidation to NO (Ostwald), Ammonia slip oxidation, Selective butadiene hydrogenation, CO2 methanation, CO oxidation, Cyclohexane dehydrogenation, Dry reforming of methane, Ethane dehydrogenation, Ethanol steam reforming, Ethylene epoxidation, Formaldehyde oxidation, Formic acid dehydrogenation, Hydrogen cyanide synthesis (BMA), Catalytic hydrogen combustion, Methane combustion, Partial oxidation of methane, Methanol decomposition, Methanol steam reforming, Methanol from CO2, Formaldehyde from methanol (silver process), N2O removal, NO reduction by CO, NO oxidation, Gas-engine oxidation catalyst (CO, HCHO, CH4, NO), Propane dehydrogenation, Preferential CO oxidation (PROX), Reverse water-gas shift, High-temperature SCR of NOx with NH3, SO2 oxidation (contact process) and Steam methane reforming",
+  "rc_untabled_n": 31,
   "rc_packs_n": 40,
   "rc_thermal_tables": 10,
   "rc_thermal_scored": 8,
   "rc_thermal_passed": 2,
   "rc_thermal_passed_names": "Ammonia cracking and CO methanation",
   "rc_thermal_failed_names": "Ammonia synthesis, Water-gas shift, Ethane hydrogenolysis, Benzene hydrogenation, Propane combustion and Propylene combustion",
-  "rc_thermal_failed_rho_lo": -0.527,
-  "rc_thermal_failed_rho_hi": 0.571,
+  "rc_thermal_failed_rho_lo": -0.527273,
+  "rc_thermal_failed_rho_hi": 0.571429,
   "rc_i_herron2015_N_n": 12,
   "rc_i_herron2015_N_median": 0.257,
   "rc_i_herron2015_N_max": 0.711,
   "rc_i_herron2015_N_offset": 0.196,
-  "rc_i_herron2015_N_rho": 0.923,
+  "rc_i_herron2015_N_rho": 0.923077,
   "rc_i_herron2015_N_p": 3.01e-05,
   "rc_i_herron2015_NH_n": 12,
   "rc_i_herron2015_NH_median": 0.165,
   "rc_i_herron2015_NH_max": 0.604,
   "rc_i_herron2015_NH_offset": 0.314,
-  "rc_i_herron2015_NH_rho": 0.958,
+  "rc_i_herron2015_NH_rho": 0.958042,
   "rc_i_herron2015_NH_p": 3.18e-06,
   "rc_i_herron2015_NH2_n": 12,
   "rc_i_herron2015_NH2_median": 0.086,
   "rc_i_herron2015_NH2_max": 0.436,
   "rc_i_herron2015_NH2_offset": 0.518,
-  "rc_i_herron2015_NH2_rho": 0.853,
+  "rc_i_herron2015_NH2_rho": 0.853147,
   "rc_i_herron2015_NH2_p": 0.000393,
   "rc_i_herron2015_NNH_n": 12,
   "rc_i_herron2015_NNH_median": 0.188,
   "rc_i_herron2015_NNH_max": 0.535,
   "rc_i_herron2015_NNH_offset": 0.296,
-  "rc_i_herron2015_NNH_rho": 0.886,
+  "rc_i_herron2015_NNH_rho": 0.886166,
   "rc_i_herron2015_NNH_p": 0.000133,
   "rc_i_herron2015_HNNH_n": 10,
   "rc_i_herron2015_HNNH_median": 0.183,
   "rc_i_herron2015_HNNH_max": 0.743,
   "rc_i_herron2015_HNNH_offset": 0.462,
-  "rc_i_herron2015_HNNH_rho": 0.758,
+  "rc_i_herron2015_HNNH_rho": 0.757576,
   "rc_i_herron2015_HNNH_p": 0.00746,
   "rc_i_herron2015_NNH2_n": 12,
   "rc_i_herron2015_NNH2_median": 0.11,
   "rc_i_herron2015_NNH2_max": 0.612,
   "rc_i_herron2015_NNH2_offset": 0.529,
-  "rc_i_herron2015_NNH2_rho": 0.916,
+  "rc_i_herron2015_NNH2_rho": 0.916084,
   "rc_i_herron2015_NNH2_p": 4.19e-05,
   "rc_i_herron2015_HNNH2_n": 12,
   "rc_i_herron2015_HNNH2_median": 0.204,
   "rc_i_herron2015_HNNH2_max": 0.689,
   "rc_i_herron2015_HNNH2_offset": 0.739,
-  "rc_i_herron2015_HNNH2_rho": 0.846,
+  "rc_i_herron2015_HNNH2_rho": 0.846154,
   "rc_i_herron2015_HNNH2_p": 0.000472,
   "rc_i_elnabawy2018_COOH_n": 12,
   "rc_i_elnabawy2018_COOH_median": 0.063,
   "rc_i_elnabawy2018_COOH_max": 0.434,
   "rc_i_elnabawy2018_COOH_offset": 0.829,
-  "rc_i_elnabawy2018_COOH_rho": 0.797,
+  "rc_i_elnabawy2018_COOH_rho": 0.797203,
   "rc_i_elnabawy2018_COOH_p": 0.00146,
   "rc_i_elnabawy2018_OCHO_n": 12,
   "rc_i_elnabawy2018_OCHO_median": 0.047,
   "rc_i_elnabawy2018_OCHO_max": 0.278,
   "rc_i_elnabawy2018_OCHO_offset": 0.772,
-  "rc_i_elnabawy2018_OCHO_rho": 0.951,
+  "rc_i_elnabawy2018_OCHO_rho": 0.951049,
   "rc_i_elnabawy2018_OCHO_p": 5.49e-06,
   "rc_i_elnabawy2018_CO_n": 12,
   "rc_i_elnabawy2018_CO_median": 0.108,
   "rc_i_elnabawy2018_CO_max": 0.405,
   "rc_i_elnabawy2018_CO_offset": 0.387,
-  "rc_i_elnabawy2018_CO_rho": 0.559,
+  "rc_i_elnabawy2018_CO_rho": 0.559441,
   "rc_i_elnabawy2018_CO_p": 0.0314,
   "rc_i_ferrin2009_CHO_n": 8,
   "rc_i_ferrin2009_CHO_median": 0.076,
   "rc_i_ferrin2009_CHO_max": 0.169,
   "rc_i_ferrin2009_CHO_offset": -1.368,
-  "rc_i_ferrin2009_CHO_rho": 0.738,
+  "rc_i_ferrin2009_CHO_rho": 0.738095,
   "rc_i_ferrin2009_CHO_p": 0.0229,
   "rc_i_ferrin2009_COH_n": 8,
   "rc_i_ferrin2009_COH_median": 0.079,
   "rc_i_ferrin2009_COH_max": 0.193,
   "rc_i_ferrin2009_COH_offset": -3.118,
-  "rc_i_ferrin2009_COH_rho": 0.929,
+  "rc_i_ferrin2009_COH_rho": 0.928571,
   "rc_i_ferrin2009_COH_p": 0.00112,
   "rc_i_ferrin2009_CH2OH_n": 8,
   "rc_i_ferrin2009_CH2OH_median": 0.093,
   "rc_i_ferrin2009_CH2OH_max": 0.208,
   "rc_i_ferrin2009_CH2OH_offset": -0.546,
-  "rc_i_ferrin2009_CH2OH_rho": 0.929,
+  "rc_i_ferrin2009_CH2OH_rho": 0.928571,
   "rc_i_ferrin2009_CH2OH_p": 0.00112,
   "rc_i_ferrin2009_CHOH_n": 8,
   "rc_i_ferrin2009_CHOH_median": 0.097,
   "rc_i_ferrin2009_CHOH_max": 0.177,
   "rc_i_ferrin2009_CHOH_offset": -2.281,
-  "rc_i_ferrin2009_CHOH_rho": 0.952,
+  "rc_i_ferrin2009_CHOH_rho": 0.952381,
   "rc_i_ferrin2009_CHOH_p": 0.00057,
   "rc_i_ferrin2009_CH3O_n": 8,
   "rc_i_ferrin2009_CH3O_median": 0.108,
   "rc_i_ferrin2009_CH3O_max": 0.319,
   "rc_i_ferrin2009_CH3O_offset": -0.968,
-  "rc_i_ferrin2009_CH3O_rho": 0.976,
+  "rc_i_ferrin2009_CH3O_rho": 0.97619,
   "rc_i_ferrin2009_CH3O_p": 0.000198,
   "rc_i_checked": 15,
   "rc_i_passed_names": "NH*, NH2*, NNH*, HNNH*, NNH2*, COOH*, OCHO*, CHO*, COH*, CH2OH*, CHOH* and CH3O*",
@@ -4092,13 +4111,13 @@
   "rc_i_awaiting": 3,
   "rc_i_awaiting_names": "CH2O*, NO* and NOH*",
   "rc_e_ammonia_oxidation_n": 12,
-  "rc_e_ammonia_oxidation_rho": 0.855,
+  "rc_e_ammonia_oxidation_rho": 0.854642,
   "rc_e_ammonia_oxidation_p": 0.000356,
   "rc_e_co2_to_co_n": 12,
-  "rc_e_co2_to_co_rho": 0.797,
+  "rc_e_co2_to_co_rho": 0.797203,
   "rc_e_co2_to_co_p": 0.00146,
   "rc_e_co2_to_formate_n": 12,
-  "rc_e_co2_to_formate_rho": 0.842,
+  "rc_e_co2_to_formate_rho": 0.84211,
   "rc_e_co2_to_formate_p": 0.000498,
   "rc_e_co2_to_methane_n": 0,
   "rc_e_co2_to_methane_rho": null,
@@ -4107,7 +4126,7 @@
   "rc_e_co2_to_methanol_rho": null,
   "rc_e_co2_to_methanol_p": null,
   "rc_e_co_oxidation_electro_n": 12,
-  "rc_e_co_oxidation_electro_rho": 0.965,
+  "rc_e_co_oxidation_electro_rho": 0.965035,
   "rc_e_co_oxidation_electro_p": 1.74e-06,
   "rc_e_co_to_methane_n": 0,
   "rc_e_co_to_methane_rho": null,
@@ -4116,25 +4135,25 @@
   "rc_e_co_to_methanol_rho": null,
   "rc_e_co_to_methanol_p": null,
   "rc_e_formic_acid_oxidation_n": 12,
-  "rc_e_formic_acid_oxidation_rho": 0.842,
+  "rc_e_formic_acid_oxidation_rho": 0.84211,
   "rc_e_formic_acid_oxidation_p": 0.000498,
   "rc_e_formic_acid_oxidation_carboxyl_n": 12,
-  "rc_e_formic_acid_oxidation_carboxyl_rho": 0.769,
+  "rc_e_formic_acid_oxidation_carboxyl_rho": 0.769231,
   "rc_e_formic_acid_oxidation_carboxyl_p": 0.00246,
   "rc_e_h2o2_oxidation_n": 11,
-  "rc_e_h2o2_oxidation_rho": 0.845,
+  "rc_e_h2o2_oxidation_rho": 0.845455,
   "rc_e_h2o2_oxidation_p": 0.000913,
   "rc_e_h2o2_production_n": 11,
-  "rc_e_h2o2_production_rho": 0.845,
+  "rc_e_h2o2_production_rho": 0.845455,
   "rc_e_h2o2_production_p": 0.000913,
   "rc_e_h2o2_reduction_n": 13,
-  "rc_e_h2o2_reduction_rho": 0.973,
+  "rc_e_h2o2_reduction_rho": 0.972527,
   "rc_e_h2o2_reduction_p": 1.92e-07,
   "rc_e_hydrazine_oxidation_n": 10,
-  "rc_e_hydrazine_oxidation_rho": 0.262,
+  "rc_e_hydrazine_oxidation_rho": 0.2622,
   "rc_e_hydrazine_oxidation_p": 0.231,
   "rc_e_hydrogen_oxidation_n": 12,
-  "rc_e_hydrogen_oxidation_rho": 0.923,
+  "rc_e_hydrogen_oxidation_rho": 0.923077,
   "rc_e_hydrogen_oxidation_p": 3.01e-05,
   "rc_e_methanol_oxidation_n": 0,
   "rc_e_methanol_oxidation_rho": null,
@@ -4146,15 +4165,18 @@
   "rc_e_nitric_oxide_reduction_rho": null,
   "rc_e_nitric_oxide_reduction_p": null,
   "rc_e_nitrogen_reduction_n": 12,
-  "rc_e_nitrogen_reduction_rho": 0.76,
+  "rc_e_nitrogen_reduction_rho": 0.760071,
   "rc_e_nitrogen_reduction_p": 0.00281,
   "rc_e_water_oxidation_h2o2_n": 13,
-  "rc_e_water_oxidation_h2o2_rho": 0.973,
+  "rc_e_water_oxidation_h2o2_rho": 0.972527,
   "rc_e_water_oxidation_h2o2_p": 1.92e-07,
   "rc_e_checked": 20,
   "rc_e_passed": 5,
   "rc_e_passed_names": "Formic acid oxidation (carboxyl route), Hydrogen peroxide oxidation, Hydrogen peroxide production (two-electron ORR), Hydrogen peroxide reduction and Hydrogen oxidation (HOR)",
-  "rc_e_waiting": 15,
+  "rc_e_missed": 12,
+  "rc_e_missed_names": "Ammonia oxidation to nitrogen (AOR), CO2 reduction to CO, CO2 reduction to methane, CO2 reduction to methanol, CO electro-oxidation, CO reduction to methane, CO reduction to methanol, Hydrazine oxidation, Methanol oxidation (DMFC anode), Nitric oxide reduction to ammonia, Nitrogen reduction to ammonia (NRR) and Two-electron water oxidation to H2O2",
+  "rc_e_awaiting": 3,
+  "rc_e_awaiting_names": "CO2 reduction to formate, Formic acid oxidation (formate route) and Methanol oxidation to formate",
   "rc_corr_passes": "misses",
   "rc_corr_max_miss": 0.2,
   "rc_corr_median_miss": 0.12,
@@ -4235,7 +4257,7 @@
     "p": "0.146",
     "best": "Os",
     "top": "Os, Co, Re",
-    "verdict": "in the playground: rho 0.40, below 0.6; p 0.146, above 0.05"
+    "verdict": "misses: rho 0.40, below 0.6; p 0.146, above 0.05"
    },
    {
     "reaction": "Ammonia cracking",
@@ -4243,11 +4265,11 @@
     "role": "scored by the rule",
     "T_K": "853",
     "n": 8,
-    "rho": 0.905,
+    "rho": 0.904762,
     "p": "0.002",
     "best": "Ni",
     "top": "Co, Ni, Rh",
-    "verdict": "passes: on the Design page"
+    "verdict": "passes"
    },
    {
     "reaction": "Water-gas shift",
@@ -4255,11 +4277,11 @@
     "role": "scored by the rule",
     "T_K": "493 (the pack's)",
     "n": 11,
-    "rho": -0.527,
+    "rho": -0.527273,
     "p": "0.953",
     "best": "Re",
     "top": "Ir, Pd, Pt",
-    "verdict": "in the playground: rho -0.53, below 0.6; p 0.953, above 0.05; Re outside the predicted top 3"
+    "verdict": "misses: rho -0.53, below 0.6; p 0.953, above 0.05; Re outside the predicted top 3"
    },
    {
     "reaction": "CO methanation",
@@ -4267,11 +4289,11 @@
     "role": "scored by the rule",
     "T_K": "550",
     "n": 8,
-    "rho": 0.69,
+    "rho": 0.690476,
     "p": "0.035",
     "best": "Ru",
     "top": "Re, Ru, Fe",
-    "verdict": "passes: on the Design page"
+    "verdict": "passes"
    },
    {
     "reaction": "CO methanation",
@@ -4279,7 +4301,7 @@
     "role": "second table, shown beside",
     "T_K": "548",
     "n": 8,
-    "rho": 0.929,
+    "rho": 0.928571,
     "p": "0.001",
     "best": "Ru",
     "top": "Ru, Fe, Ni",
@@ -4295,7 +4317,7 @@
     "p": "0.475",
     "best": "Ni",
     "top": "Co, Rh, Ir",
-    "verdict": "in the playground: rho 0.10, below 0.6; p 0.475, above 0.05; Ni outside the predicted top 3"
+    "verdict": "misses: rho 0.10, below 0.6; p 0.475, above 0.05; Ni outside the predicted top 3"
    },
    {
     "reaction": "Benzene hydrogenation",
@@ -4303,11 +4325,11 @@
     "role": "scored by the rule",
     "T_K": "303",
     "n": 8,
-    "rho": 0.571,
+    "rho": 0.571429,
     "p": "0.076",
     "best": "Co",
     "top": "Co, Ru, Re",
-    "verdict": "in the playground: rho 0.57, below 0.6; p 0.076, above 0.05"
+    "verdict": "misses: rho 0.57, below 0.6; p 0.076, above 0.05"
    },
    {
     "reaction": "Ethylene hydrogenation",
@@ -4315,7 +4337,7 @@
     "role": "indicative, shown beside",
     "T_K": "250",
     "n": 6,
-    "rho": 0.943,
+    "rho": 0.942857,
     "p": "0.008",
     "best": "Ru",
     "top": "Ru, Ni, Co",
@@ -4327,11 +4349,11 @@
     "role": "scored by the rule",
     "T_K": "613",
     "n": 6,
-    "rho": 0.174,
+    "rho": 0.173931,
     "p": "0.367",
     "best": "Pd",
     "top": "Pd, Cu, Rh",
-    "verdict": "in the playground: rho 0.17, below 0.6; p 0.367, above 0.05"
+    "verdict": "misses: rho 0.17, below 0.6; p 0.367, above 0.05"
    },
    {
     "reaction": "Propylene combustion",
@@ -4339,11 +4361,11 @@
     "role": "scored by the rule",
     "T_K": "443",
     "n": 6,
-    "rho": 0.486,
+    "rho": 0.485714,
     "p": "0.178",
     "best": "Pd",
     "top": "Pd, Cu, Rh",
-    "verdict": "in the playground: rho 0.49, below 0.6; p 0.178, above 0.05"
+    "verdict": "misses: rho 0.49, below 0.6; p 0.178, above 0.05"
    }
   ],
   "rc_thermal_metals": [
@@ -5164,7 +5186,7 @@
     "offset_eV": 0.196,
     "median_miss_eV": 0.257,
     "max_miss_eV": 0.711,
-    "rho": 0.923,
+    "rho": 0.923077,
     "p": "3.0 × 10⁻⁵",
     "verdict": "misses: typical miss 0.257 eV, above 0.20"
    },
@@ -5175,7 +5197,7 @@
     "offset_eV": 0.314,
     "median_miss_eV": 0.165,
     "max_miss_eV": 0.604,
-    "rho": 0.958,
+    "rho": 0.958042,
     "p": "3.2 × 10⁻⁶",
     "verdict": "passes"
    },
@@ -5186,7 +5208,7 @@
     "offset_eV": 0.518,
     "median_miss_eV": 0.086,
     "max_miss_eV": 0.436,
-    "rho": 0.853,
+    "rho": 0.853147,
     "p": "3.9 × 10⁻⁴",
     "verdict": "passes"
    },
@@ -5197,7 +5219,7 @@
     "offset_eV": 0.296,
     "median_miss_eV": 0.188,
     "max_miss_eV": 0.535,
-    "rho": 0.886,
+    "rho": 0.886166,
     "p": "1.3 × 10⁻⁴",
     "verdict": "passes"
    },
@@ -5208,7 +5230,7 @@
     "offset_eV": 0.462,
     "median_miss_eV": 0.183,
     "max_miss_eV": 0.743,
-    "rho": 0.758,
+    "rho": 0.757576,
     "p": "0.007",
     "verdict": "passes"
    },
@@ -5219,7 +5241,7 @@
     "offset_eV": 0.529,
     "median_miss_eV": 0.11,
     "max_miss_eV": 0.612,
-    "rho": 0.916,
+    "rho": 0.916084,
     "p": "4.2 × 10⁻⁵",
     "verdict": "passes"
    },
@@ -5230,7 +5252,7 @@
     "offset_eV": 0.739,
     "median_miss_eV": 0.204,
     "max_miss_eV": 0.689,
-    "rho": 0.846,
+    "rho": 0.846154,
     "p": "4.7 × 10⁻⁴",
     "verdict": "misses: typical miss 0.204 eV, above 0.20"
    },
@@ -5241,7 +5263,7 @@
     "offset_eV": 0.829,
     "median_miss_eV": 0.063,
     "max_miss_eV": 0.434,
-    "rho": 0.797,
+    "rho": 0.797203,
     "p": "0.001",
     "verdict": "passes"
    },
@@ -5252,7 +5274,7 @@
     "offset_eV": 0.772,
     "median_miss_eV": 0.047,
     "max_miss_eV": 0.278,
-    "rho": 0.951,
+    "rho": 0.951049,
     "p": "5.5 × 10⁻⁶",
     "verdict": "passes"
    },
@@ -5263,7 +5285,7 @@
     "offset_eV": 0.387,
     "median_miss_eV": 0.108,
     "max_miss_eV": 0.405,
-    "rho": 0.559,
+    "rho": 0.559441,
     "p": "0.031",
     "verdict": "misses: rho 0.56, below 0.6"
    },
@@ -5274,7 +5296,7 @@
     "offset_eV": -1.368,
     "median_miss_eV": 0.076,
     "max_miss_eV": 0.169,
-    "rho": 0.738,
+    "rho": 0.738095,
     "p": "0.023",
     "verdict": "passes"
    },
@@ -5285,7 +5307,7 @@
     "offset_eV": -3.118,
     "median_miss_eV": 0.079,
     "max_miss_eV": 0.193,
-    "rho": 0.929,
+    "rho": 0.928571,
     "p": "0.001",
     "verdict": "passes"
    },
@@ -5296,7 +5318,7 @@
     "offset_eV": -0.546,
     "median_miss_eV": 0.093,
     "max_miss_eV": 0.208,
-    "rho": 0.929,
+    "rho": 0.928571,
     "p": "0.001",
     "verdict": "passes"
    },
@@ -5307,7 +5329,7 @@
     "offset_eV": -2.281,
     "median_miss_eV": 0.097,
     "max_miss_eV": 0.177,
-    "rho": 0.952,
+    "rho": 0.952381,
     "p": "5.7 × 10⁻⁴",
     "verdict": "passes"
    },
@@ -5318,7 +5340,7 @@
     "offset_eV": -0.968,
     "median_miss_eV": 0.108,
     "max_miss_eV": 0.319,
-    "rho": 0.976,
+    "rho": 0.97619,
     "p": "2.0 × 10⁻⁴",
     "verdict": "passes"
    }
@@ -5328,25 +5350,25 @@
     "reaction": "Ammonia oxidation to nitrogen (AOR)",
     "table": "Herron et al. 2015",
     "n": 12,
-    "rho": 0.855,
+    "rho": 0.854642,
     "p": "3.6 × 10⁻⁴",
-    "verdict": "in the playground: N* misses its check"
+    "verdict": "misses: N* misses its check"
    },
    {
     "reaction": "CO2 reduction to CO",
     "table": "Elnabawy et al. 2018",
     "n": 12,
-    "rho": 0.797,
+    "rho": 0.797203,
     "p": "0.001",
-    "verdict": "in the playground: CO* misses its check"
+    "verdict": "misses: CO* misses its check"
    },
    {
     "reaction": "CO2 reduction to formate",
     "table": "Elnabawy et al. 2018",
     "n": 12,
-    "rho": 0.842,
+    "rho": 0.84211,
     "p": "5.0 × 10⁻⁴",
-    "verdict": "in the playground: the corrections for OCHO* rest on UMA alone"
+    "verdict": "awaits: the corrections for OCHO* rest on UMA alone"
    },
    {
     "reaction": "CO2 reduction to methane",
@@ -5354,7 +5376,7 @@
     "n": 0,
     "rho": null,
     "p": "",
-    "verdict": "in the playground: CH2O* awaits a published table, and so does the ranking; CO* misses its check; the corrections for CH2O*, CH3O* and CHO* rest on UMA alone"
+    "verdict": "misses: CH2O* awaits a published table, and so does the ranking; CO* misses its check; the corrections for CH2O*, CH3O* and CHO* rest on UMA alone"
    },
    {
     "reaction": "CO2 reduction to methanol",
@@ -5362,15 +5384,15 @@
     "n": 0,
     "rho": null,
     "p": "",
-    "verdict": "in the playground: CH2O* awaits a published table, and so does the ranking; CO* misses its check; the corrections for CH2O*, CH3O* and CHO* rest on UMA alone"
+    "verdict": "misses: CH2O* awaits a published table, and so does the ranking; CO* misses its check; the corrections for CH2O*, CH3O* and CHO* rest on UMA alone"
    },
    {
     "reaction": "CO electro-oxidation",
     "table": "Elnabawy et al. 2018",
     "n": 12,
-    "rho": 0.965,
+    "rho": 0.965035,
     "p": "1.7 × 10⁻⁶",
-    "verdict": "in the playground: CO* misses its check"
+    "verdict": "misses: CO* misses its check"
    },
    {
     "reaction": "CO reduction to methane",
@@ -5378,7 +5400,7 @@
     "n": 0,
     "rho": null,
     "p": "",
-    "verdict": "in the playground: CH2O* awaits a published table, and so does the ranking; CO* misses its check; the corrections for CH2O*, CH3O* and CHO* rest on UMA alone"
+    "verdict": "misses: CH2O* awaits a published table, and so does the ranking; CO* misses its check; the corrections for CH2O*, CH3O* and CHO* rest on UMA alone"
    },
    {
     "reaction": "CO reduction to methanol",
@@ -5386,63 +5408,63 @@
     "n": 0,
     "rho": null,
     "p": "",
-    "verdict": "in the playground: CH2O* awaits a published table, and so does the ranking; CO* misses its check; the corrections for CH2O*, CH3O* and CHO* rest on UMA alone"
+    "verdict": "misses: CH2O* awaits a published table, and so does the ranking; CO* misses its check; the corrections for CH2O*, CH3O* and CHO* rest on UMA alone"
    },
    {
     "reaction": "Formic acid oxidation (formate route)",
     "table": "Elnabawy et al. 2018",
     "n": 12,
-    "rho": 0.842,
+    "rho": 0.84211,
     "p": "5.0 × 10⁻⁴",
-    "verdict": "in the playground: the corrections for OCHO* rest on UMA alone"
+    "verdict": "awaits: the corrections for OCHO* rest on UMA alone"
    },
    {
     "reaction": "Formic acid oxidation (carboxyl route)",
     "table": "Elnabawy et al. 2018",
     "n": 12,
-    "rho": 0.769,
+    "rho": 0.769231,
     "p": "0.002",
-    "verdict": "passes: on the Design page"
+    "verdict": "passes"
    },
    {
     "reaction": "Hydrogen peroxide oxidation",
     "table": "Nørskov et al. 2004, Table 2 (O* through Fig. 8)",
     "n": 11,
-    "rho": 0.845,
+    "rho": 0.845455,
     "p": "9.1 × 10⁻⁴",
-    "verdict": "passes: on the Design page"
+    "verdict": "passes"
    },
    {
     "reaction": "Hydrogen peroxide production (two-electron ORR)",
     "table": "Nørskov et al. 2004, Table 2 (O* through Fig. 8)",
     "n": 11,
-    "rho": 0.845,
+    "rho": 0.845455,
     "p": "9.1 × 10⁻⁴",
-    "verdict": "passes: on the Design page"
+    "verdict": "passes"
    },
    {
     "reaction": "Hydrogen peroxide reduction",
     "table": "Nørskov et al. 2004, Table 2",
     "n": 13,
-    "rho": 0.973,
+    "rho": 0.972527,
     "p": "1.9 × 10⁻⁷",
-    "verdict": "passes: on the Design page"
+    "verdict": "passes"
    },
    {
     "reaction": "Hydrazine oxidation",
     "table": "Herron et al. 2015",
     "n": 10,
-    "rho": 0.262,
+    "rho": 0.2622,
     "p": "0.231",
-    "verdict": "in the playground: HNNH2* misses its check; the corrections for HNNH* and HNNH2* rest on UMA alone; rho 0.26, below 0.6; p 0.231, above 0.05"
+    "verdict": "misses: HNNH2* misses its check; the corrections for HNNH* and HNNH2* rest on UMA alone; rho 0.26, below 0.6; p 0.231, above 0.05"
    },
    {
     "reaction": "Hydrogen oxidation (HOR)",
     "table": "arXiv:2109.04219, Table S2 (RPBE)",
     "n": 12,
-    "rho": 0.923,
+    "rho": 0.923077,
     "p": "3.0 × 10⁻⁵",
-    "verdict": "passes: on the Design page"
+    "verdict": "passes"
    },
    {
     "reaction": "Methanol oxidation (DMFC anode)",
@@ -5450,7 +5472,7 @@
     "n": 0,
     "rho": null,
     "p": "",
-    "verdict": "in the playground: the ranking awaits a published table; CO* misses its check; the corrections for CH2OH*, CHOH* and COH* rest on UMA alone"
+    "verdict": "misses: the ranking awaits a published table; CO* misses its check; the corrections for CH2OH*, CHOH* and COH* rest on UMA alone"
    },
    {
     "reaction": "Methanol oxidation to formate",
@@ -5458,7 +5480,7 @@
     "n": 0,
     "rho": null,
     "p": "",
-    "verdict": "in the playground: the ranking awaits a published table; the corrections for CH2OH*, CHO* and CHOH* rest on UMA alone"
+    "verdict": "awaits: the ranking awaits a published table; the corrections for CH2OH*, CHO* and CHOH* rest on UMA alone"
    },
    {
     "reaction": "Nitric oxide reduction to ammonia",
@@ -5466,23 +5488,23 @@
     "n": 0,
     "rho": null,
     "p": "",
-    "verdict": "in the playground: NO* and NOH* await a published table, and so does the ranking; N* misses its check; the corrections for NO* and NOH* rest on UMA alone"
+    "verdict": "misses: NO* and NOH* await a published table, and so does the ranking; N* misses its check; the corrections for NO* and NOH* rest on UMA alone"
    },
    {
     "reaction": "Nitrogen reduction to ammonia (NRR)",
     "table": "Herron et al. 2015",
     "n": 12,
-    "rho": 0.76,
+    "rho": 0.760071,
     "p": "0.003",
-    "verdict": "in the playground: N* misses its check"
+    "verdict": "misses: N* misses its check"
    },
    {
     "reaction": "Two-electron water oxidation to H2O2",
     "table": "Nørskov et al. 2004, Table 2",
     "n": 13,
-    "rho": 0.973,
+    "rho": 0.972527,
     "p": "1.9 × 10⁻⁷",
-    "verdict": "in the playground: it runs above 1.76 V, where the metals turn to oxides, so it waits for an oxide check, as oxygen evolution does"
+    "verdict": "misses: it runs above 1.76 V, where the metals turn to oxides, so it waits for an oxide check, as oxygen evolution does"
    }
   ],
   "rc_electro_metals": [

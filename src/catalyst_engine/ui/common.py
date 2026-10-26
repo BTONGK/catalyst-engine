@@ -243,15 +243,47 @@ def catalyst_presets(pack_id: str) -> dict[str, dict[str, float]]:
 # ---------------------------------------------------------------- catalyst design
 
 def screening_pack_ids() -> list[str]:
-    """Reactions the Design page ranks materials for: their pack declares a screening descriptor, and its ranking
-    check has passed (or the reaction was built in the app)."""
-    return [pid for pid in pack_ids() if pack(pid).spec.screening is not None and pack(pid).spec.screening.on_design_page]
+    """Reactions the Design page ranks materials for: every pack that declares a screening descriptor. Each one
+    carries its ranking check's verdict, which the pages show beside it."""
+    return [pid for pid in pack_ids() if pack(pid).spec.screening is not None]
 
 
-def playground_only_ids() -> list[str]:
-    """Reactions with a screening descriptor that stay in the library and the playground until their check passes."""
-    return [pid for pid in pack_ids() if pack(pid).spec.screening is not None
-            and not pack(pid).spec.screening.on_design_page]
+# a ranking check's verdict (design/spec.py, CheckState) on the pages: badge, color, icon, and its short form
+CHECK_LOOK = {
+    "passed": ("Ranking checked", "green", ":material/verified:", "checked"),
+    "missed": ("Ranking missed its check", "orange", ":material/rule:", "missed its check"),
+    "awaiting": ("Ranking awaits its check", "blue", ":material/pending:", "awaiting its check"),
+}
+# what each verdict means for reading a screen's ranking
+CHECK_READING = {
+    "passed": "The Manual's Methodology tab gives the check in full.",
+    "missed": ("The likely ranges cover the error bars of the binding energies; the check shows the ranking itself "
+               "can differ from published results, so read it as a list of candidates for the lab to test."),
+    "awaiting": "Until a published table scores it, the ranking is the model's prediction alone.",
+}
+CHECK_DEFAULT = "Its ranking awaits a check against published measurements."  # a reaction built in the app
+
+
+def check_short(state: str) -> str:
+    return CHECK_LOOK[state][3]
+
+
+def check_badge(state: str) -> str:
+    label, color, icon, _ = CHECK_LOOK[state]
+    return f":{color}-badge[{icon} {label}]"
+
+
+def check_line(state: str, note: str) -> None:
+    """A reaction's check verdict and what the check found, for the Design pages and the library."""
+    st.markdown(check_badge(state))
+    st.caption(" ".join((note or CHECK_DEFAULT).split()))
+
+
+def check_banner(state: str, note: str) -> None:
+    """The verdict above a screen's results, with what it means for reading the ranking."""
+    label, _, icon, _ = CHECK_LOOK[state]
+    text = f"**{label}.** {' '.join((note or CHECK_DEFAULT).split())} {CHECK_READING[state]}"
+    {"passed": st.success, "missed": st.warning, "awaiting": st.info}[state](text, icon=icon)
 
 
 def link(page: str, label: str, icon: str | None = None) -> None:

@@ -782,7 +782,7 @@ values.update(
     load_reference=w_spec.screening.reference.name, load_descriptor=" + ".join(
         f"{wt:g} {a}*" for a, wt in w_spec.screening.descriptor.items()),
     load_slope_weak=w_spec.screening.slope_weak, load_slope_strong=w_spec.screening.slope_strong,
-    load_on_design=w_spec.screening.on_design_page)
+    load_check=w_spec.screening.check)
 # what a screen then shows, from the 16-metal run of experiments/reaction_check at its table's temperature
 rc_path = REPO / "experiments" / "reaction_check" / "results" / "summary.json"
 if rc_path.exists():

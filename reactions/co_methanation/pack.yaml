@@ -53,11 +53,12 @@ screening:
   slope_weak: 1.8
   peak_gas: {CO: 0.5}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Co, Ru, Ni, Fe, Rh, Re, Ir, Pd, Pt, Mo]
-  # On the Design page since the reaction check (experiments/reaction_check) scored its ranking against Bligaard's
-  # measured table: rho 0.69 over 8 metals, p 0.035. Cobalt and ruthenium tie at that table's top; cobalt, ahead in
-  # Vannice's table, is the catalyst to beat and leaves the scoring, and ruthenium sits second in the predicted top
-  # three (Re, Ru, Fe). Vannice's table gives rho 0.93, with ruthenium first in both its order and the prediction.
-  on_design_page: true
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: passed
+  check_note: >
+    Against Bligaard et al. 2004's measured table its ranking scores rho 0.69 over 8 metals (p 0.035), and
+    ruthenium, the most active of them there, ranks second here; Vannice's 1977 table gives rho 0.93, with ruthenium
+    first in both.
   basis: >
     How strongly a metal holds carbon and oxygen, the two halves of a split CO, sets methanation rates (Bligaard et
     al., J. Catal. 2004). In the two laboratory series that map the metals, Bligaard's on alumina-stabilized

@@ -1,5 +1,5 @@
 # Project status shown on the app's Project status page. Updated at the end of every phase.
-updated: 2026-10-25
+updated: 2026-10-26
 focus_pack: scr_hot   # the app opens on this reaction
 
 headline: >
@@ -21,6 +21,23 @@ proof_sequence:
     status: planned
 
 recent:
+  - date: 2026-10-26
+    item: >
+      Every reaction now runs on its Design page, so a screen can look for new catalysts for any of the 40 thermal
+      packages and 23 electrochemical reactions. Each shows its ranking check's verdict beside it in the list, under
+      the choice and above its results. Thermal: 2 checked (CO methanation, ammonia cracking), 6 missed (ammonia
+      synthesis, water-gas shift, ethane hydrogenolysis, benzene hydrogenation, propane and propylene combustion) and
+      32 awaiting a measured table, the 7 older packages among them. Electrochemical: 7 checked (hydrogen evolution
+      and oxidation, oxygen reduction, hydrogen peroxide production, reduction and oxidation, formic acid oxidation
+      through carboxyl), 13 missed (oxygen evolution and two-electron water oxidation on oxides, and the reactions
+      through N*, HNNH2* or CO*) and 3 awaiting a published correction or table (CO2 to formate, formic acid
+      oxidation through formate, methanol to formate). Intermediates whose zero-point and entropy correction comes
+      from UMA alone carry correction_from: uma in their files, and the results page names them. Each rho now keeps
+      six decimals until the page rounds it, which moves four displayed values by 0.01 (ammonia cracking 0.90,
+      hydrogen peroxide production and oxidation 0.85, CO electro-oxidation 0.97); every verdict stays as it was,
+      since the pass test always used the exact value. Nitric oxide reduction's note now also names N*'s miss
+      against Herron 2015 (0.26 eV). A sweep rendered all 63 Design pages and a finished screen of each on its
+      Results page, each with its verdict.
   - date: 2026-10-25
     item: >
       Twenty more reactions added (batch 2). Thermal, 10 packages: catalytic hydrogen combustion, cyclohexane
@@ -228,11 +245,13 @@ next_steps:
     why: >
       The Manual's "How to use the app" tab walks through it. Keep the temperature range near the reaction's
       standard test; the app flags ranges beyond it.
-  - step: Find measured per-metal tables for the thermal packages in the playground
+  - step: Find measured per-metal tables for the 32 thermal packages awaiting their check
     owner: Claude
     why: >
-      24 thermal packages, 8 of them from batch 2, run in the playground until a table measured in one laboratory
-      scores their ranking under the rule. Propane and propylene combustion met one (Lee 2017) and miss it.
+      31 need a table measured in one laboratory to score their ranking under the rule, and ethylene hydrogenation's
+      (Bond's Table 7.3) needs its temperature column confirmed. Among them are the seven older packages (CO2
+      methanation, CO oxidation, methanol from CO2, N2O removal, the gas-engine oxidation catalyst, hot SCR and steam
+      reforming), which rest on the method's own checks so far. The Design page marks each as awaiting its check.
   - step: Published free energies for the methanol and methane paths
     owner: Claude
     why: >
@@ -242,22 +261,16 @@ next_steps:
   - step: "Nitrate reduction: place NO3* and NO2* and check them against Liu et al. 2019"
     owner: Claude
     why: Nitrate's path to ammonia starts through two intermediates the worker has yet to place.
-  - step: Find measured tables for the seven Design-page reactions from before the check
-    owner: Claude
-    why: >
-      CO2 methanation, CO oxidation, methanol from CO2, N2O removal, the gas-engine oxidation catalyst, hot SCR and
-      steam reforming rank materials on the Design page on the method's own checks, ahead of a per-metal measured
-      table scored under the rule. Each needs one table measured in one laboratory to carry the same backing as the
-      new ones.
   - step: Published zero-point and entropy corrections for OCHO*, HNNH*, N2H3*, NO*, NOH* and six carbon intermediates
     owner: Claude, with a download from you
     why: >
-      UMA's own vibrations miss the four published corrections by up to 0.20 eV, so these eleven wait; COOH* and CO*
+      UMA's own vibrations miss the four published corrections by up to 0.20 eV, so the reactions through these
+      eleven fall short of a checked verdict; COOH* and CO*
       now take Peterson 2010's values through Hansen 2013. Peterson 2010's own supporting information computes the
       methane path's intermediates on copper and sits behind the publisher's bot check: a copy you download from
       pubs.rsc.org (article c0ee00071j) into experiments/reaction_check/cache/ lets the app check CHO*, CH2O* and
       CH3O*. OCHO*'s value would bring CO2 to formate and formic acid oxidation through formate, whose rankings
-      already pass, to the Design page.
+      already pass, to a checked verdict.
   - step: "Surface stability for electrocatalysts: a Pourbaix check per candidate"
     owner: Claude
     why: A candidate that dissolves or oxidizes at the working potential ranks well and fails in the cell.
@@ -377,7 +390,7 @@ findings:
     detail: >
       Ammonia synthesis orders Ozaki's K-promoted metals with rho 0.40 over 9 metals (p 0.15), and water-gas shift
       orders Grenoble's metals on alumina with rho −0.53 over 11, where the strong oxygen binders Re, Co and Ru lead.
-      Both move to the playground under the rule; on_design_page in each pack.yaml brings one back.
+      Both run on the Design page, marked as missing their check, with the reason in their files.
     source: experiments/reaction_check (2026-10-25); each pack.yaml's comment.
   - title: Oxides belong in UMA's materials mode, at about 0.2 eV
     detail: >
@@ -506,13 +519,17 @@ decisions:
       fuel-rich gas. The package's screen feed carries twenty O2 per CH4, beyond the thesis's range, and palladium is
       the catalyst of natural-gas engine converters, so the package keeps palladium. Switching to platinum is one
       line in reactions/methane_combustion/pack.yaml; yours to make as catalysis lead.
-  - item: "Ammonia synthesis and water-gas shift leave the Design page after failing their ranking check (2026-10-25)"
+  - item: "Every reaction runs on the Design page with its check's verdict (2026-10-26)"
     owner: You
     status: open
     detail: >
-      The rule, written before the results, keeps a reaction on the Design page only while its ranking passes.
-      Both failed (rho 0.40 and −0.53), so both run in the Reactions library and the playground. Setting
-      on_design_page: true in a pack.yaml brings it back; yours to keep or reverse as catalysis lead.
+      You asked for the batch-2 reactions on the Design page. One rule now covers every reaction, batch 1, oxygen
+      evolution and the older packages included: each runs there with its verdict beside it and above its results
+      (checked, missed or awaiting), so ammonia synthesis and water-gas shift, which moved to the playground after
+      failing their check (rho 0.40 and −0.53), are back, marked as missing it. The rule's thresholds and scores stay
+      as written; PASS_RULE.md's note of 2026-10-26 records the change of placement. Keeping a Design page to
+      checked reactions alone is one line each, in screening_pack_ids (ui/common.py) and in ui/electro_ui.py's list;
+      yours to keep or narrow as catalysis lead.
   - item: "O2 basis for the bench yardstick: dry (decided 2026-10-21)"
     owner: You
     status: closed

@@ -21,10 +21,11 @@ volcano_steps: [[1, 0], [-1, 1.39]]
 reference: {formula: Pt, name: Platinum}
 task: oc20
 suggested_elements: [Pt, Pd, Au, Ag, Ir, Rh, Ru, Cu, Ni, Co]
-# On the Design page since the reaction check (experiments/reaction_check: PASS_RULE.md, results/summary.json):
-#   its limiting potentials order the 11 metals of Nørskov 2004's Table 2 (O* through the Fig. 8 relation) with
-#   rho 0.84 (p 0.001), through OOH*, which the oxygen-reduction check covers.
-on_design_page: true
+# the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+check: passed
+check_note: >
+  Its limiting potentials order 11 metals of Nørskov 2004's Table 2 (O* through the Fig. 8 relation) with rho 0.85
+  (p < 0.001), through OOH*, which the oxygen-reduction check covers.
 basis: >
   Hydrogen peroxide gives up a proton and electron to sit on the surface as OOH*, and OOH* gives up a second and
   leaves as O2: hydrogen peroxide production run backwards, through the same OOH* (Viswanathan et al. 2012). It is

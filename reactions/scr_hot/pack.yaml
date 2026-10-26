@@ -93,6 +93,12 @@ screening:
   optimum_shift_eV: 0.0
   peak_gas: {NH3: 1}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [V, W, Mo, Ti, Fe, Cu, Ce, Mn, Nb, Zr]
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: awaiting
+  check_note: >
+    Its rate laws fit published conversion curves of iron and copper zeolites and of commercial vanadia (Literature
+    check page); its ranking across materials awaits a table of rates measured on several catalysts in one
+    laboratory.
   basis: >
     Ammonia has to sit on the surface's acid sites to react with NO, so ammonia binding tracks SCR activity on
     oxides: weak sites leave too little ammonia, overly strong ones hold it as a spectator. The top is set at

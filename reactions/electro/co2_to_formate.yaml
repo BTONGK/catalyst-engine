@@ -11,18 +11,21 @@ electrons: 2
 equilibrium_V: -0.114       # to dissolved formic acid, from tabulated formation free energies (HCOOH(aq) -372.3 kJ/mol)
 compare_V: -0.80
 # Correction: UMA's own vibrations on Pt(111) (results/corrections.json); the same calculation missed the published
-#   values for OH* and OOH* by 0.16-0.20 eV (PASS_RULE.md), so this number serves the playground's starting point.
+#   values for OH* and OOH* by 0.16-0.20 eV (PASS_RULE.md), so the pages mark this number as UMA's own.
 # shift: OCHO* starts against CO(g) + H2O - 1/2 H2; dissolved formic acid sits 0.021 eV above CO(g) and water.
 intermediates:
-  - {name: OCHO, label: "formate (OCHO*)", correction_eV: 0.93, shift_eV: -0.021}
+  - {name: OCHO, label: "formate (OCHO*)", correction_eV: 0.93, shift_eV: -0.021, correction_from: uma}
 descriptor: {OCHO: 1}
 # the two steps at 0 V as lines in x = G(OCHO*): CO2 -> OCHO* is x + 0.228, OCHO* -> HCOOH is -x
 volcano_steps: [[1, 0.228], [-1, 0]]
 reference: {formula: Sn, name: Tin}
 task: oc20
 suggested_elements: [Sn, Bi, In, Pb, Cd, Ag, Au, Cu, Zn, Pd]
-on_design_page: false
-design_note: OCHO* passes the DFT check and the ranking matches; it waits for a published zero-point and entropy correction for OCHO*
+# the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+check: awaiting
+check_note: >
+  OCHO* passes its check against Elnabawy 2018 and the ranking matches (rho 0.84); it awaits a published zero-point
+  and entropy correction for OCHO*.
 basis: >
   Formate forms through OCHO*, CO2 bound through its two oxygens with the hydrogen on carbon, while CO forms
   through COOH*, bound through carbon; which one a metal prefers sets what it makes. Plotting measured formate

@@ -39,11 +39,12 @@ screening:
   optimum_shift_eV: 0.0
   peak_gas: {}   # the reaction's gases hold none its adsorbates exchange with; the top holds still
   suggested_elements: [Rh, Ru, Pd, Pt, Ni, Co, Ir, Fe, Cu]
-  # The reaction check (experiments/reaction_check) shows this ranking beside Bond's Table 7.3 (metals on
-  # silica): rho 0.94 over 6 metals, with ruthenium first in both. The meaning of that table's temperature column
-  # awaits confirmation, so it sits beside the rule as indicative, and the playground keeps the pack until a
-  # measured table passes (Manual, Methodology tab, limits).
-  on_design_page: false
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: awaiting
+  check_note: >
+    Beside Bond's Table 7.3 (metals on silica) its ranking scores rho 0.94 over 6 metals, with ruthenium first in
+    both; the meaning of that table's temperature column awaits confirmation, so the check counts it as indicative
+    and awaits a measured table.
   basis: >
     Ethylene and the ethyl group it passes through hold to the surface by carbon-metal bonds, and their binding
     follows the carbon atom's at a quarter of its slope, like a methyl group (Abild-Pedersen et al., Phys. Rev.

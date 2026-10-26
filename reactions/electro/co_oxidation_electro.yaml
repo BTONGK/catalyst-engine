@@ -23,8 +23,11 @@ descriptor: {CO: 1}
 reference: {formula: Pt, name: Platinum}
 task: oc20
 suggested_elements: [Pt, Ru, Pd, Rh, Ir, Os, Au, Ag, Cu, Ni]
-on_design_page: false
-design_note: CO* misses its check against Elnabawy 2018
+# the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+check: missed
+check_note: >
+  UMA's CO* binding orders Elnabawy 2018's metals with rho 0.56, below the 0.6 the rule asks; its limiting
+  potentials order the same metals with rho 0.97.
 basis: >
   CO oxidation decides how well a fuel-cell anode tolerates the CO that reformed hydrogen and methanol leave on
   it. CO lands on the surface, a step that moves zero electrons; CO* then takes the oxygen of a water molecule and

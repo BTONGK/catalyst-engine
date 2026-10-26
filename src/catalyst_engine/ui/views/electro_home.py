@@ -19,7 +19,7 @@ with st.container(horizontal=True):
     common.link("views/electro_playground.py", "Try the free-energy playground", ":material/tune:")
 
 st.markdown("#### How it works")
-ids = [i for i in electro.list_electro() if electro_ui.spec(i).on_design_page]
+ids = electro.list_electro()
 specs = [electro_ui.spec(i) for i in ids]
 steps = [
     (":material/bolt:", "1. Pick a reaction",
@@ -62,8 +62,9 @@ with left:
         "| Binding energies | UMA, Meta FAIR Chemistry's machine-learned model, trained on millions of DFT calculations; "
         "it runs on this computer |\n"
         "| Free energies | Published zero-point, entropy and water corrections (Nørskov et al. 2004 and 2005, "
-        "Rossmeisl et al. 2007, Skúlason et al. 2012), and tabulated formation free energies (the NBS tables) that "
-        "put each reaction on its own scale |\n"
+        "Rossmeisl et al. 2007, Skúlason et al. 2012, Peterson et al. 2010), UMA's own vibrations for the "
+        "intermediates that await a published value, each marked on its results page, and tabulated formation free "
+        "energies (the NBS tables) that put each reaction on its own scale |\n"
         "| Potentials | The computational hydrogen electrode: a proton and electron at 0 V count as half a hydrogen "
         "molecule, and the potential tilts every step that moves an electron by one electron-volt per volt; a "
         "chemical step, such as a molecule leaving the surface, stays put |\n"
@@ -90,18 +91,17 @@ with right:
             st.markdown(":orange[:material/key:] **Materials Project** needs a free API key to search crystals; "
                         "pure metals work right away")
         st.markdown(f":green[:material/check_circle:] **{len(ids)} electrochemical reactions** ready to design for")
+        checks = [s.check for s in specs]
+        st.markdown(f":blue[:material/fact_check:] Checks against published DFT and measurements: "
+                    f"**{checks.count('passed')}** passed, **{checks.count('missed')}** missed, "
+                    f"**{checks.count('awaiting')}** await published data. The Design page shows each one's verdict.")
 
     st.markdown("#### Reactions ready now")
-    for s in specs:
-        st.markdown(f":blue-badge[{s.name}] :gray[{s.equation} · equilibrium {s.equilibrium_V:.2f} V vs RHE · "
-                    f"catalyst to beat {s.reference.name or s.reference.formula}]")
-    waiting = [electro_ui.spec(i) for i in electro.list_electro() if i not in ids]
-    if waiting:
-        st.markdown(":gray-badge[In the playground] :gray[each one runs on free energies you set, and the Design "
-                    "page adds it once its checks pass (Manual, Methodology tab, limits)]\n"
-                    + "\n".join(f"- **{s.name}** :gray[· {s.design_note or 'its checks are in the Methodology tab'}]"
-                                for s in waiting))
-    st.caption("A new reaction is a file in reactions/electro/; the Manual's Methodology tab shows the form.")
+    for s in sorted(specs, key=lambda s: ["passed", "awaiting", "missed"].index(s.check)):
+        st.markdown(f":{common.CHECK_LOOK[s.check][1]}-badge[{s.name}] :gray[{s.equation} · equilibrium "
+                    f"{s.equilibrium_V:.2f} V vs RHE · catalyst to beat {s.reference.name or s.reference.formula}]")
+    st.caption("Green: checked against published results. Blue: a part awaits published data. Orange: a part missed "
+               "its check. A new reaction is a file in reactions/electro/; the Manual's Methodology tab shows the form.")
 
 st.markdown("#### Your latest electrochemical screens")
 screens = electro.list_screens()[:6]

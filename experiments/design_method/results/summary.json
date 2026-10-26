@@ -217,7 +217,7 @@
   "load_descriptor": "0.5 C* + 0.5 O*",
   "load_slope_weak": 1.8,
   "load_slope_strong": 1.0,
-  "load_on_design": true,
+  "load_check": "passed",
   "load_ref_desc": -0.941,
   "load_check_T": 550,
   "load_check_move": -0.002,

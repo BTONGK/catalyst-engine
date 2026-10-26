@@ -62,9 +62,10 @@ screening:
   optimum_shift_eV: 0.0
   peak_gas: {N2: 0.25, O2: 0.25}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Pt, Rh, Pd, Ir, Ru, Co, Ni, Ag]
-  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
-  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
-  on_design_page: false
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: awaiting
+  check_note: >
+    Its ranking awaits a table of rates measured on several metals in one laboratory.
   basis: >
     On the gauze, oxygen strips ammonia of its hydrogen, and the nitrogen atoms left behind pair with oxygen to
     leave as NO or with each other to leave as N2, so nitrogen and oxygen binding together set rate and product (Ma

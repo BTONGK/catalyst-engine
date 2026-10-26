@@ -38,6 +38,12 @@ volcano_barrier: [3.6, -2.30]
 reference: {formula: Pt, name: Platinum}
 task: oc20
 suggested_elements: [Pt, Pd, Ir, Rh, Ru, Ni, Co, Cu, Ag, Au]
+# the electrocatalysis check's verdict (experiments/electro_check); tests/test_checks.py ties them
+check: passed
+check_note: >
+  UMA's OH* sits 0.08 eV and its O* 0.13 eV from Nørskov 2004's Table 2 on average over 10 metals, its lone O*
+  binding 0.08 eV more strongly on average than the paper's quarter layer; platinum's limiting potential comes out
+  at 0.79 V against the paper's 0.78 V, and the ranking follows the paper's with rho 0.95 over 10 metals.
 basis: >
   Oxygen reduction takes four protons and electrons, along one of two routes. On the first, O2 picks up a proton
   and electron to form OOH*, which splits into O* and water; on the second, O2 splits on the surface into two O*

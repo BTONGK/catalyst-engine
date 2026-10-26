@@ -46,6 +46,11 @@ screening:
   optimum_shift_eV: 0.0
   peak_gas: {NH3: 1, H2: -1.5}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Ru, Ni, Rh, Co, Ir, Fe, Mo, Pt, Cu]
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: passed
+  check_note: >
+    Against Ganley et al. 2004's measured turnover frequencies its ranking scores rho 0.90 over 8 metals (p 0.002),
+    and nickel, the most active of them there, ranks second here.
   basis: >
     Nitrogen binding sets the rate: the N atoms left on the surface have to pair up and leave as N2. Measured
     activity runs Ru > Ni > Rh > Co > Ir > Fe >> Pt > Cr > Pd > Cu (Ganley et al., Catal. Lett. 2004), with

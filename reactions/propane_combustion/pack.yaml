@@ -46,11 +46,12 @@ screening:
   optimum_shift_eV: 0.0
   peak_gas: {}   # the reaction's gases hold none its adsorbates exchange with; the top holds still
   suggested_elements: [Pt, Pd, Rh, Ir, Ru, Ag, Ni, Co, Cu]
-  # The reaction check (experiments/reaction_check) scores this ranking against Lee's measured turnover
-  # frequencies (seven metals on alumina, 340 C): rho 0.17 over 6 metals, p 0.37, short of the rule; silver ranks
-  # second there and last here, and copper shares fifth there and ranks second here. The playground keeps it until
-  # a check passes (Manual, Methodology tab, limits).
-  on_design_page: false
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: missed
+  check_note: >
+    Against Lee's measured turnover frequencies (seven metals on alumina, 340 °C) its ranking scores rho 0.17 over 6
+    metals (p 0.367), short of the 0.6 the rule asks; silver ranks second there and last here, and copper shares
+    fifth there and ranks second here.
   basis: >
     In one laboratory's comparison of seven alumina-supported metals in oxygen-rich gas, propane's turnover
     frequency rises and falls with both the carbon and the oxygen binding, a volcano with platinum on top; copper

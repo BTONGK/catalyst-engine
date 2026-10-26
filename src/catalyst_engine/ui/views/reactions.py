@@ -31,18 +31,14 @@ with library_tab:
             for col, p in zip(st.columns(2, gap="medium"), packs[start:start + 2]):
                 with col.container(border=True, height="stretch"):
                     built = not (PACKS_DIR / p.id).exists()
-                    st.markdown(f"**{p.spec.name}**" + ("  :violet-badge[Built in the app]" if built else ""))
+                    scr = p.spec.screening
+                    st.markdown(f"**{p.spec.name}**" + ("  :violet-badge[Built in the app]" if built else "")
+                                + (f"  {common.check_badge(scr.check)}" if scr is not None else ""))
                     st.write(p.spec.summary or " ".join(p.spec.description.split()[:30]))
                     wanted = [pw for pw in p.spec.pathways.values() if pw.role == "desired"]
                     st.markdown("<br>".join(f"<span class='ce-eq'>{pw.equation}</span>" for pw in wanted),
                                 unsafe_allow_html=True)
-                    scr = p.spec.screening
-                    if scr is not None and not scr.on_design_page:
-                        st.caption(f"Catalyst to beat: {scr.reference.name or scr.reference.formula} · runs in the "
-                                   "Catalyst playground; it joins the Design page once its ranking check passes "
-                                   "(Manual, Methodology tab, limits)")
-                        a, b = st.columns([3, 1])
-                    elif scr is not None:
+                    if scr is not None:
                         st.caption(f"Catalyst to beat: {scr.reference.name or scr.reference.formula} · ranks materials "
                                    f"by their grip on {', '.join(ADSORBATES[a] for a in scr.descriptor)}")
                         a, b = st.columns([3, 1])
@@ -179,6 +175,8 @@ with inside_tab:
             f":gray-badge[{p.id}] :gray-badge[version {spec.version}] "
             + (":orange-badge[Illustrative parameters]" if "illustrative" in spec.status else f":blue-badge[{spec.status}]")
         )
+        if spec.screening is not None:
+            common.check_line(spec.screening.check, spec.screening.check_note)
 
     pathways_tab, rates_tab, metrics_tab, protocols_tab = st.tabs(
         ["Pathways", "Rates vs temperature", "Species and metrics", "Test protocols"]

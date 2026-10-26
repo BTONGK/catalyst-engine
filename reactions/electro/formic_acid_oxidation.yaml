@@ -11,18 +11,21 @@ electrons: 2
 equilibrium_V: -0.114       # from dissolved formic acid, from tabulated formation free energies
 compare_V: 0.30
 # Correction: UMA's own vibrations on Pt(111) (results/corrections.json); the same calculation missed the published
-#   values for OH* and OOH* by 0.16-0.20 eV (PASS_RULE.md), so this number serves the playground's starting point.
+#   values for OH* and OOH* by 0.16-0.20 eV (PASS_RULE.md), so the pages mark this number as UMA's own.
 # shift: this reaction's zero is dissolved formic acid, 0.021 eV above CO(g) and water, OCHO*'s starting scale.
 intermediates:
-  - {name: OCHO, label: "formate (OCHO*)", correction_eV: 0.93, shift_eV: -0.021}
+  - {name: OCHO, label: "formate (OCHO*)", correction_eV: 0.93, shift_eV: -0.021, correction_from: uma}
 descriptor: {OCHO: 1}
 # the two steps at 0 V as lines in x = G(OCHO*): HCOOH -> OCHO* is x, OCHO* -> CO2 is -0.228 - x
 volcano_steps: [[1, 0], [-1, -0.228]]
 reference: {formula: Pd, name: Palladium}
 task: oc20
 suggested_elements: [Pd, Pt, Au, Ag, Ir, Rh, Ru, Cu, Ni, Bi]
-on_design_page: false
-design_note: OCHO* passes the DFT check and the ranking matches; it waits for a published zero-point and entropy correction for OCHO*
+# the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+check: awaiting
+check_note: >
+  OCHO* passes its check against Elnabawy 2018 and the ranking matches (rho 0.84); it awaits a published zero-point
+  and entropy correction for OCHO*.
 basis: >
   Formic acid gives up a proton and electron to sit on the surface as formate, OCHO*, which gives up a second
   and leaves as CO2. This direct route keeps carbon monoxide off the surface; a second direct route runs through

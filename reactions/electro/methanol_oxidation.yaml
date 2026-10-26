@@ -13,21 +13,24 @@ equilibrium_V: 0.031        # from dissolved methanol and liquid water, from tab
 compare_V: 0.50
 # Corrections: CO* and COOH* take Peterson et al. 2010's values as Hansen et al. 2013, Table S1, reproduces them
 #   (experiments/reaction_check/data/published.yaml); CH2OH*, CHOH* and COH* take UMA's own vibrations on Pt(111)
-#   (results/corrections.json), which serve the playground's starting point only.
+#   (results/corrections.json), which the pages mark as UMA's own.
 # shift: each intermediate starts against CO(g), H2O and H2; this reaction's zero is dissolved methanol and liquid
 #   water, 0.395 eV below CO + H2O + 2 H2.
 intermediates:
-  - {name: CH2OH, label: "hydroxymethyl (CH2OH*)", correction_eV: 1.56, shift_eV: 0.3953}
-  - {name: CHOH, label: "hydroxymethylene (CHOH*)", correction_eV: 1.25, shift_eV: 0.3953}
-  - {name: COH, label: "COH*", correction_eV: 0.88, shift_eV: 0.3953}
+  - {name: CH2OH, label: "hydroxymethyl (CH2OH*)", correction_eV: 1.56, shift_eV: 0.3953, correction_from: uma}
+  - {name: CHOH, label: "hydroxymethylene (CHOH*)", correction_eV: 1.25, shift_eV: 0.3953, correction_from: uma}
+  - {name: COH, label: "COH*", correction_eV: 0.88, shift_eV: 0.3953, correction_from: uma}
   - {name: CO, label: "adsorbed CO (CO*)", correction_eV: 0.50, shift_eV: 0.3953}
   - {name: COOH, label: "carboxyl (COOH*)", correction_eV: 0.91, shift_eV: 0.3953}
 descriptor: {CO: 1}
 reference: {formula: Pt, name: Platinum}
 task: oc20
 suggested_elements: [Pt, Ru, Pd, Rh, Ir, Os, Au, Ag, Cu, Ni]
-on_design_page: false
-design_note: CO* misses its check against Elnabawy 2018, and the ranking awaits published free energies on the hydrogen-electrode scale and published corrections for CH2OH*, CHOH* and COH*
+# the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+check: missed
+check_note: >
+  UMA's CO* binding orders Elnabawy 2018's metals with rho 0.56, below the 0.6 the rule asks; and the ranking awaits
+  published free energies on the hydrogen-electrode scale and published corrections for CH2OH*, CHOH* and COH*.
 basis: >
   A direct methanol fuel cell oxidizes methanol at its anode to CO2, six electrons per molecule. Along the route
   this file follows, methanol gives up hydrogens one proton and electron at a time, from carbon first:

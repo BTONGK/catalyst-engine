@@ -1,4 +1,5 @@
-"""Does each reaction's ranking match published measurements? The check behind on_design_page.
+"""Does each reaction's ranking match published measurements? The check behind each reaction's verdict on the
+Design page (check and check_note in its file).
 
     uv run python experiments/reaction_check/reaction_check.py
 
@@ -57,8 +58,8 @@ ELNABAWY_TO = {
     "formic_acid_oxidation": {"OCHO": TO_FORMIC_AQ},
     "formic_acid_oxidation_carboxyl": {"COOH": TO_FORMIC_AQ},
 }
-# Reactions whose potentials turn the run's metals to oxides: like oxygen evolution, they stay in the playground until
-# an oxide check passes (PASS_RULE.md, batch 2), whatever their ranking gives
+# Reactions whose potentials turn the run's metals to oxides: like oxygen evolution, they miss until a UMA mode passes
+# the oxide check (PASS_RULE.md, batch 2), whatever their ranking on metals gives
 OXIDE_REACTIONS = {"water_oxidation_h2o2": 1.76}  # its equilibrium potential (V vs RHE)
 # Intermediates the app already uses, accepted by the electrocatalysis checks (experiments/electro_check)
 CHECKED_BEFORE = {"H", "O", "OH", "OOH"}
@@ -155,7 +156,7 @@ def thermal_check(table: dict, summary: dict) -> dict:
             "unit": table["unit"],
             "temperature_K": t_k, "temperature_from": "table" if table["temperature_K"] else "pack reference",
             "anchor": anchor, "anchor_descriptor_eV": round(ref, 3), "peak_move_eV": round(move, 3),
-            "descriptor": spec.descriptor, "n": len(scored), "rho": round(rho, 3), "p": sig(p),
+            "descriptor": spec.descriptor, "n": len(scored), "rho": round(rho, 6), "p": sig(p),
             "published_best": best, "predicted_top": top, "best_in_top": best in top, "passes": passes,
             "left_out": sorted(left), **spans, "rows": rows}
 
@@ -190,7 +191,7 @@ def intermediate_check(table: dict, column: str, name: str, binding: dict) -> di
     return {"table": table["table"], "short": table.get("short", table["table"]), "column": column,
             "intermediate": name, "n": len(metals),
             "offset_eV": round(offset, 3), "median_miss_eV": round(median, 3),
-            "max_miss_eV": round(float(np.max(np.abs(miss))), 3), "rho": round(rho, 3), "p": sig(p),
+            "max_miss_eV": round(float(np.max(np.abs(miss))), 3), "rho": round(rho, 6), "p": sig(p),
             "passes": bool(len(metals) >= E_MIN_METALS and median <= E_MAX_MEDIAN and rho >= MIN_RHO and p <= MAX_P),
             "rows": [{"metal": m, "uma_eV": round(float(a), 3), "published_eV": float(b), "miss_eV": round(float(d), 3)}
                      for m, a, b, d in zip(metals, x, y, miss)]}
@@ -242,11 +243,15 @@ def reaction_check(rid: str, binding: dict, tables: dict, ec, passed: dict, uma_
     needs = sorted(set(spec.adsorbates) & uma_only)
     ranking = bool(len(rows) >= E_MIN_METALS and rho >= MIN_RHO and p <= MAX_P)
     oxide = rid in OXIDE_REACTIONS
+    passes = ranking and not gaps and not needs and not oxide
+    # missed: a part missed its check (an intermediate, the ranking, or the oxide check); awaiting: every part
+    # scored so far passes and a part awaits published data
+    missed = [a for a in gaps if a not in untabled] or oxide or (len(rows) >= E_MIN_METALS and not ranking)
     return {"reaction": rid, "name": spec.name, "direction": spec.direction, "source": source, "n": len(rows),
-            "rho": None if math.isnan(rho) else round(rho, 3), "p": None if math.isnan(p) else sig(p),
+            "rho": None if math.isnan(rho) else round(rho, 6), "p": None if math.isnan(p) else sig(p),
             "ranking_passes": ranking, "intermediates_new": new, "intermediates_failing": gaps,
             "intermediates_awaiting_table": untabled, "corrections_missing": needs, "oxide": oxide,
-            "passes": ranking and not gaps and not needs and not oxide, "rows": rows}
+            "passes": passes, "check": "passed" if passes else "missed" if missed else "awaiting", "rows": rows}
 
 
 def published_corrections(sources: list[dict]) -> dict[str, dict]:
@@ -307,12 +312,12 @@ def display(checks: list[dict], inter: list[dict], reactions: list[dict], correc
     rows = []
     for c in checks:
         if c["passes"]:
-            verdict = "passes: on the Design page"
+            verdict = "passes"
         elif c["role"] == "primary":
             reasons = below_rule(c["n"], c["rho"], c["p"], MIN_METALS)
             if not c["best_in_top"]:
                 reasons.append(f"{c['published_best']} outside the predicted top {TOP}")
-            verdict = "in the playground: " + "; ".join(reasons)
+            verdict = "misses: " + "; ".join(reasons)
         else:
             verdict = "shown beside the scored table"
         rows.append({"reaction": c["name"], "table": c["short"], "role": role[c["role"]],
@@ -338,26 +343,23 @@ def display(checks: list[dict], inter: list[dict], reactions: list[dict], correc
                   rc_span_predicted_hi=max(c["predicted_decades"] for c in sized),
                   rc_span_factor_lo=min(x["factor"] for x in tables["rc_spans"]),
                   rc_span_factor_hi=max(x["factor"] for x in tables["rc_spans"]))
-    # where every shipped reaction stands: on the Design page with a passing check, on it from before the check
-    # began and still awaiting a measured table, or in the playground
-    checked = {c["pack"]: c["passes"] for c in checks if c["role"] == "primary"}
+    # every shipped reaction's verdict, which the Design page shows beside it (check in pack.yaml, tied to these
+    # results by tests/test_checks.py): its primary table passes or misses, and without one it awaits a table
+    verdict = {c["pack"]: "passed" if c["passes"] else "missed" for c in checks if c["role"] == "primary"}
     tabled = {c["pack"] for c in checks}
-    on_page, waiting_table, playground, untabled = [], [], [], []
+    by_state: dict[str, list[str]] = {"passed": [], "missed": [], "awaiting": []}
+    untabled = []
     for pid in list_packs(PACKS_DIR):
         spec_ = load_pack(pid).spec
         if spec_.screening is None:
             continue
-        if spec_.screening.on_design_page:
-            (on_page if checked.get(pid) else waiting_table).append(spec_.name)
-        else:
-            playground.append(spec_.name)
-            if pid not in tabled:
-                untabled.append(spec_.name)
-    values.update(rc_design_checked_names=joined(on_page), rc_design_checked_n=len(on_page),
-                  rc_playground_untabled_names=joined(untabled), rc_playground_untabled_n=len(untabled),
-                  rc_design_waiting_names=joined(waiting_table), rc_design_waiting_n=len(waiting_table),
-                  rc_design_n=len(on_page) + len(waiting_table), rc_playground_n=len(playground),
-                  rc_packs_n=len(on_page) + len(waiting_table) + len(playground))
+        by_state[verdict.get(pid, "awaiting")].append(spec_.name)
+        if pid not in tabled:
+            untabled.append(spec_.name)
+    values.update(rc_checked_names=joined(by_state["passed"]), rc_checked_n=len(by_state["passed"]),
+                  rc_missed_names=joined(by_state["missed"]), rc_missed_n=len(by_state["missed"]),
+                  rc_awaiting_n=len(by_state["awaiting"]), rc_untabled_names=joined(untabled),
+                  rc_untabled_n=len(untabled), rc_packs_n=sum(len(v) for v in by_state.values()))
     scored = [c for c in checks if c["role"] == "primary"]
     passed = [c for c in scored if c["passes"]]
     values.update(rc_thermal_tables=len(checks), rc_thermal_scored=len(scored), rc_thermal_passed=len(passed),
@@ -391,7 +393,7 @@ def display(checks: list[dict], inter: list[dict], reactions: list[dict], correc
     rows = []
     for r in reactions:
         if r["passes"]:
-            verdict = "passes: on the Design page"
+            verdict = "passes"
         else:
             waiting = [a + "*" for a in r["intermediates_awaiting_table"]]
             if r["n"] == 0:
@@ -412,17 +414,19 @@ def display(checks: list[dict], inter: list[dict], reactions: list[dict], correc
             if r["oxide"]:
                 reasons.append(f"it runs above {OXIDE_REACTIONS[r['reaction']]:.2f} V, where the metals turn to oxides, "
                                "so it waits for an oxide check, as oxygen evolution does")
-            verdict = "in the playground: " + "; ".join(reasons)
+            verdict = {"missed": "misses: ", "awaiting": "awaits: "}[r["check"]] + "; ".join(reasons)
         rows.append({"reaction": r["name"], "table": r["source"] or "(a published table to come)", "n": r["n"],
                      "rho": r["rho"], "p": p_text(r["p"]), "verdict": verdict})
         key = f"rc_e_{r['reaction']}"
         values.update({f"{key}_n": r["n"], f"{key}_rho": r["rho"], f"{key}_p": r["p"]})
     tables["rc_electro_reactions"] = rows
     tables["rc_electro_metals"] = [{"reaction": r["name"], **m} for r in reactions for m in r["rows"]]
-    passed = [r for r in reactions if r["passes"]]
-    values.update(rc_e_checked=len(reactions), rc_e_passed=len(passed),
-                  rc_e_passed_names=joined([r["name"] for r in passed]),
-                  rc_e_waiting=len(reactions) - len(passed))
+    by_check = {state: [r["name"] for r in reactions if r["check"] == state]
+                for state in ("passed", "missed", "awaiting")}
+    values.update(rc_e_checked=len(reactions), rc_e_passed=len(by_check["passed"]),
+                  rc_e_passed_names=joined(by_check["passed"]), rc_e_missed=len(by_check["missed"]),
+                  rc_e_missed_names=joined(by_check["missed"]), rc_e_awaiting=len(by_check["awaiting"]),
+                  rc_e_awaiting_names=joined(by_check["awaiting"]))
 
     # the zero-point and entropy corrections from UMA's own vibrations, on Pt(111)
     check, pt = corrections.get("check", {}), corrections.get("metals", {}).get("Pt", {})
@@ -566,7 +570,7 @@ def main() -> None:
     OUT.parent.mkdir(exist_ok=True)
     OUT.write_text(json.dumps(out, indent=1, ensure_ascii=False))
     for c in checks:
-        verdict = "PASS" if c["passes"] else ("shown" if c["role"] != "primary" else "stays in the playground")
+        verdict = "PASS" if c["passes"] else ("shown" if c["role"] != "primary" else "misses")
         print(f"{c['pack']:24} {c['role']:10} n={c['n']:2} rho={c['rho']:+.2f} p={c['p']:.4f} best={c['published_best']:3} "
               f"top={','.join(c['predicted_top'])} -> {verdict}")
     for c in inter:
@@ -574,8 +578,9 @@ def main() -> None:
               f"max={c['max_miss_eV']:.2f} rho={c['rho']:+.2f} p={c['p']:.4f} -> {'PASS' if c['passes'] else 'miss'}")
     for r in reactions:
         rho = "  -  " if r["rho"] is None else f"{r['rho']:+.2f}"
-        print(f"{r['reaction']:24} n={r['n']:2} rho={rho} p={r['p']} ranking={'pass' if r['ranking_passes'] else 'miss'} "
-              f"failing={r['intermediates_failing']} uma_only={r['corrections_missing']} -> {'PASS' if r['passes'] else 'playground'}")
+        ranking = "pass" if r["ranking_passes"] else "miss" if r["n"] >= E_MIN_METALS else "awaits"
+        print(f"{r['reaction']:24} n={r['n']:2} rho={rho} p={r['p']} ranking={ranking} "
+              f"failing={r['intermediates_failing']} uma_only={r['corrections_missing']} -> {r['check']}")
 
 
 if __name__ == "__main__":

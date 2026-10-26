@@ -56,9 +56,10 @@ screening:
   optimum_shift_eV: 0.0
   peak_gas: {CO2: 1.0, CO: -1.0}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Cu, Ni, Pt, Pd, Fe, Co, Rh, Au, Mo]
-  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
-  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
-  on_design_page: false
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: awaiting
+  check_note: >
+    Its ranking awaits a table of rates measured on several metals in one laboratory.
   basis: >
     The reverse shift runs the water-gas shift backward through the same surface steps, so the same oxygen-binding
     volcano sorts the metals (Schumacher et al., J. Catal. 2005, for the forward reaction): CO2 has to leave an

@@ -497,6 +497,15 @@ def test_results_page_shows_the_example_with_its_reference_leading_and_no_roundi
     assert not at.exception, at.exception
     assert any("the catalyst to beat, leads" in m.value for m in at.markdown)
     assert len(at.warning) == 0  # its slowest curves touch zero to within 1e-16
+    assert any("Ranking awaits its check" in i.value for i in at.info)  # CO oxidation awaits a measured table
+
+
+def test_results_page_heads_a_screen_with_its_reaction_s_verdict():
+    """A reaction whose ranking missed its check says so above the results, with the check's own numbers."""
+    _screen(load_pack("propane_combustion"), {"Pt": 1.0, "Pd": 1.2, "Ag": 2.5}, t_design=300.0)
+    at = AppTest.from_file(str(VIEWS / "results.py"), default_timeout=120).run()
+    assert not at.exception, at.exception
+    assert any("Ranking missed its check" in w.value and "rho 0.17 over 6 metals" in w.value for w in at.warning)
 
 
 def test_design_page_adds_metals_to_the_list():

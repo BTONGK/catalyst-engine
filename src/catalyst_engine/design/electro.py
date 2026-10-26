@@ -50,6 +50,7 @@ from scipy.optimize import linprog
 
 from catalyst_engine.design import elements, screening
 from catalyst_engine.design.spec import ADSORBATES as THERMAL_ADSORBATES
+from catalyst_engine.design.spec import CheckState
 from catalyst_engine.packs import PACKS_DIR, read_yaml
 
 ELECTRO_DIR = PACKS_DIR / "electro"
@@ -78,6 +79,9 @@ class Intermediate(_Strict):
     layer_eV: float = 0.0  # stabilization by hydrogen bonds within the adsorbate layer at the working coverage
     # moves the worker's gas reference to the reaction's own zero, from tabulated formation free energies
     shift_eV: float = 0.0
+    # where correction_eV comes from: a published table, or UMA's own vibrations on Pt(111), whose check missed the
+    # published values for OH* and OOH* by up to 0.20 eV (experiments/reaction_check, corrections.py)
+    correction_from: Literal["published", "uma"] = "published"
 
     @property
     def total_correction(self) -> float:
@@ -146,8 +150,8 @@ class ElectroSpec(_Strict):
     reference: ElectroReference
     task: str = "oc20"
     suggested_elements: list[str] = Field(default_factory=list)
-    on_design_page: bool = True  # False keeps a reaction to the playground until its check passes
-    design_note: str = ""  # what it waits for before the Design page, in plain words
+    check: CheckState = "awaiting"  # its checks' verdict (design/spec.py); a new file awaits one
+    check_note: str = ""  # what the checks found, or what they await, in plain words
     basis: str = ""
 
     @model_validator(mode="after")

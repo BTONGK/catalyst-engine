@@ -76,18 +76,23 @@ with right:
             st.markdown(":orange[:material/key:] **Materials Project** needs a free API key to search crystals; "
                         "pure metals work right away")
         ids = common.screening_pack_ids()
+        checks = [common.pack(pid).spec.screening.check for pid in ids]
         st.markdown(f":green[:material/check_circle:] **{len(ids)} reactions** ready to design for")
-        waiting = common.playground_only_ids()
-        if waiting:
-            st.markdown(f":blue[:material/science:] **{len(waiting)} more** in the Reactions library and the "
-                        "playground, each joining the Design page once its ranking check passes")
+        st.markdown(f":blue[:material/fact_check:] Rankings against published measurements: "
+                    f"**{checks.count('passed')}** checked, **{checks.count('missed')}** missed their check, "
+                    f"**{checks.count('awaiting')}** await a published table. The Design page shows each one's "
+                    "verdict.")
 
     st.markdown("#### Reactions ready now")
-    by_cat: dict[str, list[str]] = {}
+    by_cat: dict[str, list] = {}
     for pid in ids:
-        by_cat.setdefault(common.pack(pid).spec.category, []).append(common.pack(pid).spec.name)
+        by_cat.setdefault(common.pack(pid).spec.category, []).append(common.pack(pid).spec)
     for cat in sorted(by_cat, key=common.category_order):
-        st.markdown(f"**:gray[{cat.upper()}]**  \n" + " ".join(f":blue-badge[{n}]" for n in sorted(by_cat[cat])))
+        st.markdown(f"**:gray[{cat.upper()}]**  \n" + " ".join(
+            f":{common.CHECK_LOOK[s.screening.check][1]}-badge[{s.name}]"
+            for s in sorted(by_cat[cat], key=lambda s: s.name)))
+    st.caption("Green: ranking checked against published measurements. Orange: it missed its check. Blue: it awaits "
+               "a published table.")
     common.link("views/reactions.py", "Add your own reaction", ":material/add:")
 
 st.markdown("#### Your latest screens")

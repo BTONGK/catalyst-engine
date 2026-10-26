@@ -47,11 +47,12 @@ screening:
   optimum_shift_eV: 0.0
   peak_gas: {}   # the reaction's gases hold none its adsorbates exchange with; the top holds still
   suggested_elements: [Pt, Pd, Rh, Ir, Ru, Ag, Ni, Co, Cu]
-  # The reaction check (experiments/reaction_check) scores this ranking against Lee's measured turnover
-  # frequencies (seven metals on alumina, 170 C): rho 0.49 over 6 metals, p 0.18, short of the rule; copper ranks
-  # fourth there and second here, and silver third there and last here. The playground keeps it until a check
-  # passes (Manual, Methodology tab, limits).
-  on_design_page: false
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: missed
+  check_note: >
+    Against Lee's measured turnover frequencies (seven metals on alumina, 170 °C) its ranking scores rho 0.49 over 6
+    metals (p 0.178), short of the 0.6 the rule asks; copper ranks fourth there and second here, and silver third
+    there and last here.
   basis: >
     Propylene burns on the same volcano of carbon and oxygen binding as propane, with platinum on top, in the same
     laboratory's comparison of seven alumina-supported metals (Lee, M.Ch.E. thesis, University of Delaware, 2017).

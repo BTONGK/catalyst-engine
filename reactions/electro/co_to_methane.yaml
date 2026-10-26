@@ -13,16 +13,16 @@ equilibrium_V: 0.260        # to methane gas and liquid water, from tabulated fo
 compare_V: -1.00
 # Corrections: CO* takes Peterson et al. 2010's value as Hansen et al. 2013, Table S1, reproduces it
 #   (experiments/reaction_check/data/published.yaml); CHO*, CH2O* and CH3O* take UMA's own vibrations on Pt(111)
-#   (results/corrections.json), which serve the playground's starting point only; O* and OH* take the CO2-to-methane
+#   (results/corrections.json), which the pages mark as UMA's own; O* and OH* take the CO2-to-methane
 #   file's terms.
 # shift: the carbon intermediates start against CO(g) and H2; this reaction's zero is methane and liquid water,
 #   1.562 eV below CO + 3 H2. O* and OH* start against water and H2, and with the methane already made they sit on
 #   the zero's own scale.
 intermediates:
   - {name: CO, label: "adsorbed CO (CO*)", correction_eV: 0.50, shift_eV: 1.5617}
-  - {name: CHO, label: "formyl (CHO*)", correction_eV: 0.82, shift_eV: 1.5617}
-  - {name: CH2O, label: "formaldehyde (CH2O*)", correction_eV: 1.20, shift_eV: 1.5617}
-  - {name: CH3O, label: "methoxy (CH3O*)", correction_eV: 1.55, shift_eV: 1.5617}
+  - {name: CHO, label: "formyl (CHO*)", correction_eV: 0.82, shift_eV: 1.5617, correction_from: uma}
+  - {name: CH2O, label: "formaldehyde (CH2O*)", correction_eV: 1.20, shift_eV: 1.5617, correction_from: uma}
+  - {name: CH3O, label: "methoxy (CH3O*)", correction_eV: 1.55, shift_eV: 1.5617, correction_from: uma}
   - {name: O, label: "adsorbed oxygen (O*)", correction_eV: 0.05}
   - {name: OH, label: "hydroxyl (OH*)", correction_eV: 0.35, water_eV: -0.33}
 chemical_steps:
@@ -31,8 +31,12 @@ descriptor: {CO: 1}
 reference: {formula: Cu, name: Copper}
 task: oc20
 suggested_elements: [Cu, Au, Ag, Zn, Pd, Pt, Ni, Rh, Ir, Ru]
-on_design_page: false
-design_note: CO* misses its check against Elnabawy 2018, CH2O* awaits a published table, and the ranking awaits published free energies on the hydrogen-electrode scale and published corrections for CHO*, CH2O* and CH3O*
+# the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+check: missed
+check_note: >
+  UMA's CO* binding orders Elnabawy 2018's metals with rho 0.56, below the 0.6 the rule asks; CH2O* awaits a
+  published table; and the ranking awaits published free energies on the hydrogen-electrode scale and published
+  corrections for CHO*, CH2O* and CH3O*.
 basis: >
   CO reduction is the second stage of a two-step CO2 electrolyzer: a first cell makes CO, and a copper cathode
   turns it into methane, ethylene and alcohols. CO lands on the surface, a step that moves zero electrons, and then
