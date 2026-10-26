@@ -23,6 +23,25 @@ proof_sequence:
 recent:
   - date: 2026-10-25
     item: >
+      Twenty more reactions added (batch 2). Thermal, 10 packages: catalytic hydrogen combustion, cyclohexane
+      dehydrogenation, methanol decomposition, propane and propylene combustion, SO2 oxidation, ethylene epoxidation,
+      formaldehyde from methanol over silver, ethane dehydrogenation and selective butadiene hydrogenation.
+      Electrochemical, 10 reactions: CO2 reduction to methane and to methanol, CO reduction to methane and to
+      methanol, CO electro-oxidation, methanol oxidation to CO2 and to formate, formic acid oxidation through
+      carboxyl, hydrogen peroxide oxidation and two-electron water oxidation. Every citation was checked on Crossref
+      and every gas against Cantera's databases. Thermal: one laboratory's seven-metal table (Lee's 2017 Delaware
+      thesis) was declared in PASS_RULE.md and read from its bar charts before the propane and propylene packages
+      existed; both rankings miss the rule (rho 0.17 and 0.49: the average of carbon and oxygen binding puts copper
+      second, measured near the bottom, and silver last, measured second for propane), so both stay in the
+      playground with the other eight, which await a measured table. Electro: six carbon intermediates ran through
+      UMA on the 16 metals and five match Ferrin 2009's DFT table (CH2O* awaits one); COOH* and CO* take Peterson
+      2010's published corrections, which moves CO2-to-CO's limiting potentials 0.03 V and keeps its ranking;
+      formic acid oxidation through carboxyl and hydrogen peroxide oxidation pass and join the Design page, 5 of 20
+      checked electro reactions in all. The thesis also measures platinum ahead of palladium for lean methane at four
+      O2 per CH4; the methane package keeps palladium, with a limits row and a decision below. Both Methodology tabs
+      carry the new results, limits rows and references.
+  - date: 2026-10-25
+    item: >
       Thirty reactions added: 20 thermal packages (methanation, reforming, combustion, hydrogenation, NOx and more)
       and 10 electrochemical reactions through nitrogen and carbon intermediates (hydrogen peroxide, hydrogen
       oxidation, nitrogen and nitric oxide reduction, ammonia, hydrazine and formic acid oxidation, CO2 to CO and to
@@ -209,12 +228,20 @@ next_steps:
     why: >
       The Manual's "How to use the app" tab walks through it. Keep the temperature range near the reaction's
       standard test; the app flags ranges beyond it.
-  - step: "Batch 2: ten more thermal reactions and ten more electrochemical ones"
+  - step: Find measured per-metal tables for the thermal packages in the playground
     owner: Claude
     why: >
-      Same path as batch 1: each file loads under the format's checks, each new electrochemical intermediate (CHO*,
-      COH*, CH2O*, CH3O*, NO2*, NO3* and others) runs through UMA on the 16 metals and meets a published DFT table,
-      and each ranking meets the rule before its reaction joins a Design page.
+      24 thermal packages, 8 of them from batch 2, run in the playground until a table measured in one laboratory
+      scores their ranking under the rule. Propane and propylene combustion met one (Lee 2017) and miss it.
+  - step: Published free energies for the methanol and methane paths
+    owner: Claude
+    why: >
+      Ferrin 2009's table checks five carbon intermediates but sets each against a gas-phase radical, so the
+      rankings of methanol oxidation and of the methane and methanol paths of CO2 and CO reduction wait on a
+      published free-energy table on the hydrogen-electrode scale.
+  - step: "Nitrate reduction: place NO3* and NO2* and check them against Liu et al. 2019"
+    owner: Claude
+    why: Nitrate's path to ammonia starts through two intermediates the worker has yet to place.
   - step: Find measured tables for the seven Design-page reactions from before the check
     owner: Claude
     why: >
@@ -222,12 +249,15 @@ next_steps:
       steam reforming rank materials on the Design page on the method's own checks, ahead of a per-metal measured
       table scored under the rule. Each needs one table measured in one laboratory to carry the same backing as the
       new ones.
-  - step: Published zero-point and entropy corrections for HNNH*, N2H3*, NO*, NOH*, CO*, COOH* and OCHO*
-    owner: Claude
+  - step: Published zero-point and entropy corrections for OCHO*, HNNH*, N2H3*, NO*, NOH* and six carbon intermediates
+    owner: Claude, with a download from you
     why: >
-      UMA's own vibrations miss the four published corrections by up to 0.20 eV, so these seven wait. Published
-      values from DFT studies of CO2 reduction and nitrogen chemistry, entered and checked the same way, would bring
-      CO2 to formate and formic acid oxidation (whose rankings already pass) to the Design page.
+      UMA's own vibrations miss the four published corrections by up to 0.20 eV, so these eleven wait; COOH* and CO*
+      now take Peterson 2010's values through Hansen 2013. Peterson 2010's own supporting information computes the
+      methane path's intermediates on copper and sits behind the publisher's bot check: a copy you download from
+      pubs.rsc.org (article c0ee00071j) into experiments/reaction_check/cache/ lets the app check CHO*, CH2O* and
+      CH3O*. OCHO*'s value would bring CO2 to formate and formic acid oxidation through formate, whose rankings
+      already pass, to the Design page.
   - step: "Surface stability for electrocatalysts: a Pourbaix check per candidate"
     owner: Claude
     why: A candidate that dissolves or oxidizes at the working potential ranks well and fails in the cell.
@@ -330,11 +360,19 @@ findings:
   - title: Predicted speed ratios run wider than measured ones
     detail: >
       The rule scores order, and the passing reactions order the metals well. The sizes run wide: across the
-      measured tables, the fastest and slowest scored metals sit 2.0 to 6.1 powers of ten apart, and the predictions
+      measured tables, the fastest and slowest scored metals sit 0.8 to 6.1 powers of ten apart, and the predictions
       put them 7.7 to 40.3 powers of ten apart, 1.3 to 20 times as many. Likely reasons: the volcano's slopes describe
       the close-packed face while working catalysts also run on steps and edges, and a laboratory's slowest readings
       sit near its detection limit. Read a predicted ratio beyond about tenfold as a place in the order.
     source: experiments/reaction_check (2026-10-25); Methodology tab, the reaction check section.
+  - title: Propane and propylene combustion miss one laboratory's measured order
+    detail: >
+      Against Lee's seven alumina-supported metals (2017 thesis, platinum the catalyst to beat), the average of
+      carbon and oxygen binding orders the other six with rho 0.17 for propane and 0.49 for propylene, both short of
+      the 0.6 the rule asks. Palladium, measured second, sits first in both predictions; copper sits second there
+      and measures fifth and fourth; silver sits last there and measures second for propane. The thesis's own
+      volcano uses DFT binding energies from Peela et al. 2013, where copper and platinum hold oxygen alike.
+    source: experiments/reaction_check (2026-10-25); Methodology tab, limits.
   - title: Two older rankings miss their measured tables
     detail: >
       Ammonia synthesis orders Ozaki's K-promoted metals with rho 0.40 over 9 metals (p 0.15), and water-gas shift
@@ -460,6 +498,14 @@ findings:
     source: Two-proportion power calculation.
 
 decisions:
+  - item: "Methane combustion keeps palladium as its catalyst to beat (2026-10-25)"
+    owner: You
+    status: open
+    detail: >
+      Lee's 2017 thesis measures platinum ahead of palladium on alumina at four O2 per CH4 and palladium ahead in
+      fuel-rich gas. The package's screen feed carries twenty O2 per CH4, beyond the thesis's range, and palladium is
+      the catalyst of natural-gas engine converters, so the package keeps palladium. Switching to platinum is one
+      line in reactions/methane_combustion/pack.yaml; yours to make as catalysis lead.
   - item: "Ammonia synthesis and water-gas shift leave the Design page after failing their ranking check (2026-10-25)"
     owner: You
     status: open

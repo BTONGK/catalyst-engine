@@ -1,0 +1,16 @@
+id: fms-screen-v1
+pack: methanol_to_formaldehyde
+version: 1
+status: draft
+description: "A methanol-rich feed like the silver process's, diluted in nitrogen: 6% methanol with 2.4% oxygen, at 1 atm."
+analyzer:
+  name: Gas chromatograph
+  measured: [CH3OH, CH2O, CO2, O2]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Formaldehyde yield against temperature
+    feed: {CH3OH: 6 %, O2: 2.4 %, N2: balance}
+    ghsv_per_h: 20000
+    temperatures_C: [250, 300, 350, 400, 450, 500, 550, 600, 650]

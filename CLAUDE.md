@@ -51,6 +51,7 @@
   (examples in `examples/electro/screens/`), its manual in `docs/electro/manual.yaml` with screenshots beside it,
   and its methodology in `experiments/electro_check/report.yaml` (kind: electro) with numbers from
   `electro_check.py`; rerun that script after changing the worker. `spec.ADSORBATES` stays the thermal set;
-  `electro.ADSORBATES` adds OOH.
+  `electro.ADSORBATES` adds OOH and the nitrogen and carbon intermediates (COOH, OCHO, NNH, CHO, CH3O and the
+  rest); a reaction through them joins the Design page once each passes its check in experiments/reaction_check.
 - The Manual page reads `docs/manual.yaml`; its step screenshots are `docs/manual/step-*.png`. Retake them when a
   page they show changes.

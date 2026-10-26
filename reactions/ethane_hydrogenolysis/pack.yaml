@@ -44,8 +44,9 @@ screening:
   optimum_shift_eV: 0.0
   peak_gas: {CH4: 1.0, H2: -2.0}   # gases its adsorbates exchange with; the top follows them
   suggested_elements: [Os, Ru, Ni, Rh, Ir, Co, Re, Fe, Pt, Pd]
-  # Kept to the library and the Catalyst playground until the reaction check (experiments/reaction_check)
-  # scores its ranking against the published table; the Manual's Methodology tab lists the outcome.
+  # The reaction check (experiments/reaction_check) scores this ranking against Sinfelt's measured rates (metals
+  # on silica, in Bond 2005): rho 0.10 over 5 metals, p 0.48, short of the rule; nickel ranks first there and
+  # fourth here. The playground keeps it until a check passes (Manual, Methodology tab, limits).
   on_design_page: false
   basis: >
     The C-C bond breaks only after ethane has lost most of its hydrogen to the surface, so the rate follows how

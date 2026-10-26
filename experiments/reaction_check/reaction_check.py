@@ -8,12 +8,14 @@ energies, its predicted speed against the pack's catalyst to beat at the table's
 standard feed (the volcano's top moved there as on the Design page), and Spearman's rho against the published
 order with a one-sided exact permutation p-value.
 
-For the electrochemical reactions (runs/metals-electro and runs/pblock-electro beside the thermal run, which holds
-H, O, OH, N, CO and NO): each new intermediate's binding energy against a published DFT table on the same metals,
+For the electrochemical reactions (runs/metals-electro, runs/metals-electro2 and runs/pblock-electro beside the
+thermal run, which holds H, O, OH, N, CO and NO): each new intermediate's binding energy against a published DFT
+table on the same metals,
 after one constant offset per intermediate (the mean gap), then each reaction's limiting potentials against the
 paper's own free energies put through the app's limiting-potential rule. The papers' gas references move to each
 reaction's own zero with tabulated formation free energies, as the reaction files' shifts do. results/corrections.json
-(corrections.py, in the UMA Python) holds the check on UMA's own zero-point and entropy corrections.
+(corrections.py, in the UMA Python) holds the check on UMA's own zero-point and entropy corrections; the published
+corrections in data/published.yaml stand in for UMA's wherever a source tabulates them.
 
 Writes results/summary.json, which both Methodology tabs render.
 """
@@ -34,7 +36,7 @@ from catalyst_engine.packs import PACKS_DIR, list_packs, load_pack
 
 HERE = Path(__file__).resolve().parent
 RUN = HERE / "runs" / "metals-thermal"
-ELECTRO_RUNS = [HERE / "runs" / r for r in ("metals-thermal", "metals-electro", "pblock-electro")]
+ELECTRO_RUNS = [HERE / "runs" / r for r in ("metals-thermal", "metals-electro", "metals-electro2", "pblock-electro")]
 OUT = HERE / "results" / "summary.json"
 CORRECTIONS = HERE / "results" / "corrections.json"
 R_KJ = 8.314462618e-3  # kJ/(mol K)
@@ -44,14 +46,20 @@ F_KJ = 96.485332  # kJ/mol per eV
 # Formation free energies at 298.15 K (kJ/mol; NBS tables, Wagman et al. 1982), to move Elnabawy 2018's reference,
 # HCOOH(g), to each reaction's own zero
 DGF = {"H2O(l)": -237.129, "H2O(g)": -228.572, "CO(g)": -137.168, "HCOOH(g)": -351.0, "HCOOH(aq)": -372.3}
+TO_CO_WATER = {  # COOH* + 1/2 H2 against CO(g) + liquid water; CO* against CO(g), from the paper's CO* + H2O(g) state
+    "COOH": (DGF["HCOOH(g)"] - DGF["CO(g)"] - DGF["H2O(l)"]) / F_KJ,
+    "CO": (DGF["HCOOH(g)"] - DGF["H2O(g)"] - DGF["CO(g)"]) / F_KJ}
+TO_FORMIC_AQ = (DGF["HCOOH(g)"] - DGF["HCOOH(aq)"]) / F_KJ  # OCHO* or COOH* + 1/2 H2 against dissolved formic acid
 ELNABAWY_TO = {
-    # COOH* + 1/2 H2 against CO(g) + liquid water; CO* against CO(g), from the paper's CO* + H2O(g) state
-    "co2_to_co": {"COOH": (DGF["HCOOH(g)"] - DGF["CO(g)"] - DGF["H2O(l)"]) / F_KJ,
-                  "CO": (DGF["HCOOH(g)"] - DGF["H2O(g)"] - DGF["CO(g)"]) / F_KJ},
-    # OCHO* + 1/2 H2 against dissolved formic acid
-    "co2_to_formate": {"OCHO": (DGF["HCOOH(g)"] - DGF["HCOOH(aq)"]) / F_KJ},
-    "formic_acid_oxidation": {"OCHO": (DGF["HCOOH(g)"] - DGF["HCOOH(aq)"]) / F_KJ},
+    "co2_to_co": TO_CO_WATER,
+    "co_oxidation_electro": TO_CO_WATER,  # CO(g) and liquid water are this reaction's start
+    "co2_to_formate": {"OCHO": TO_FORMIC_AQ},
+    "formic_acid_oxidation": {"OCHO": TO_FORMIC_AQ},
+    "formic_acid_oxidation_carboxyl": {"COOH": TO_FORMIC_AQ},
 }
+# Reactions whose potentials turn the run's metals to oxides: like oxygen evolution, they stay in the playground until
+# an oxide check passes (PASS_RULE.md, batch 2), whatever their ranking gives
+OXIDE_REACTIONS = {"water_oxidation_h2o2": 1.76}  # its equilibrium potential (V vs RHE)
 # Intermediates the app already uses, accepted by the electrocatalysis checks (experiments/electro_check)
 CHECKED_BEFORE = {"H", "O", "OH", "OOH"}
 
@@ -131,9 +139,10 @@ def thermal_check(table: dict, summary: dict) -> dict:
     passes = (table["role"] == "primary" and len(scored) >= MIN_METALS and rho >= MIN_RHO and p <= MAX_P
               and best in top)
     # how many tenfold steps separate the fastest and slowest scored metal, measured and predicted; for tables of
-    # rates only (an order or a temperature carries no size)
-    ln_rates = None if table.get("order_only") or table["unit"] == "K" else \
-        [values[m] if "arrhenius" in table else math.log(values[m]) for m in scored]
+    # rates only (an order or a temperature carries no size, and a rate read as zero bounds the span from one side)
+    sized = not (table.get("order_only") or table["unit"] == "K") and \
+        ("arrhenius" in table or min(values[m] for m in scored) > 0)
+    ln_rates = [values[m] if "arrhenius" in table else math.log(values[m]) for m in scored] if sized else None
     spans = {"measured_decades": None if ln_rates is None else round((max(ln_rates) - min(ln_rates)) / math.log(10), 1),
              "predicted_decades": round((max(shift[m] for m in scored) - min(shift[m] for m in scored))
                                         / (k_t * math.log(10)), 1)}
@@ -232,11 +241,26 @@ def reaction_check(rid: str, binding: dict, tables: dict, ec, passed: dict, uma_
     untabled = [a for a in new if a not in passed]
     needs = sorted(set(spec.adsorbates) & uma_only)
     ranking = bool(len(rows) >= E_MIN_METALS and rho >= MIN_RHO and p <= MAX_P)
+    oxide = rid in OXIDE_REACTIONS
     return {"reaction": rid, "name": spec.name, "direction": spec.direction, "source": source, "n": len(rows),
             "rho": None if math.isnan(rho) else round(rho, 3), "p": None if math.isnan(p) else sig(p),
             "ranking_passes": ranking, "intermediates_new": new, "intermediates_failing": gaps,
-            "intermediates_awaiting_table": untabled,
-            "corrections_missing": needs, "passes": ranking and not gaps and not needs, "rows": rows}
+            "intermediates_awaiting_table": untabled, "corrections_missing": needs, "oxide": oxide,
+            "passes": ranking and not gaps and not needs and not oxide, "rows": rows}
+
+
+def published_corrections(sources: list[dict]) -> dict[str, dict]:
+    """Each published correction against the worker's gas reference for that intermediate: the adsorbate's ZPE - TS
+    less its reference gases', from one source's own table (PASS_RULE.md, batch 2)."""
+    from uma_worker import REFERENCE  # noqa: PLC0415  numpy and ASE only
+
+    out = {}
+    for s in sources:
+        gas = {g: sum(v) for g, v in s["gases"].items()}
+        for a, terms in s["adsorbates"].items():
+            out[a] = {"eV": round(sum(terms) - sum(w * gas[g] for g, w in REFERENCE[a].items()), 3),
+                      "short": s["short"], "surface": s["surface"], "temperature_K": s["temperature_K"]}
+    return out
 
 
 def joined(names: list[str]) -> str:
@@ -270,7 +294,7 @@ def below_rule(n: int, rho: float | None, p: float | None, n_min: int) -> list[s
 
 
 def display(checks: list[dict], inter: list[dict], reactions: list[dict], corrections: dict,
-            uma_only: set[str]) -> tuple[dict, dict]:
+            uma_only: set[str], published_c: dict[str, dict]) -> tuple[dict, dict]:
     """Single numbers and rows for both Methodology tabs, whose report.yaml files bring this summary in (`also`)
     and quote {name}."""
     values: dict = {"rc_min_metals": MIN_METALS, "rc_min_rho": MIN_RHO, "rc_max_p": MAX_P, "rc_top": TOP,
@@ -385,6 +409,9 @@ def display(checks: list[dict], inter: list[dict], reactions: list[dict], correc
                                "alone")
             if r["n"]:
                 reasons += below_rule(r["n"], r["rho"], r["p"], E_MIN_METALS)
+            if r["oxide"]:
+                reasons.append(f"it runs above {OXIDE_REACTIONS[r['reaction']]:.2f} V, where the metals turn to oxides, "
+                               "so it waits for an oxide check, as oxygen evolution does")
             verdict = "in the playground: " + "; ".join(reasons)
         rows.append({"reaction": r["name"], "table": r["source"] or "(a published table to come)", "n": r["n"],
                      "rho": r["rho"], "p": p_text(r["p"]), "verdict": verdict})
@@ -404,14 +431,21 @@ def display(checks: list[dict], inter: list[dict], reactions: list[dict], correc
     for a, row in pt.items():
         pub = check.get("published", {}).get(a)
         sk = check.get("skulason", {}).get(a, {}).get("published")
-        ref = pub if pub is not None else sk
+        tab = published_c.get(a, {}).get("eV")
+        ref = next((v for v in (pub, sk, tab) if v is not None), None)
         if pub is not None:
             zpe_gaps.append(abs(row["correction"] + row["TS"] - pub))  # the adsorbate's entropy set aside
+        if pub is not None:
+            role = "checked against (the rule)"
+        elif sk is not None:
+            role = "shown beside (Skúlason 2012)"
+        elif tab is not None:
+            role = f"published ({published_c[a]['short']}, {published_c[a]['surface']}); the reactions take it"
+        else:
+            role = "UMA's value alone"
         rows.append({"intermediate": a + "*", "site": row["site"], "uma_eV": row["correction"],
                      "published_eV": ref, "gap_eV": None if ref is None else round(row["correction"] - ref, 3),
-                     "role": "checked against (the rule)" if pub is not None else
-                     ("shown beside (Skúlason 2012)" if sk is not None else "UMA's value alone"),
-                     "lowest_cm": round(min(row["frequencies_cm"]), 0), "spread_eV": spread.get(a)})
+                     "role": role, "lowest_cm": round(min(row["frequencies_cm"]), 0), "spread_eV": spread.get(a)})
     tables["rc_corrections"] = rows
     if check:
         misses = check["misses"]
@@ -425,10 +459,15 @@ def display(checks: list[dict], inter: list[dict], reactions: list[dict], correc
                       rc_corr_spread_max=round(max(spread.values()), 2),
                       rc_corr_skulason_gaps=joined([f"{a}* {v:+.2f}" for a, v in sk_gaps.items()]) + " eV",
                       rc_corr_skulason_max=round(max(abs(v) for v in sk_gaps.values()), 2),
-                      rc_corr_uma_only=joined([a + "*" for a in sorted(uma_only, key=list(pt).index)]))
+                      rc_corr_uma_only=joined([a + "*" for a in sorted(uma_only, key=list(pt).index)]),
+                      rc_corr_uma_only_n=len(uma_only))
         for a in ("OH", "OOH"):  # the soft motions behind the two largest misses
             values[f"rc_corr_ts_{a}"] = round(pt[a]["TS"], 2)
             values[f"rc_corr_soft_{a}"] = sum(f < 110 for f in pt[a]["frequencies_cm"])
+        for a, c in published_c.items():  # the published corrections the reactions take in place of UMA's
+            values[f"rc_corr_pub_{a}"] = c["eV"]
+            values[f"rc_corr_pub_gap_{a}"] = round(pt[a]["correction"] - c["eV"], 2) if a in pt else None
+        values["rc_corr_pub_names"] = joined([f"{a}* {c['eV']:.2f} eV" for a, c in published_c.items()])
     return values, tables
 
 
@@ -480,6 +519,7 @@ def pairing_line(herron: dict) -> dict:
 
 
 def main() -> None:
+    sys.path.insert(0, str(HERE.parents[1] / "src" / "catalyst_engine" / "design"))  # the worker's gas references
     published = yaml.safe_load((HERE / "data" / "published.yaml").read_text())
     summary = screening.binding_summary(screening.read_results(RUN))
     status = screening.read_status(RUN)
@@ -492,7 +532,9 @@ def main() -> None:
     for c in inter:  # an intermediate scored by two tables passes when every table it meets passes
         passed[c["intermediate"]] = passed.get(c["intermediate"], True) and c["passes"]
     corrections = json.loads(CORRECTIONS.read_text()) if CORRECTIONS.exists() else {}
-    published_corr = set(corrections.get("check", {}).get("published", {})) | set(corrections.get("check", {}).get("skulason", {}))
+    published_c = published_corrections(published.get("corrections", []))
+    published_corr = set(corrections.get("check", {}).get("published", {})) | \
+        set(corrections.get("check", {}).get("skulason", {})) | set(published_c)
     uma_only = set() if corrections.get("check", {}).get("passes") else \
         {a for a in corrections.get("metals", {}).get("Pt", {}) if a not in published_corr}
     reactions = [reaction_check(rid, binding, tables, ec, passed, uma_only) for rid in electro.list_electro()
@@ -510,10 +552,10 @@ def main() -> None:
         "electro_reactions": reactions,
         "corrections": {k: corrections.get(k) for k in ("rule", "check", "spread")} if corrections else {},
         "corrections_uma_only": sorted(uma_only),
+        "corrections_published": published_c,
         "n_pairing": pairing_line(tables["herron2015"]),
     })
-    out["values"], out["tables"] = display(checks, inter, reactions, corrections, uma_only)
-    sys.path.insert(0, str(HERE.parents[1] / "src" / "catalyst_engine" / "design"))
+    out["values"], out["tables"] = display(checks, inter, reactions, corrections, uma_only, published_c)
     out["values"].update(electro_walk(binding))
     nn = out["n_pairing"]
     out["values"].update(rc_nn_n=nn["n"], rc_nn_metals=joined(nn["metals"]), rc_nn_slope=nn["slope"],

@@ -1,0 +1,45 @@
+# CO2 reduction to methane: CO2 + 8 (H+ + e-) -> CH4 + 2 H2O, through COOH*, CO*, CHO*, CH2O* and CH3O*, then O* and
+# OH* (the lowest free-energy path on Cu(211) of Peterson et al., Energy Environ. Sci. 3, 1311 (2010); Peterson and
+# Nørskov, J. Phys. Chem. Lett. 3, 251 (2012) for the descriptors).
+
+id: co2_to_methane
+name: CO2 reduction to methane
+category: CO2 conversion
+summary: Turns carbon dioxide into methane with electricity, the eight-electron product copper makes.
+equation: CO2 + 8 H+ + 8 e- -> CH4 + 2 H2O
+direction: reduction
+electrons: 8
+equilibrium_V: 0.169        # to methane gas and liquid water, from tabulated formation free energies (CH4(g) -50.72 kJ/mol)
+compare_V: -1.00
+# Corrections: COOH* and CO* take Peterson et al. 2010's values as Hansen et al. 2013, Table S1, reproduces them
+#   (experiments/reaction_check/data/published.yaml). CHO*, CH2O* and CH3O* take UMA's own vibrations on Pt(111)
+#   (results/corrections.json), which serve the playground's starting point only. O* takes +0.05 eV and OH* +0.35 eV
+#   with -0.33 eV for the hydrogen bonds from liquid water (Nørskov 2004), the oxygen-reduction file's terms less its
+#   OH layer, which these negative potentials leave empty.
+# shift: the carbon intermediates start against CO(g), H2O and H2; this reaction's zero is methane and liquid water,
+#   1.562 eV below CO + H2O + 3 H2. O* and OH* start against water and H2, and with the methane already made they
+#   sit on the zero's own scale.
+intermediates:
+  - {name: COOH, label: "carboxyl (COOH*)", correction_eV: 0.91, shift_eV: 1.5617}
+  - {name: CO, label: "adsorbed CO (CO*)", correction_eV: 0.50, shift_eV: 1.5617}
+  - {name: CHO, label: "formyl (CHO*)", correction_eV: 0.82, shift_eV: 1.5617}
+  - {name: CH2O, label: "formaldehyde (CH2O*)", correction_eV: 1.20, shift_eV: 1.5617}
+  - {name: CH3O, label: "methoxy (CH3O*)", correction_eV: 1.55, shift_eV: 1.5617}
+  - {name: O, label: "adsorbed oxygen (O*)", correction_eV: 0.05}
+  - {name: OH, label: "hydroxyl (OH*)", correction_eV: 0.35, water_eV: -0.33}
+descriptor: {CO: 1}
+reference: {formula: Cu, name: Copper}
+task: oc20
+suggested_elements: [Cu, Au, Ag, Zn, Pd, Pt, Ni, Rh, Ir, Ru]
+on_design_page: false
+design_note: CO* misses its check against Elnabawy 2018, CH2O* awaits a published table, and the ranking awaits published free energies on the hydrogen-electrode scale and published corrections for CHO*, CH2O* and CH3O*
+basis: >
+  Copper is the one pure metal that turns CO2 into methane in quantity (Hori 2008). CO2 takes a proton and
+  electron to become carboxyl, COOH*, and a second splits off water and leaves CO*. Then comes the hard step: CO*
+  takes a proton and electron on its carbon to become formyl, CHO*, which needs about -0.74 V on copper's stepped
+  face in Peterson et al.'s 2010 free energies, close to where copper starts making methane. Formyl gains
+  hydrogens through formaldehyde, CH2O*, and methoxy, CH3O*; the next proton and electron release methane and leave
+  O*, which two more turn into water. Metals that bind CO* tightly keep it and make hydrogen instead (platinum,
+  nickel); those that bind it weakly let it leave as gas (gold, silver, zinc). Peterson and Nørskov 2012 write the
+  limiting potential through CO* and OH* binding, with CO* to CHO* setting it on copper; this file ranks by CO*
+  binding.

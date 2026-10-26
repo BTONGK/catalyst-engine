@@ -1,0 +1,16 @@
+id: c3c-screen-v1
+pack: propane_combustion
+version: 1
+status: draft
+description: "Lean vent gas: 0.5% propane with 5% oxygen in nitrogen, ten oxygen molecules per propane, at 1 atm."
+analyzer:
+  name: FTIR
+  measured: [C3H8, CO2]
+  sigma_abs_ppm: 0.5
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Propane light-off
+    feed: {C3H8: 0.5 %, O2: 5 %, N2: balance}
+    ghsv_per_h: 50000
+    temperatures_C: [150, 200, 250, 300, 350, 400, 450, 500]

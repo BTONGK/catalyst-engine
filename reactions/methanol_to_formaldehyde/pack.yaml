@@ -1,0 +1,75 @@
+# Formaldehyde from methanol over silver. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (silver) reaches half of the best possible formaldehyde yield at 450 C under the screen protocol.
+
+id: methanol_to_formaldehyde
+name: Formaldehyde from methanol (silver process)
+version: 1
+status: draft-illustrative-parameters
+summary: Makes formaldehyde, the raw material for the resins in plywood and particle board, by oxidizing methanol over silver.
+category: Chemicals and fuels
+description: >
+  Methanol and oxygen make formaldehyde and water; burning to CO2 competes. Both paths are first order in methanol
+  and in oxygen, so both stop once the oxygen is used up, in a methanol-rich feed like the industrial one. The
+  industrial silver process, at 600 to 700 °C, also pulls hydrogen straight off methanol; the pack follows the
+  oxidative route.
+
+reference_temperature_K: 723.15
+water: H2O
+oxygen: O2
+
+species:
+  CH3OH: {formula: CH3OH}
+  O2:    {formula: O2}
+  CH2O:  {formula: CH2O}
+  H2O:   {formula: H2O}
+  CO2:   {formula: CO2}
+  N2:    {formula: N2}
+
+pathways:
+  oxidation:
+    equation: CH3OH + 0.5 O2 -> CH2O + H2O
+    role: desired
+    rate: {key: CH3OH, orders: {CH3OH: 1, O2: 1}, ln_k_ref: 3.301, Ea_kJ: 80}
+  combustion:
+    equation: CH3OH + 1.5 O2 -> CO2 + 2 H2O
+    role: side
+    note: "Full combustion; it takes three times the oxygen per methanol and makes CO2 in place of formaldehyde."
+    rate: {key: CH3OH, orders: {CH3OH: 1, O2: 1}, ln_k_ref: -2.000, Ea_kJ: 90}
+
+metrics:
+  ch2o_yield:
+    kind: yield
+    species: [CH2O]
+    denominator: [CH3OH]
+    description: "Formaldehyde made per methanol fed."
+  ch3oh_conversion:
+    kind: conversion
+    species: [CH3OH]
+    description: "Share of the methanol that reacts."
+  co2_out:
+    kind: outlet
+    species: [CO2]
+    description: "CO2 made by burning methanol."
+
+screening:
+  descriptor: {O: 1}
+  pathways: [oxidation]
+  metric: ch2o_yield
+  reference: {formula: Ag, name: Silver}
+  optimum_shift_eV: 0.0
+  # the weak side waits on O2 splitting into two atoms the descriptor counts: 0.9 eV of barrier per eV of
+  # splitting energy (Nørskov et al., J. Catal. 2002), and that energy moves twice as fast as the descriptor
+  slope_weak: 1.8
+  peak_gas: {O2: 0.5}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Ag, Cu, Au, Pt, Pd]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    On silver, methanol reacts with oxygen the surface already holds: that oxygen takes the hydroxyl hydrogen,
+    leaving methoxy, which gives up one more hydrogen as formaldehyde (Wachs and Madix, Surf. Sci. 1978). The
+    surface has to split O2 yet hold its oxygen loosely enough to pass it on, and stronger binders burn more of the
+    methanol, so oxygen binding sorts the metals. The descriptor is oxygen binding; the top is set at silver's, the
+    catalyst of the industrial process (Reuss et al., Ullmann's Encyclopedia of Industrial Chemistry, Formaldehyde),
+    and the weak side falls 1.8 eV per eV for O2 splitting. Iron molybdate, an oxide, runs the other industrial
+    route and sits outside this screen of metals.

@@ -1,0 +1,33 @@
+# Two-electron water oxidation: 2 H2O -> H2O2 + 2 (H+ + e-), through OH* alone (Shi et al., Nat. Commun. 8, 701
+# (2017): the descriptor, its window and the oxides compared).
+
+id: water_oxidation_h2o2
+name: Two-electron water oxidation to H2O2
+category: Chemicals
+summary: Makes hydrogen peroxide from water at the anode, where an electrolyzer usually makes oxygen.
+equation: 2 H2O -> H2O2 + 2 H+ + 2 e-
+direction: oxidation
+electrons: 2
+equilibrium_V: 1.763        # H2O/H2O2(aq), from tabulated formation free energies
+compare_V: 2.20
+# OH*: the oxygen-evolution file's oxide terms, +0.35 eV for zero-point energy and entropy with the water term at zero
+#   (Man et al. 2011: on oxides the intermediates fill the surface), since this reaction's catalysts are oxides.
+# shift: OH* starts against H2O and H2; with the second water still to react it sits on this reaction's own zero,
+#   two waters, so the shift is 0.
+intermediates:
+  - {name: OH, label: "hydroxyl (OH*)", correction_eV: 0.35}
+descriptor: {OH: 1}
+# the two steps at 0 V as lines in x = G(OH*): H2O -> OH* is x, OH* + H2O -> H2O2 is 3.526 - x
+volcano_steps: [[1, 0], [-1, 3.526]]
+reference: {formula: BiVO4, name: Bismuth vanadate}
+task: omat
+suggested_elements: [Bi, W, Sn, Ti, Zn, Ca, Pt, Au]
+on_design_page: false
+design_note: it runs above 1.76 V, where metals turn to oxides, and on oxides UMA's binding energies sit beyond the error bar, as for oxygen evolution; on the metals of Nørskov 2004's Table 2 its ranking passes (rho 0.97)
+basis: >
+  Two-electron water oxidation makes hydrogen peroxide at the anode: water gives up a proton and electron to sit
+  as OH*, and OH* takes a second water and leaves as H2O2. Both steps turn downhill together when OH* sits at
+  1.76 eV, and a selective catalyst holds it between about 1.6 and 2.4 eV: stronger, and OH* goes on to O* and
+  oxygen; weaker, and OH radicals leave instead (Shi et al. 2017). Metals bind OH* far more strongly and turn to
+  oxides at these potentials, so the catalysts are oxides. Of WO3, SnO2, TiO2 and BiVO4, Shi et al. found bismuth
+  vanadate the most selective, at about 70 percent faradaic efficiency near 3.1 V in bicarbonate electrolyte.

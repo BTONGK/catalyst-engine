@@ -2,7 +2,7 @@
 # J. Electrochem. Soc. 165, J3109 (2018); Feaster et al. 2017 for the intermediate).
 
 id: formic_acid_oxidation
-name: Formic acid oxidation
+name: Formic acid oxidation (formate route)
 category: Hydrogen and energy
 summary: Oxidizes formic acid to CO2 at the anode of a direct formic-acid fuel cell.
 equation: HCOOH -> CO2 + 2 H+ + 2 e-

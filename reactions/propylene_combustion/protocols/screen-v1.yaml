@@ -1,0 +1,16 @@
+id: c3e-screen-v1
+pack: propylene_combustion
+version: 1
+status: draft
+description: "Lean exhaust-like gas: 1% propylene with 8% oxygen in nitrogen, at 1 atm."
+analyzer:
+  name: FTIR
+  measured: [C3H6, CO2]
+  sigma_abs_ppm: 0.5
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Propylene light-off
+    feed: {C3H6: 1 %, O2: 8 %, N2: balance}
+    ghsv_per_h: 50000
+    temperatures_C: [75, 100, 125, 150, 175, 200, 250, 300]

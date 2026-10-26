@@ -1,0 +1,58 @@
+# Lean propylene combustion. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (platinum) reaches half of the best possible result at 150 C under the screen protocol.
+
+id: propylene_combustion
+name: Propylene combustion
+version: 1
+status: draft-illustrative-parameters
+summary: Burns propylene, the usual laboratory stand-in for the reactive hydrocarbons in car exhaust, to CO2 and water.
+category: Clean air
+description: >
+  Propylene burns with excess oxygen to CO2 and water. First order in propylene (NASA Glenn data, since propylene
+  sits outside GRI-Mech).
+
+reference_temperature_K: 423.15
+water: H2O
+oxygen: O2
+
+species:
+  C3H6: {formula: C3H6, cantera: "C3H6,propylene"}
+  O2:   {formula: O2}
+  CO2:  {formula: CO2}
+  H2O:  {formula: H2O}
+  N2:   {formula: N2}
+
+pathways:
+  combustion:
+    equation: C3H6 + 4.5 O2 -> 3 CO2 + 3 H2O
+    role: desired
+    rate: {key: C3H6, orders: {C3H6: 1}, ln_k_ref: 2.704, Ea_kJ: 80}
+
+metrics:
+  c3h6_conversion:
+    kind: conversion
+    species: [C3H6]
+    description: "Share of the propylene burned."
+    target: {min: 0.9, label: Target}
+  c3h6_out:
+    kind: outlet
+    species: [C3H6]
+    description: "Propylene left in the gas."
+
+screening:
+  descriptor: {C: 0.5, O: 0.5}
+  pathways: [combustion]
+  metric: c3h6_conversion
+  reference: {formula: Pt, name: Platinum}
+  optimum_shift_eV: 0.0
+  peak_gas: {}   # the reaction's gases hold none its adsorbates exchange with; the top holds still
+  suggested_elements: [Pt, Pd, Rh, Ir, Ru, Ag, Ni, Co, Cu]
+  # The reaction check (experiments/reaction_check) scores this ranking against Lee's measured turnover
+  # frequencies (seven metals on alumina, 170 C): rho 0.49 over 6 metals, p 0.18, short of the rule; copper ranks
+  # fourth there and second here, and silver third there and last here. The playground keeps it until a check
+  # passes (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    Propylene burns on the same volcano of carbon and oxygen binding as propane, with platinum on top, in the same
+    laboratory's comparison of seven alumina-supported metals (Lee, M.Ch.E. thesis, University of Delaware, 2017).
+    The descriptor averages the C and O binding; the top is set at platinum's.

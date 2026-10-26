@@ -1,0 +1,36 @@
+# CO reduction to methanol: CO + 4 (H+ + e-) -> CH3OH. CO lands on the surface and takes four protons and electrons
+# through CHO*, CH2O* and CH3O* (the methanol branch of Peterson et al., Energy Environ. Sci. 3, 1311 (2010)).
+
+id: co_to_methanol
+name: CO reduction to methanol
+category: CO2 conversion
+summary: Turns carbon monoxide into methanol with electricity, four electrons per molecule.
+equation: CO + 4 H+ + 4 e- -> CH3OH
+direction: reduction
+electrons: 4
+equilibrium_V: 0.099        # to dissolved methanol, from tabulated formation free energies
+compare_V: -1.00
+# Corrections: CO* takes Peterson et al. 2010's value as Hansen et al. 2013, Table S1, reproduces it
+#   (experiments/reaction_check/data/published.yaml); CHO*, CH2O* and CH3O* take UMA's own vibrations on Pt(111)
+#   (results/corrections.json), which serve the playground's starting point only.
+# shift: each intermediate starts against CO(g) and H2; this reaction's zero is dissolved methanol, 0.395 eV below
+#   CO + 2 H2.
+intermediates:
+  - {name: CO, label: "adsorbed CO (CO*)", correction_eV: 0.50, shift_eV: 0.3953}
+  - {name: CHO, label: "formyl (CHO*)", correction_eV: 0.82, shift_eV: 0.3953}
+  - {name: CH2O, label: "formaldehyde (CH2O*)", correction_eV: 1.20, shift_eV: 0.3953}
+  - {name: CH3O, label: "methoxy (CH3O*)", correction_eV: 1.55, shift_eV: 0.3953}
+chemical_steps:
+  - {step: 0, label: "CO lands on the surface"}
+descriptor: {CO: 1}
+reference: {formula: Cu, name: Copper}
+task: oc20
+suggested_elements: [Cu, Au, Ag, Zn, Pd, Pt, Ni, Rh, Ir, Ru]
+on_design_page: false
+design_note: CO* misses its check against Elnabawy 2018, CH2O* awaits a published table, and the ranking awaits published free energies on the hydrogen-electrode scale and published corrections for CHO*, CH2O* and CH3O*
+basis: >
+  CO lands on the surface, a step that moves zero electrons, and takes four protons and electrons through formyl,
+  CHO*, formaldehyde, CH2O*, and methoxy, CH3O*; methoxy leaves as methanol (the methanol branch of Peterson et al.
+  2010). On copper, methanol is a small share of CO reduction beside methane and the C2 products; the free-energy
+  path ranks the activity of the four-electron path, and the share of the current that reaches methanol comes
+  from experiment.

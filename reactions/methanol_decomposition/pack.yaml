@@ -1,0 +1,55 @@
+# Methanol decomposition. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (platinum) reaches half of the best possible result at 250 C under the screen protocol.
+
+id: methanol_decomposition
+name: Methanol decomposition
+version: 1
+status: draft-illustrative-parameters
+summary: Splits methanol into carbon monoxide and hydrogen, turning a liquid that is easy to ship and store into syngas where it is needed.
+category: Hydrogen and energy
+description: >
+  Methanol splits into CO and two hydrogen molecules. The reaction draws heat, so equilibrium favors high
+  temperature. First order in methanol, with the approach to equilibrium from thermodynamics.
+
+reference_temperature_K: 523.15
+
+species:
+  CH3OH: {formula: CH3OH}
+  CO:    {formula: CO}
+  H2:    {formula: H2}
+  N2:    {formula: N2}
+
+pathways:
+  decomposition:
+    equation: CH3OH <=> CO + 2 H2
+    role: desired
+    rate: {key: CH3OH, orders: {CH3OH: 1}, ln_k_ref: 1.333, Ea_kJ: 100}
+
+metrics:
+  ch3oh_conversion:
+    kind: conversion
+    species: [CH3OH]
+    description: "Share of the methanol split."
+  h2_yield:
+    kind: yield
+    species: [H2]
+    denominator: [CH3OH]
+    description: "Hydrogen made per methanol fed (2 is the most possible)."
+
+screening:
+  descriptor: {C: 0.5, O: 0.5}
+  pathways: [decomposition]
+  metric: ch3oh_conversion
+  reference: {formula: Pt, name: Platinum}
+  optimum_shift_eV: 0.0
+  peak_gas: {}   # the reaction's gases hold none its adsorbates exchange with; the top holds still
+  suggested_elements: [Pt, Pd, Ni, Rh, Ir, Ru, Co, Cu]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    On platinum, methanol sheds its hydrogens one at a time, the first from the carbon end, and the CO left behind
+    has to come off (Greeley and Mavrikakis, J. Am. Chem. Soc. 2004); a model built from those steps predicts
+    platinum's measured rates (Kandoi et al., Top. Catal. 2006). The intermediates hold on by carbon or by oxygen,
+    so the descriptor averages the C and O binding; the top is set at platinum's, the metal those steps are mapped
+    on.

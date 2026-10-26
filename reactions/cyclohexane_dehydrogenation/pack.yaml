@@ -1,0 +1,58 @@
+# Cyclohexane dehydrogenation. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (platinum) reaches half of the best possible result at 250 C under the screen protocol.
+
+id: cyclohexane_dehydrogenation
+name: Cyclohexane dehydrogenation
+version: 1
+status: draft-illustrative-parameters
+summary: Releases hydrogen stored in cyclohexane, a liquid hydrogen carrier, leaving benzene to be loaded with hydrogen again.
+category: Hydrogen and energy
+description: >
+  Cyclohexane gives up three hydrogen molecules to become benzene, the reverse of benzene hydrogenation. The
+  reaction draws heat, so equilibrium favors high temperature. First order in cyclohexane, with the approach to
+  equilibrium from thermodynamics (NASA Glenn data, since both rings sit outside GRI-Mech).
+
+reference_temperature_K: 523.15
+
+species:
+  C6H12: {formula: C6H12, cantera: "C6H12,cyclo-"}
+  C6H6:  {formula: C6H6}
+  H2:    {formula: H2}
+  N2:    {formula: N2}
+
+pathways:
+  dehydrogenation:
+    equation: C6H12 <=> C6H6 + 3 H2
+    role: desired
+    rate: {key: C6H12, orders: {C6H12: 1}, ln_k_ref: 1.300, Ea_kJ: 80}
+
+metrics:
+  c6h12_conversion:
+    kind: conversion
+    species: [C6H12]
+    description: "Share of the cyclohexane turned into benzene."
+  h2_yield:
+    kind: yield
+    species: [H2]
+    denominator: [C6H12]
+    description: "Hydrogen released per cyclohexane fed (3 is the most possible)."
+
+screening:
+  descriptor: {C: 1}
+  pathways: [dehydrogenation]
+  metric: c6h12_conversion
+  reference: {formula: Pt, name: Platinum}
+  optimum_shift_eV: 0.0
+  peak_gas: {}   # the reaction's gases hold none its adsorbates exchange with; the top holds still
+  suggested_elements: [Pt, Pd, Rh, Ir, Ni, Ru, Re, Co, Cu]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    Pulling hydrogen off the ring and letting benzene go both run through carbon-metal bonds, so the metal-carbon
+    bond strength sorts the metals, as for the reverse reaction, benzene hydrogenation (Toulhoat and Raybaud, J.
+    Catal. 2003). Platinum is the usual catalyst for releasing hydrogen from such carriers (Preuster et al., Acc.
+    Chem. Res. 2017). Strong carbon binders such as nickel also break C-C bonds; alloying nickel with copper slows
+    that while the dehydrogenation rate holds (Sinfelt, Carter and Yates, J. Catal. 1972). The descriptor is the
+    carbon binding; the top is set at platinum's. Methylcyclohexane and dibenzyltoluene, the carriers in industrial
+    trials, sit outside the app's thermodynamic data, so cyclohexane, the simplest carrier, stands in for them.

@@ -1,0 +1,16 @@
+id: so2-screen-v1
+pack: so2_oxidation
+version: 1
+status: draft
+description: "Converter gas from burning sulfur in air: 10% SO2 with 11% oxygen in nitrogen, at 1 atm."
+analyzer:
+  name: FTIR
+  measured: [SO2, SO3]
+  sigma_abs_ppm: 0.5
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: SO2 conversion against temperature
+    feed: {SO2: 10 %, O2: 11 %, N2: balance}
+    ghsv_per_h: 5000
+    temperatures_C: [350, 400, 450, 500, 550, 600, 650]

@@ -57,7 +57,9 @@ EXAMPLES = Path(__file__).resolve().parents[3] / "examples" / "electro" / "scree
 # the intermediates the worker can place, in plain words: the thermal set plus the electrochemical ones
 ADSORBATES = {**THERMAL_ADSORBATES, "OOH": "hydroperoxyl", "COOH": "carboxyl", "OCHO": "formate", "NH": "imide",
               "NH2": "amide", "NNH": "diazenyl (N2H)", "NNH2": "hydrazinylidene (NNH2)", "HNNH": "diazene (HNNH)",
-              "HNNH2": "hydrazinyl (N2H3)", "NOH": "NOH"}
+              "HNNH2": "hydrazinyl (N2H3)", "NOH": "NOH", "CHO": "formyl", "COH": "hydroxymethylidyne (COH)",
+              "CH2O": "formaldehyde", "CHOH": "hydroxymethylene (CHOH)", "CH3O": "methoxy",
+              "CH2OH": "hydroxymethyl"}
 K_T = 8.617333e-5 * 298.15  # eV at 25 C
 SIGMA_EV = 0.15  # uncertainty of each binding energy, as the thermal screens take it
 EITHER = "Either route"  # both routes reach the same value: the step that limits lies on both

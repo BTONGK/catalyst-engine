@@ -89,14 +89,14 @@
   "reactor_exact_max_gap": 4e-05,
   "reactor_exact_pct": 0.004,
   "balance_worst": 9e-09,
-  "balance_packs": 30,
-  "equilibrium_packs": 6,
-  "equilibrium_worst": 3e-13,
+  "balance_packs": 40,
+  "equilibrium_packs": 9,
+  "equilibrium_worst": 4e-13,
   "balance_digits": 8,
   "equilibrium_digits": 12,
-  "calibrated_halfway": 28,
-  "calibration_packs": 30,
-  "calibration_note": "28 of 30 packs put the catalyst to beat at 50% of the best possible, within 2 points, at their anchor temperature. Gas-engine oxidation catalyst (CO, HCHO, CH4, NO) sits at 100% at 427 \u00b0C; High-temperature SCR of NOx with NH3 sits at 88% at 566 \u00b0C. These two packs came before the design app: their illustrative rates follow a conventional catalyst across the whole operating window, and their reference temperature anchors the rate constants in place of a light-off. The ranking within each reaction stays the same; their curves sit hotter or cooler accordingly.",
+  "calibrated_halfway": 38,
+  "calibration_packs": 40,
+  "calibration_note": "38 of 40 packs put the catalyst to beat at 50% of the best possible, within 2 points, at their anchor temperature. Gas-engine oxidation catalyst (CO, HCHO, CH4, NO) sits at 100% at 427 \u00b0C; High-temperature SCR of NOx with NH3 sits at 88% at 566 \u00b0C. These two packs came before the design app: their illustrative rates follow a conventional catalyst across the whole operating window, and their reference temperature anchors the rate constants in place of a light-off. The ranking within each reaction stays the same; their curves sit hotter or cooler accordingly.",
   "film_exact_pct": 0.004,
   "form_T_C": 566.0,
   "form_T_F": 1050.0,
@@ -171,9 +171,9 @@
   "load_db_all_shared": 37,
   "load_db_any_worst": "NCO",
   "load_db_any_worst_gap": 46.0,
-  "load_packs_n": 30,
-  "load_packs_gri": 26,
-  "load_packs_nasa": 4,
+  "load_packs_n": 40,
+  "load_packs_gri": 31,
+  "load_packs_nasa": 9,
   "load_name": "CO methanation",
   "load_id": "co_methanation",
   "load_species": "CO, H2, CH4, H2O and N2",
@@ -1607,6 +1607,12 @@
     "move_per_100K": -0.341
    },
    {
+    "reaction": "Formaldehyde from methanol (silver process)",
+    "gas": "+0.5 O2",
+    "anchor_C": 450,
+    "move_per_100K": -0.138
+   },
+   {
     "reaction": "N2O removal",
     "gas": "+0.5 O2",
     "anchor_C": 400,
@@ -1622,6 +1628,12 @@
     "reaction": "Gas-engine oxidation catalyst (CO, HCHO, CH4, NO)",
     "gas": "+0.5 O2",
     "anchor_C": 427,
+    "move_per_100K": -0.131
+   },
+   {
+    "reaction": "SO2 oxidation (contact process)",
+    "gas": "+0.5 O2",
+    "anchor_C": 450,
     "move_per_100K": -0.131
    },
    {
@@ -1643,6 +1655,12 @@
     "move_per_100K": -0.128
    },
    {
+    "reaction": "Ethylene epoxidation",
+    "gas": "+0.5 O2",
+    "anchor_C": 250,
+    "move_per_100K": -0.128
+   },
+   {
     "reaction": "CO oxidation",
     "gas": "+0.5 O2",
     "anchor_C": 180,
@@ -1658,6 +1676,12 @@
     "reaction": "Ammonia slip oxidation",
     "gas": "+0.25 N2 +0.25 O2",
     "anchor_C": 250,
+    "move_per_100K": -0.118
+   },
+   {
+    "reaction": "Catalytic hydrogen combustion",
+    "gas": "+0.5 O2",
+    "anchor_C": 75,
     "move_per_100K": -0.118
    },
    {
@@ -1745,9 +1769,39 @@
     "move_per_100K": 0.0
    },
    {
+    "reaction": "Selective butadiene hydrogenation",
+    "gas": "",
+    "anchor_C": 60,
+    "move_per_100K": 0.0
+   },
+   {
+    "reaction": "Cyclohexane dehydrogenation",
+    "gas": "",
+    "anchor_C": 250,
+    "move_per_100K": 0.0
+   },
+   {
     "reaction": "Ethylene hydrogenation",
     "gas": "",
     "anchor_C": 50,
+    "move_per_100K": 0.0
+   },
+   {
+    "reaction": "Methanol decomposition",
+    "gas": "",
+    "anchor_C": 250,
+    "move_per_100K": 0.0
+   },
+   {
+    "reaction": "Propane combustion",
+    "gas": "",
+    "anchor_C": 300,
+    "move_per_100K": 0.0
+   },
+   {
+    "reaction": "Propylene combustion",
+    "gas": "",
+    "anchor_C": 150,
     "move_per_100K": 0.0
    },
    {
@@ -1767,6 +1821,12 @@
     "gas": "+0.5 CH4 -1.75 H2 +0.5 NH3",
     "anchor_C": 1100,
     "move_per_100K": 0.019
+   },
+   {
+    "reaction": "Ethane dehydrogenation",
+    "gas": "+0.25 CH4 -0.5 H2",
+    "anchor_C": 600,
+    "move_per_100K": 0.035
    },
    {
     "reaction": "Propane dehydrogenation",
@@ -1866,6 +1926,10 @@
     "worst_element_gap": 8e-12
    },
    {
+    "reaction": "Selective butadiene hydrogenation",
+    "worst_element_gap": 1e-13
+   },
+   {
     "reaction": "CO2 methanation",
     "worst_element_gap": 7e-16
    },
@@ -1878,8 +1942,16 @@
     "worst_element_gap": 4e-13
    },
    {
+    "reaction": "Cyclohexane dehydrogenation",
+    "worst_element_gap": 3e-13
+   },
+   {
     "reaction": "Dry reforming of methane",
     "worst_element_gap": 3e-09
+   },
+   {
+    "reaction": "Ethane dehydrogenation",
+    "worst_element_gap": 2e-12
    },
    {
     "reaction": "Ethane hydrogenolysis",
@@ -1888,6 +1960,10 @@
    {
     "reaction": "Ethanol steam reforming",
     "worst_element_gap": 3e-12
+   },
+   {
+    "reaction": "Ethylene epoxidation",
+    "worst_element_gap": 6e-13
    },
    {
     "reaction": "Ethylene hydrogenation",
@@ -1906,6 +1982,10 @@
     "worst_element_gap": 2e-12
    },
    {
+    "reaction": "Catalytic hydrogen combustion",
+    "worst_element_gap": 4e-12
+   },
+   {
     "reaction": "Methane combustion",
     "worst_element_gap": 4e-12
    },
@@ -1914,12 +1994,20 @@
     "worst_element_gap": 7e-13
    },
    {
+    "reaction": "Methanol decomposition",
+    "worst_element_gap": 1e-15
+   },
+   {
     "reaction": "Methanol steam reforming",
     "worst_element_gap": 5e-12
    },
    {
     "reaction": "Methanol from CO2",
     "worst_element_gap": 8e-13
+   },
+   {
+    "reaction": "Formaldehyde from methanol (silver process)",
+    "worst_element_gap": 2e-12
    },
    {
     "reaction": "N2O removal",
@@ -1946,8 +2034,16 @@
     "worst_element_gap": 1e-12
    },
    {
+    "reaction": "Propane combustion",
+    "worst_element_gap": 5e-12
+   },
+   {
     "reaction": "Propane dehydrogenation",
     "worst_element_gap": 5e-13
+   },
+   {
+    "reaction": "Propylene combustion",
+    "worst_element_gap": 9e-13
    },
    {
     "reaction": "Preferential CO oxidation (PROX)",
@@ -1960,6 +2056,10 @@
    {
     "reaction": "High-temperature SCR of NOx with NH3",
     "worst_element_gap": 9e-13
+   },
+   {
+    "reaction": "SO2 oxidation (contact process)",
+    "worst_element_gap": 9e-16
    },
    {
     "reaction": "Steam methane reforming",
@@ -1987,6 +2087,16 @@
     "largest_mole_fraction_gap": 3e-14
    },
    {
+    "reaction": "Cyclohexane dehydrogenation",
+    "temperatures_C": "300, 350, 400",
+    "largest_mole_fraction_gap": 9e-14
+   },
+   {
+    "reaction": "Methanol decomposition",
+    "temperatures_C": "300, 350, 400",
+    "largest_mole_fraction_gap": 4e-13
+   },
+   {
     "reaction": "Ammonia cracking",
     "temperatures_C": "550, 600, 650",
     "largest_mole_fraction_gap": 7e-14
@@ -1995,6 +2105,11 @@
     "reaction": "Ammonia synthesis",
     "temperatures_C": "475, 500, 550",
     "largest_mole_fraction_gap": 1e-14
+   },
+   {
+    "reaction": "SO2 oxidation (contact process)",
+    "temperatures_C": "550, 600, 650",
+    "largest_mole_fraction_gap": 1e-13
    },
    {
     "reaction": "Water-gas shift",
@@ -2036,6 +2151,14 @@
     "share_of_best": 0.5
    },
    {
+    "reaction": "Selective butadiene hydrogenation",
+    "reference": "Palladium",
+    "T_ref_C": 60.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
     "reaction": "CO2 methanation",
     "reference": "Nickel",
     "T_ref_C": 330.0,
@@ -2060,11 +2183,27 @@
     "share_of_best": 0.5
    },
    {
+    "reaction": "Cyclohexane dehydrogenation",
+    "reference": "Platinum",
+    "T_ref_C": 250.0,
+    "reference_metric": 0.484,
+    "best_metric": 0.969,
+    "share_of_best": 0.5
+   },
+   {
     "reaction": "Dry reforming of methane",
     "reference": "Nickel",
     "T_ref_C": 700.0,
     "reference_metric": 0.44,
     "best_metric": 0.881,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Ethane dehydrogenation",
+    "reference": "Platinum",
+    "T_ref_C": 600.0,
+    "reference_metric": 0.142,
+    "best_metric": 0.284,
     "share_of_best": 0.5
    },
    {
@@ -2079,6 +2218,14 @@
     "reaction": "Ethanol steam reforming",
     "reference": "Rhodium",
     "T_ref_C": 550.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Ethylene epoxidation",
+    "reference": "Silver",
+    "T_ref_C": 250.0,
     "reference_metric": 0.5,
     "best_metric": 1.0,
     "share_of_best": 0.5
@@ -2116,6 +2263,14 @@
     "share_of_best": 0.5
    },
    {
+    "reaction": "Catalytic hydrogen combustion",
+    "reference": "Platinum",
+    "T_ref_C": 75.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
     "reaction": "Methane combustion",
     "reference": "Palladium",
     "T_ref_C": 400.0,
@@ -2132,6 +2287,14 @@
     "share_of_best": 0.489
    },
    {
+    "reaction": "Methanol decomposition",
+    "reference": "Platinum",
+    "T_ref_C": 250.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
     "reaction": "Methanol steam reforming",
     "reference": "Copper",
     "T_ref_C": 250.0,
@@ -2145,6 +2308,14 @@
     "T_ref_C": 240.0,
     "reference_metric": 0.096,
     "best_metric": 0.192,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Formaldehyde from methanol (silver process)",
+    "reference": "Silver",
+    "T_ref_C": 450.0,
+    "reference_metric": 0.4,
+    "best_metric": 0.8,
     "share_of_best": 0.5
    },
    {
@@ -2196,11 +2367,27 @@
     "share_of_best": 1.0
    },
    {
+    "reaction": "Propane combustion",
+    "reference": "Platinum",
+    "T_ref_C": 300.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
     "reaction": "Propane dehydrogenation",
     "reference": "Platinum",
     "T_ref_C": 600.0,
     "reference_metric": 0.331,
     "best_metric": 0.661,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Propylene combustion",
+    "reference": "Platinum",
+    "T_ref_C": 150.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
     "share_of_best": 0.5
    },
    {
@@ -2226,6 +2413,14 @@
     "reference_metric": 0.877,
     "best_metric": 1.0,
     "share_of_best": 0.877
+   },
+   {
+    "reaction": "SO2 oxidation (contact process)",
+    "reference": "Platinum",
+    "T_ref_C": 450.0,
+    "reference_metric": 0.488,
+    "best_metric": 0.977,
+    "share_of_best": 0.5
    },
    {
     "reaction": "Steam methane reforming",

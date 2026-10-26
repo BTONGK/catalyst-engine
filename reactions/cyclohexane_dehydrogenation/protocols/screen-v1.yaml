@@ -1,0 +1,16 @@
+id: chd-screen-v1
+pack: cyclohexane_dehydrogenation
+version: 1
+status: draft
+description: 5% cyclohexane vapor in nitrogen, at 1 atm.
+analyzer:
+  name: Gas chromatograph
+  measured: [C6H12, C6H6, H2]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Cyclohexane conversion against temperature
+    feed: {C6H12: 5 %, N2: balance}
+    ghsv_per_h: 10000
+    temperatures_C: [150, 175, 200, 225, 250, 275, 300, 350, 400]

@@ -1,0 +1,59 @@
+# Lean propane combustion. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (platinum) reaches half of the best possible result at 300 C under the screen protocol.
+
+id: propane_combustion
+name: Propane combustion
+version: 1
+status: draft-illustrative-parameters
+summary: Burns propane, a volatile organic compound in exhaust from LPG engines and industrial vents, to CO2 and water.
+category: Clean air
+description: >
+  Propane burns with excess oxygen to CO2 and water. First order in propane.
+
+reference_temperature_K: 573.15
+water: H2O
+oxygen: O2
+
+species:
+  C3H8: {formula: C3H8}
+  O2:   {formula: O2}
+  CO2:  {formula: CO2}
+  H2O:  {formula: H2O}
+  N2:   {formula: N2}
+
+pathways:
+  combustion:
+    equation: C3H8 + 5 O2 -> 3 CO2 + 4 H2O
+    role: desired
+    rate: {key: C3H8, orders: {C3H8: 1}, ln_k_ref: 3.007, Ea_kJ: 90}
+
+metrics:
+  c3h8_conversion:
+    kind: conversion
+    species: [C3H8]
+    description: "Share of the propane burned."
+    target: {min: 0.9, label: Target}
+  c3h8_out:
+    kind: outlet
+    species: [C3H8]
+    description: "Propane left in the gas."
+
+screening:
+  descriptor: {C: 0.5, O: 0.5}
+  pathways: [combustion]
+  metric: c3h8_conversion
+  reference: {formula: Pt, name: Platinum}
+  optimum_shift_eV: 0.0
+  peak_gas: {}   # the reaction's gases hold none its adsorbates exchange with; the top holds still
+  suggested_elements: [Pt, Pd, Rh, Ir, Ru, Ag, Ni, Co, Cu]
+  # The reaction check (experiments/reaction_check) scores this ranking against Lee's measured turnover
+  # frequencies (seven metals on alumina, 340 C): rho 0.17 over 6 metals, p 0.37, short of the rule; silver ranks
+  # second there and last here, and copper shares fifth there and ranks second here. The playground keeps it until
+  # a check passes (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    In one laboratory's comparison of seven alumina-supported metals in oxygen-rich gas, propane's turnover
+    frequency rises and falls with both the carbon and the oxygen binding, a volcano with platinum on top; copper
+    and platinum hold oxygen alike and differ in activity through their carbon binding (Lee, M.Ch.E. thesis,
+    University of Delaware, 2017, after Peela et al., ChemCatChem 2013). The descriptor averages the C and O
+    binding; the top is set at platinum's.

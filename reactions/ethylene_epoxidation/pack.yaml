@@ -1,0 +1,73 @@
+# Ethylene epoxidation. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (silver) reaches half of the best possible ethylene oxide yield at 250 C under the screen protocol.
+
+id: ethylene_epoxidation
+name: Ethylene epoxidation
+version: 1
+status: draft-illustrative-parameters
+summary: Adds one oxygen atom to ethylene to make ethylene oxide, the raw material for antifreeze, polyester and detergents.
+category: Chemicals and fuels
+description: >
+  Ethylene takes one oxygen atom to become ethylene oxide; burning to CO2 and water competes and wastes the
+  ethylene. Both paths are first order in ethylene, with oxygen in excess (NASA Glenn data, since ethylene oxide
+  sits outside GRI-Mech).
+
+reference_temperature_K: 523.15
+water: H2O
+oxygen: O2
+
+species:
+  C2H4:  {formula: C2H4}
+  O2:    {formula: O2}
+  C2H4O: {formula: C2H4O, cantera: "C2H4O,ethylen"}
+  CO2:   {formula: CO2}
+  H2O:   {formula: H2O}
+  N2:    {formula: N2}
+
+pathways:
+  epoxidation:
+    equation: C2H4 + 0.5 O2 -> C2H4O
+    role: desired
+    rate: {key: C2H4, orders: {C2H4: 1}, ln_k_ref: 0.686, Ea_kJ: 70}
+  combustion:
+    equation: C2H4 + 3 O2 -> 2 CO2 + 2 H2O
+    role: side
+    note: "Full combustion; it burns the ethylene the plant pays for."
+    rate: {key: C2H4, orders: {C2H4: 1}, ln_k_ref: -1.000, Ea_kJ: 85}
+
+metrics:
+  eo_yield:
+    kind: yield
+    species: [C2H4O]
+    denominator: [C2H4]
+    description: "Ethylene oxide made per ethylene fed."
+  c2h4_conversion:
+    kind: conversion
+    species: [C2H4]
+    description: "Share of the ethylene that reacts."
+  co2_out:
+    kind: outlet
+    species: [CO2]
+    description: "CO2 made by burning ethylene."
+
+screening:
+  descriptor: {O: 1}
+  pathways: [epoxidation]
+  metric: eo_yield
+  reference: {formula: Ag, name: Silver}
+  optimum_shift_eV: 0.0
+  # the weak side waits on O2 splitting into two atoms the descriptor counts: 0.9 eV of barrier per eV of
+  # splitting energy (Nørskov et al., J. Catal. 2002), and that energy moves twice as fast as the descriptor
+  slope_weak: 1.8
+  peak_gas: {O2: 0.5}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Ag, Cu, Au, Pd, Pt, Ni, Co]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    Silver is the industrial catalyst: the oxygen it holds adds to ethylene's double bond through a surface
+    oxametallacycle, and silver holds oxygen firmly enough to split O2 yet loosely enough to pass it on (van Santen
+    and Kuipers, Adv. Catal. 1987; Linic and Barteau, J. Catal. 2003). Platinum and palladium, which bind oxygen
+    more strongly, burn ethylene to CO2 and water, and gold, which binds it weakly, leaves O2 whole. The descriptor
+    is oxygen binding; the top is set at silver's, and the weak side falls 1.8 eV per eV for O2 splitting. The
+    screen ranks the epoxidation rate; the share lost to burning comes from the pack's fixed side path.

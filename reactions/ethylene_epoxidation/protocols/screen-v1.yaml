@@ -1,0 +1,16 @@
+id: eo-screen-v1
+pack: ethylene_epoxidation
+version: 1
+status: draft
+description: "An epoxidation feed at laboratory pressure: 10% ethylene with 7% oxygen in nitrogen, at 1 atm."
+analyzer:
+  name: Gas chromatograph
+  measured: [C2H4, C2H4O, CO2, O2]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Ethylene oxide yield against temperature
+    feed: {C2H4: 10 %, O2: 7 %, N2: balance}
+    ghsv_per_h: 5000
+    temperatures_C: [150, 175, 200, 225, 250, 275, 300]

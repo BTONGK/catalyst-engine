@@ -840,8 +840,9 @@ reaction_check:
       of ten apart, and the predictions put them {rc_span_predicted_lo:.1f} to {rc_span_predicted_hi:.1f} powers of
       ten apart, {rc_span_factor_lo:.1f} to {rc_span_factor_hi:.0f} times as many. Two likely reasons, which this
       check leaves open: the volcano's slopes describe the close-packed face, while a working catalyst also runs on
-      its steps and edges; and a laboratory's slowest readings sit near its detection limit. Read a predicted ratio
-      beyond about tenfold as a place in the order (section {sec_trust}).
+      its steps and edges; and a laboratory's slowest readings sit near its detection limit. A table with a rate that
+      reads as zero, nickel's for propylene, bounds its spread from one side only and sits outside these numbers.
+      Read a predicted ratio beyond about tenfold as a place in the order (section {sec_trust}).
     see: Measured and predicted spread, table by table
     table: rc_spans
     columns: {reaction: Reaction, table: Measured table, n: Metals, measured: "Measured (powers of ten)", predicted: "Predicted (powers of ten)", factor: Predicted over measured}
@@ -981,10 +982,16 @@ limits:
         Scored against one laboratory's table of activities per metal (section {sec_reaction_check}), ammonia synthesis
         gives rho {rc_nh3_synthesis_primary_rho:.2f} (p {rc_nh3_synthesis_primary_p:.2f}) against Ozaki's table,
         water-gas shift {rc_water_gas_shift_primary_rho:.2f}, near the reverse of Grenoble's order, ethane
-        hydrogenolysis {rc_ethane_hydrogenolysis_primary_rho:.2f} over {rc_ethane_hydrogenolysis_primary_n} metals, and
+        hydrogenolysis {rc_ethane_hydrogenolysis_primary_rho:.2f} over {rc_ethane_hydrogenolysis_primary_n} metals,
         benzene hydrogenation {rc_benzene_hydrogenation_primary_rho:.2f} (p {rc_benzene_hydrogenation_primary_p:.3f}), a
-        near miss. Ammonia synthesis and water-gas shift sat on the Design page before the check and moved to the
-        playground.
+        near miss, and propane and propylene combustion {rc_propane_combustion_primary_rho:.2f} and
+        {rc_propylene_combustion_primary_rho:.2f} against Lee's turnover frequencies on
+        {rc_propane_combustion_primary_n} metals besides platinum. For both, the average of carbon and oxygen binding
+        puts copper second and silver last, where the measurements put silver second for propane and copper near the
+        bottom for both. Lee's numbers come from a master's thesis (University of Delaware, 2017), a public record
+        examined by its committee and outside journal review, read from its bar charts at the figures' own pixels
+        (experiments/reaction_check/read_bars.py). Ammonia synthesis and water-gas shift sat on the Design page before
+        the check and moved to the playground.
       size: "rho from {rc_thermal_failed_rho_lo:.2f} to {rc_thermal_failed_rho_hi:.2f}, against the {rc_min_rho} the rule asks."
       meanwhile: >
         The playground runs them with their rates as written. A descriptor with a second adsorbate, or a face beyond the
@@ -1000,6 +1007,17 @@ limits:
       meanwhile: >
         A table of five or more metals from one laboratory, added to experiments/reaction_check/data/published.yaml,
         puts a package through the check; a pass sets on_design_page to true.
+    - part: Methane combustion's catalyst to beat
+      why: >
+        The methane package sets its top at palladium, the catalyst of natural-gas engine converters. Lee's thesis
+        (Figure D-1(a), seven metals on alumina, 340 °C) measures platinum ahead of palladium with four oxygen
+        molecules per methane and palladium ahead in fuel-rich gas, so the leader turns on the oxygen-to-methane
+        ratio. The package's screen feed carries twenty oxygen molecules per methane, beyond the 0.2 to 4 the thesis
+        spans.
+      size: First place passes between platinum and palladium across feeds in one laboratory's data.
+      meanwhile: >
+        Compare platinum and palladium on the bench at the feed of interest; the package's order of the other metals
+        awaits a measured table of its own.
     - part: The size of large speed ratios
       why: >
         The check scores order. In its tables of rates, the predicted spread from the fastest to the slowest metal runs
@@ -1082,6 +1100,7 @@ audit:
     - "Rhodium's place in the example comes straight from the computed figure, {example_rh_design} of platinum's speed (step 6)."
     - "A new shipped reaction joins the Design page once its ranking check passes; {rc_thermal_failed_names} wait in the playground, and ammonia synthesis and water-gas shift moved there from the Design page (section {sec_reaction_check})."
     - "This page gained the loading walk-through (section {sec_loading}) and the reaction check (section {sec_reaction_check})."
+    - "Ten more packages joined the library and the playground, {load_packs_n} in all. Two of them, propane and propylene combustion, met a measured table the same day, Lee's thesis, declared in PASS_RULE.md before either package existed and read from its bar charts by experiments/reaction_check/read_bars.py; both miss the rule (rho {rc_propane_combustion_primary_rho:.2f} and {rc_propylene_combustion_primary_rho:.2f}). A rate read as zero now leaves its table's spread out of the size comparison, in place of stopping the check."
 
 reproduce:
   text: >
@@ -1132,5 +1151,7 @@ references:
   - {cite: "Nystrom, S., Hoffman, A. & Hibbitts, D. Tuning Brønsted Acid Strength by Altering Site Proximity in CHA Framework Zeolites. ACS Catal. 8, 7842 (2018).", url: "https://doi.org/10.1021/acscatal.8b02049"}
   - {cite: "Isapour et al., with Feng, Y., Grönbeck, H., Skoglundh, M. & Härelind, H. Ammonia in H- and Cu-SSZ-13 by DRIFTS, NH3-TPD and DFT (PBE+U+D3). RSC Adv. 16, 28182 (2026).", url: "https://doi.org/10.1039/d6ra03025d"}
   - {cite: "Koust, S., Adamsen, K. C., Kolsbjerg, E. L., Li, Z., Hammer, B., Wendt, S. & Lauritsen, J. V. NH3 adsorption on anatase-TiO2(101). Preprint, Aarhus University (2018).", url: "https://pure.au.dk/ws/files/181268137/preprint_koust.pdf"}
+  - {cite: "Lee, G. Monometallic and bimetallic catalysis for C1-C4 alkane and propylene total oxidation. M.Ch.E. thesis, University of Delaware (2017); the propane and propylene tables of the reaction check.", url: "https://udspace.udel.edu/items/387771e4-5e5a-439a-ba79-9534e1c0de57"}
+  - {cite: "Peela, N. R., Zheng, W., Lee, I. C., Karim, A. M. & Vlachos, D. G. Core–shell nanocatalyst design by combining high-throughput experiments and first-principles simulations. ChemCatChem 5, 3712 (2013).", url: "https://doi.org/10.1002/cctc.201300553"}
   - {cite: "Goodwin, D. G. et al. Cantera: an object-oriented software toolkit for chemical kinetics, thermodynamics and transport processes (version 3.2).", url: "https://cantera.org"}
   - {cite: "Smith, G. P. et al. GRI-Mech 3.0.", url: "http://combustion.berkeley.edu/gri-mech/"}

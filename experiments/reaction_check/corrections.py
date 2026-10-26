@@ -5,14 +5,15 @@
 Runs in the UMA Python (numpy, ASE and fairchem). The rule was written down before this ran (PASS_RULE.md, the
 corrections section). For each intermediate on Pt(111), and on Pd(111) and Ru(0001) to show how much the numbers
 move from metal to metal: take the lowest-energy site of the reaction-check run (runs/metals-thermal and
-runs/metals-electro, the same choice the app makes), refine that minimum with the metal atoms held still (BFGS to
+runs/metals-electro and runs/metals-electro2, the same choice the app makes), refine that minimum with the metal atoms held still (BFGS to
 0.01 eV/A, so the finite differences start from a resting point), build the adsorbate's force-constant matrix by
 central differences of 0.01 A, and take its harmonic frequencies, any below 50 cm-1 raised to 50 cm-1. Then
 
     correction = (ZPE - T S)_adsorbate - sum over its reference gases of (ZPE - T S)_gas
 
 at 298.15 K, with the gases' zero-point energies from their measured fundamentals and their standard entropies from
-NIST-JANAF (water at 0.035 bar). Writes results/corrections.json.
+NIST-JANAF (water at 0.035 bar). Writes results/corrections.json; an intermediate already there keeps its numbers,
+so a later run adds the new ones (the carbon intermediates of batch 2) beside the values the reactions already use.
 """
 
 from __future__ import annotations
@@ -28,7 +29,7 @@ from ase.io import read
 from ase.optimize import BFGS
 
 HERE = Path(__file__).resolve().parent
-RUNS = [HERE / "runs" / "metals-thermal", HERE / "runs" / "metals-electro"]
+RUNS = [HERE / "runs" / r for r in ("metals-thermal", "metals-electro", "metals-electro2")]
 OUT = HERE / "results" / "corrections.json"
 sys.path.insert(0, str(HERE.parents[1] / "src" / "catalyst_engine" / "design"))
 from uma_worker import REFERENCE  # noqa: E402  the worker's gas reference for each adsorbate
@@ -39,7 +40,8 @@ CM = 1.239841984e-4  # eV per cm-1
 J_PER_EV = 96485.33212  # J/mol per eV
 DELTA, FLOOR, FMAX = 0.01, 50.0, 0.01
 METALS = ["Pt", "Pd", "Ru"]  # Pt is the rule's; Pd and Ru show the spread
-ADSORBATES = ["H", "O", "OH", "OOH", "N", "NH", "NH2", "NNH", "NNH2", "HNNH", "HNNH2", "NO", "NOH", "CO", "COOH", "OCHO"]
+ADSORBATES = ["H", "O", "OH", "OOH", "N", "NH", "NH2", "NNH", "NNH2", "HNNH", "HNNH2", "NO", "NOH", "CO", "COOH", "OCHO",
+              "CHO", "COH", "CH2O", "CHOH", "CH3O", "CH2OH"]
 
 # Measured fundamentals (cm-1, NIST CCCBDB) and standard entropies at 298.15 K and 1 bar (J/mol/K, NIST-JANAF)
 GAS = {
@@ -122,11 +124,15 @@ def main() -> None:
     unit = pretrained_mlip.load_predict_unit(os.path.expanduser("~/uma/checkpoints/uma-s-1p1.pt"), device="cpu")
     calc = FAIRChemCalculator(unit, task_name="oc20")
     gases = {g: gas_g(g) for g in GAS}
+    before = json.loads(OUT.read_text()).get("metals", {}) if OUT.exists() else {}
     out = {"rule": {"T_K": T, "delta_A": DELTA, "floor_cm": FLOOR, "fmax_eV_A": FMAX, "model": "UMA-S 1.1, oc20 mode"},
            "gases": {g: {k: round(v, 4) for k, v in d.items()} for g, d in gases.items()}, "metals": {}}
     for metal in METALS:
         rows = {}
         for a in ADSORBATES:
+            if a in before.get(metal, {}):  # computed before: its numbers stay as they are
+                rows[a] = before[metal][a]
+                continue
             site = lowest_site(metal, a)
             if site is None:
                 continue

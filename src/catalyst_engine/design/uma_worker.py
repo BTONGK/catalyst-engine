@@ -27,12 +27,14 @@ metal ion, or the proton) along the most open direction.
 
 Gas references come from the same model: H = 1/2 H2, O = H2O - H2, N = 1/2 N2, C = CO - O, OH = O + H,
 OOH = 2 H2O - 3/2 H2, and the molecules themselves for CO, NO and NH3. The electrochemical intermediates take the
-same gases: COOH and the formate OCHO = CO + H2O - 1/2 H2, NHx = 1/2 N2 + x/2 H2, N2Hx = N2 + x/2 H2, and
-NOH = NO + 1/2 H2. Negative is bound; more negative binds more strongly. H, O, OH and OOH against H2O and H2 are the
-computational hydrogen electrode's references (design/electro.py).
+same gases: COOH and the formate OCHO = CO + H2O - 1/2 H2, NHx = 1/2 N2 + x/2 H2, N2Hx = N2 + x/2 H2,
+NOH = NO + 1/2 H2, and the carbon intermediates of CO2 reduction and methanol oxidation CHxO = CO + x/2 H2 (formyl CHO
+and COH, formaldehyde CH2O and CHOH, methoxy CH3O and hydroxymethyl CH2OH). Negative is bound; more negative binds
+more strongly. H, O, OH and OOH against H2O and H2 are the computational hydrogen electrode's references
+(design/electro.py).
 
-Formate (OCHO), diazene (HNNH) and HNNH2 bind through two atoms side by side; on a bridge site they lie along the
-bridge, one binding atom toward each metal atom (ALIGNED).
+Formate (OCHO), diazene (HNNH), HNNH2 and formaldehyde (CH2O) bind through two atoms side by side; on a bridge site
+they lie along the bridge, one binding atom toward each metal atom (ALIGNED).
 """
 
 from __future__ import annotations
@@ -87,9 +89,23 @@ ADSORBATE_ATOMS = {
     "HNNH2": Atoms("NNHHH", positions=[(-0.72, 0, 0), (0.72, 0, 0), (-1.30, 0, 0.84), (1.10, 0.82, 0.55),
                                          (1.10, -0.82, 0.55)]),
     "NOH": Atoms("NOH", positions=[(0, 0, 0), (0, 0, 1.36), (0.92, 0, 1.71)]),
+    # formyl, bound through C: the C=O (1.22 A) and C-H (1.10 A) bonds leaning out to either side at 119 degrees
+    "CHO": Atoms("CHO", positions=[(0, 0, 0), (-0.95, 0, 0.55), (1.05, 0, 0.62)]),
+    # hydroxymethylidyne, bound through C, the C-O (1.32 A) upright and the H (0.99 A) on O
+    "COH": Atoms("COH", positions=[(0, 0, 0), (0, 0, 1.32), (0.92, 0, 1.70)]),
+    # formaldehyde bound through both C and O (C-O 1.36 A); the origin sits midway between them, the CH2 tilted up
+    "CH2O": Atoms("COHH", positions=[(-0.68, 0, 0), (0.68, 0, 0), (-1.18, 0.85, 0.45), (-1.18, -0.85, 0.45)]),
+    # hydroxymethylene, bound through C: C-O 1.35 A and C-H 1.10 A leaning out, the H on O (0.98 A) pointing up
+    "CHOH": Atoms("CHOH", positions=[(0, 0, 0), (-0.95, 0, 0.55), (1.10, 0, 0.78), (0.81, 0, 1.72)]),
+    # methoxy, bound through O, the C-O (1.43 A) upright and its three H (1.10 A) at the tetrahedral angle
+    "CH3O": Atoms("OCHHH", positions=[(0, 0, 0), (0, 0, 1.43),
+                                       *[(1.04 * np.cos(t), 1.04 * np.sin(t), 1.80) for t in np.radians([0, 120, 240])]]),
+    # hydroxymethyl, bound through C at the tetrahedral angle to its O (1.38 A) and two H (1.10 A), the H on O upright
+    "CH2OH": Atoms("COHHH", positions=[(0, 0, 0), (1.30, 0, 0.46), (-0.52, 0.90, 0.37), (-0.52, -0.90, 0.37),
+                                        (1.30, 0, 1.44)]),
 }
 # Adsorbates bound through two atoms side by side: on a bridge site their x axis lies along the bridge
-ALIGNED = {"OCHO", "HNNH", "HNNH2"}
+ALIGNED = {"OCHO", "HNNH", "HNNH2", "CH2O"}
 # Height of the binding atom above the local top-layer height, by site kind (Angstrom)
 HEIGHTS = {
     "H": {"top": 1.6, "bridge": 1.2, "hollow": 1.0},
@@ -110,6 +126,12 @@ HEIGHTS = {
     "HNNH": {"top": 1.9, "bridge": 1.9, "hollow": 1.7},
     "HNNH2": {"top": 2.0, "bridge": 2.0, "hollow": 1.8},
     "NOH": {"top": 1.8, "bridge": 1.4, "hollow": 1.1},
+    "CHO": {"top": 1.95, "bridge": 1.55, "hollow": 1.35},
+    "COH": {"top": 1.8, "bridge": 1.4, "hollow": 1.15},
+    "CH2O": {"top": 1.9, "bridge": 1.9, "hollow": 1.7},
+    "CHOH": {"top": 1.95, "bridge": 1.5, "hollow": 1.3},
+    "CH3O": {"top": 2.0, "bridge": 1.6, "hollow": 1.35},
+    "CH2OH": {"top": 2.05, "bridge": 1.6, "hollow": 1.4},
 }
 # Site kinds to try first, per adsorbate (the quick setting keeps the first two sites)
 PREFERENCE = {
@@ -131,6 +153,12 @@ PREFERENCE = {
     "HNNH": ["bridge", "top", "hollow"],
     "HNNH2": ["bridge", "top", "hollow"],
     "NOH": ["hollow", "bridge", "top"],
+    "CHO": ["top", "bridge", "hollow"],
+    "COH": ["hollow", "bridge", "top"],
+    "CH2O": ["bridge", "top", "hollow"],
+    "CHOH": ["bridge", "top", "hollow"],
+    "CH3O": ["hollow", "bridge", "top"],
+    "CH2OH": ["top", "bridge", "hollow"],
 }
 GAS = {
     "H2": Atoms("H2", positions=[(0, 0, 0), (0, 0, 0.74)]),
@@ -160,6 +188,12 @@ REFERENCE = {
     "HNNH": {"N2": 1.0, "H2": 1.0},
     "HNNH2": {"N2": 1.0, "H2": 1.5},
     "NOH": {"NO": 1.0, "H2": 0.5},
+    "CHO": {"CO": 1.0, "H2": 0.5},
+    "COH": {"CO": 1.0, "H2": 0.5},
+    "CH2O": {"CO": 1.0, "H2": 1.0},
+    "CHOH": {"CO": 1.0, "H2": 1.0},
+    "CH3O": {"CO": 1.0, "H2": 1.5},
+    "CH2OH": {"CO": 1.0, "H2": 1.5},
 }
 NONMETALS = {"H", "B", "C", "N", "O", "F", "Si", "P", "S", "Cl", "Se", "Br", "I", "Te"}
 SETTINGS = {  # sites per adsorbate, force tolerance (eV/A), step cap

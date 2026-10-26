@@ -1,0 +1,36 @@
+# CO2 reduction to methanol: CO2 + 6 (H+ + e-) -> CH3OH + H2O, along the methane path through COOH*, CO*, CHO*, CH2O*
+# and CH3O*, with methoxy leaving as methanol (Peterson et al., Energy Environ. Sci. 3, 1311 (2010)).
+
+id: co2_to_methanol
+name: CO2 reduction to methanol
+category: CO2 conversion
+summary: Turns carbon dioxide into methanol, a liquid fuel, with electricity.
+equation: CO2 + 6 H+ + 6 e- -> CH3OH + H2O
+direction: reduction
+electrons: 6
+equilibrium_V: 0.031        # to dissolved methanol and liquid water, from tabulated formation free energies (CH3OH(aq) -175.31 kJ/mol)
+compare_V: -1.00
+# Corrections: COOH* and CO* take Peterson et al. 2010's values as Hansen et al. 2013, Table S1, reproduces them
+#   (experiments/reaction_check/data/published.yaml); CHO*, CH2O* and CH3O* take UMA's own vibrations on Pt(111)
+#   (results/corrections.json), which serve the playground's starting point only.
+# shift: each intermediate starts against CO(g), H2O and H2; this reaction's zero is dissolved methanol and liquid
+#   water, 0.395 eV below CO + H2O + 2 H2.
+intermediates:
+  - {name: COOH, label: "carboxyl (COOH*)", correction_eV: 0.91, shift_eV: 0.3953}
+  - {name: CO, label: "adsorbed CO (CO*)", correction_eV: 0.50, shift_eV: 0.3953}
+  - {name: CHO, label: "formyl (CHO*)", correction_eV: 0.82, shift_eV: 0.3953}
+  - {name: CH2O, label: "formaldehyde (CH2O*)", correction_eV: 1.20, shift_eV: 0.3953}
+  - {name: CH3O, label: "methoxy (CH3O*)", correction_eV: 1.55, shift_eV: 0.3953}
+descriptor: {CO: 1}
+reference: {formula: Cu, name: Copper}
+task: oc20
+suggested_elements: [Cu, Au, Ag, Zn, Pd, Pt, Ni, Rh, Ir, Ru]
+on_design_page: false
+design_note: CO* misses its check against Elnabawy 2018, CH2O* awaits a published table, and the ranking awaits published free energies on the hydrogen-electrode scale and published corrections for CHO*, CH2O* and CH3O*
+basis: >
+  Methanol forms along the methane path up to its last step. CO2 goes through carboxyl, COOH*, and CO* to formyl,
+  CHO*, formaldehyde, CH2O*, and methoxy, CH3O* (Peterson et al. 2010); methoxy then takes one more proton and
+  electron on its oxygen and leaves as methanol, where the methane route breaks its C-O bond instead. Six electrons
+  make one methanol, at an equilibrium potential close to zero. Copper makes methanol in small amounts beside
+  methane, ethylene and hydrogen (Hori 2008); the free-energy path ranks the activity of the six-electron path, and
+  the share of the current that reaches methanol comes from experiment.

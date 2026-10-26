@@ -1,0 +1,16 @@
+id: edh-screen-v1
+pack: ethane_dehydrogenation
+version: 1
+status: draft
+description: 10% ethane with 5% hydrogen in nitrogen, at 1 atm.
+analyzer:
+  name: Gas chromatograph
+  measured: [C2H6, C2H4, CH4, H2]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Ethylene yield against temperature
+    feed: {C2H6: 10 %, H2: 5 %, N2: balance}
+    ghsv_per_h: 5000
+    temperatures_C: [500, 525, 550, 575, 600, 625, 650, 675, 700]

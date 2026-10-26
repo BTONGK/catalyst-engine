@@ -118,6 +118,43 @@ thermal:
     via: "G. C. Bond, Metal-Catalysed Reactions of Hydrocarbons (Springer, 2005), Table 7.3"
     values: {Fe: 303, Co: 213, Ni: 233, Cu: 353, Ru: 203, Rh: 197, Pd: 243}
 
+  # Batch 2 (declared 20:52 PDT, before either pack had a file or a prediction): one laboratory's bar charts, read
+  # at their own pixels by read_bars.py as PASS_RULE.md fixes it.
+  - pack: propane_combustion
+    role: primary
+    short: Lee 2017 (thesis)
+    quantity: Turnover frequency at 340 °C, read from the bars of Figure D-1(c)
+    unit: 1/s
+    higher_is_better: true
+    temperature_K: 613.15
+    conditions: >
+      1 wt% metals on gamma-alumina, reduced in hydrogen at 500 °C; 0.5 % propane with ten oxygen molecules per
+      propane (equivalence ratio 0.5) in helium at 1 atm, differential conversion, rates per surface site from CO
+      chemisorption; one laboratory (University of Delaware). A master's thesis, examined by its committee and
+      outside journal review. The figure is a 150-dpi raster, so one pixel spans 0.016 per second; the copper and
+      cobalt bars (0.087 and 0.081 read) sit 0.4 pixel apart, so they share one rank and one value.
+    source: "G. Lee, Monometallic and bimetallic catalysis for C1-C4 alkane and propylene total oxidation, M.Ch.E. thesis, University of Delaware (2017), advisor D. G. Vlachos"
+    via: "UDSpace, the university's repository; Figure D-1(c), the 340 °C bars, read by read_bars.py"
+    url: https://udspace.udel.edu/items/387771e4-5e5a-439a-ba79-9534e1c0de57
+    values: {Pt: 1.24, Pd: 0.52, Ag: 0.40, Rh: 0.17, Ni: 0.13, Cu: 0.08, Co: 0.08}
+
+  - pack: propylene_combustion
+    role: primary
+    short: Lee 2017 (thesis)
+    quantity: Turnover frequency at 170 °C, read from the bars of Figure 4-4
+    unit: 1/s
+    higher_is_better: true
+    temperature_K: 443.15
+    conditions: >
+      The same seven catalysts; 1 kPa propylene with 8 kPa oxygen at 1 atm, conversion held below 20 %, rates per
+      surface site; one laboratory (University of Delaware). A master's thesis, examined by its committee and
+      outside journal review. The figure is a 150-dpi raster, so one pixel spans 0.0037 per second; every pair of
+      bars sits more than a pixel apart (nickel reads 0.0045, which rounds to 0.00).
+    source: "G. Lee, Monometallic and bimetallic catalysis for C1-C4 alkane and propylene total oxidation, M.Ch.E. thesis, University of Delaware (2017), advisor D. G. Vlachos"
+    via: "UDSpace, the university's repository; Figure 4-4, the 170 °C bars, read by read_bars.py"
+    url: https://udspace.udel.edu/items/387771e4-5e5a-439a-ba79-9534e1c0de57
+    values: {Pt: 1.60, Pd: 1.44, Rh: 0.30, Ag: 0.05, Cu: 0.02, Co: 0.01, Ni: 0.00}
+
 electro:
   - table: herron2015
     role: primary
@@ -173,3 +210,41 @@ electro:
       Os: [-0.31, -0.63, -1.08, -1.46]
       Ru: [-0.16, -0.56, -1.07, -1.28]
       Re: [-0.09, -0.67, -1.21, -1.11]
+
+  # Batch 2 (declared 2026-10-25, 20:03 PDT, before any new carbon intermediate's binding energy was read)
+  - table: ferrin2009
+    role: primary
+    short: Ferrin and Mavrikakis 2009
+    quantity: Binding energy of each adsorbed intermediate
+    unit: eV against the gas-phase species (each fragment as a free radical) and the clean slab
+    surfaces: (111) faces, 1/9 monolayer
+    source: "P. Ferrin, M. Mavrikakis, Structure sensitivity of methanol electrooxidation on transition metals, J. Am. Chem. Soc. 131, 14381 (2009), Supporting Information, Table S3"
+    doi: 10.1021/ja904010u
+    url: https://acs.figshare.com/articles/journal_contribution/Structure_Sensitivity_of_Methanol_Electrooxidation_on_Transition_Metals/2821435
+    columns: [H2COH, HCOH, COH, "C(OH)2", CO, COOH, HCOO, OH, HCO, H3CO, H2COO, H2COOH]   # C(OH)2 against CO2 + H2
+    # column -> the app's intermediate; CO, COOH, HCOO and OH keep their earlier tables (PASS_RULE.md, batch 2)
+    app: {HCO: CHO, COH: COH, H2COH: CH2OH, HCOH: CHOH, H3CO: CH3O}
+    values:
+      Rh: [-1.77, -3.22, -4.58, -0.74, -1.92, -2.58, -2.94, -2.72, -2.41, -2.24, -3.50, -1.98]
+      Ir: [-1.88, -3.26, -4.50, -0.95, -1.83, -2.64, -2.95, -2.60, -2.38, -1.98, -3.53, -1.98]
+      Ni: [-1.43, -2.93, -4.29, -0.28, -1.90, -2.25, -2.80, -2.98, -2.17, -2.43, -3.64, -2.22]
+      Pd: [-1.76, -3.03, -4.25, -0.55, -1.95, -2.19, -2.34, -2.22, -2.25, -1.62, -2.47, -1.61]
+      Pt: [-1.98, -3.34, -4.46, -1.07, -1.74, -2.39, -2.25, -2.11, -2.34, -1.54, -2.46, -1.65]
+      Cu: [-0.80, -1.77, -2.48, 0.44, -0.72, -1.52, -2.76, -2.69, -1.13, -2.06, -3.12, -1.90]
+      Ag: [-0.62, -1.22, -1.51, 0.78, -0.10, -1.19, -2.31, -2.28, -0.86, -1.63, -2.39, -1.50]
+      Au: [-1.00, -1.55, -1.93, 0.36, -0.10, -1.35, -1.78, -1.56, -1.20, -0.88, -1.47, -0.78]
+
+# Published zero-point and entropy terms from one source that tabulates both the adsorbates' and the gases' terms
+# (PASS_RULE.md, batch 2): each correction is the adsorbate's ZPE - TS less its reference gases', heat capacity set
+# aside, the convention of the corrections section.
+corrections:
+  - short: Peterson et al. 2010, via Hansen et al. 2013
+    source: "H. A. Hansen, J. B. Varley, A. A. Peterson, J. K. Nørskov, Understanding trends in the electrocatalytic activity of metals and enzymes for CO2 reduction to CO, J. Phys. Chem. Lett. 4, 388 (2013), Supporting Information, Table S1"
+    via: "the values of A. A. Peterson, F. Abild-Pedersen, F. Studt, J. Rossmeisl, J. K. Nørskov, Energy Environ. Sci. 3, 1311 (2010), on Cu(211), as Table S1 reproduces them"
+    doi: 10.1021/jz3021155
+    url: https://acs.figshare.com/articles/journal_contribution/Understanding_Trends_in_the_Electrocatalytic_Activity_of_Metals_and_Enzymes_for_CO_sub_2_sub_Reduction_to_CO/2022342
+    surface: Cu(211)
+    temperature_K: 291.65   # the table's 18.5 C
+    terms: [ZPE, -TS]   # eV; the table's heat-capacity column stays aside
+    adsorbates: {COOH: [0.62, -0.18], CO: [0.19, -0.15]}
+    gases: {H2: [0.27, -0.39], CO2: [0.31, -0.65], CO: [0.14, -0.60], H2O: [0.58, -0.65]}   # water at 0.035 atm

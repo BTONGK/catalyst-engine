@@ -1,0 +1,16 @@
+id: bdh-screen-v1
+pack: butadiene_hydrogenation
+version: 1
+status: draft
+description: "A butene-rich C4 cut diluted in nitrogen: 1% butadiene and 2% hydrogen with 40% 1-butene, at 1 atm."
+analyzer:
+  name: Gas chromatograph
+  measured: [C4H6, C4H8, C4H10, H2]
+  sigma_abs_ppm: 20
+  sigma_rel: 0.02
+steps:
+  - id: screen
+    purpose: Butadiene removal against temperature
+    feed: {C4H6: 1 %, H2: 2 %, C4H8: 40 %, N2: balance}
+    ghsv_per_h: 5000
+    temperatures_C: [20, 40, 60, 80, 100, 125, 150]

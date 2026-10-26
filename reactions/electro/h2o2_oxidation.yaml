@@ -1,0 +1,35 @@
+# Hydrogen peroxide oxidation: H2O2 -> O2 + 2 (H+ + e-), through OOH* alone, hydrogen peroxide production run backwards
+# (Viswanathan et al., J. Phys. Chem. Lett. 3, 2948 (2012); Nørskov et al., J. Phys. Chem. B 108, 17886 (2004)).
+
+id: h2o2_oxidation
+name: Hydrogen peroxide oxidation
+category: Chemicals
+summary: Oxidizes hydrogen peroxide to oxygen, the anode of peroxide fuel cells and the signal in peroxide sensors.
+equation: H2O2 -> O2 + 2 H+ + 2 e-
+direction: oxidation
+electrons: 2
+equilibrium_V: 0.695        # H2O2(aq)/O2, from tabulated formation free energies (H2O2(aq) -134.03 kJ/mol)
+compare_V: 0.90
+# OOH*: the peroxide-production file's +0.18 eV (Nørskov 2004, Fig. 8 caption), so both directions place OOH* alike.
+# shift: this reaction's zero is H2O2(aq), which sits 3.526 eV above two waters less one H2, the scale OOH*'s
+#   binding energy starts on.
+intermediates:
+  - {name: OOH, label: "hydroperoxyl (OOH*)", correction_eV: 0.18, shift_eV: -3.526}
+descriptor: {OOH: 1}
+# the two steps at 0 V as lines in x = G(OOH*) on this reaction's scale: H2O2 -> OOH* is x, OOH* -> O2 is 1.39 - x
+volcano_steps: [[1, 0], [-1, 1.39]]
+reference: {formula: Pt, name: Platinum}
+task: oc20
+suggested_elements: [Pt, Pd, Au, Ag, Ir, Rh, Ru, Cu, Ni, Co]
+# On the Design page since the reaction check (experiments/reaction_check: PASS_RULE.md, results/summary.json):
+#   its limiting potentials order the 11 metals of Nørskov 2004's Table 2 (O* through the Fig. 8 relation) with
+#   rho 0.84 (p 0.001), through OOH*, which the oxygen-reduction check covers.
+on_design_page: true
+basis: >
+  Hydrogen peroxide gives up a proton and electron to sit on the surface as OOH*, and OOH* gives up a second and
+  leaves as O2: hydrogen peroxide production run backwards, through the same OOH* (Viswanathan et al. 2012). It is
+  the anode reaction of peroxide fuel cells and the signal of the platinum electrodes in peroxide sensors, and in
+  the glucose sensors built on them. Both steps turn downhill together when OOH* sits halfway between H2O2 and O2,
+  at 0.70 V, so OOH* binding is the descriptor and the volcano mirrors the production volcano. Peroxide also falls
+  apart by itself on many surfaces into water and oxygen, at zero current, a side reaction this path leaves to
+  experiment.

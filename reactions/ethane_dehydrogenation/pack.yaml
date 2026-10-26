@@ -1,0 +1,68 @@
+# Ethane dehydrogenation. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst to beat
+# (platinum) reaches half of the best possible ethylene yield at 600 C under the screen protocol.
+
+id: ethane_dehydrogenation
+name: Ethane dehydrogenation
+version: 1
+status: draft-illustrative-parameters
+summary: Makes ethylene, the raw material for polyethylene, by pulling hydrogen off ethane from natural gas.
+category: Chemicals and fuels
+description: >
+  Ethane gives up one hydrogen molecule to become ethylene. The reaction draws heat, so equilibrium favors high
+  temperature; hydrogenolysis, which breaks the C-C bond and turns ethane and hydrogen into methane, competes. First
+  order in ethane, with the approach to equilibrium from thermodynamics; the competing path is also first order in
+  hydrogen.
+
+reference_temperature_K: 873.15
+
+species:
+  C2H6: {formula: C2H6}
+  C2H4: {formula: C2H4}
+  H2:   {formula: H2}
+  CH4:  {formula: CH4}
+  N2:   {formula: N2}
+
+pathways:
+  dehydrogenation:
+    equation: C2H6 <=> C2H4 + H2
+    role: desired
+    rate: {key: C2H6, orders: {C2H6: 1}, ln_k_ref: -0.192, Ea_kJ: 130}
+  hydrogenolysis:
+    equation: C2H6 + H2 -> 2 CH4
+    role: side
+    note: "Hydrogenolysis; it breaks the C-C bond and turns ethane into methane."
+    rate: {key: C2H6, orders: {C2H6: 1, H2: 1}, ln_k_ref: -4.000, Ea_kJ: 150}
+
+metrics:
+  c2h4_yield:
+    kind: yield
+    species: [C2H4]
+    denominator: [C2H6]
+    description: "Ethylene made per ethane fed."
+  c2h6_conversion:
+    kind: conversion
+    species: [C2H6]
+    description: "Share of the ethane that reacts."
+  ch4_yield:
+    kind: yield
+    species: [CH4]
+    denominator: [C2H6]
+    description: "Methane made by hydrogenolysis, per ethane fed."
+
+screening:
+  descriptor: {C: 0.25}
+  pathways: [dehydrogenation]
+  metric: c2h4_yield
+  reference: {formula: Pt, name: Platinum}
+  optimum_shift_eV: 0.0
+  peak_gas: {CH4: 0.25, H2: -0.5}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Pt, Pd, Ir, Rh, Ni, Co, Cu, Ag]
+  # Kept to the library and the Catalyst playground: its check needs a per-metal table measured in one
+  # laboratory, and the sources reached so far give none (Manual, Methodology tab, limits).
+  on_design_page: false
+  basis: >
+    Platinum, often alloyed with tin, dehydrogenates light alkanes while holding carbon gently enough to limit C-C
+    breaking and coke (Sattler et al., Chem. Rev. 2014). The first C-H break leaves an ethyl group whose binding
+    follows the carbon atom's at a quarter of its slope, like methyl (Abild-Pedersen et al., Phys. Rev. Lett. 2007).
+    The descriptor is a quarter of the carbon binding; the top is set at platinum's, as in the propane
+    dehydrogenation pack.

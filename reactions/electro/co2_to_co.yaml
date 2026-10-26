@@ -10,13 +10,13 @@ direction: reduction
 electrons: 2
 equilibrium_V: -0.104       # from tabulated formation free energies, CO(g) and liquid water
 compare_V: -0.80
-# Corrections: UMA's own vibrations on Pt(111) (experiments/reaction_check/results/corrections.json). The same
-#   calculation missed the published values for OH* and OOH* by 0.16-0.20 eV (PASS_RULE.md, corrections section),
-#   so these numbers serve the playground's starting point only.
+# Corrections: Peterson et al. 2010's values as Hansen et al. 2013, Table S1, reproduces them, on Cu(211) at 18.5 C
+#   with the table's heat-capacity terms set aside (experiments/reaction_check/data/published.yaml, PASS_RULE.md,
+#   batch 2). UMA's own vibrations on Pt(111) give 0.88 and 0.53 eV (results/corrections.json).
 # shift: COOH* and CO* start against CO(g) and water, this reaction's own zero, so both shifts are 0.
 intermediates:
-  - {name: COOH, label: "carboxyl (COOH*)", correction_eV: 0.88}
-  - {name: CO, label: "adsorbed CO (CO*)", correction_eV: 0.53}
+  - {name: COOH, label: "carboxyl (COOH*)", correction_eV: 0.91}
+  - {name: CO, label: "adsorbed CO (CO*)", correction_eV: 0.50}
 route: "COOH* forms first"
 chemical_steps:
   - {step: 2, label: "CO leaves the surface"}
@@ -26,7 +26,7 @@ reference: {formula: Au, name: Gold}
 task: oc20
 suggested_elements: [Au, Ag, Zn, Cu, Pd, Pt, Ni, Sn, In, Cd]
 on_design_page: false
-design_note: UMA's CO* binding orders Elnabawy 2018's metals with rho 0.56, below the 0.6 the rule asks, and COOH* and CO* need published zero-point and entropy corrections
+design_note: UMA's CO* binding orders Elnabawy 2018's metals with rho 0.56, below the 0.6 the rule asks
 basis: >
   CO2 takes a proton and electron to become carboxyl, COOH*, bound through its carbon; a second proton and
   electron split off water and leave CO*, which then has to leave the surface as gas. A surface that binds COOH*

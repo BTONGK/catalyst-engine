@@ -39,8 +39,10 @@ screening:
   optimum_shift_eV: 0.0
   peak_gas: {}   # the reaction's gases hold none its adsorbates exchange with; the top holds still
   suggested_elements: [Rh, Ru, Pd, Pt, Ni, Co, Ir, Fe, Cu]
-  # Kept to the library and the Catalyst playground until the reaction check (experiments/reaction_check)
-  # scores its ranking against the published table; the Manual's Methodology tab lists the outcome.
+  # The reaction check (experiments/reaction_check) shows this ranking beside Bond's Table 7.3 (metals on
+  # silica): rho 0.94 over 6 metals, with ruthenium first in both. The meaning of that table's temperature column
+  # awaits confirmation, so it sits beside the rule as indicative, and the playground keeps the pack until a
+  # measured table passes (Manual, Methodology tab, limits).
   on_design_page: false
   basis: >
     Ethylene and the ethyl group it passes through hold to the surface by carbon-metal bonds, and their binding

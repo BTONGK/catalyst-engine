@@ -1,0 +1,39 @@
+# Methanol oxidation: CH3OH + H2O -> CO2 + 6 (H+ + e-), the indirect route through CO*: CH2OH*, CHOH*, COH*, CO* and
+# COOH* (Ferrin and Mavrikakis, J. Am. Chem. Soc. 131, 14381 (2009); Rossmeisl et al., Energy Environ. Sci. 5, 8335
+# (2012) for the CO* and OH* descriptors of platinum alloys).
+
+id: methanol_oxidation
+name: Methanol oxidation (DMFC anode)
+category: Hydrogen and energy
+summary: Oxidizes methanol to CO2 at the anode of a direct methanol fuel cell, six electrons per molecule.
+equation: CH3OH + H2O -> CO2 + 6 H+ + 6 e-
+direction: oxidation
+electrons: 6
+equilibrium_V: 0.031        # from dissolved methanol and liquid water, from tabulated formation free energies
+compare_V: 0.50
+# Corrections: CO* and COOH* take Peterson et al. 2010's values as Hansen et al. 2013, Table S1, reproduces them
+#   (experiments/reaction_check/data/published.yaml); CH2OH*, CHOH* and COH* take UMA's own vibrations on Pt(111)
+#   (results/corrections.json), which serve the playground's starting point only.
+# shift: each intermediate starts against CO(g), H2O and H2; this reaction's zero is dissolved methanol and liquid
+#   water, 0.395 eV below CO + H2O + 2 H2.
+intermediates:
+  - {name: CH2OH, label: "hydroxymethyl (CH2OH*)", correction_eV: 1.56, shift_eV: 0.3953}
+  - {name: CHOH, label: "hydroxymethylene (CHOH*)", correction_eV: 1.25, shift_eV: 0.3953}
+  - {name: COH, label: "COH*", correction_eV: 0.88, shift_eV: 0.3953}
+  - {name: CO, label: "adsorbed CO (CO*)", correction_eV: 0.50, shift_eV: 0.3953}
+  - {name: COOH, label: "carboxyl (COOH*)", correction_eV: 0.91, shift_eV: 0.3953}
+descriptor: {CO: 1}
+reference: {formula: Pt, name: Platinum}
+task: oc20
+suggested_elements: [Pt, Ru, Pd, Rh, Ir, Os, Au, Ag, Cu, Ni]
+on_design_page: false
+design_note: CO* misses its check against Elnabawy 2018, and the ranking awaits published free energies on the hydrogen-electrode scale and published corrections for CH2OH*, CHOH* and COH*
+basis: >
+  A direct methanol fuel cell oxidizes methanol at its anode to CO2, six electrons per molecule. Along the route
+  this file follows, methanol gives up hydrogens one proton and electron at a time, from carbon first:
+  hydroxymethyl, CH2OH*, hydroxymethylene, CHOH*, and COH*; the hydrogen on oxygen goes last and leaves CO*. CO*
+  takes the oxygen of water to become carboxyl, COOH*, which leaves as CO2. On platinum the hydrogens come off
+  easily and clearing CO* sets the potential, the CO poisoning that makes platinum-ruthenium the standard anode;
+  Rossmeisl et al. 2012 describe it through CO* and OH* binding. Ferrin and Mavrikakis 2009 compare this indirect
+  route with a direct one that reaches CO2 through formate and skips CO*, and find the direct route sets in at a
+  lower potential on most of their eight metals; it awaits its own file (Methodology tab, limits).
