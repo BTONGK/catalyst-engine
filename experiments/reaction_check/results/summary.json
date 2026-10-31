@@ -388,6 +388,85 @@
    ]
   },
   {
+   "pack": "h2o2_decomposition",
+   "name": "Hydrogen peroxide decomposition",
+   "role": "primary",
+   "source": "D. W. McKee, Catalytic decomposition of hydrogen peroxide by metals and alloys of the platinum group, J. Catal. 14, 355 (1969)",
+   "short": "McKee 1969",
+   "via": "The publisher's abstract, as two web searches quote it",
+   "quantity": "Order of specific activity per unit surface area (1 = most active)",
+   "unit": "rank",
+   "temperature_K": 300.15,
+   "temperature_from": "table",
+   "anchor": "Pt",
+   "anchor_descriptor_eV": 1.579,
+   "peak_move_eV": 0.026,
+   "descriptor": {
+    "O": 1.0
+   },
+   "n": 5,
+   "rho": 0.1,
+   "p": 0.475,
+   "published_best": "Os",
+   "predicted_top": [
+    "Pd",
+    "Ir",
+    "Rh"
+   ],
+   "best_in_top": false,
+   "passes": false,
+   "left_out": [],
+   "measured_decades": null,
+   "predicted_decades": 26.6,
+   "rows": [
+    {
+     "metal": "Os",
+     "descriptor_eV": -0.016,
+     "shift_eV": 1.595,
+     "ratio": 1.6444141832789082e-27,
+     "predicted_rank": 4.0,
+     "published": 2,
+     "published_rank": 1.0
+    },
+    {
+     "metal": "Ir",
+     "descriptor_eV": 0.986,
+     "shift_eV": 0.592,
+     "ratio": 1.1296913255914013e-10,
+     "predicted_rank": 2.0,
+     "published": 3,
+     "published_rank": 2.0
+    },
+    {
+     "metal": "Pd",
+     "descriptor_eV": 1.385,
+     "shift_eV": 0.194,
+     "ratio": 0.0005512405141812299,
+     "predicted_rank": 1.0,
+     "published": 4,
+     "published_rank": 3.0
+    },
+    {
+     "metal": "Ru",
+     "descriptor_eV": -0.202,
+     "shift_eV": 1.781,
+     "ratio": 1.2594076998807987e-30,
+     "predicted_rank": 5.0,
+     "published": 5,
+     "published_rank": 4.0
+    },
+    {
+     "metal": "Rh",
+     "descriptor_eV": 0.525,
+     "shift_eV": 1.054,
+     "ratio": 2.0342870854351154e-18,
+     "predicted_rank": 3.0,
+     "published": 6,
+     "published_rank": 5.0
+    }
+   ]
+  },
+  {
    "pack": "co_methanation",
    "name": "CO methanation",
    "role": "primary",
@@ -3944,6 +4023,13 @@
   "rc_water_gas_shift_primary_top": "Ir, Pd, Pt",
   "rc_water_gas_shift_primary_T": 493.1,
   "rc_water_gas_shift_primary_anchor": "Cu",
+  "rc_h2o2_decomposition_primary_n": 5,
+  "rc_h2o2_decomposition_primary_rho": 0.1,
+  "rc_h2o2_decomposition_primary_p": 0.475,
+  "rc_h2o2_decomposition_primary_best": "Os",
+  "rc_h2o2_decomposition_primary_top": "Pd, Ir, Rh",
+  "rc_h2o2_decomposition_primary_T": 300.1,
+  "rc_h2o2_decomposition_primary_anchor": "Pt",
   "rc_co_methanation_primary_n": 8,
   "rc_co_methanation_primary_rho": 0.690476,
   "rc_co_methanation_primary_p": 0.0347,
@@ -4001,17 +4087,17 @@
   "rc_span_factor_hi": 20.1,
   "rc_checked_names": "CO methanation and Ammonia cracking",
   "rc_checked_n": 2,
-  "rc_missed_names": "Benzene hydrogenation, Ethane hydrogenolysis, Ammonia synthesis, Propane combustion, Propylene combustion and Water-gas shift",
-  "rc_missed_n": 6,
+  "rc_missed_names": "Benzene hydrogenation, Ethane hydrogenolysis, Hydrogen peroxide decomposition, Ammonia synthesis, Propane combustion, Propylene combustion and Water-gas shift",
+  "rc_missed_n": 7,
   "rc_awaiting_n": 32,
   "rc_untabled_names": "Selective acetylene hydrogenation, Ammonia oxidation to NO (Ostwald), Ammonia slip oxidation, Selective butadiene hydrogenation, CO2 methanation, CO oxidation, Cyclohexane dehydrogenation, Dry reforming of methane, Ethane dehydrogenation, Ethanol steam reforming, Ethylene epoxidation, Formaldehyde oxidation, Formic acid dehydrogenation, Hydrogen cyanide synthesis (BMA), Catalytic hydrogen combustion, Methane combustion, Partial oxidation of methane, Methanol decomposition, Methanol steam reforming, Methanol from CO2, Formaldehyde from methanol (silver process), N2O removal, NO reduction by CO, NO oxidation, Gas-engine oxidation catalyst (CO, HCHO, CH4, NO), Propane dehydrogenation, Preferential CO oxidation (PROX), Reverse water-gas shift, High-temperature SCR of NOx with NH3, SO2 oxidation (contact process) and Steam methane reforming",
   "rc_untabled_n": 31,
-  "rc_packs_n": 40,
-  "rc_thermal_tables": 10,
-  "rc_thermal_scored": 8,
+  "rc_packs_n": 41,
+  "rc_thermal_tables": 11,
+  "rc_thermal_scored": 9,
   "rc_thermal_passed": 2,
   "rc_thermal_passed_names": "Ammonia cracking and CO methanation",
-  "rc_thermal_failed_names": "Ammonia synthesis, Water-gas shift, Ethane hydrogenolysis, Benzene hydrogenation, Propane combustion and Propylene combustion",
+  "rc_thermal_failed_names": "Ammonia synthesis, Water-gas shift, Hydrogen peroxide decomposition, Ethane hydrogenolysis, Benzene hydrogenation, Propane combustion and Propylene combustion",
   "rc_thermal_failed_rho_lo": -0.527273,
   "rc_thermal_failed_rho_hi": 0.571429,
   "rc_i_herron2015_N_n": 12,
@@ -4282,6 +4368,18 @@
     "best": "Re",
     "top": "Ir, Pd, Pt",
     "verdict": "misses: rho -0.53, below 0.6; p 0.953, above 0.05; Re outside the predicted top 3"
+   },
+   {
+    "reaction": "Hydrogen peroxide decomposition",
+    "table": "McKee 1969",
+    "role": "scored by the rule",
+    "T_K": "300",
+    "n": 5,
+    "rho": 0.1,
+    "p": "0.475",
+    "best": "Os",
+    "top": "Pd, Ir, Rh",
+    "verdict": "misses: rho 0.10, below 0.6; p 0.475, above 0.05; Os outside the predicted top 3"
    },
    {
     "reaction": "CO methanation",
@@ -4648,6 +4746,56 @@
     "predicted_rank": 1.0,
     "published": 12,
     "published_rank": 11.0
+   },
+   {
+    "reaction": "Hydrogen peroxide decomposition",
+    "table": "McKee 1969",
+    "metal": "Os",
+    "descriptor_eV": -0.016,
+    "shift_eV": 1.595,
+    "predicted_rank": 4.0,
+    "published": 2,
+    "published_rank": 1.0
+   },
+   {
+    "reaction": "Hydrogen peroxide decomposition",
+    "table": "McKee 1969",
+    "metal": "Ir",
+    "descriptor_eV": 0.986,
+    "shift_eV": 0.592,
+    "predicted_rank": 2.0,
+    "published": 3,
+    "published_rank": 2.0
+   },
+   {
+    "reaction": "Hydrogen peroxide decomposition",
+    "table": "McKee 1969",
+    "metal": "Pd",
+    "descriptor_eV": 1.385,
+    "shift_eV": 0.194,
+    "predicted_rank": 1.0,
+    "published": 4,
+    "published_rank": 3.0
+   },
+   {
+    "reaction": "Hydrogen peroxide decomposition",
+    "table": "McKee 1969",
+    "metal": "Ru",
+    "descriptor_eV": -0.202,
+    "shift_eV": 1.781,
+    "predicted_rank": 5.0,
+    "published": 5,
+    "published_rank": 4.0
+   },
+   {
+    "reaction": "Hydrogen peroxide decomposition",
+    "table": "McKee 1969",
+    "metal": "Rh",
+    "descriptor_eV": 0.525,
+    "shift_eV": 1.054,
+    "predicted_rank": 3.0,
+    "published": 6,
+    "published_rank": 5.0
    },
    {
     "reaction": "CO methanation",

@@ -991,7 +991,12 @@ limits:
         puts copper second and silver last, where the measurements put silver second for propane and copper near the
         bottom for both. Lee's numbers come from a master's thesis (University of Delaware, 2017), a public record
         examined by its committee and outside journal review, read from its bar charts at the figures' own pixels
-        (experiments/reaction_check/read_bars.py).
+        (experiments/reaction_check/read_bars.py). Hydrogen peroxide decomposition gives
+        {rc_h2o2_decomposition_primary_rho:.2f} over {rc_h2o2_decomposition_primary_n} metals against McKee's order of
+        the platinum-group metals in water (1969): osmium, measured the most active after platinum, binds oxygen 1.6
+        eV more strongly than platinum and sits fourth of the five in the prediction. That order was measured in
+        water and the package screens vapor in air; it comes from the paper's abstract, since the paper's rates sit
+        behind the publisher's access wall.
       size: "rho from {rc_thermal_failed_rho_lo:.2f} to {rc_thermal_failed_rho_hi:.2f}, against the {rc_min_rho} the rule asks."
       meanwhile: >
         The Design page runs them, marked as missing their check, and the verdict heads each screen's results: read
@@ -1103,7 +1108,8 @@ audit:
     - "Every reaction now appears on the Design page, its ranking check's verdict beside it in the list and above its results: {rc_checked_n} checked ({rc_checked_names}), {rc_missed_n} missed and {rc_awaiting_n} awaiting a measured table (section {sec_reaction_check}). Before, a reaction joined the Design page only once its check passed, and the playground held the rest."
     - "Each rank correlation keeps six decimals until the page rounds it, so ammonia cracking reads {rc_nh3_decomposition_primary_rho:.2f}, its exact 0.9048; rounded first to three decimals, it read 0.91."
     - "This page gained the loading walk-through (section {sec_loading}) and the reaction check (section {sec_reaction_check})."
-    - "Ten more packages joined the library, {load_packs_n} in all. Two of them, propane and propylene combustion, met a measured table the same day, Lee's thesis, declared in PASS_RULE.md before either package existed and read from its bar charts by experiments/reaction_check/read_bars.py; both miss the rule (rho {rc_propane_combustion_primary_rho:.2f} and {rc_propylene_combustion_primary_rho:.2f}). A rate read as zero now leaves its table's spread out of the size comparison, in place of stopping the check."
+    - "Ten more packages joined the library, 40 in all. Two of them, propane and propylene combustion, met a measured table the same day, Lee's thesis, declared in PASS_RULE.md before either package existed and read from its bar charts by experiments/reaction_check/read_bars.py; both miss the rule (rho {rc_propane_combustion_primary_rho:.2f} and {rc_propylene_combustion_primary_rho:.2f}). A rate read as zero now leaves its table's spread out of the size comparison, in place of stopping the check."
+    - "Hydrogen peroxide decomposition joined the library, {load_packs_n} packages in all. McKee's 1969 order of the platinum-group metals in water was declared in PASS_RULE.md before the package existed, with oxygen binding as the descriptor and platinum as the catalyst to beat; the ranking misses the rule (rho {rc_h2o2_decomposition_primary_rho:.2f} over {rc_h2o2_decomposition_primary_n} metals), and the Design page marks it so."
 
 reproduce:
   text: >
@@ -1155,6 +1161,9 @@ references:
   - {cite: "Isapour et al., with Feng, Y., Grönbeck, H., Skoglundh, M. & Härelind, H. Ammonia in H- and Cu-SSZ-13 by DRIFTS, NH3-TPD and DFT (PBE+U+D3). RSC Adv. 16, 28182 (2026).", url: "https://doi.org/10.1039/d6ra03025d"}
   - {cite: "Koust, S., Adamsen, K. C., Kolsbjerg, E. L., Li, Z., Hammer, B., Wendt, S. & Lauritsen, J. V. NH3 adsorption on anatase-TiO2(101). Preprint, Aarhus University (2018).", url: "https://pure.au.dk/ws/files/181268137/preprint_koust.pdf"}
   - {cite: "Lee, G. Monometallic and bimetallic catalysis for C1-C4 alkane and propylene total oxidation. M.Ch.E. thesis, University of Delaware (2017); the propane and propylene tables of the reaction check.", url: "https://udspace.udel.edu/items/387771e4-5e5a-439a-ba79-9534e1c0de57"}
+  - {cite: "McKee, D. W. Catalytic decomposition of hydrogen peroxide by metals and alloys of the platinum group. J. Catal. 14, 355 (1969); the hydrogen peroxide order of the reaction check.", url: "https://doi.org/10.1016/0021-9517(69)90326-1"}
+  - {cite: "Rankin, R. B. & Greeley, J. Trends in selective hydrogen peroxide production on transition metal surfaces from first principles. ACS Catal. 2, 2664 (2012).", url: "https://doi.org/10.1021/cs3003337"}
+  - {cite: "Ford, D. C., Nilekar, A. U., Xu, Y. & Mavrikakis, M. Partial and complete reduction of O2 by hydrogen on transition metal surfaces. Surf. Sci. 604, 1565 (2010).", url: "https://doi.org/10.1016/j.susc.2010.05.026"}
   - {cite: "Peela, N. R., Zheng, W., Lee, I. C., Karim, A. M. & Vlachos, D. G. Core–shell nanocatalyst design by combining high-throughput experiments and first-principles simulations. ChemCatChem 5, 3712 (2013).", url: "https://doi.org/10.1002/cctc.201300553"}
   - {cite: "Goodwin, D. G. et al. Cantera: an object-oriented software toolkit for chemical kinetics, thermodynamics and transport processes (version 3.2).", url: "https://cantera.org"}
   - {cite: "Smith, G. P. et al. GRI-Mech 3.0.", url: "http://combustion.berkeley.edu/gri-mech/"}

@@ -89,14 +89,14 @@
   "reactor_exact_max_gap": 4e-05,
   "reactor_exact_pct": 0.004,
   "balance_worst": 9e-09,
-  "balance_packs": 40,
+  "balance_packs": 41,
   "equilibrium_packs": 9,
   "equilibrium_worst": 4e-13,
   "balance_digits": 8,
   "equilibrium_digits": 12,
-  "calibrated_halfway": 38,
-  "calibration_packs": 40,
-  "calibration_note": "38 of 40 packs put the catalyst to beat at 50% of the best possible, within 2 points, at their anchor temperature. Gas-engine oxidation catalyst (CO, HCHO, CH4, NO) sits at 100% at 427 \u00b0C; High-temperature SCR of NOx with NH3 sits at 88% at 566 \u00b0C. These two packs came before the design app: their illustrative rates follow a conventional catalyst across the whole operating window, and their reference temperature anchors the rate constants in place of a light-off. The ranking within each reaction stays the same; their curves sit hotter or cooler accordingly.",
+  "calibrated_halfway": 39,
+  "calibration_packs": 41,
+  "calibration_note": "39 of 41 packs put the catalyst to beat at 50% of the best possible, within 2 points, at their anchor temperature. Gas-engine oxidation catalyst (CO, HCHO, CH4, NO) sits at 100% at 427 \u00b0C; High-temperature SCR of NOx with NH3 sits at 88% at 566 \u00b0C. These two packs came before the design app: their illustrative rates follow a conventional catalyst across the whole operating window, and their reference temperature anchors the rate constants in place of a light-off. The ranking within each reaction stays the same; their curves sit hotter or cooler accordingly.",
   "film_exact_pct": 0.004,
   "form_T_C": 566.0,
   "form_T_F": 1050.0,
@@ -164,15 +164,15 @@
   "cut_gap_app": 0.16,
   "load_db_gri_n": 53,
   "load_db_nasa_n": 748,
-  "load_db_shared": 16,
+  "load_db_shared": 17,
   "load_db_within": 13,
   "load_db_worst": "HCN",
   "load_db_worst_gap": 4.2,
   "load_db_all_shared": 37,
   "load_db_any_worst": "NCO",
   "load_db_any_worst_gap": 46.0,
-  "load_packs_n": 40,
-  "load_packs_gri": 31,
+  "load_packs_n": 41,
+  "load_packs_gri": 32,
   "load_packs_nasa": 9,
   "load_name": "CO methanation",
   "load_id": "co_methanation",
@@ -1691,6 +1691,12 @@
     "move_per_100K": -0.117
    },
    {
+    "reaction": "Hydrogen peroxide decomposition",
+    "gas": "+0.5 O2",
+    "anchor_C": 50,
+    "move_per_100K": -0.117
+   },
+   {
     "reaction": "CO2 methanation",
     "gas": "+0.5 CO2 -0.5 H2O +0.5 H2",
     "anchor_C": 330,
@@ -1978,6 +1984,10 @@
     "worst_element_gap": 7e-13
    },
    {
+    "reaction": "Hydrogen peroxide decomposition",
+    "worst_element_gap": 2e-12
+   },
+   {
     "reaction": "Hydrogen cyanide synthesis (BMA)",
     "worst_element_gap": 2e-12
    },
@@ -2250,6 +2260,14 @@
     "reaction": "Formic acid dehydrogenation",
     "reference": "Platinum",
     "T_ref_C": 150.0,
+    "reference_metric": 0.5,
+    "best_metric": 1.0,
+    "share_of_best": 0.5
+   },
+   {
+    "reaction": "Hydrogen peroxide decomposition",
+    "reference": "Platinum",
+    "T_ref_C": 50.0,
     "reference_metric": 0.5,
     "best_metric": 1.0,
     "share_of_best": 0.5

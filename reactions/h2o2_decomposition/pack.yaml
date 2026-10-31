@@ -1,0 +1,65 @@
+# Hydrogen peroxide decomposition. Rate parameters are ILLUSTRATIVE: the screened rate constant is set so the catalyst
+# to beat (platinum) reaches half of the best possible result at 50 C under the screen protocol.
+
+id: h2o2_decomposition
+name: Hydrogen peroxide decomposition
+version: 1
+status: draft-illustrative-parameters
+summary: Breaks hydrogen peroxide vapor into water and oxygen, as the catalytic converters on the exhaust of peroxide sterilizers do.
+category: Clean air
+description: >
+  Hydrogen peroxide breaks into water and oxygen, and equilibrium lies fully toward them at every temperature of the
+  screen. First order in hydrogen peroxide.
+
+reference_temperature_K: 323.15
+water: H2O
+oxygen: O2
+
+species:
+  H2O2: {formula: H2O2}
+  H2O:  {formula: H2O}
+  O2:   {formula: O2}
+  N2:   {formula: N2}
+
+pathways:
+  decomposition:
+    equation: H2O2 -> H2O + 0.5 O2
+    role: desired
+    rate: {key: H2O2, orders: {H2O2: 1}, ln_k_ref: 1.922, Ea_kJ: 45}
+
+metrics:
+  h2o2_conversion:
+    kind: conversion
+    species: [H2O2]
+    description: "Share of the hydrogen peroxide broken down."
+  h2o2_out:
+    kind: outlet
+    species: [H2O2]
+    description: "Hydrogen peroxide left in the air; the US workplace limit (OSHA) is 1 ppm."
+    target: {max: 1.0, label: Workplace limit}
+
+screening:
+  descriptor: {O: 1}
+  pathways: [decomposition]
+  metric: h2o2_conversion
+  reference: {formula: Pt, name: Platinum}
+  optimum_shift_eV: 0.0
+  # both sides keep the generic slopes: H2O2 splits into two OH, whose binding moves half as fast as oxygen's
+  # (Abild-Pedersen et al., Phys. Rev. Lett. 2007), so the splitting energy moves about one eV per eV of the
+  # descriptor and the barrier 0.9 of that (Nørskov et al., J. Catal. 2002); fixed in PASS_RULE.md beforehand
+  peak_gas: {O2: 0.5}   # gases its adsorbates exchange with; the top follows them
+  suggested_elements: [Pt, Pd, Ag, Au, Ir, Os, Ru, Rh, Cu, Ni, Co]
+  # the reaction check's verdict (experiments/reaction_check, PASS_RULE.md); tests/test_checks.py ties them
+  check: missed
+  check_note: >
+    Against McKee's measured order (platinum-group metals in neutral water at 27 °C) its ranking scores rho 0.10 over
+    5 metals (p 0.475), short of the 0.6 the rule asks; osmium, the most active after platinum there, ranks fourth of
+    the five here, its oxygen binding 1.6 eV stronger than platinum's. McKee measured in water; the package screens
+    vapor in air.
+  basis: >
+    Hydrogen peroxide splits on the surface into two OH, which pass hydrogen between them to leave as water, and the
+    oxygen left behind leaves as O2. A metal that holds oxygen weakly splits the O–O bond slowly; one that holds it
+    tightly keeps its oxygen. Oxygen binding sorts the metals (Rankin and Greeley, ACS Catal. 2012; Ford et al.,
+    Surf. Sci. 2010). The descriptor is oxygen binding; the top is set at platinum's, the classic catalyst for
+    breaking down hydrogen peroxide, and both sides keep the generic slopes, since the two OH move half as fast as
+    oxygen does.

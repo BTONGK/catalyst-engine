@@ -165,3 +165,30 @@ measured. A search after the 20:03 note reached one laboratory's measurements fo
 - Each rho now keeps six decimals until a page rounds it. Pass decisions always used the exact value; four displayed
   values move by 0.01: ammonia cracking 0.91 to 0.90, hydrogen peroxide production and oxidation 0.84 to 0.85, and
   CO electro-oxidation 0.96 to 0.97.
+
+## Hydrogen peroxide decomposition (2026-10-31, 14:25 PDT, written before the package exists and before any prediction)
+
+The user asked for H2O2 decomposition, 2 H2O2 -> 2 H2O + O2. No electrode drives it, so it joins the thermal
+section as a package for the vapor: hydrogen peroxide in air, as in the exhaust of peroxide sterilizers.
+
+- Table: D. W. McKee, Catalytic decomposition of hydrogen peroxide by metals and alloys of the platinum group,
+  J. Catal. 14, 355 (1969), doi 10.1016/0021-9517(69)90326-1: the specific activity per unit surface area of the
+  platinum-group metals for decomposing hydrogen peroxide in neutral water at 27 °C falls in the order
+  Pt > Os > Ir > Pd > Ru > Rh. One laboratory, six metals, one set of conditions.
+- Reading: the order comes from the publisher's abstract, as two web searches quote it. The full paper sits behind
+  the publisher's access wall (ScienceDirect refused a fetch, and the Crossref, OpenAlex and Semantic Scholar records
+  carry no abstract), so the table enters as an order (1 = most active), as Grenoble's water-gas shift order does,
+  at 300.15 K.
+- It enters as a primary table under the thermal rule as written. Platinum, the most active, is the package's
+  catalyst to beat and leaves the scoring, so five metals are scored, the rule's minimum. At five metals a p of 0.05
+  or less needs rho of 0.9 or more: at most one swap of neighbours.
+- Descriptor: oxygen binding, {O: 1}, from Rankin and Greeley (ACS Catal. 2, 2664, 2012), who sort transition
+  metals for hydrogen peroxide with the oxygen binding energy, and Ford et al. (Surf. Sci. 604, 1565, 2010), whose
+  O-O scission barriers for H2O2 on twelve metals follow it. The top sits at platinum's value. The weak side keeps
+  the generic 0.9 eV per eV: H2O2 splits into two OH, and OH binding moves half as fast as oxygen's (Abild-Pedersen
+  et al., Phys. Rev. Lett. 99, 016105, 2007), so the splitting energy moves about one eV per eV of the descriptor,
+  and the barrier 0.9 of that (Nørskov et al., J. Catal. 2002). The strong side keeps the generic 1.0. The top
+  follows oxygen ({O2: 0.5}), as in the other oxidation packages.
+- The package screens vapor in air; the table is measured in water, whose hydrogen bonds hold OH* more firmly and
+  may move the order. The note beside the verdict says so. Whatever the ranking gives, the descriptor, the top and
+  the slopes stay as written here.

@@ -46,6 +46,20 @@ thermal:
     url: https://arxiv.org/abs/1409.7976
     values: {Cu: 1, Re: 2, Co: 3, Ru: 4, Ni: 5, Pt: 6, Os: 7, Au: 8, Fe: 9, Pd: 10, Rh: 11, Ir: 12}
 
+  - pack: h2o2_decomposition   # declared in PASS_RULE.md, 2026-10-31 14:25 PDT, before the package existed
+    role: primary
+    short: McKee 1969
+    quantity: Order of specific activity per unit surface area (1 = most active)
+    unit: rank
+    higher_is_better: false
+    order_only: true
+    temperature_K: 300.15
+    conditions: Platinum-group metals decomposing hydrogen peroxide in neutral water at 27 °C; one laboratory. The abstract gives the order, and the paper's rates sit behind the publisher's access wall.
+    source: "D. W. McKee, Catalytic decomposition of hydrogen peroxide by metals and alloys of the platinum group, J. Catal. 14, 355 (1969)"
+    via: "The publisher's abstract, as two web searches quote it"
+    url: https://doi.org/10.1016/0021-9517(69)90326-1
+    values: {Pt: 1, Os: 2, Ir: 3, Pd: 4, Ru: 5, Rh: 6}
+
   - pack: co_methanation
     role: primary
     short: Bligaard et al. 2004

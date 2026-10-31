@@ -1,5 +1,5 @@
 # Project status shown on the app's Project status page. Updated at the end of every phase.
-updated: 2026-10-26
+updated: 2026-10-31
 focus_pack: scr_hot   # the app opens on this reaction
 
 headline: >
@@ -21,6 +21,15 @@ proof_sequence:
     status: planned
 
 recent:
+  - date: 2026-10-31
+    item: >
+      Hydrogen peroxide decomposition joined the thermal section (41 packages): hydrogen peroxide vapor in air, as in
+      the exhaust of peroxide sterilizers, with platinum as the catalyst to beat and oxygen binding as the descriptor.
+      Before the package existed, PASS_RULE.md declared McKee's 1969 order of the platinum-group metals in water
+      (Pt > Os > Ir > Pd > Ru > Rh, from the paper's abstract; the paper sits behind the publisher's access wall).
+      The ranking misses it, rho 0.10 over 5 metals (p 0.475): osmium, measured the most active after platinum,
+      binds oxygen 1.6 eV more strongly than platinum and sits fourth here. The Design page runs it, marked as
+      missing its check. Thermal verdicts now: 2 checked, 7 missed, 32 awaiting.
   - date: 2026-10-26
     item: >
       Every reaction now runs on its Design page, so a screen can look for new catalysts for any of the 40 thermal
@@ -386,6 +395,15 @@ findings:
       and measures fifth and fourth; silver sits last there and measures second for propane. The thesis's own
       volcano uses DFT binding energies from Peela et al. 2013, where copper and platinum hold oxygen alike.
     source: experiments/reaction_check (2026-10-25); Methodology tab, limits.
+  - title: Hydrogen peroxide decomposition misses McKee's order
+    detail: >
+      In neutral water at 27 °C, McKee (J. Catal. 1969) measured the platinum-group metals in the order
+      Pt > Os > Ir > Pd > Ru > Rh per unit surface area. Oxygen binding, with the top at platinum, orders the other
+      five Pd, Ir, Rh, Os, Ru: rho 0.10. The measured order follows oxygen binding loosely at best, since osmium and
+      ruthenium bind it most strongly and sit second and fifth. The table was measured in water, which holds OH*
+      more firmly, and the package screens vapor; a vapor-phase table, or rates in place of an order, would test it
+      more closely.
+    source: experiments/reaction_check (2026-10-31); PASS_RULE.md; Methodology tab, limits.
   - title: Two older rankings miss their measured tables
     detail: >
       Ammonia synthesis orders Ozaki's K-promoted metals with rho 0.40 over 9 metals (p 0.15), and water-gas shift
