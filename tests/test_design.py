@@ -96,6 +96,53 @@ def test_slab_has_vacuum_a_fixed_bottom_and_every_site_kind(symbol):
     assert {"top", "bridge", "hollow"} <= kinds
 
 
+def _sulfate_salt():
+    """A made-up Na2SO4 crystal whose sulfate straddles the cell's corner, so a naive cut would split it."""
+    from ase import Atoms
+
+    s = np.array([0.3, 0.3, 4.8])
+    tetra = 0.855 * np.array([[1, 1, 1], [-1, -1, 1], [-1, 1, -1], [1, -1, -1]])  # S-O 1.48 A
+    return Atoms(["S", "O", "O", "O", "O", "Na", "Na"], positions=[s, *(s + tetra), [2.5, 2.5, 2.5], [2.5, 2.5, 0.0]],
+                 cell=[5.0, 5.0, 5.0], pbc=True)
+
+
+def test_a_cut_keeps_each_molecular_ion_whole():
+    bulk = _sulfate_salt()
+    units = uma_worker.molecular_units(bulk)
+    assert [sorted(np.array(bulk.get_chemical_symbols())[m]) for m, _ in units] == [["O", "O", "O", "O", "S"]]
+    assert uma_worker.molecular_units(uma_worker.bulk_from(materials.element_entry("Pt"))) == []
+    slab = uma_worker.build_slab(bulk, (0, 0, 1))
+    flat = slab.copy()
+    flat.pbc = (True, True, False)
+    symbols = np.array(flat.get_chemical_symbols())
+    sulfur, oxygen = np.where(symbols == "S")[0], np.where(symbols == "O")[0]
+    assert len(sulfur) > 0 and len(oxygen) == 4 * len(sulfur)
+    for i in sulfur:
+        assert np.sum(flat.get_distances(i, oxygen, mic=True) < 1.6) == 4
+
+
+def test_a_formula_reads_brackets_groups_and_hydrates():
+    assert materials.formula_query("K4[Fe(CN)6]") == "K4(Fe(CN)6)"
+    assert materials.formula_query("NH4Fe(SO4)2·12H2O") == "NH4Fe(SO4)2(H2O)12"
+    assert materials.composition("K4(Fe(CN)6)") == {"K": 4, "Fe": 1, "C": 6, "N": 6}
+    assert materials.composition("NH4Fe(SO4)2(H2O)12") == {"N": 1, "H": 28, "Fe": 1, "S": 2, "O": 20}
+    for bad in ("NH4fe(SO4)2", "Xx2", "Cu(NO3", "Fe2O3)"):
+        with pytest.raises(ValueError):
+            materials.composition(bad)
+    assert materials.family(["Pt", "Ru"]) == "Metal or alloy"
+    assert materials.family(["Fe", "O"]) == "Oxide"
+    assert materials.family(["Fe", "H", "N", "O", "S"]) == "Compound"
+
+
+def test_a_lookup_keeps_only_crystals_of_the_formula_typed(monkeypatch):
+    def fake(params):
+        rows = [("mp-1", "FeH4S2NO8", 0.011), ("mp-2", "Yb", 0.0), ("mp-3", "Fe2(SO4)3", 0.0)]
+        return [{"material_id": i, "formula_pretty": f, "energy_above_hull": e, "nsites": 64} for i, f, e in rows]
+
+    monkeypatch.setattr(materials, "_get", fake)
+    assert [r["material_id"] for r in materials.lookup("NH4Fe(SO4)2")] == ["mp-1"]
+
+
 def test_a_placed_atom_that_stays_put_reads_as_bound():
     bulk = uma_worker.bulk_from(materials.element_entry("Pt"))
     slab = uma_worker.build_slab(bulk, uma_worker.densest_plane(bulk))

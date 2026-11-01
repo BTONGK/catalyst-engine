@@ -316,6 +316,81 @@ def mp_structure(material_id: str) -> dict:
     return materials.structure(material_id)
 
 
+@st.cache_data(show_spinner="Looking up the Materials Project...", ttl=86400)
+def mp_lookup(text: str) -> list[dict]:
+    from catalyst_engine.design import materials
+
+    return materials.lookup(text)
+
+
+COMPOUND_NOTE = ("Compounds (salts, sulfides, carbides and other mixes with nonmetals) sit beyond the families the "
+                 "app's checks cover, which are metals, alloys and oxides. Read their results as UMA's estimate for a "
+                 "dry crystal face in flowing gas. A salt that works dissolved in water acts there as separate ions, a "
+                 "route this model leaves out.")
+
+
+def formula_lookup(cands: dict[str, dict], key: str) -> None:
+    """Step 3's formula tab: every Materials Project crystal of one formula or ID, at any cell size, added to
+    `cands` when ticked. Widget keys start with `key`."""
+    from catalyst_engine.design import elements, materials
+    from catalyst_engine.ui import viewer
+
+    text = st.text_input("Formula or Materials Project ID", key=f"{key}_lookup_text",
+                         placeholder="CuSO4, NH4Fe(SO4)2, K3[Fe(CN)6], CuSO4·5H2O or mp-aaabejl",
+                         help="Element symbols with a capital first letter. Square brackets read as parentheses, and "
+                              "a hydrate's ·5H2O as five waters.").strip()
+    if not text:
+        st.caption("Type a formula to see every crystal the Materials Project holds for it, at any cell size.")
+        return
+    try:
+        rows = mp_lookup(text)
+    except (materials.MaterialsProjectError, ValueError) as exc:
+        st.error(str(exc))
+        return
+    if not rows:
+        st.info(f"The Materials Project's crystals leave out {text}. A related form may be there: the dry salt in "
+                "place of a hydrate, or the same ion at another charge.", icon=":material/search:")
+        return
+    table = pd.DataFrame([{"Material": r["formula"], "ID": r["material_id"],
+                           "Stability (eV/atom)": round(r["e_hull"], 3), "Atoms in cell": r["nsites"],
+                           "Crystal": f"{r['crystal_system']} {r['space_group']}",
+                           "Structure": "Predicted" if r["theoretical"] else "Made",
+                           "Family": materials.family(r["elements"]),
+                           "Supply": elements.supply_label(r["elements"])} for r in rows])
+    sel = st.dataframe(table, hide_index=True, width="stretch", on_select="rerun", selection_mode="multi-row",
+                       key=f"{key}_lookup_table")
+    chosen = [rows[i] for i in sel.selection.rows]
+    a, b = st.columns([1, 2])
+    with a:
+        st.caption(f"{len(rows)} crystal{'s' * (len(rows) != 1)} found, most stable first. Made: it matches a crystal "
+                   "measured in a laboratory; predicted: it comes from computation alone. Tick rows to add them.")
+        if st.button(f"Add {len(chosen)} selected", icon=":material/add:", disabled=not chosen,
+                     key=f"{key}_add_lookup"):
+            for r in chosen:
+                cands[r["material_id"]] = {"id": r["material_id"], "label": f"{r['formula']} ({r['material_id']})",
+                                           "formula": r["formula"], "e_hull": r["e_hull"], "elements": r["elements"],
+                                           "source": "Materials Project", "nsites": r["nsites"]}
+            st.rerun()
+    with b:
+        if chosen:
+            atoms = materials.atoms_of(mp_structure(chosen[0]["material_id"]))
+            viewer.show(atoms, height=260)
+            st.caption(f"{chosen[0]['formula']}: {materials.lattice_summary(atoms)}")
+    if any(materials.family(r["elements"]) == "Compound" for r in rows):
+        st.caption(COMPOUND_NOTE + " The app keeps each molecular ion (sulfate, ammonium, cyanide, water) whole when "
+                   "it cuts the surface.")
+
+
+def compound_note(entries: list[dict]) -> None:
+    """Above a screen's results: which of its materials are compounds, and how to read them."""
+    from catalyst_engine.design import materials
+
+    names = [m.get("formula") or m["label"] for m in entries
+             if not m.get("is_reference") and materials.family(m.get("elements", [])) == "Compound"]
+    if names:
+        st.info(f"{', '.join(names)}: " + COMPOUND_NOTE, icon=":material/science:")
+
+
 def face_text(entry: dict) -> str:
     return " ".join(map(str, entry["facet"])) if entry.get("facet") else "auto"
 

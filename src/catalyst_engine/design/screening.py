@@ -172,15 +172,18 @@ def list_screens() -> list[Path]:
 
 
 def seconds_estimate(materials: list[dict], n_adsorbates: int, thoroughness: str) -> float:
-    """Rough run time on a laptop CPU: about 10 s per relaxation on a metal, 50 s on a compound, 40 s for each
-    arrangement of a zeolite site."""
+    """Rough run time on a laptop CPU: about 10 s per relaxation on a metal, 50 s on a compound with one nonmetal
+    (an oxide, sulfide or phosphide), 130 s on a salt of molecular ions, which holds two or more (the mean of 16
+    relaxations on NH4Fe(SO4)2, K3Fe(CN)6, CuSO4 and Na2CO3, 2026-10-31), 40 s for each arrangement of a zeolite
+    site."""
     sites = {"quick": 2, "standard": 3, "thorough": 5}[thoroughness]
     total = 20.0
     for m in materials:
         if m.get("kind") == "framework":
             total += 40.0 * len(m.get("variants", [0])) * (1 + n_adsorbates)
             continue
-        per = 50.0 if set(m.get("elements", [])) & NONMETALS else 10.0
+        nonmetals = set(m.get("elements", [])) & NONMETALS
+        per = 130.0 if len(nonmetals) >= 2 else 50.0 if nonmetals else 10.0
         total += per * (1 + sites * n_adsorbates)
     return total
 

@@ -174,6 +174,7 @@ steps:
     do:
       - "\"Pure metals\" tab: pick metals from the list and press \"Add these metals\". The list starts with metals known to work for this reaction."
       - "\"Search the Materials Project\" tab: pick elements, choose how many to mix (\"Mix up to\") and the kind (alloys or oxides). Tick the rows you want and press \"Add selected\". The first ticked row shows in 3D."
+      - "\"Look up a formula\" tab: type a formula such as CuSO4, NH4Fe(SO4)2 or K3[Fe(CN)6], or a Materials Project ID. Every crystal of that formula appears, at any size, with its family: metal or alloy, oxide, or compound. Compounds such as salts sit beyond the app's checks; their results read as a dry crystal face in gas (Methodology, limits)."
       - Your list sits under the tabs. Tick "Remove" to drop a material. The catalyst to beat joins the screen on its own.
       - Five to ten materials is a good first screen. The Materials page shows more about any crystal before you add it.
     get: Your list of candidate materials.

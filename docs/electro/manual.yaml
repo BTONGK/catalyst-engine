@@ -91,7 +91,7 @@ steps:
     title: Choose materials and start
     page: Design an electrocatalyst → 3 and 4
     do:
-      - "Part 3: tick pure metals and press \"Add these metals\", or search the Materials Project by element and kind and add the rows you tick. Remove a material by ticking its Remove box. Metals and alloys are what the checks cover; oxides carry a larger error in every UMA mode (Methodology, limits)."
+      - "Part 3: tick pure metals and press \"Add these metals\", or search the Materials Project by element and kind and add the rows you tick, or look up one formula (such as NiP or MoP2) in the third tab. Remove a material by ticking its Remove box. Metals and alloys are what the checks cover; oxides carry a larger error in every UMA mode (Methodology, limits)."
       - "Part 4: pick the care level (Quick, Standard, Thorough), name the screen and press \"Start the screen\". The estimate under the button says how long it will take."
       - "Each reaction starts in UMA's catalysis mode, the one checked on metal surfaces. Advanced lets you change the mode, the faces, the slab size and the catalyst to beat."
     get: A screen running in the background; the Results page opens on it.

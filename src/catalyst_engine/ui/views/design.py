@@ -160,8 +160,9 @@ reference_formula = spec.reference.formula
 with st.container(border=True):
     st.markdown("### 3. Which materials should the app try?")
     st.caption(f"{spec.reference.name or reference_formula} is always included as the catalyst to beat. "
-               "Add pure metals, search the Materials Project's 150,000+ crystals, or both.")
-    metals_tab, mp_tab = st.tabs(["Pure metals", "Search the Materials Project"])
+               "Add pure metals, search the Materials Project's 150,000+ crystals by element, or look one up by "
+               "formula.")
+    metals_tab, mp_tab, formula_tab = st.tabs(["Pure metals", "Search the Materials Project", "Look up a formula"])
     with metals_tab:
         suggested = [e for e in spec.suggested_elements if e in METALS and e != reference_formula][:6]
         picked = st.multiselect("Metals", METALS, default=suggested, key=f"design_metals_{pid}",
@@ -222,6 +223,12 @@ with st.container(border=True):
                             st.caption(f"{chosen[0]['formula']}: {materials.lattice_summary(atoms)}")
                 else:
                     st.caption("Pick elements to see the stable materials made of them.")
+    with formula_tab:
+        if not status["mp_key"]:
+            st.info("Add your Materials Project API key (free at materialsproject.org) to ~/.config/.pmgrc.yaml as "
+                    "PMG_MAPI_KEY to look up its crystals.", icon=":material/key:")
+        else:
+            common.formula_lookup(cands, f"design_{pid}")
     st.markdown(f"**Your list** ({len(cands)} material{'s' * (len(cands) != 1)} plus the catalyst to beat)")
     if cands:
         listing = pd.DataFrame([{"Remove": False, "Material": m["label"], "Source": m["source"],

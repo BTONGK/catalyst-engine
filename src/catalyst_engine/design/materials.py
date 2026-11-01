@@ -19,6 +19,7 @@ import requests
 import yaml
 from ase import Atoms
 from ase.build import bulk as ase_bulk
+from ase.data import chemical_symbols
 from ase.io import write
 
 from catalyst_engine.design import zeolites
@@ -100,6 +101,72 @@ def search(elements: list[str], max_elements: int = 2, add_oxygen: bool = False,
                       "_limit": limit})
     out = sorted((_row(d) for d in rows), key=lambda r: (r["e_hull"], r["nsites"] or 0))
     return out[:limit]
+
+
+def formula_query(text: str) -> str:
+    """A formula as the Materials Project reads it: K4[Fe(CN)6] as K4Fe(CN)6, NH4Fe(SO4)2·12H2O as
+    NH4Fe(SO4)2(H2O)12, spaces dropped."""
+    q = re.sub(r"\s+", "", text).replace("[", "(").replace("]", ")").replace("{", "(").replace("}", ")")
+    parts = re.split(r"[·•*]", q)
+    for hydrate in parts[1:]:
+        n, rest = re.match(r"(\d*)(.*)", hydrate).groups()
+        parts[0] += f"({rest}){n}" if n else f"({rest})"
+    return parts[0]
+
+
+def composition(formula: str) -> dict[str, float]:
+    """Atoms of each element in a formula, groups in parentheses included: K3Fe(CN)6 gives K 3, Fe 1, C 6, N 6."""
+    tokens = re.findall(r"[A-Z][a-z]?|[()]|\d+(?:\.\d+)?|.", formula)
+    stack: list[dict[str, float]] = [{}]
+    for k, t in enumerate(tokens):
+        after = tokens[k + 1] if k + 1 < len(tokens) else ""
+        n = float(after) if after[:1].isdigit() else 1.0
+        if t == "(":
+            stack.append({})
+        elif t == ")":
+            if len(stack) == 1:
+                raise ValueError(f"{formula} closes more brackets than it opens")
+            for el, c in stack.pop().items():
+                stack[-1][el] = stack[-1].get(el, 0.0) + c * n
+        elif t in chemical_symbols[1:]:
+            stack[-1][t] = stack[-1].get(t, 0.0) + n
+        elif t[:1].isdigit() and k > 0 and (tokens[k - 1] == ")" or tokens[k - 1] in chemical_symbols[1:]):
+            continue  # a count, already read with the symbol or bracket before it
+        else:
+            raise ValueError(f"'{t}' in {formula} reads as something other than an element symbol; write each symbol "
+                             "with a capital first letter, as in Fe")
+    if len(stack) != 1:
+        raise ValueError(f"{formula} opens more brackets than it closes")
+    return stack[0]
+
+
+def _fractions(comp: dict[str, float]) -> dict[str, float]:
+    total = sum(comp.values())
+    return {el: round(c / total, 6) for el, c in comp.items()}
+
+
+def lookup(text: str, limit: int = 25) -> list[dict]:
+    """Every Materials Project crystal of one formula (K3[Fe(CN)6], NH4Fe(SO4)2, CuSO4) or one material ID, most
+    stable first, at any cell size. A formula's crystals must match it atom for atom in proportion."""
+    q = formula_query(text)
+    if not q:
+        return []
+    if re.fullmatch(r"(mp|mvc)-\w+", q, re.IGNORECASE):
+        data = _get({"material_ids": q.lower(), "_fields": FIELDS})
+    else:
+        want = _fractions(composition(q))
+        data = [d for d in _get({"formula": q, "_fields": FIELDS, "_sort_fields": "energy_above_hull", "_limit": limit})
+                if _fractions(composition(d["formula_pretty"])) == want]
+    return sorted((_row(d) for d in data), key=lambda r: (r["e_hull"], r["nsites"] or 0))
+
+
+def family(elements: list[str]) -> str:
+    """Metal or alloy, oxide, or compound (a salt, sulfide, carbide or any other mix with nonmetals): the families
+    the app's checks cover come first."""
+    other = set(elements) & {"H", "B", "C", "N", "F", "Si", "P", "S", "Cl", "Se", "Br", "I", "Te"}
+    if other:
+        return "Compound"
+    return "Oxide" if "O" in elements else "Metal or alloy"
 
 
 def most_stable(formula: str) -> dict:

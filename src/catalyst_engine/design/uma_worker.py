@@ -52,8 +52,10 @@ from ase import Atoms
 from ase.build import bulk as ase_bulk
 from ase.build import surface
 from ase.constraints import FixAtoms
+from ase.data import covalent_radii
 from ase.geometry import find_mic
 from ase.io import write
+from ase.neighborlist import neighbor_list
 from ase.optimize import BFGS
 
 try:
@@ -196,6 +198,9 @@ REFERENCE = {
     "CH2OH": {"CO": 1.0, "H2": 1.5},
 }
 NONMETALS = {"H", "B", "C", "N", "O", "F", "Si", "P", "S", "Cl", "Se", "Br", "I", "Te"}
+# metals whose bond to carbon holds a cyanide or carbonyl complex together, as iron's does in [Fe(CN)6]3-
+TRANSITION_METALS = {"Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Y", "Zr", "Nb", "Mo", "Tc", "Ru",
+                     "Rh", "Pd", "Ag", "Cd", "La", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg"}
 SETTINGS = {  # sites per adsorbate, force tolerance (eV/A), step cap
     "quick": {"sites": 2, "fmax": 0.10, "steps": 150},
     "standard": {"sites": 3, "fmax": 0.05, "steps": 250},
@@ -255,20 +260,87 @@ def densest_plane(bulk: Atoms) -> tuple[int, int, int]:
     return min(close, key=lambda r: (round(r[2], 2), -round(r[3], 2), sum(map(abs, r[0]))))[0]
 
 
+def molecular_units(atoms: Atoms, scale: float = 1.15) -> list[tuple[list[int], np.ndarray]]:
+    """The finite groups of bonded atoms in a periodic crystal (a sulfate, ammonium, water or hexacyanoferrate ion),
+    each as (atom indices, the lattice shifts that put its atoms side by side). A bond joins two nonmetals, or a
+    transition metal and carbon, closer than `scale` times their covalent radii summed. A group bonded to its own
+    periodic copy (a silicate framework, a carbide, a sheet or chain) stays out of the list: its atoms count singly."""
+    symbols = atoms.get_chemical_symbols()
+    nonmetal = np.array([e in NONMETALS for e in symbols])
+    if not nonmetal.any():
+        return []
+    carbon = np.array([e == "C" for e in symbols])
+    metal = np.array([e in TRANSITION_METALS for e in symbols])
+    i, j, shift = neighbor_list("ijS", atoms, scale * covalent_radii[atoms.numbers])
+    keep = (nonmetal[i] & nonmetal[j]) | (metal[i] & carbon[j]) | (carbon[i] & metal[j])
+    links: dict[int, list[tuple[int, np.ndarray]]] = {}
+    for a, b, s in zip(i[keep], j[keep], shift[keep]):
+        links.setdefault(int(a), []).append((int(b), s))
+    placed: dict[int, np.ndarray] = {}
+    units = []
+    for start in links:
+        if start in placed:
+            continue
+        placed[start] = np.zeros(3, dtype=int)
+        members, stack, finite = [start], [start], True
+        while stack:
+            a = stack.pop()
+            for b, s in links[a]:
+                at = placed[a] + s  # the copy of b bonded to this copy of a
+                if b not in placed:
+                    placed[b] = at
+                    members.append(b)
+                    stack.append(b)
+                elif np.any(placed[b] != at):
+                    finite = False
+        if finite:
+            members.sort()
+            units.append((members, np.array([placed[k] for k in members])))
+    return units
+
+
 def build_slab(bulk: Atoms, hkl, thickness: float = 7.0, width: float = 7.0, max_atoms: int = 90) -> Atoms:
     """A slab of the plane `hkl`: the termination whose composition best matches the bulk, at least `thickness`
-    thick and `width` wide, the bottom half fixed, 10 A of vacuum on each side."""
+    thick and `width` wide, the bottom half fixed, 10 A of vacuum on each side. Molecular ions (molecular_units)
+    stay whole: each joins the slab with all its atoms when its center lies inside, so the cut runs between the
+    ions of a salt and leaves its sulfate or cyanide groups intact."""
     d = 1.0 / np.linalg.norm(np.dot(hkl, np.linalg.inv(bulk.cell.array).T))
     layers = max(4, int(np.ceil((thickness + 6.0) / d)) + 2)
-    big = surface(bulk, hkl, layers, vacuum=None, periodic=True)
+    unit_size = {k: len(members) for members, _ in molecular_units(bulk) for k in members}
+    tagged = bulk.copy()
+    tagged.set_array("bulk_atom", np.arange(len(bulk)))
+    big = surface(tagged, hkl, layers, vacuum=None, periodic=True)
     big.wrap()
-    z = big.positions[:, 2]
+    origin = big.get_array("bulk_atom")
+    big.set_array("bulk_atom", None)
+    # each atom's position and the height that decides whether it joins: its own, or its ion's center
+    pos, z = big.positions.copy(), big.positions[:, 2].copy()
+    usable = np.ones(len(big), dtype=bool)
+    if unit_size:
+        # the ions found in the bulk, followed into the stack of layers; surface() joins the stack's top to its
+        # bottom with an in-plane offset, so bonds are traced within the stack and across its sides only
+        ionic = np.array([k in unit_size for k in origin])
+        where = np.where(ionic)[0]
+        stack = big[where]
+        stack.pbc = (True, True, False)
+        usable[where] = False  # until its whole ion turns up; an ion cut by the stack's top or bottom stays out
+        for members, shifts in molecular_units(stack):
+            idx = where[members]
+            if len(idx) < unit_size[origin[idx[0]]]:
+                continue
+            usable[idx] = True
+            unit = big.positions[idx] + shifts @ big.cell.array
+            center = np.linalg.solve(big.cell.array.T, unit.mean(axis=0))
+            pos[idx] = unit - np.floor(center[:2]) @ big.cell.array[:2]  # the copy whose center sits in the cell
+            z[idx] = pos[idx, 2].mean()
     target = _composition(bulk.get_chemical_symbols())
     best, best_score = None, np.inf
-    for z0 in np.unique(np.round(z, 1)):
-        if z0 + thickness > z.max() + 0.05:
+    for z0 in np.unique(np.round(z[usable], 1)):
+        if z0 + thickness > z[usable].max() + 0.05:
             break
-        window = big[(z >= z0 - 0.05) & (z <= z0 + thickness + 0.05)]
+        inside = usable & (z >= z0 - 0.05) & (z <= z0 + thickness + 0.05)
+        window = big[inside]
+        window.positions = pos[inside]
         if len(window) == 0:
             continue
         score = _mismatch(_composition(window.get_chemical_symbols()), target)

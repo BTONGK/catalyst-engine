@@ -155,6 +155,7 @@ def body() -> None:
                     help="The lowest temperature where it gets halfway to the best possible.")
         m[3].metric("Supply", best.supply, border=True)
         common.check_banner(spec.check, spec.check_note)
+        common.compound_note(req["materials"])
         values = [v for c in curves["materials"].values() for v in c["mid"]] + list(curves["best_possible"] or [])
         common.range_notes(pack, metric.kind, metric.species, min(req["conditions"]["temperatures_C"]), t_top,
                            float(np.nanmin(values)) if values else 0.0)

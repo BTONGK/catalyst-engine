@@ -23,6 +23,19 @@ proof_sequence:
 recent:
   - date: 2026-10-31
     item: >
+      Salts can now join a screen. Step 3 of both Design pages gained Look up a formula: any Materials Project crystal
+      by formula or ID, at any cell size, with its family (metal or alloy, oxide, compound); it keeps only crystals
+      whose composition matches the formula typed. The surface cut now keeps each molecular ion whole (sulfate,
+      carbonate, ammonium, water, cyanide complexes); before, it split them, and 11 of the 13 cached crystals holding
+      such ions came out with broken ions, copper sulfate and sodium carbonate among them. Every other crystal keeps
+      its surface atom for atom (230 of 230), and the Methodology's 2,062 stored values reproduce exactly. A hydrogen
+      peroxide screen of NH4Fe(SO4)2 and K3[Fe(CN)6] (standing in for K4[Fe(CN)6], which is missing from the
+      Materials Project in every form; peroxide turns one into the other) puts both far below platinum as dry crystal faces in vapor:
+      oxygen binds 0.69 and 0.76 eV more weakly than on platinum. Compounds carry a note above their results, and the
+      Methodology gained a limits row on salts and on catalysts that work dissolved. The run-time estimate now gives
+      salts of molecular ions 130 s per relaxation, from this screen.
+  - date: 2026-10-31
+    item: >
       Hydrogen peroxide decomposition joined the thermal section (41 packages): hydrogen peroxide vapor in air, as in
       the exhaust of peroxide sterilizers, with platinum as the catalyst to beat and oxygen binding as the descriptor.
       Before the package existed, PASS_RULE.md declared McKee's 1969 order of the platinum-group metals in water
@@ -379,6 +392,16 @@ phases:
       so far (Literature check page).
 
 findings:
+  - title: Iron and copper salts rank far below platinum as dry crystals for peroxide vapor
+    detail: >
+      In the catalysis mode, oxygen binds platinum's close-packed face at 1.58 eV against water and hydrogen, and the
+      salts' faces at 2.27 (K3[Fe(CN)6]), 2.34 (NH4Fe(SO4)2), 2.59 (CuSO4) and 3.39 eV (Na2CO3): sulfate oxygen or
+      cyanide nitrogen caps each face, and the iron sits beneath. At 60 °C each runs at most 4 × 10⁻⁸ of platinum's
+      speed, and all stay below half conversion through 150 °C. With the ions split by the earlier cut, copper sulfate
+      read 1.63 eV, 0.19 of platinum's speed, and sodium carbonate 1.81 eV: both came from broken ions. These salts
+      break down peroxide in water as dissolved ions (Haber and Weiss 1934), a route the model leaves out; UMA's
+      binding on salt faces awaits a benchmark.
+    source: data/screens/20261031-175754-salts-for-hydrogen-peroxide-decompositio; Methodology tab, limits.
   - title: Predicted speed ratios run wider than measured ones
     detail: >
       The rule scores order, and the passing reactions order the metals well. The sizes run wide: across the
