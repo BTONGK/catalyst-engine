@@ -23,6 +23,15 @@ proof_sequence:
 recent:
   - date: 2026-10-31
     item: >
+      You asked why every candidate's light-off read 150 °C in your peroxide screens (KI, MnO2, FeCl3, CuSO4; Fe, Cu,
+      Al, Cr). 150 °C was the top of the screen: each stays under half conversion from 20 to 150 °C, because the
+      package's volcano puts its top at platinum's oxygen binding and drops the speed twenty- to thirtyfold per 0.1 eV at 60 °C
+      away from it, and these materials bind oxygen 0.5 to 3.3 eV away. The results now read "Beyond 20–150 °C"
+      there. The package's note now names what its volcano leaves out: iodide and metal-ion cycles (KI, iron(III),
+      copper(II), manganese dioxide), which break peroxide down at room temperature, and base metals, which rust in
+      peroxide. Oxides computed in the catalysis mode carry a note with that mode's 0.70 eV miss on oxides.
+  - date: 2026-10-31
+    item: >
       Salts can now join a screen. Step 3 of both Design pages gained Look up a formula: any Materials Project crystal
       by formula or ID, at any cell size, with its family (metal or alloy, oxide, compound); it keeps only crystals
       whose composition matches the formula typed. The surface cut now keeps each molecular ion whole (sulfate,

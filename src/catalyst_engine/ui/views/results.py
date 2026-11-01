@@ -131,6 +131,7 @@ def body() -> None:
     ref = next((p for p in preds if p.is_reference), None)
     ranked = [p for p in preds if p.rank is not None]
     t_top = max(req["conditions"]["temperatures_C"])
+    beyond = f"Beyond {min(req['conditions']['temperatures_C']):.0f}–{t_top:.0f} °C"  # under halfway at every temperature
 
     if ref is None or ref.descriptor is None:
         st.info(f"Predictions appear once {ref_name}, the catalyst to beat, is done. It runs first.",
@@ -149,13 +150,15 @@ def body() -> None:
         m[1].metric(f"{metric.kind.capitalize()} at {t_cmp:.0f} °C", fmt_metric(best.metric_at_design),
                     f"{ref_name}: {fmt_metric(ref.metric_at_design)}", delta_color="off", delta_arrow="off", border=True,
                     help=metric.description)
-        m[2].metric("Light-off temperature", f"{best.t_half_C:.0f} °C" if best.t_half_C is not None else f"above {t_top:.0f} °C",
+        m[2].metric("Light-off temperature", f"{best.t_half_C:.0f} °C" if best.t_half_C is not None else beyond,
                     f"{ref_name}: {ref.t_half_C:.0f} °C" if ref.t_half_C is not None else None,
                     delta_color="off", delta_arrow="off", border=True,
-                    help="The lowest temperature where it gets halfway to the best possible.")
+                    help="The lowest temperature where it gets halfway to the best possible. "
+                         f"\"{beyond}\": it stays under halfway across the whole screen, so its light-off lies "
+                         "outside the temperatures computed.")
         m[3].metric("Supply", best.supply, border=True)
         common.check_banner(spec.check, spec.check_note)
-        common.compound_note(req["materials"])
+        common.compound_note(req["materials"], req.get("task", "oc20"))
         values = [v for c in curves["materials"].values() for v in c["mid"]] + list(curves["best_possible"] or [])
         common.range_notes(pack, metric.kind, metric.species, min(req["conditions"]["temperatures_C"]), t_top,
                            float(np.nanmin(values)) if values else 0.0)
@@ -175,7 +178,7 @@ def body() -> None:
                 "Likely range": "" if p.is_reference or p.rate_range is None else fmt_range(*p.rate_range),
                 "Speed ratio": p.rate_ratio,  # the exact number, for the CSV
                 f"At {t_cmp:.0f} °C": fmt_metric(p.metric_at_design),
-                "Light-off": f"{p.t_half_C:.0f} °C" if p.t_half_C is not None else ("" if p.rank is None else f"above {t_top:.0f} °C"),
+                "Light-off": f"{p.t_half_C:.0f} °C" if p.t_half_C is not None else ("" if p.rank is None else beyond),
                 "Binding (eV)": None if p.descriptor is None else round(p.descriptor, 2),
                 "Stability (eV/atom)": None if p.e_hull is None else round(p.e_hull, 3),
                 "Supply": p.supply,

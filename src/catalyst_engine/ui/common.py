@@ -381,14 +381,26 @@ def formula_lookup(cands: dict[str, dict], key: str) -> None:
                    "it cuts the surface.")
 
 
-def compound_note(entries: list[dict]) -> None:
-    """Above a screen's results: which of its materials are compounds, and how to read them."""
+def compound_note(entries: list[dict], task: str = "oc20") -> None:
+    """Above a screen's results: its compounds, and its oxides when it ran in the catalysis mode, with how to read
+    each."""
     from catalyst_engine.design import materials
 
-    names = [m.get("formula") or m["label"] for m in entries
-             if not m.get("is_reference") and materials.family(m.get("elements", [])) == "Compound"]
-    if names:
-        st.info(f"{', '.join(names)}: " + COMPOUND_NOTE, icon=":material/science:")
+    def named(family: str) -> list[str]:
+        return [m.get("formula") or m["label"] for m in entries
+                if not m.get("is_reference") and materials.family(m.get("elements", [])) == family]
+
+    if named("Compound"):
+        st.info(f"{', '.join(named('Compound'))}: " + COMPOUND_NOTE, icon=":material/science:")
+    values = (experiment_reports("methodology").get("design_method", {}).get("data") or {}).get("values", {})
+    if named("Oxide") and task == "oc20" and "oxide_app_mae_ood" in values:
+        oxides = named("Oxide")
+        st.info(f"{', '.join(oxides)}: {'an oxide' if len(oxides) == 1 else 'oxides'}, computed here in the catalysis "
+                f"mode, whose typical miss on oxide surfaces is {values['oxide_app_mae_ood']:.2f} eV against DFT, beyond the app's "
+                f"{values['sigma_assumed']:.2f} eV error bar; a miss that size moves a predicted speed by several "
+                f"powers of ten. The materials mode (Advanced, Model settings) misses by "
+                f"{values['oxide_mat_mae_ood']:.2f} eV and suits oxides better (Methodology, limits).",
+                icon=":material/science:")
 
 
 def face_text(entry: dict) -> str:

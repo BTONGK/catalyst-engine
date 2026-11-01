@@ -292,7 +292,7 @@ def results_body(folder: Path, choice: str) -> None:
                             if s.activation else "") + " (Sabatier analysis).")
         m[3].metric("Supply", best.supply, border=True)
         common.check_banner(s.check, s.check_note)
-        common.compound_note(req["materials"])
+        common.compound_note(req["materials"], req.get("task", "oc20"))
     missing = [p for p in preds if p.missing]
     if missing:
         st.info("On " + ", ".join(f"{p.formula} ({', '.join(p.missing)})" for p in missing) + " an intermediate "
