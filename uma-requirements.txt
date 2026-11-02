@@ -1,0 +1,8 @@
+# The UMA worker's own Python (install.sh puts it in .uma/), at the versions the app's model checks ran with.
+# Change these only together with a rerun of the checks in experiments/.
+fairchem-core==2.23.0
+torch==2.13.0
+ase==3.29.0
+numpy==2.4.6
+scipy==1.18.1
+e3nn==0.6.0

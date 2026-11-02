@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import streamlit as st
 
+from catalyst_engine.design import screening
 from catalyst_engine.ui import common, electro_ui
 
 st.title("Design an electrocatalyst")
@@ -17,8 +18,10 @@ advanced = st.toggle("Advanced", key="electro_advanced",
 
 status = common.engine_status()
 if not status["uma"]["ready"]:
-    st.warning(f"The atomistic model (UMA) is set up on another computer. Point CE_UMA_PYTHON at a Python with "
-               f"fairchem installed and CE_UMA_CHECKPOINT at the model file. Looked for {status['uma']['python']} "
-               f"and {status['uma']['checkpoint']}.", icon=":material/memory:")
+    st.warning(f"The atomistic model (UMA) is waiting for its last install step. Once Meta approves your access "
+               f"to UMA on Hugging Face, run the install command again: `{screening.INSTALL_COMMAND}`. "
+               f"Developers can instead point CE_UMA_PYTHON at a Python with fairchem and CE_UMA_CHECKPOINT at "
+               f"the model file. The app looked for {status['uma']['python']} and {status['uma']['checkpoint']}.",
+               icon=":material/memory:")
 
 electro_ui.design_page(advanced, status)

@@ -55,9 +55,14 @@ MONOLITH = {"form": "monolith", "cpsi": 400.0, "wall_mm": 0.17}
 
 # ---------------------------------------------------------------- setup and storage
 
+INSTALL_COMMAND = "curl -LsSf https://raw.githubusercontent.com/BTONGK/catalyst-engine/main/install.sh | sh"
+
+
 def uma_setup() -> dict:
-    """Where the UMA Python and checkpoint are (CE_UMA_PYTHON, CE_UMA_CHECKPOINT) and whether both exist."""
-    python = Path(os.environ.get("CE_UMA_PYTHON", "/opt/miniconda3/bin/python3"))
+    """Where the UMA Python and checkpoint are (CE_UMA_PYTHON, CE_UMA_CHECKPOINT) and whether both exist.
+    Without CE_UMA_PYTHON: the .uma environment install.sh builds in the repository, else the conda Python."""
+    local = Path(__file__).resolve().parents[3] / ".uma" / "bin" / "python"
+    python = Path(os.environ.get("CE_UMA_PYTHON") or (local if local.exists() else "/opt/miniconda3/bin/python3"))
     checkpoint = Path(os.environ.get("CE_UMA_CHECKPOINT", Path.home() / "uma" / "checkpoints" / "uma-s-1p1.pt"))
     return {"python": str(python), "checkpoint": str(checkpoint), "ready": python.exists() and checkpoint.exists()}
 

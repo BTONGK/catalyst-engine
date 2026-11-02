@@ -4,11 +4,43 @@ The computational layer of a closed-loop catalyst discovery company: reaction pa
 general kinetics engine, kinetic and aging fits, and system-value calculations. The plan
 and its reasoning are in [docs/PLAN.md](docs/PLAN.md).
 
+## Install on your computer
+
+One command, on a Mac with Apple silicon (macOS 14 or later) or on Linux (on Windows, inside WSL's Ubuntu):
+
+```sh
+curl -LsSf https://raw.githubusercontent.com/BTONGK/catalyst-engine/main/install.sh | sh
+```
+
+It puts the app in `~/catalyst-engine`, installs [uv](https://astral.sh/uv) for Python, builds the app's
+environment and a separate one for Meta's UMA model (PyTorch on the CPU, at the versions the app's checks used),
+downloads the model, and opens the app in your browser. Afterwards, `catalyst-engine` opens it again, and the same
+install command updates it while your screens and data stay put. Plan on about 3 GB of disk and 5–20 minutes on the
+first run, mostly downloads.
+
+Two steps need you, and the installer asks for each:
+
+1. **The UMA model (for designing catalysts).** Meta shares it through Hugging Face, one approved person at a time.
+   Sign in at [huggingface.co](https://huggingface.co), open [facebook/UMA](https://huggingface.co/facebook/UMA),
+   accept the license and request access, then make a token with the Read role at
+   [Settings → Access Tokens](https://huggingface.co/settings/tokens) and paste it when the installer asks. If the
+   approval is still on its way, everything else installs, and running the command again later fetches the model.
+   The installer checks the download against the checksum of the file the app's checks ran on.
+2. **A Materials Project key (optional, free).** Pure metals work right away; a key adds every alloy and oxide in
+   the [Materials Project](https://next-gen.materialsproject.org/api). The installer saves it in
+   `~/.config/.pmgrc.yaml`.
+
+Every screen runs on your own computer, and your screens, reactions and lab data stay in `~/catalyst-engine/data`.
+Options (set them on `sh`, e.g. `curl ... | CE_HOME=~/apps/catalyst sh`): `CE_HOME` (app folder), `CE_UMA_DIR`
+(model folder, default `~/uma/checkpoints`), `CE_BIN` (command folder, default `~/.local/bin`), `CE_START=0`
+(finish with the app closed). To remove it: `rm -rf ~/catalyst-engine ~/.local/bin/catalyst-engine
+~/uma/checkpoints/uma-s-1p1.pt`.
+
 ## The app
 
 ```sh
 uv sync
-uv run ce ui                      # opens http://localhost:8501
+uv run ce ui                      # opens the first free port from http://localhost:8501
 ```
 
 The app designs catalysts on the computer. Pick a reaction and its conditions, choose materials (pure metals,

@@ -1,5 +1,5 @@
 # Project status shown on the app's Project status page. Updated at the end of every phase.
-updated: 2026-10-31
+updated: 2026-11-01
 focus_pack: scr_hot   # the app opens on this reaction
 
 headline: >
@@ -21,6 +21,20 @@ proof_sequence:
     status: planned
 
 recent:
+  - date: 2026-11-01
+    item: >
+      You asked for one terminal command that installs the app on anyone's computer, so each person computes on their
+      own machine. install.sh does it, on Apple-silicon Macs (macOS 14 or later) and Linux, and on Windows through
+      WSL: curl -LsSf https://raw.githubusercontent.com/BTONGK/catalyst-engine/main/install.sh | sh. It installs uv,
+      builds the app's environment from uv.lock and a separate UMA environment pinned to the versions every check ran
+      with (fairchem-core 2.23.0, torch 2.13.0; CPU PyTorch on Linux), downloads uma-s-1p1.pt from Hugging Face with
+      the person's own token once Meta approves their access, and checks it against your file's checksum. It then
+      saves an optional Materials Project key, writes a catalyst-engine command and opens the app; running it again
+      updates the app and keeps data/. The Design page's UMA notice now points to the same command. Tested from
+      scratch on this Mac (git, the real 1.2 GB download) and in a Debian Linux container (GitHub's archive, the
+      path for computers lacking git), updates included. Platinum and K2Cr2O7 from your 15:45 peroxide screen, rerun in each
+      new environment, matched platinum to 0.00001 eV and 7 of 8 rows within 0.003 eV (see Findings). Pushed to main
+      on 2026-11-01, so the command works for anyone from then on.
   - date: 2026-10-31
     item: >
       You asked why every candidate's light-off read 150 °C in your peroxide screens (KI, MnO2, FeCl3, CuSO4; Fe, Cu,
@@ -271,6 +285,18 @@ recent:
       fits, and the system-value tools.
 
 next_steps:
+  - step: Pick a license for the code
+    owner: You
+    why: >
+      Anyone can now install the app with one command. The repository has yet to carry a license file; until it does, others may view and fork it on GitHub, and every
+      other use calls for your permission. MIT or Apache-2.0 opens it fully; a source-available license keeps
+      commercial use yours.
+  - step: Decide how a site at the step limit counts
+    owner: You
+    why: >
+      A material's binding can come from a site whose relaxation stopped at the step limit, as K2Cr2O7's did (see
+      Findings). Two options: continue such a site to the thorough setting's 400 steps before ranking, or rank on
+      settled sites and list the rest. Either way, the Methodology's stored values get rerun afterwards.
   - step: Run a design screen on a reaction you care about, and tell me what reads unclear
     owner: You
     why: >
@@ -401,6 +427,15 @@ phases:
       so far (Literature check page).
 
 findings:
+  - title: One soft site moves by up to 0.06 eV from run to run
+    detail: >
+      Oxygen on K2Cr2O7's second hollow site came out at 2.454 eV in your 15:45 peroxide screen, where its relaxation
+      stopped at the 250-step limit, and at 2.466 (your conda setup, run again), 2.488 (Linux) and 2.517 eV (the
+      installer's Mac environment), each settled. The other three rows agree within 0.003 eV and platinum's to
+      0.00001 eV, so the environments compute alike; this face is soft, and rounding differences carry its relaxation
+      to slightly different resting points. K2Cr2O7's oxygen binding (its lowest site) spans 2.454 to 2.498 eV across
+      the four runs, about 0.9 eV weaker than platinum in each. The site table names a site at the step limit.
+    source: data/screens/20261101-154532-hydrogen-peroxide-decomposition-screen; reruns of 2026-11-01.
   - title: Iron and copper salts rank far below platinum as dry crystals for peroxide vapor
     detail: >
       In the catalysis mode, oxygen binds platinum's close-packed face at 1.58 eV against water and hydrogen, and the

@@ -220,11 +220,21 @@ def permit(
 
 
 @app.command()
-def ui(port: Annotated[int, typer.Option(help="Local port")] = 8501) -> None:
+def ui(port: Annotated[int | None, typer.Option(help="Local port (default: the first free one from 8501)")] = None) -> None:
     """Open the engine's app in your browser."""
+    import socket
     import subprocess
     import sys
 
+    if port is None:
+        port = 8501
+        while True:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                try:
+                    s.bind(("", port))
+                    break
+                except OSError:
+                    port += 1
     app_path = Path(__file__).parent / "ui" / "app.py"
     cmd = [sys.executable, "-m", "streamlit", "run", str(app_path), "--server.port", str(port),
            "--browser.gatherUsageStats", "false", "--theme.primaryColor", "#0f766e"]
